@@ -1,8 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-
+import { HttpClientModule } from '@angular/common/http';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
@@ -42,8 +43,11 @@ import { AppRoutingModule } from './app.routing';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
-import { PacientesComponent } from './components/pacientes/pacientes.component';
-import { MenusComponent } from './components/menus/menus.component';
+//import { PacientesComponent } from './components/pacientes/pacientes.component';
+//import { MenusComponent } from './components/menus/menus.component';
+import { LoginServicioMedicoComponent } from './components/login-servicio-medico/login-servicio-medico.component';
+//import { PrincipalServicioMedicoComponent } from './components/principal-servicio-medico/principal-servicio-medico.component';
+//import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 @NgModule({
   imports: [
@@ -61,6 +65,10 @@ import { MenusComponent } from './components/menus/menus.component';
     ChartsModule,
     IconModule,
     IconSetModule.forRoot(),
+    HttpClientModule,
+    FormsModule,
+    //BsDropdownModule,    
+    //ButtonsModule.forRoot(),
   ],
   declarations: [
     AppComponent,
@@ -69,8 +77,10 @@ import { MenusComponent } from './components/menus/menus.component';
     P500Component,
     LoginComponent,
     RegisterComponent,
-    PacientesComponent,
-    MenusComponent
+    //PacientesComponent,
+    //MenusComponent,
+    LoginServicioMedicoComponent,
+    //PrincipalServicioMedicoComponent
   ],
   providers: [
     {

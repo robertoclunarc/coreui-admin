@@ -2,8 +2,8 @@ import { INavData } from '@coreui/angular';
 
 export const navItems: INavData[] = [
   {
-    name: 'Dashboard',
-    url: '/dashboard',
+    name: 'Principal',
+    url: '/principal',
     icon: 'icon-speedometer',
     badge: {
       variant: 'info',
@@ -12,24 +12,24 @@ export const navItems: INavData[] = [
   },
   {
     title: true,
-    name: 'Theme'
+    name: 'Atencion Medica'
   },
   {
-    name: 'Colors',
+    name: 'Consultas',
     url: '/theme/colors',
     icon: 'icon-drop'
   },
   {
-    name: 'Typography',
+    name: 'Historial Medico',
     url: '/theme/typography',
     icon: 'icon-pencil'
   },
   {
     title: true,
-    name: 'Components'
+    name: 'Maestros'
   },
   {
-    name: 'Base',
+    name: 'Pacientes',
     url: '/base',
     icon: 'icon-puzzle',
     children: [

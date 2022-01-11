@@ -6,15 +6,26 @@ import { DefaultLayoutComponent } from './containers';
 
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
-import { LoginComponent } from './views/login/login.component';
+//import { LoginComponent } from './views/login/login.component';
+import { LoginServicioMedicoComponent  } from './components/login-servicio-medico/login-servicio-medico.component'
 import { RegisterComponent } from './views/register/register.component';
-import { PacientesComponent } from './components/pacientes/pacientes.component';
+//import { PacientesComponent } from './components/pacientes/pacientes.component';
+//import { PrincipalServicioMedicoComponent } from './components/principal-servicio-medico/principal-servicio-medico.component';
+import { PortadaComponent } from './views/portada/portada.component';
 
 export const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'dashboard',
+    path: 'principal',
+    redirectTo: 'principal',
+    //component: PrincipalServicioMedicoComponent,
     pathMatch: 'full',
+  },
+  {
+    path: '',
+    component: PortadaComponent,
+    data: {
+      title: 'Portada'
+    }
   },
   {
     path: '404',
@@ -32,7 +43,7 @@ export const routes: Routes = [
   },
   {
     path: 'login',
-    component: LoginComponent,
+    component: LoginServicioMedicoComponent,
     data: {
       title: 'Login Page'
     }
@@ -56,6 +67,10 @@ export const routes: Routes = [
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
       },
       {
+        path: 'principal',
+        loadChildren: () => import('./components/principal-servicio-medico/principal-servicio-medico.module').then(m => m.DashboardModule)
+      },
+      {
         path: 'buttons',
         loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule)
       },
@@ -63,10 +78,10 @@ export const routes: Routes = [
         path: 'charts',
         loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule)
       },
-      {
+      /*{
         path: 'dashboard',
         loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
-      },
+      },*/
       {
         path: 'icons',
         loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
@@ -83,19 +98,20 @@ export const routes: Routes = [
         path: 'widgets',
         loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule)
       },
-      {
+      /*{
         path: 'Pacientes',
         component: PacientesComponent,
         data: {
           title: 'Pacientes Page'
         }
-      },
+      },*/
     ]
   },
   { path: '**', component: P404Component }
 ];
 
 @NgModule({
+  
   imports: [ RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' }) ],
   exports: [ RouterModule ]
 })
