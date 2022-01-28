@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 //import 'rxjs/add/operator/first';
 import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
-import { IUsuarios } from '../../models/usuarios';
+import { IUsuarios } from '../../models/usuarios.model';
 
 @Component({
   selector: 'app-login',

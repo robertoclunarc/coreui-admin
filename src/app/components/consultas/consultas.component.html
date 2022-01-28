@@ -1,0 +1,174 @@
+<div class="animated fadeIn">
+  <div class="row">    
+    <div class="col-md-12 mb-4">
+      <!-- Nav tabs -->
+      <tabset>
+        <tab>
+          <ng-template tabHeading><i class="icon-list"></i> Nueva Consulta &nbsp;<span class="badge badge-success">New</span></ng-template>
+          <div class="col-sm-6">
+            <div class="card">
+              <div class="card-header">
+                <strong>Credit Card</strong>
+                <small>Form</small>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="name">Name</label>
+                      <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                    </div>
+                  </div>
+                </div><!--/.row-->
+                <div class="row">
+                  <div class="col-sm-12">
+                    <div class="form-group">
+                      <label for="ccnumber">Credit Card Number</label>
+                      <input type="text" class="form-control" id="ccnumber" placeholder="0000 0000 0000 0000">
+                    </div>
+                  </div>
+                </div><!--/.row-->
+                <div class="row">
+                  <div class="form-group col-sm-4">
+                    <label for="ccmonth">Month</label>
+                    <select class="form-control" id="ccmonth">
+                      <option>1</option>
+                      <option>2</option>
+                      <option>3</option>
+                      <option>4</option>
+                      <option>5</option>
+                      <option>6</option>
+                      <option>7</option>
+                      <option>8</option>
+                      <option>9</option>
+                      <option>10</option>
+                      <option>11</option>
+                      <option>12</option>
+                    </select>
+                  </div>
+                  <div class="form-group col-sm-4">
+                    <label for="ccyear">Year</label>
+                    <select class="form-control" id="ccyear">
+                      <option>2014</option>
+                      <option>2015</option>
+                      <option>2016</option>
+                      <option>2017</option>
+                      <option>2018</option>
+                      <option>2019</option>
+                      <option>2020</option>
+                      <option>2021</option>
+                      <option>2022</option>
+                      <option>2023</option>
+                      <option>2024</option>
+                      <option>2025</option>
+                    </select>
+                  </div>
+                  <div class="col-sm-4">
+                    <div class="form-group">
+                      <label for="cvv">CVV/CVC</label>
+                      <input type="text" class="form-control" id="cvv" placeholder="123">
+                    </div>
+                  </div>
+                </div><!--/.row-->
+              </div>
+            </div>
+          </div><!--/.col-->
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-calculator"></i> Ver &nbsp;<span class="badge badge-pill badge-danger">{{totalItems}}</span></ng-template>
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                 Atenciones Medicas
+                 
+                 <div class="card-header-actions">
+                  <button title="Nueva Consulta" type="button" class="btn btn-pill btn-block btn-success" (click)="primaryModal.show()">+</button>
+                </div>
+              </div>
+              <div class="card-body">
+                <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{1,80}" placeholder="Search by name" />
+                
+                <table class="table table-striped" id="dataConsultas">
+                  <thead>
+                    <tr>
+                      <th>Ver</th>
+                      <th scope="col" *ngFor="let t of titulos">
+                        
+                        <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
+                          <button type="button" (click)="sortTable(t.campo)" class="btn btn-block btn-ghost-dark"><strong>{{t.titulo}}</strong></button>
+                        </div>
+                    </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of returnedArray">
+                      <td><button class="btn btn-brand btn-facebook text" (click)="primaryModal.show()"> <i class="fa fa-eye"></i></button></td>
+                      <td>{{c.uid}}</td>
+                      <td>{{c.fecha | date:'dd/MM/yyyy'}}</td>
+                      <td>{{c.ci}}</td>
+                      <td>{{c.nombre_completo}}</td>
+                      <td>{{c.sexo}}</td>
+                      <td>{{c.cargo}}</td>
+                      <td>{{c.motivo}}</td>
+                      <td>{{c.paramedico}}</td>                      
+                      <td>
+                        <span class="badge badge-success">{{c.login_atendio}}</span>
+                      </td>
+                    </tr>                    
+                   
+                  </tbody>
+                </table>
+                <ul class="pagination">
+                  <div class="col-xs-12 col-12 d-sm-down-none">
+                    <pagination [totalItems]="totalItems"  (pageChanged)="pageChanged($event)"></pagination>
+                  </div>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <!--/.col-->
+          <div bsModal #primaryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-primary" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Modal title</h4>
+                  <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>One fine body&hellip;</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
+                  <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+              </div><!-- /.modal-content -->
+            </div><!-- /.modal-dialog -->
+          </div><!-- /.modal -->
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-pie-chart"></i> Graficas</ng-template>
+          <div class="card">
+            <div class="card-header">
+              Polar Area Chart              
+            </div>
+            <div class="card-body">
+              <div class="chart-wrapper">
+                <canvas baseChart class="chart"
+                [data]="polarAreaChartData"
+                [labels]="polarAreaChartLabels"
+                [legend]="polarAreaLegend"
+                [chartType]="polarAreaChartType"
+                (chartHover)="chartHovered($event)"
+                (chartClick)="chartClicked($event)"></canvas>
+              </div>
+            </div>
+          </div>
+        </tab>
+      </tabset>
+
+
+    </div><!--/.col-->
+  </div><!--/.row-->
+</div>

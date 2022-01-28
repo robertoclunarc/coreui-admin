@@ -7,6 +7,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
+import { PaginationModule } from 'ngx-bootstrap/pagination';
 
 import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular';
 
@@ -67,6 +68,7 @@ import { LoginServicioMedicoComponent } from './components/login-servicio-medico
     IconSetModule.forRoot(),
     HttpClientModule,
     FormsModule,
+    PaginationModule.forRoot(),
     //BsDropdownModule,    
     //ButtonsModule.forRoot(),
   ],

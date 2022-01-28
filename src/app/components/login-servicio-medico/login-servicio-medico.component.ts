@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
-import { IUsuarios } from '../../models/usuarios';
+import { IUsuarios } from '../../models/usuarios.model';
 
 @Component({
   selector: 'app-login-servicio-medico',

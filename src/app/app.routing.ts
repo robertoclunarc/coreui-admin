@@ -12,6 +12,7 @@ import { RegisterComponent } from './views/register/register.component';
 //import { PacientesComponent } from './components/pacientes/pacientes.component';
 //import { PrincipalServicioMedicoComponent } from './components/principal-servicio-medico/principal-servicio-medico.component';
 import { PortadaComponent } from './views/portada/portada.component';
+//import {  ConsultasComponent } from './components/consultas/consultas.component';
 
 export const routes: Routes = [
   {
@@ -20,13 +21,20 @@ export const routes: Routes = [
     //component: PrincipalServicioMedicoComponent,
     pathMatch: 'full',
   },
-  {
+  /*{
     path: '',
     component: PortadaComponent,
     data: {
       title: 'Portada'
     }
-  },
+  },*/
+  /*{
+    path: 'consultas',
+    component: TabsComponent,
+    data: {
+      title: 'Consultas'
+    }
+  },*/
   {
     path: '404',
     component: P404Component,
@@ -65,6 +73,10 @@ export const routes: Routes = [
       {
         path: 'base',
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
+      },
+      {
+        path: 'consultas',
+        loadChildren: () => import('./components/consultas/consultas.module').then(m => m.ConsultasModule)
       },
       {
         path: 'principal',
