@@ -1,15 +1,30 @@
+//componentes
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { ConsultasService } from '../../services/consultas.service';
-import { IConsultas, IConsultasConstraint, IvConsulta, IFiltroConsulta } from '../../models/consultas.model';
-
 import {ModalDirective} from 'ngx-bootstrap/modal';
+import { AlertComponent } from 'ngx-bootstrap/alert';
+//servicios
+import { ConsultasService } from '../../services/consultas.service';
+import { PacientesService } from '../../services/pacientes.service';
+import { MedicosService } from '../../services/medicos.service';
+import { MotivosService } from '../../services/motivos.service';
+import { AreasService } from '../../services/areas.sevice';
+//modelos
+import { IConsultas, IConsultasConstraint, IvConsulta, IFiltroConsulta } from '../../models/consultas.model';
+import { IsignosVitales } from '../../models/signos_vitales.model';
+import { Iantropometria  } from '../../models/antropometria.model';
+import { IvPaciente } from '../../models/paciente.model';
+import { IMedicos, IParamedicos } from '../../models/medicos.model';
+import { IMotivo } from '../../models/motivos.model';
+import { IAreas } from '../../models/areas.model';
+
 /*
 import { DecimalPipe } from '@angular/common';
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
 */
+
 @Component({
   templateUrl: 'consultas.component.html',
-  providers: [ConsultasService]
+  providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService]
 
 })
 export class ConsultasComponent  implements OnInit  {
@@ -21,13 +36,32 @@ export class ConsultasComponent  implements OnInit  {
 
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
+  isCollapsed: boolean = false;
+  iconCollapse: string = 'icon-arrow-up';
+
+  isCollapsed_1: boolean = true;
+  iconCollapse_1: string = 'icon-arrow-down';
+
   private buscarConsulta: IFiltroConsulta;
   private consultasTodas: IvConsulta[];
   private returnedArray: IvConsulta[];
   private returnedSearch: IvConsulta[];
-  private consultas: IConsultas[];
+  private consultas: IConsultas={};
+  private vConsultas: IvConsulta={};
+  private signoVital: IsignosVitales={};
+  private antropometria: Iantropometria={};
+  private paciente: IvPaciente={};
+  private newConsulta: boolean=false;
+  private alertsDismiss: any = [];
+  private medicos: IMedicos[]=[];
+  private paramedicos: IParamedicos[]=[];
+  private selectMedicos: IMedicos[]=[];
+  private selectParamedicos: IParamedicos[]=[];
+  private motivos: IMotivo[]=[];
+  private areas: IAreas[]=[];
   
-  private searchText = "";  
+  private searchText = ""; 
+  private modalTitle = "";
 
   totalItems: number;//total number of items in all pages
   //currentPage: number   = 1;
@@ -80,11 +114,19 @@ export class ConsultasComponent  implements OnInit  {
       campo:'login_atendio'
     }];
 
-  constructor(private srvConsultas: ConsultasService) { }
+  constructor(
+    private srvConsultas: ConsultasService,
+    private srvPacientes: PacientesService,
+    private srvMedicos: MedicosService,
+    private srvMotivo: MotivosService,
+    private srvArea: AreasService,
+    ) { }
 
   ngOnInit(): void {
 		this.consultasFilter();
-   
+    this.llenarArrayMedicos();
+    this.llenarArrayMotivos();
+    this.llenarArrayAreas();
 	}
 
   consultasFilter() {
@@ -101,8 +143,7 @@ export class ConsultasComponent  implements OnInit  {
 			.toPromise()
 			.then(results => {				
 					
-				this.consultasTodas = results;
-        this.consultas = results;
+				this.consultasTodas = results;       
         
         this.totalItems = this.consultasTodas.length;
         this.maxSize = Math.ceil(this.totalItems/this.numPages);             
@@ -113,8 +154,7 @@ export class ConsultasComponent  implements OnInit  {
         console.log('bigTotalItems: ' + this.bigTotalItems);
         console.log('currentPage: ' + this.currentPage);
         console.log('currentPager: ' + this.currentPager);
-        console.log('smallnumPages: ' + this.smallnumPages);*/
-            
+        console.log('smallnumPages: ' + this.smallnumPages);*/            
 				
 			})
 			.catch(err => { console.log(err) });
@@ -127,6 +167,51 @@ export class ConsultasComponent  implements OnInit  {
 
   private chartHovered(e: any): void {
     console.log(e);
+  }
+
+
+  private llenarArrayMedicos(){
+
+    this.srvMedicos.medicosAll()
+      .toPromise()
+      .then(result => {
+        this.medicos=result;           
+      });
+
+      this.srvMedicos.paraMedicosAll()
+      .toPromise()
+      .then(result => {
+        this.paramedicos=result;            
+      });
+
+  }
+
+  private llenarArrayMotivos(){
+
+    this.srvMotivo.motivosAll()
+      .toPromise()
+      .then(result => {
+        this.motivos=result;           
+      });      
+  }
+
+  private llenarArrayAreas(){
+
+    this.srvArea.areasAll()
+      .toPromise()
+      .then(result => {
+        this.areas=result;           
+      });      
+  }
+  
+  private buscarPaciente(){
+    if (this.paciente.ci!="" &&  this.paciente.ci!= undefined){
+      this.srvPacientes.pacienteOne(this.paciente.ci)
+      .toPromise()
+      .then(result => {
+        this.paciente=result[0];             
+      })
+    }
   }  
   
   Search(){
@@ -138,7 +223,7 @@ export class ConsultasComponent  implements OnInit  {
          return lista.uid.toString().match(searchValue )
          || lista.fecha.toLocaleLowerCase().match(searchValue )
          || lista.ci.toString().match(searchValue )
-         || lista.nombre_completo.toLocaleLowerCase().match(searchValue )
+         || lista.nombre_completo.toLocaleLowerCase().includes(searchValue )
          //|| lista.sexo==searchValue 
          || lista.motivo.toLocaleLowerCase().match(searchValue )
          || lista.paramedico?.toLocaleLowerCase().match(searchValue )
@@ -169,7 +254,7 @@ export class ConsultasComponent  implements OnInit  {
    
   }
 
-  sortTable(prop: string) {
+  private sortTable(prop: string) {
     
       if(this.searchText== ""){        
         if (this.sortOrder==1)
@@ -186,7 +271,7 @@ export class ConsultasComponent  implements OnInit  {
       this.sortOrder =  this.sortOrder * (-1);
   }
 
-  sortData (a: any, b: any, prop: string, type = ""){
+  private sortData (a: any, b: any, prop: string, type = ""){
     console.log(type)
     if (type === "date" || type === 'string') {
       
@@ -202,5 +287,65 @@ export class ConsultasComponent  implements OnInit  {
     else{
       return a[prop] - b[prop]
     }
+  }
+
+  private showModalRegistrar(){
+    this.newConsulta=true;
+    this. modalTitle = "Nueva Consulta Medica";
+    this.selectMedicos= this.medicos.filter( m => m.activo=true);
+    this.selectParamedicos= this.paramedicos.filter( m => m.activo=true);
+  }
+
+  private registrar(){
+    if (this.newConsulta) {
+
+			this.srvConsultas.registrar(this.consultas)
+				.toPromise()
+				.then(results => {  })
+				.catch(err => { console.log(err) });
+
+			this.showSuccess('Atencion Medica Registrada satisfactoriamente');
+		}
+		else {
+
+			this.srvConsultas.actualizar(this.consultas)
+				.toPromise()
+				.then(results => {  })
+				.catch(err => { console.log(err) });
+
+			this.showSuccess('Atencion Medica actualizada satisfactoriamente');
+
+		}
+		this.consultas = null;
+		this.newConsulta = false;
+  }
+
+  private collapsed(event: any): void {
+    // console.log(event);
+  }
+
+  private expanded(event: any): void {
+    // console.log(event);
+  }
+
+  private toggleCollapse(): void {
+    this.isCollapsed = !this.isCollapsed;
+    this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
+
+    this.isCollapsed_1 = !this.isCollapsed_1;
+    this.iconCollapse_1 = this.isCollapsed_1 ? 'icon-arrow-down' : 'icon-arrow-up';
+  }
+
+  showSuccess(mensaje: string): void {
+    this.alertsDismiss.push({
+      type: 'info',
+      msg: mensaje,
+      //msg: `This alert will be closed in 5 seconds (added: ${new Date().toLocaleTimeString()})`,
+      timeout: 5000
+    });
+  }
+
+  onClosed(dismissedAlert: AlertComponent): void {
+    this.alertsDismiss = this.alertsDismiss.filter(alert => alert !== dismissedAlert);
   }
 }

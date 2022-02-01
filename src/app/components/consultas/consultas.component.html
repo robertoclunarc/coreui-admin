@@ -2,87 +2,15 @@
   <div class="row">    
     <div class="col-md-12 mb-4">
       <!-- Nav tabs -->
-      <tabset>
-        <tab>
-          <ng-template tabHeading><i class="icon-list"></i> Nueva Consulta &nbsp;<span class="badge badge-success">New</span></ng-template>
-          <div class="col-sm-6">
-            <div class="card">
-              <div class="card-header">
-                <strong>Credit Card</strong>
-                <small>Form</small>
-              </div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-sm-12">
-                    <div class="form-group">
-                      <label for="name">Name</label>
-                      <input type="text" class="form-control" id="name" placeholder="Enter your name">
-                    </div>
-                  </div>
-                </div><!--/.row-->
-                <div class="row">
-                  <div class="col-sm-12">
-                    <div class="form-group">
-                      <label for="ccnumber">Credit Card Number</label>
-                      <input type="text" class="form-control" id="ccnumber" placeholder="0000 0000 0000 0000">
-                    </div>
-                  </div>
-                </div><!--/.row-->
-                <div class="row">
-                  <div class="form-group col-sm-4">
-                    <label for="ccmonth">Month</label>
-                    <select class="form-control" id="ccmonth">
-                      <option>1</option>
-                      <option>2</option>
-                      <option>3</option>
-                      <option>4</option>
-                      <option>5</option>
-                      <option>6</option>
-                      <option>7</option>
-                      <option>8</option>
-                      <option>9</option>
-                      <option>10</option>
-                      <option>11</option>
-                      <option>12</option>
-                    </select>
-                  </div>
-                  <div class="form-group col-sm-4">
-                    <label for="ccyear">Year</label>
-                    <select class="form-control" id="ccyear">
-                      <option>2014</option>
-                      <option>2015</option>
-                      <option>2016</option>
-                      <option>2017</option>
-                      <option>2018</option>
-                      <option>2019</option>
-                      <option>2020</option>
-                      <option>2021</option>
-                      <option>2022</option>
-                      <option>2023</option>
-                      <option>2024</option>
-                      <option>2025</option>
-                    </select>
-                  </div>
-                  <div class="col-sm-4">
-                    <div class="form-group">
-                      <label for="cvv">CVV/CVC</label>
-                      <input type="text" class="form-control" id="cvv" placeholder="123">
-                    </div>
-                  </div>
-                </div><!--/.row-->
-              </div>
-            </div>
-          </div><!--/.col-->
-        </tab>
+      <tabset>        
         <tab>
           <ng-template tabHeading><i class="icon-calculator"></i> Ver &nbsp;<span class="badge badge-pill badge-danger">{{totalItems}}</span></ng-template>
           <div class="col-lg-12">
             <div class="card">
               <div class="card-header">
-                 Atenciones Medicas
-                 
+                 Atenciones Medicas                 
                  <div class="card-header-actions">
-                  <button title="Nueva Consulta" type="button" class="btn btn-pill btn-block btn-success" (click)="primaryModal.show()">+</button>
+                  <button title="Nueva Consulta" type="button" class="btn btn-pill btn-block btn-success" (click)="primaryModal.show(); showModalRegistrar()">+</button>
                 </div>
               </div>
               <div class="card-body">
@@ -131,17 +59,299 @@
             <div class="modal-dialog modal-lg modal-primary" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h4 class="modal-title">Modal title</h4>
+                  <h6 class="modal-title">{{modalTitle}}</h6>
                   <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  <p>One fine body&hellip;</p>
+                  <div *ngFor="let alert of alertsDismiss">
+                    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg }}</alert>
+                  </div>
+                  <form action="" method="post" class="form-horizontal">
+                      <div class="card-header">
+                        <i class="fa fa-edit"></i>Datos Generales para la Atenci&oacute;n
+                        <div class="card-header-actions">
+                          
+                          <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()"><i class={{iconCollapse}}></i></button>
+                          
+                        </div>
+                      </div>           
+                      
+                        <div class="card-body" (collapsed)="collapsed($event)" (expanded)="expanded($event)" [collapse]="isCollapsed" >                    
+                          
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <label for="name">Cedula Paciente</label>
+                                <div class="input-group">                            
+                                  <span class="input-group-prepend">
+                                    <button type="button" (click)="buscarPaciente()" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Search</button>
+                                  </span>
+                                  <input type="text" id="txtCi" name="txtCi" [(ngModel)]="paciente.ci" class="form-control form-control-sm" placeholder="Cedula Paciente">
+                                  <span class="input-group-append">
+                                    <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye fa-sm"></i></button>
+                                  </span>
+                                </div>
+                              </div>
+                              <div class="col-sm-6">
+                                <div class="form-group">
+                                  <label for="name">Nombre</label>
+                                  <input type="text" class="form-control form-control-sm" id="txtNombre" name="txtNombre" [(ngModel)]="paciente.nombre_completo" placeholder="Nombre del Paciente">
+                                </div>
+                              </div>
+                            </div><!--/.row 1-->                            
+
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <div class="form-group">                            
+                                    <label for="medicoGuardia">M&eacute;dico de Guardia</label>
+                                    <select class="form-control form-control-sm" name="cboMedicoGuardia" [(ngModel)]="consultas.id_medico"  id="cboMedicoGuardia">
+                                      <option *ngFor="let medico of selectMedicos" [value]=" medico.uid">{{medico.nombre}}</option>
+                                                                     
+                                    </select>                            
+                                </div>
+                              </div>
+        
+                              <div class="col-sm-6">
+                                <div class="form-group">                            
+                                    <label for="paramedicoGuardia">Paramedico de Guardia</label>
+                                    <select  class="form-control form-control-sm" name="cboParamedico" [(ngModel)]="consultas.id_paramedico" id="cboParamedico">
+                                      <option *ngFor="let para of selectParamedicos" [value]="para.uid">{{para.nombre}}</option>                                                                     
+                                    </select>                           
+                                </div>
+                              </div>
+                            </div><!--/.row 2-->
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <div class="form-group"> 
+                                    <label for="cboMotivo">Motivo</label>                             
+                                    <select class="form-control form-control-sm" id="cboMotivo" name="cboMotivo" [(ngModel)]="consultas.id_motivo">
+                                      <option *ngFor="let mov of motivos" [value]="mov.uid">{{mov.descripcion}}</option>
+                                                                      
+                                    </select>
+                                  </div>                          
+                              </div>
+        
+                              <div class="col-sm-6">
+                                <div class="form-group">                            
+                                    <label for="cboAreaIncidente">&Aacute;rea Incidente  o Atenci&oacute;n</label>
+                                    <select class="form-control form-control-sm"  id="cboAreaIncidente" name="cboAreaIncidente" [(ngModel)]="consultas.id_area">
+                                      <option *ngFor="let are of areas" [value]="are.uid">{{are.descripcion}}</option>
+                                    </select>                            
+                                </div>
+                              </div>
+                            </div><!--/.row 3-->
+                            <div class="row">
+                              <div class="col-sm-6">
+                                <div class="form-group">                            
+                                    <label for="patologia">Patolog&iacute;a</label>
+                                    <select class="form-control form-control-sm"  id="cboPatologia">
+                                      <option>1</option>
+                                      <option>2</option>
+                                      <option>3</option>                                
+                                    </select>                            
+                                </div>
+                              </div>
+        
+                              <div class="col-sm-6">
+                                <div class="form-group">                           
+                                    <label for="tipoAfecciones">Tipo de Afecci&oacute;n por Sistema</label>
+                                    <select class="form-control form-control-sm"  id="cboTipoAfecciones">
+                                      <option>1</option>
+                                      <option>2</option>
+                                      <option>3</option>                                
+                                    </select>                            
+                                </div>
+                              </div>
+                            </div><!--/.row 4-->
+                            <div class="row">
+                              <div class="form-group col-sm-3">
+                                <label for="fResp">F. Resp.</label>
+                                <input type="text" class="form-control form-control-sm"  id="fResp" placeholder="Frecuencia Respiratoria">
+                              </div>
+                              <div class="form-group col-sm-3">
+                                <label for="pulso">Pulso</label>
+                                <input type="text" class="form-control form-control-sm"  id="pulso" placeholder="Pulsaciones x Min.">
+                              </div>
+                              <div class="form-group col-sm-3">
+                                <label for="temp">Temp.</label>
+                                <input type="text" class="form-control form-control-sm"  id="temp" placeholder="Temperatura">
+                              </div>
+                              <div class="form-group col-sm-3">
+                                <label for="tArt">T. Art.</label>
+                                <input type="text" class="form-control form-control-sm"  id="tArt" placeholder="Tension Arterial">
+                              </div>
+                            </div><!--/.row 5-->
+                            <div class="row">
+                              <div class="form-group col-sm-3">
+                                <label for="talla">Talla</label>
+                                <input type="text" class="form-control form-control-sm"  id="talla" placeholder="Nro. de Talla">
+                              </div>
+                              <div class="form-group col-sm-3">
+                                <label for="Peso">Peso</label>
+                                <input type="text" class="form-control form-control-sm"  id="peso" placeholder="Peso">
+                              </div>
+                              <div class="form-group col-sm-3">
+                                <label for="imc">IMC</label>
+                                <input type="text" class="form-control form-control-sm"  id="imc" placeholder="Indice Masa Corporal">
+                              </div>
+                              <div class="form-group col-sm-3">
+                                <label for="fCard">F. Card</label>
+                                <input type="text" class="form-control form-control-sm"  id="fCard" placeholder="Frecuencia Cardiaca">
+                              </div>
+                            </div><!--/.row 6-->
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <label for="motivoConsulta">Motivo de la Consulta</label>
+                                <textarea id="motivoConsulta" name="motivoConsulta" rows="2"  class="form-control form-control-sm" placeholder="Descripcion Consulta..."></textarea>
+                              </div>
+                            
+                              <div class="col-md-6">
+                                <label for="enfermedadActual">Enfermedad Actual</label>
+                                <textarea id="enfermedadActual" name="enfermedadActual" rows="2"  class="form-control form-control-sm" placeholder="Sintomas Actuales..."></textarea>
+                              </div>
+                            </div><!--/.row 7-->
+
+                            <div class="row">
+                              <div class="col-md-6">
+                                <label for="diagnostico">Diagn&oacute;stico</label>
+                                <textarea id="diagnostico" name="diagnostico" rows="2" class="form-control form-control-sm" placeholder="Diagnostico..."></textarea>
+                              </div>
+                            
+                              <div class="col-md-6">
+                                <label for="observacion">Observacion</label>
+                                <textarea id="observacion" name="observacion" rows="2" class="form-control form-control-sm" placeholder="Observaciones..."></textarea>
+                              </div>
+                            </div><!--/.row 8-->
+
+                         
+                        </div>
+
+                        <div class="card-header">
+                          <i class="fa fa-edit"></i>Rerefencias y Medicamentos
+                          <div class="card-header-actions">
+                            
+                            <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()"><i class={{iconCollapse_1}}></i></button>
+                            
+                          </div>
+                        </div>
+                        <div class="card-body" (collapsed)="collapsed($event)" (expanded)="expanded($event)" [collapse]="isCollapsed_1" >
+                          <div class="card">
+                            <div class="card-header">
+                              <strong>Referencias</strong>                              
+                            </div>                            
+                            <table class="table table-condensed" id="dataReferencias">
+                              <thead>
+                                <tr>                                
+                                  <th scope="col">Especialidad</th>
+                                  <th scope="col">Informe</th>
+                                  <th scope="col">Add+</th>
+                                </tr>
+                                <tr>                                
+                                  <th scope="col"><input type="text" class="form-control form-control-sm" id="especialidad" placeholder="Referenciado a..."></th>
+                                  <th scope="col"><input type="text" class="form-control form-control-sm" id="referencia" placeholder="Descripcion de Referencia"></th>
+                                  <th scope="col">
+                                    <button type="button" class="btn btn-block btn-link"><i class="fa fa-paperclip"></i></button>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr >                                
+                                  <td></td>
+                                  <td></td>
+                                  <td></td> 
+                                </tr>                             
+                              </tbody>
+                            </table> 
+                          </div>
+                          <div class="card">                            
+                            <div class="card-header">
+                              <strong>Medicamentos Aplicados</strong>                              
+                            </div>
+                            <table class="table table-condensed" id="dataMedicamentosAplicados">
+                              <thead>
+                                <tr>                                
+                                  <th scope="col">Medicina</th>
+                                  <th scope="col">Unidad Medida</th>
+                                  <th scope="col">Cant.</th>
+                                  <th scope="col">Add+</th>
+                                </tr>
+                                <tr>                                
+                                  <th scope="col"><select class="form-control form-control-sm" id="medicinaAplicada">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>                                
+                                  </select></th>
+                                  <th scope="col"><select class="form-control form-control-sm" id="unidad">
+                                    <option>Comprimido</option>
+                                    <option>Ampolla</option>
+                                    <option>CC</option>
+                                    <option>Torunda</option>
+                                    <option>Blister</option>
+                                    <option>Crema</option>                                 
+                                  </select></th>
+                                  <th scope="col"><input type="text" class="form-control form-control-sm" id="cantidad" placeholder=""></th>
+                                  <th scope="col">
+                                    <button type="button" class="btn btn-block btn-link"><i class="fa fa-paperclip"></i></button>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr >                                
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>
+                                  <td></td> 
+                                </tr>                             
+                              </tbody>
+                            </table>
+                          </div>
+                          <div class="card">                            
+                            <div class="card-header">
+                              <strong>Recetario</strong>                              
+                            </div>
+                            <table class="table table-condensed" id="dataMedicamentosAplicados">
+                              <thead>
+                                <tr>                                
+                                  <th scope="col">Medicina</th>
+                                  <th scope="col">Indicaciones</th>                                
+                                  <th scope="col">Add+</th>
+                                </tr>
+                                <tr>                                
+                                  <th scope="col"><select class="form-control form-control-sm" id="medicinaIndicada">
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>                                
+                                  </select></th>                               
+                                  <th scope="col"><input type="text" class="form-control form-control-sm" id="indicaciones" placeholder=""></th>
+                                  <th scope="col">
+                                    <button type="button" class="btn btn-block btn-link"><i class="fa fa-paperclip"></i></button>
+                                  </th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr >                                
+                                  <td></td>
+                                  <td></td>
+                                  <td></td>                                
+                                </tr>                             
+                              </tbody>
+                            </table>
+                          </div>  
+                        </div>
+                  </form>    
                 </div>
+                
                 <div class="modal-footer">
+                  
+                  <label class="switch switch-label switch-pill switch-warning" tooltip="Requiere de Autorizaci&oacute;n">                    
+                    <input type="checkbox" class="switch-input" checked>
+                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                  </label>
+
                   <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
-                  <button type="button" class="btn btn-primary">Save changes</button>
+                  <button type="button"  (click)="registrar()" class="btn btn-primary">Save changes</button>
                 </div>
               </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
