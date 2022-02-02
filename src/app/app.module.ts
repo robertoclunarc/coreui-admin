@@ -8,6 +8,7 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
+//import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular';
 
@@ -44,10 +45,9 @@ import { AppRoutingModule } from './app.routing';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
-//import { PacientesComponent } from './components/pacientes/pacientes.component';
-//import { MenusComponent } from './components/menus/menus.component';
+
 import { LoginServicioMedicoComponent } from './components/login-servicio-medico/login-servicio-medico.component';
-//import { PrincipalServicioMedicoComponent } from './components/principal-servicio-medico/principal-servicio-medico.component';
+
 //import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 @NgModule({
@@ -69,6 +69,7 @@ import { LoginServicioMedicoComponent } from './components/login-servicio-medico
     HttpClientModule,
     FormsModule,
     PaginationModule.forRoot(),
+   // TypeaheadModule.forRoot(),
     //BsDropdownModule,    
     //ButtonsModule.forRoot(),
   ],
@@ -78,9 +79,7 @@ import { LoginServicioMedicoComponent } from './components/login-servicio-medico
     P404Component,
     P500Component,
     LoginComponent,
-    RegisterComponent,
-    //PacientesComponent,
-    //MenusComponent,
+    RegisterComponent, 
     LoginServicioMedicoComponent,
     //PrincipalServicioMedicoComponent
   ],

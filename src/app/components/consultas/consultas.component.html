@@ -145,11 +145,11 @@
                               <div class="col-sm-6">
                                 <div class="form-group">                            
                                     <label for="patologia">Patolog&iacute;a</label>
-                                    <select class="form-control form-control-sm"  id="cboPatologia">
-                                      <option>1</option>
-                                      <option>2</option>
-                                      <option>3</option>                                
-                                    </select>                            
+                                    <input [(ngModel)]="selected" name="txtPatologia" id="txtPatologia"
+                                      [typeahead]="states"
+                                      [typeaheadItemTemplate]="customItemTemplate"
+                                      [isAnimated]="true"
+                                      class="form-control form-control-sm">
                                 </div>
                               </div>
         

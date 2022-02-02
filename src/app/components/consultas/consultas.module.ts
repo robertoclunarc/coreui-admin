@@ -54,6 +54,8 @@ import { ConsultasRoutingModule } from './consultas-routing.module';
 
 import { ChartsModule } from 'ng2-charts';
 
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -68,7 +70,8 @@ import { ChartsModule } from 'ng2-charts';
     ProgressbarModule.forRoot(),
     TooltipModule.forRoot(),
     ModalModule.forRoot(),
-    ChartsModule
+    ChartsModule,
+    TypeaheadModule.forRoot(),
   ],
   declarations: [
     CardsComponent,

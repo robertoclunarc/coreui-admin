@@ -2,6 +2,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import {ModalDirective} from 'ngx-bootstrap/modal';
 import { AlertComponent } from 'ngx-bootstrap/alert';
+
 //servicios
 import { ConsultasService } from '../../services/consultas.service';
 import { PacientesService } from '../../services/pacientes.service';
@@ -24,8 +25,8 @@ import { CarouselConfig } from 'ngx-bootstrap/carousel';
 
 @Component({
   templateUrl: 'consultas.component.html',
-  providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService]
-
+  providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService],
+  
 })
 export class ConsultasComponent  implements OnInit  {
   // PolarArea
@@ -113,6 +114,60 @@ export class ConsultasComponent  implements OnInit  {
       titulo: 'Atendido por',
       campo:'login_atendio'
     }];
+
+  selected?: string;
+  states: string[] = [
+    'Alabama',
+    'Alaska',
+    'Arizona',
+    'Arkansas',
+    'California',
+    'Colorado',
+    'Connecticut',
+    'Delaware',
+    'Florida',
+    'Georgia',
+    'Hawaii',
+    'Idaho',
+    'Illinois',
+    'Indiana',
+    'Iowa',
+    'Kansas',
+    'Kentucky',
+    'Louisiana',
+    'Maine',
+    'Maryland',
+    'Massachusetts',
+    'Michigan',
+    'Minnesota',
+    'Mississippi',
+    'Missouri',
+    'Montana',
+    'Nebraska',
+    'Nevada',
+    'New Hampshire',
+    'New Jersey',
+    'New Mexico',
+    'New York',
+    'North Dakota',
+    'North Carolina',
+    'Ohio',
+    'Oklahoma',
+    'Oregon',
+    'Pennsylvania',
+    'Rhode Island',
+    'South Carolina',
+    'South Dakota',
+    'Tennessee',
+    'Texas',
+    'Utah',
+    'Vermont',
+    'Virginia',
+    'Washington',
+    'West Virginia',
+    'Wisconsin',
+    'Wyoming'
+  ];
 
   constructor(
     private srvConsultas: ConsultasService,
