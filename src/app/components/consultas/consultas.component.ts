@@ -1,7 +1,8 @@
 //componentes
 import { Component, ViewChild, OnInit } from '@angular/core';
-import {ModalDirective} from 'ngx-bootstrap/modal';
+import { ModalDirective} from 'ngx-bootstrap/modal';
 import { AlertComponent } from 'ngx-bootstrap/alert';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 
 //servicios
 import { ConsultasService } from '../../services/consultas.service';
@@ -9,6 +10,9 @@ import { PacientesService } from '../../services/pacientes.service';
 import { MedicosService } from '../../services/medicos.service';
 import { MotivosService } from '../../services/motivos.service';
 import { AreasService } from '../../services/areas.sevice';
+import { PatologiasService } from '../../services/patologias.service';
+import { AfeccionesService } from '../../services/afecciones.service';
+import { SignosVitalesService } from '../../services/signosvitales.service';
 //modelos
 import { IConsultas, IConsultasConstraint, IvConsulta, IFiltroConsulta } from '../../models/consultas.model';
 import { IsignosVitales } from '../../models/signos_vitales.model';
@@ -17,6 +21,8 @@ import { IvPaciente } from '../../models/paciente.model';
 import { IMedicos, IParamedicos } from '../../models/medicos.model';
 import { IMotivo } from '../../models/motivos.model';
 import { IAreas } from '../../models/areas.model';
+import { IPatologia } from '../../models/patologias.model';
+import { IAfecciones } from '../../models/afecciones.model';
 
 /*
 import { DecimalPipe } from '@angular/common';
@@ -25,7 +31,7 @@ import { CarouselConfig } from 'ngx-bootstrap/carousel';
 
 @Component({
   templateUrl: 'consultas.component.html',
-  providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService],
+  providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService, PatologiasService, AfeccionesService, SignosVitalesService],
   
 })
 export class ConsultasComponent  implements OnInit  {
@@ -60,9 +66,13 @@ export class ConsultasComponent  implements OnInit  {
   private selectParamedicos: IParamedicos[]=[];
   private motivos: IMotivo[]=[];
   private areas: IAreas[]=[];
-  
+  private selectedPatolog?: string;
+  private patologias: IPatologia[] = [];
+  private afecciones: IAfecciones[]=[];
+  private selectedOptionPatolog: any;  
   private searchText = ""; 
   private modalTitle = "";
+  private autorizacion: boolean = true; 
 
   totalItems: number;//total number of items in all pages
   //currentPage: number   = 1;
@@ -115,66 +125,15 @@ export class ConsultasComponent  implements OnInit  {
       campo:'login_atendio'
     }];
 
-  selected?: string;
-  states: string[] = [
-    'Alabama',
-    'Alaska',
-    'Arizona',
-    'Arkansas',
-    'California',
-    'Colorado',
-    'Connecticut',
-    'Delaware',
-    'Florida',
-    'Georgia',
-    'Hawaii',
-    'Idaho',
-    'Illinois',
-    'Indiana',
-    'Iowa',
-    'Kansas',
-    'Kentucky',
-    'Louisiana',
-    'Maine',
-    'Maryland',
-    'Massachusetts',
-    'Michigan',
-    'Minnesota',
-    'Mississippi',
-    'Missouri',
-    'Montana',
-    'Nebraska',
-    'Nevada',
-    'New Hampshire',
-    'New Jersey',
-    'New Mexico',
-    'New York',
-    'North Dakota',
-    'North Carolina',
-    'Ohio',
-    'Oklahoma',
-    'Oregon',
-    'Pennsylvania',
-    'Rhode Island',
-    'South Carolina',
-    'South Dakota',
-    'Tennessee',
-    'Texas',
-    'Utah',
-    'Vermont',
-    'Virginia',
-    'Washington',
-    'West Virginia',
-    'Wisconsin',
-    'Wyoming'
-  ];
-
   constructor(
     private srvConsultas: ConsultasService,
     private srvPacientes: PacientesService,
     private srvMedicos: MedicosService,
     private srvMotivo: MotivosService,
     private srvArea: AreasService,
+    private srvPatologia: PatologiasService,
+    private srvAfeccion: AfeccionesService,
+    private srvSignosVitales: SignosVitalesService,
     ) { }
 
   ngOnInit(): void {
@@ -182,6 +141,8 @@ export class ConsultasComponent  implements OnInit  {
     this.llenarArrayMedicos();
     this.llenarArrayMotivos();
     this.llenarArrayAreas();
+    this.llenarArrayPatologias();
+    this.llenarArrayAfecciones();
 	}
 
   consultasFilter() {
@@ -222,6 +183,23 @@ export class ConsultasComponent  implements OnInit  {
 
   private chartHovered(e: any): void {
     console.log(e);
+  }
+
+  private llenarArrayPatologias(){
+    this.srvPatologia.patologiasAll()
+      .toPromise()
+      .then(result => {
+        this.patologias=result;
+        this.selectedOptionPatolog= this.patologias.find(p => p.descripcion=='SIN ESPECIFICACION')
+      });      
+  }
+
+  private llenarArrayAfecciones(){
+    this.srvAfeccion.AfeccionesAll()
+      .toPromise()
+      .then(result => {
+        this.afecciones=result;        
+      });      
   }
 
 
@@ -349,10 +327,38 @@ export class ConsultasComponent  implements OnInit  {
     this. modalTitle = "Nueva Consulta Medica";
     this.selectMedicos= this.medicos.filter( m => m.activo=true);
     this.selectParamedicos= this.paramedicos.filter( m => m.activo=true);
+    this.autorizacion=true;
+    this.selectedOptionPatolog= this.patologias.find(p => p.descripcion=='SIN ESPECIFICACION')
   }
 
   private registrar(){
     if (this.newConsulta) {
+
+      this.consultas={
+        uid?: number;
+        id_paciente?: number;
+        fecha?: string;
+        id_motivo?: number;
+        sintomas?: string;
+        id_medico?: number;
+        observaciones?: string;
+        indicaciones?: string;
+        fecha_prox_cita?: string;
+        observacion_medicamentos?: string;
+        resultado_eva?: string;
+        id_paramedico?: number;
+        id_area?: number;
+        id_patologia?: number;
+        id_remitido?: number;
+        id_reposo?: number;
+        fecha_registro?: string;
+        turno?: number;
+        indicaciones_comp?: string;
+        referencia_medica?: string;
+        condicion?: string;
+        fkafeccion?: number;
+        autorizacion?: string;
+      }
 
 			this.srvConsultas.registrar(this.consultas)
 				.toPromise()
@@ -402,5 +408,9 @@ export class ConsultasComponent  implements OnInit  {
 
   onClosed(dismissedAlert: AlertComponent): void {
     this.alertsDismiss = this.alertsDismiss.filter(alert => alert !== dismissedAlert);
+  }
+
+  onSelect(event: TypeaheadMatch): void {
+    this.selectedOptionPatolog = event.item;
   }
 }
