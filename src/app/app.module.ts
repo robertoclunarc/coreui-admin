@@ -9,7 +9,7 @@ import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 //import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-
+import { NgbToastModule } from  'ngb-toast';
 import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
@@ -70,8 +70,10 @@ import { LoginServicioMedicoComponent } from './components/login-servicio-medico
     FormsModule,
     PaginationModule.forRoot(),
    // TypeaheadModule.forRoot(),
-    //BsDropdownModule,    
-    //ButtonsModule.forRoot(),
+   //BsDropdownModule,    
+   //ButtonsModule.forRoot(),
+    NgbToastModule,
+    
   ],
   declarations: [
     AppComponent,

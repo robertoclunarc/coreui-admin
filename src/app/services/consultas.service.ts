@@ -18,7 +18,7 @@ export class ConsultasService {
 
   consultasAll() : Observable<IConsultas[]> { 
 
-    return this.http.get<IConsultas[]>(this.apiUrlConsultas + '/consultar')
+    return this.http.get<IConsultas[]>(this.apiUrlConsultas + 'consultar')
 			.pipe(
 				tap(result => console.log(`consultasAll`)),
 				catchError(this.handleError)
@@ -27,7 +27,7 @@ export class ConsultasService {
 
   consultasOne(id: number) : Observable<IConsultas> { 
 
-    return this.http.get<IConsultas>(this.apiUrlConsultas + '/consultar/' + id)
+    return this.http.get<IConsultas>(this.apiUrlConsultas + 'consultar/' + id)
 			.pipe(
 				tap(result => console.log(`consultasOne`)),
 				catchError(this.handleError)
@@ -36,7 +36,7 @@ export class ConsultasService {
 
   consultaFilter(atencion: IFiltroConsulta) : Observable<IvConsulta[]> { 
     let parametrosUrl = atencion.uidPaciente + '/' + atencion.uidConsulta + '/' + atencion.fechaIni + '/' + atencion.fechaFin + '/' + atencion.ciMedico + '/' + atencion.ciParamedico + '/' + atencion.uidMotivo;
-    return this.http.get<IvConsulta[]>(this.apiUrlConsultas + '/filtrar/' + parametrosUrl )
+    return this.http.get<IvConsulta[]>(this.apiUrlConsultas + 'filtrar/' + parametrosUrl )
 			.pipe(
 				tap(result => console.log(`consultaFilter`)),
 				catchError(this.handleError)
@@ -44,14 +44,19 @@ export class ConsultasService {
   }
 
   registrar(consulta: IConsultas) {
-    return this.http.post<IConsultas>(this.apiUrlConsultas + '/insertar', consulta).pipe(
+    return  this.http.post<IConsultas>(this.apiUrlConsultas + 'insert', consulta).pipe(
         tap(result => { this.consulta = result; console.log(`Consulta insertada`) }),
         catchError(this.handleError)
     );
   }
 
+  async nuevo(consulta: IConsultas): Promise<IConsultas> {
+    return await this.http.post<IConsultas>(this.apiUrlConsultas + 'insert', consulta).toPromise();    
+    
+  }
+
   actualizar(consulta: IConsultas) {
-    const url = `${this.apiUrlConsultas}/update/${consulta.uid}`;
+    const url = `${this.apiUrlConsultas}update/${consulta.uid}`;
 
     return this.http.put(url, consulta).pipe(
         tap(result => {
@@ -61,7 +66,7 @@ export class ConsultasService {
   }
 
   eliminar(id: number) {
-    const url = `${this.apiUrlConsultas}/delete/${id}`;
+    const url = `${this.apiUrlConsultas}delete/${id}`;
 
     return this.http.delete(url).pipe(
         tap(result => {

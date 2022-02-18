@@ -116,3 +116,8 @@ export interface IFiltroConsulta{
     ciParamedico?: string,
     uidMotivo?: string
 }
+
+export interface Ireferencia{
+    especialidad?: string,
+    informe?: string
+}

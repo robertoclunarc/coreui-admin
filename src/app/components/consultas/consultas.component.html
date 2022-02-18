@@ -8,18 +8,22 @@
           <div class="col-lg-12">
             <div class="card">
               <div class="card-header">
-                 Atenciones Medicas                 
+                 <strong>Atenciones Medicas</strong>                 
                  <div class="card-header-actions">
-                  <button title="Nueva Consulta" type="button" class="btn btn-pill btn-block btn-success" (click)="primaryModal.show(); showModalRegistrar()">+</button>
+                  <button title="Registrar una Nueva Consulta Medica" type="button" class="btn btn-pill btn-block btn-success" (click)="primaryModal.show(); showModalRegistrar()">+</button>
                 </div>
               </div>
               <div class="card-body">
+                <div *ngFor="let alert of alertsDismiss">
+                  <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>
+                </div>
+
                 <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{1,80}" placeholder="Search by name" />
                 
                 <table class="table table-striped" id="dataConsultas">
                   <thead>
                     <tr>
-                      <th>Ver</th>
+                      <th> </th>
                       <th scope="col" *ngFor="let t of titulos">
                         
                         <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
@@ -30,7 +34,7 @@
                   </thead>
                   <tbody>
                     <tr *ngFor="let c of returnedArray">
-                      <td><button class="btn btn-brand btn-facebook text" (click)="primaryModal.show()"> <i class="fa fa-eye"></i></button></td>
+                      <td><button class="btn btn-brand btn-facebook text" title="Ver Detalles de la Consulta" (click)="primaryModal.show(); show = true"> <i class="fa fa-eye"></i></button></td>
                       <td>{{c.uid}}</td>
                       <td>{{c.fecha | date:'dd/MM/yyyy'}}</td>
                       <td>{{c.ci}}</td>
@@ -65,9 +69,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                  <div *ngFor="let alert of alertsDismiss">
-                    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)">{{ alert.msg }}</alert>
-                  </div>
+                  
                   <form action="" method="post" class="form-horizontal">
                       <div class="card-header">
                         <i class="fa fa-edit"></i>Datos Generales para la Atenci&oacute;n
@@ -85,18 +87,89 @@
                                 <label for="name">Cedula Paciente</label>
                                 <div class="input-group">                            
                                   <span class="input-group-prepend">
-                                    <button type="button" (click)="buscarPaciente()" class="btn btn-primary btn-sm"><i class="fa fa-search"></i> Search</button>
+                                    <button type="button"                                      
+                                      (click)="buscarPaciente()" 
+                                      class="btn btn-primary btn-sm">
+                                      <i class="fa fa-search"></i> 
+                                      Search
+                                    </button>
                                   </span>
-                                  <input type="text" id="txtCi" name="txtCi" [(ngModel)]="paciente.ci" class="form-control form-control-sm" placeholder="Cedula Paciente">
+                                  <input type="text" id="txtCi" name="txtCi" [(ngModel)]="paciente.ci" (keyup.enter)="buscarPaciente()"  class="form-control form-control-sm" placeholder="Cedula Paciente">
                                   <span class="input-group-append">
-                                    <button type="button" class="btn btn-primary btn-sm"><i class="fa fa-eye fa-sm"></i></button>
+                                    <ng-template #popTemplate>                                      
+                                      <span class="badge badge-light">Sexo:
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                      </span>
+                                      <span class="badge badge-dark">{{paciente.sexo}}</span>
+                                      <br>
+                                      <span class="badge badge-light">Fecha Ingreso:
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                      </span>
+                                      <span class="badge badge-dark">{{paciente.fecha_ingreso  | date:'dd/MM/yyyy'}}</span> 
+                                      <br>
+                                      <span class="badge badge-light">Depto.:
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                      </span>
+                                      <span class="badge badge-dark">{{paciente.departamento}}</span>
+                                      <br>
+                                      <span class="badge badge-light">Cargo:
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        
+                                      </span>
+                                      <span class="badge badge-dark">{{paciente.cargo}}</span>
+                                      <br>
+                                      <span class="badge badge-light">Edad:
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        
+                                      </span>
+                                      <span class="badge badge-dark">{{paciente.edad.years}}</span>
+                                      <br>
+                                      <span class="badge badge-light">Fecha Nac.:
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                        
+                                      </span>
+                                      <span class="badge badge-dark">{{paciente.fechanac | date:'dd/MM/yyyy'}}</span>
+                                      <br>
+                                      <span class="badge badge-light">Tipo Sangre:
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        
+                                      </span>
+                                      <span class="badge badge-danger">{{paciente.tipo_sangre}}</span>
+                                      <br>
+                                      <span class="badge badge-light">Alergia:
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                      </span>
+                                      <span class="badge badge-danger">{{paciente.alergia}}</span>
+                                      <br>
+                                      <span class="badge badge-light">Tipo de Discapacidad:</span>
+                                      <span class="badge badge-danger">{{paciente.desc_discapacidad}}</span>
+                                      <br>
+                                      <span class="badge badge-light">Mano Dominante:
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                      </span>
+                                      <span class="badge badge-dark">{{paciente.mano_dominante}}</span>
+                                    </ng-template>
+                                    <button type="button"                                       
+                                      [popover]="popTemplate"
+                                      triggers="focus"
+                                      popoverTitle="{{paciente.nombre_completo}}"
+                                      placement="right"
+                                      class="btn btn-primary btn-sm">
+                                      <i class="fa fa-eye fa-sm"></i>
+                                    </button>
                                   </span>
                                 </div>
                               </div>
                               <div class="col-sm-6">
                                 <div class="form-group">
                                   <label for="name">Nombre</label>
-                                  <input type="text" class="form-control form-control-sm" id="txtNombre" name="txtNombre" [(ngModel)]="paciente.nombre_completo" placeholder="Nombre del Paciente">
+                                  <input type="text" class="form-control form-control-sm" id="txtNombre" readonly name="txtNombre" [(ngModel)]="paciente.nombre_completo" placeholder="Nombre del Paciente">
                                 </div>
                               </div>
                             </div><!--/.row 1-->                            
@@ -104,7 +177,7 @@
                             <div class="row">
                               <div class="col-sm-6">
                                 <div class="form-group">                            
-                                    <label for="medicoGuardia">M&eacute;dico de Guardia</label>
+                                    <label for="cboMedicoGuardia">M&eacute;dico de Guardia</label>
                                     <select class="form-control form-control-sm" name="cboMedicoGuardia" [(ngModel)]="consultas.id_medico"  id="cboMedicoGuardia">
                                       <option *ngFor="let medico of selectMedicos" [value]=" medico.uid">{{medico.nombre}}</option>
                                                                      
@@ -114,7 +187,7 @@
         
                               <div class="col-sm-6">
                                 <div class="form-group">                            
-                                    <label for="paramedicoGuardia">Paramedico de Guardia</label>
+                                    <label for="cboParamedico">Paramedico de Guardia</label>
                                     <select  class="form-control form-control-sm" name="cboParamedico" [(ngModel)]="consultas.id_paramedico" id="cboParamedico">
                                       <option *ngFor="let para of selectParamedicos" [value]="para.uid">{{para.nombre}}</option>                                                                     
                                     </select>                           
@@ -207,6 +280,32 @@
                             </div><!--/.row 6-->
 
                             <div class="row">
+                              <div class="form-group col-sm-3">
+                                <label for="cboRemitido">Remitido</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="consultas.id_remitido" name="cboRemitido" id="cboRemitido">
+                                  <option *ngFor="let rem of remitidos" [value]="rem.uid">{{rem.descripcion}}</option>
+                                                                  
+                                </select>
+                              </div>
+                              <div class="form-group col-sm-3">
+                                <label for="cboTiempoReposo">Tiempo Reposo</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="consultas.id_reposo" name="cboTiempoReposo" id="cboTiempoReposo">
+                                  <option *ngFor="let tiempo of tiemposReposo" [value]="tiempo.uid">{{tiempo.descripcion}}</option>                                                                 
+                                </select>
+                              </div>
+                              <div class="form-group col-sm-3">
+                                <label for="cboCondicion">Condici&oacute;n</label>
+                                <select class="form-control form-control-sm" [(ngModel)]="consultas.condicion" name="cboCondicion" id="cboCondicion">
+                                  <option *ngFor="let cond of condiciones" [value]="cond.valor">{{cond.display}}</option>
+                                </select>
+                              </div>
+                              <div class="form-group col-sm-3">
+                                <label for="txtFechaproxCita">Fecha Prox. Cita</label>
+                                <input type="date" class="form-control form-control-sm" name="txtFechaproxCita" [(ngModel)]="consultas.fecha_prox_cita" id="txtFechaproxCita">
+                              </div>
+                            </div><!--/.row 7-->
+
+                            <div class="row">
                               <div class="col-md-6">
                                 <label for="motivoConsulta">Motivo de la Consulta</label>
                                 <textarea id="txtMotivoConsulta" name="txtMotivoConsulta" [(ngModel)]="consultas.sintomas" rows="2"  class="form-control form-control-sm" placeholder="Descripcion Consulta..."></textarea>
@@ -216,7 +315,7 @@
                                 <label for="enfermedadActual">Enfermedad Actual</label>
                                 <textarea id="enfermedadActual" name="enfermedadActual" rows="2" [(ngModel)]="consultas.observaciones" class="form-control form-control-sm" placeholder="Sintomas Actuales..."></textarea>
                               </div>
-                            </div><!--/.row 7-->
+                            </div><!--/.row 8-->
 
                             <div class="row">
                               <div class="col-md-6">
@@ -225,10 +324,10 @@
                               </div>
                             
                               <div class="col-md-6">
-                                <label for="observacion">Observacion</label>
+                                <label for="observacion">Observaci&oacute;n</label>
                                 <textarea id="observacion" name="observacion" rows="2" [(ngModel)]="consultas.observacion_medicamentos" class="form-control form-control-sm" placeholder="Observaciones..."></textarea>
                               </div>
-                            </div><!--/.row 8-->
+                            </div><!--/.row 9-->
 
                          
                         </div>
@@ -247,35 +346,39 @@
                               <strong>Referencias</strong>                              
                             </div>                            
                             <table class="table table-condensed" id="dataReferencias">
-                              <thead>
+                              
                                 <tr>                                
                                   <th scope="col">Especialidad</th>
                                   <th scope="col">Informe</th>
                                   <th scope="col">Add+</th>
                                 </tr>
                                 <tr>                                
-                                  <th scope="col"><input type="text" class="form-control form-control-sm" id="especialidad" placeholder="Referenciado a..."></th>
-                                  <th scope="col"><input type="text" class="form-control form-control-sm" id="referencia" placeholder="Descripcion de Referencia"></th>
-                                  <th scope="col">
-                                    <button type="button" class="btn btn-block btn-link"><i class="fa fa-paperclip"></i></button>
+                                  <th scope="col"><input type="text" class="form-control form-control-sm" [(ngModel)]="referencia.especialidad"  name="txtEspecialidad" id="txtEspecialidad" placeholder="Referenciado a..."></th>
+                                  <th scope="col"><input type="text" class="form-control form-control-sm" [(ngModel)]="referencia.informe" name="txtInforme" id="txtInforme" placeholder="Descripcion de Referencia"></th>
+                                  <th scope="col">                                  
+                                  <button type="button" (click)="addReferencia()" class="btn btn-block btn-link"
+                                        [popover]="alertaReferencia" [popoverTitle]="titleReferencia">
+                                        <i class="fa fa-paperclip"></i>
+                                  </button>
+                                  
                                   </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr >                                
-                                  <td></td>
-                                  <td></td>
-                                  <td></td> 
-                                </tr>                             
-                              </tbody>
+                                </tr>                              
+                                <tr *ngFor="let ref of arrayReferencias; let i=index">                                
+                                  <td>{{ref.especialidad}}</td>
+                                  <td>{{ref.informe}}</td>
+                                  <td><button type="button"                                                                        
+                                    (click)="quitReferencia(i)" 
+                                    class="btn btn-block btn-link">
+                                    <i class="icon-close"></i>
+                                  </button></td> 
+                                </tr>                              
                             </table> 
                           </div>
                           <div class="card">                            
                             <div class="card-header">
                               <strong>Medicamentos Aplicados</strong>                              
                             </div>
-                            <table class="table table-condensed" id="dataMedicamentosAplicados">
-                              <thead>
+                            <table class="table table-condensed" id="dataMedicamentosAplicados">                              
                                 <tr>                                
                                   <th scope="col">Medicina</th>
                                   <th scope="col">Unidad Medida</th>
@@ -298,18 +401,23 @@
                                   </select></th>
                                   <th scope="col"><input type="text" class="form-control form-control-sm" id="cantidad" placeholder=""></th>
                                   <th scope="col">
-                                    <button type="button" class="btn btn-block btn-link"><i class="fa fa-paperclip"></i></button>
+                                    <button type="button" (click)="addMedicamento()" class="btn btn-block btn-link"
+                                        [popover]="alertaMedicamento" [popoverTitle]="titleMedicamento">
+                                        <i class="fa fa-paperclip"></i>
+                                  </button>
                                   </th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                <tr >                                
-                                  <td></td>
-                                  <td></td>
-                                  <td></td>
-                                  <td></td> 
-                                </tr>                             
-                              </tbody>
+                                </tr>                              
+                                <tr *ngFor="let med of arrayMedicamentos; let j=index">                                
+                                  <td>{{med.}}</td>
+                                  <td>{{med.}}</td>
+                                  <td>{{med.}}</td>
+                                  <td><button type="button"                                                                        
+                                    (click)="quitMedicamento(j)" 
+                                    class="btn btn-block btn-link">
+                                    <i class="icon-close"></i>
+                                    </button>
+                                  </td>
+                                </tr>                              
                             </table>
                           </div>
                           <div class="card">                            
@@ -356,7 +464,7 @@
                   </label>
 
                   <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
-                  <button type="button"  (click)="registrar()" class="btn btn-primary">Save changes</button>
+                  <button type="button"  (click)="registrar()" class="btn btn-primary">Guardar</button>
                 </div>
               </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->

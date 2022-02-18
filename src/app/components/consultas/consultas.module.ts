@@ -53,9 +53,10 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { ConsultasRoutingModule } from './consultas-routing.module';
 
 import { ChartsModule } from 'ng2-charts';
-
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
+import { AlertsComponent } from '../../views/notifications/alerts.component'; //'./alerts.component';
+import { AlertModule } from 'ngx-bootstrap/alert';
 @NgModule({
   imports: [
     CommonModule,
@@ -72,6 +73,8 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
     ModalModule.forRoot(),
     ChartsModule,
     TypeaheadModule.forRoot(),
+    AlertModule.forRoot(),
+    
   ],
   declarations: [
     CardsComponent,
@@ -85,7 +88,8 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
     PopoversComponent,
     ProgressComponent,
     TooltipsComponent,
-    NavbarsComponent
+    NavbarsComponent,
+    AlertsComponent
   ]
 })
 export class ConsultasModule { }
