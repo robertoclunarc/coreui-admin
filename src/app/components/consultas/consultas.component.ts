@@ -4,6 +4,7 @@ import { ModalDirective} from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
+import { DomSanitizer } from '@angular/platform-browser';
 
 //servicios
 import { ConsultasService } from '../../services/consultas.service';
@@ -17,6 +18,7 @@ import { SignosVitalesService } from '../../services/signosvitales.service';
 import { RemitidosService } from '../../services/remitidos.service';
 import { TiempoReposoService } from '../../services/tiemporeposos.service';
 import { AntropometriaService } from '../../services/antropometria.service';
+import { MedicamentosService } from '../../services/medicamentos.service';
 
 //modelos
 import { IConsultas, IConsultasConstraint, IvConsulta, IFiltroConsulta, Ireferencia } from '../../models/consultas.model';
@@ -30,9 +32,12 @@ import { IPatologia } from '../../models/patologias.model';
 import { IAfecciones } from '../../models/afecciones.model';
 import { IRemitido } from '../../models/remitidos.model';
 import { ITiempoReposo } from '../../models/tiemporeposos.model';
+import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinasAplicadas } from '../../models/medicamentos.model';
+import { IindicacionMedica } from '../../models/recetamedica.models'
+import { promise } from 'protractor';
+import { Ipopover } from '../../models/varios.model';
 
 /*
-
 import { CarouselConfig } from 'ngx-bootstrap/carousel';
 */
 
@@ -40,6 +45,7 @@ import { CarouselConfig } from 'ngx-bootstrap/carousel';
   templateUrl: 'consultas.component.html',
   providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService, PatologiasService, 
               AfeccionesService, SignosVitalesService, RemitidosService, TiempoReposoService, AntropometriaService,
+              MedicosService,
               { provide: AlertConfig }],  
 })
 export class ConsultasComponent  implements OnInit  {
@@ -59,6 +65,7 @@ export class ConsultasComponent  implements OnInit  {
 
   private buscarConsulta: IFiltroConsulta;
   private consultasTodas: IvConsulta[];
+  private consultasAnteriores: IvConsulta[];
   private returnedArray: IvConsulta[];
   private returnedSearch: IvConsulta[];
   private consultas: IConsultas={};
@@ -85,10 +92,24 @@ export class ConsultasComponent  implements OnInit  {
   private tiemposReposo: ITiempoReposo[]=[];
   private referencia: Ireferencia={};
   private arrayReferencias: Ireferencia[]=[];
+  private alertaRegistrar: string=""; 
+  private titleRegistrar: string="";
+  private popoverConsulta: Ipopover={}
   private alertaReferencia: string=""; 
   private titleReferencia: string="";
   private alertaMedicamento: string=""; 
   private titleMedicamento: string="";
+  private alertaIndicacion: string=""; 
+  private titleIndicacion: string="";
+  private arrayMedicamentos: IMedicamento[]=[];
+  private medicamentoAplicado: ImedicamentosConsulta ={};
+  private medicamentoAplic: IMedicamentosAplicados={};
+  private arrayMedicamentosIndicados: IMedicamento[]=[];
+  private medicamentoIndicados: IindicacionMedica[]=[];
+  private medicamentoIndic: IindicacionMedica={};
+  
+
+  
   show = false;
   autohide = true;
 
@@ -117,6 +138,7 @@ export class ConsultasComponent  implements OnInit  {
   ];
 
   constructor(
+    private sanitizer: DomSanitizer,
     private srvConsultas: ConsultasService,
     private srvPacientes: PacientesService,
     private srvMedicos: MedicosService,
@@ -128,7 +150,7 @@ export class ConsultasComponent  implements OnInit  {
     private srvRemitidos: RemitidosService,
     private srvTiempoReposo: TiempoReposoService,
     private srvAntropometria: AntropometriaService,
-       
+    private srvMedicamentos: MedicamentosService,  
     ) {  }
 
   ngOnInit(): void {    
@@ -140,17 +162,18 @@ export class ConsultasComponent  implements OnInit  {
     this.llenarArrayAfecciones();
     this.llenarArrayRemitidos();
     this.llenarArrayTiempoReposo();
+    
 	}
 
   private async limpiarFiltro(){
-     this.buscarConsulta = { 
+      this.buscarConsulta = { 
       uidConsulta: 'null',
       uidPaciente: 'null',
       uidMotivo: 'null',
       fechaIni: 'null',
       fechaFin: 'null',
       ciMedico:'null',
-      ciParamedico: 'null'
+      ciParamedico: 'null',
     }
   }
 
@@ -192,6 +215,19 @@ export class ConsultasComponent  implements OnInit  {
       .then(result => {
         this.patologias=result;
         this.selectedOptionPatolog= this.patologias.find(p => p.descripcion=='SIN ESPECIFICACION')
+      });      
+  }
+
+  private llenarArraymedicamentos(existencia: string){
+    this.srvMedicamentos.medicamentosAll()
+      .toPromise()
+      .then( result => {
+        if (existencia==='TODO')
+          this.arrayMedicamentos=result;
+        else{
+          this.arrayMedicamentos=result.filter(m => ( m.activo===true || m.existencia>0) && m.tipo==="MEDICINA");          
+         }
+         this.arrayMedicamentosIndicados=result; 
       });      
   }
 
@@ -262,7 +298,7 @@ export class ConsultasComponent  implements OnInit  {
           this.paciente=result[0];
         else
           this.paciente={} 
-        console.log(this.paciente);           
+        
       })
     }
     
@@ -345,45 +381,119 @@ export class ConsultasComponent  implements OnInit  {
 
   private showModalRegistrar(){
     this.newConsulta=true;
-    this. modalTitle = "Nueva Consulta Medica";
+    this.modalTitle = "Nueva Consulta Medica";
     this.selectMedicos= this.medicos.filter( m => m.activo=true);
     this.selectParamedicos= this.paramedicos.filter( m => m.activo=true);
     this.autorizacion=true;
     this.selectedOptionPatolog= this.patologias.find(p => p.descripcion=='SIN ESPECIFICACION');
+    this.paciente={};
     this.consultas={};
+    this.llenarArraymedicamentos('EXISTECIA');
+    this.medicamentoAplicado={};
+    this.medicamentoAplicado.medicamentos=[];
+    this.consultas.fecha= formatDate(Date.now(), 'yyyy-MM-dd', 'en')
   }
 
   private guardarSignosVit(_fecha: string, _cedula: string){
-    let newSignos: IsignosVitales={
-      fcard: this.signoVital.fcard,
-      pulso: this.signoVital.pulso,
-      temper: this.signoVital.temper,
-      tart: this.signoVital.tart,
-      fresp: this.signoVital.fresp,
-      cedula: _cedula,
-      fecha: _fecha
-    }
-    this.srvSignosVitales.registrar(newSignos).toPromise();
-    
-    let newDatosAntrop: Iantropometria={
-      fecha: _fecha,
-      cedula: _cedula,
-      imc: this.antropometria.imc,
-      talla: this.antropometria.talla,
-      peso: this.antropometria.peso
-    }
+    if (_fecha!=undefined && _cedula!=undefined){
+      if (this.signoVital.fcard!=undefined || this.signoVital.pulso!=undefined || this.signoVital.temper!=undefined || this.signoVital.tart!=undefined || this.signoVital.fresp!=undefined){
+          let newSignos: IsignosVitales={
+            fcard: this.signoVital.fcard,
+            pulso: this.signoVital.pulso,
+            temper: this.signoVital.temper,
+            tart: this.signoVital.tart,
+            fresp: this.signoVital.fresp,
+            cedula: _cedula,
+            fecha: _fecha
+          }
+          this.srvSignosVitales.registrar(newSignos).toPromise();
+      }
 
-    this.srvAntropometria.registrar(newDatosAntrop).toPromise();
-    console.log(newDatosAntrop);
+      if (this.antropometria.imc!=undefined || this.antropometria.talla!=undefined || this.antropometria.peso!=undefined){
+        
+        let newDatosAntrop: Iantropometria={
+          fecha: _fecha,
+          cedula: _cedula,
+          imc: this.antropometria.imc,
+          talla: this.antropometria.talla,
+          peso: this.antropometria.peso
+        }
+        this.srvAntropometria.registrar(newDatosAntrop).toPromise();
+      }  
+    }
   }
 
-  private registrar(){
+  private async guardarMedicametosAplicados(){
+    let medAplic: IMedicamentosAplicados;
+    const idConsul: number = this.medicamentoAplicado.id_consulta;
+
+    for (const med of this.medicamentoAplicado.medicamentos){
+      medAplic={
+        uid: null,
+        id_consulta: idConsul,
+        id_medicamento: med.medicamento.uid,
+        cantidad: med.cantidad,
+        medidas: med.medidas
+      };
+      await this.srvMedicamentos.registrarMedicamentosAplicados(medAplic).toPromise();
+    }    
+  }
+
+  private async  validaEntradas(idPaciente: number, fechaCons: string){
+    let consultasDia: any;
+    const motivosRepetidos=[7, 8, 9, 10, 13];    
+    let popOver: Ipopover={};
+
+    if (idPaciente == undefined){
+      popOver= {
+        titulo:"Error en el Registro",
+        alerta: "No ha Seccionado el Paciente"
+      };      
+      return  popOver;
+    }
+
+    this.buscarConsulta = { 
+      uidConsulta: 'null',
+      uidPaciente: idPaciente.toString(),
+      uidMotivo: 'null',
+      fechaIni: fechaCons,
+      fechaFin: fechaCons,
+      ciMedico:'null',
+      ciParamedico: 'null',
+    }   
+    
+    for await  (let mot of motivosRepetidos){
+      this.buscarConsulta.uidMotivo=mot.toString();
+      consultasDia = await this.consultasFilter();      
+      if (consultasDia.length>0){            
+        popOver= {
+          titulo:"Error en el Registro",
+          alerta: "El paciente ya tiene una consulta para la  misma fecha y motivo. Nro :" + consultasDia[0].uid
+        };
+        //console.log(popOver);
+        return  popOver;            
+      }
+      
+    }
+    console.log('que bello');
+    return popOver;    
+  }
+
+  private async registrar(){
+    this.popoverConsulta={};
+    let msjAviso: string;
     if (this.newConsulta) {
       let consultaNew: IvConsulta={};
-      let referenciaMedica: string=null;
+      let referenciaMedica: string="";
       for (let i=0; i< this.arrayReferencias.length; i++){
         referenciaMedica = referenciaMedica + ">>" + this.arrayReferencias[i].especialidad.toUpperCase() + ":" + "\n" + this.arrayReferencias[i].informe + "\n";
       }
+      let indicaciones: string="";
+      for (let j=0; j< this.medicamentoIndicados.length; j++){
+        indicaciones = indicaciones + decodeURI(this.medicamentoIndicados[j].medicamento)  + ": " + this.medicamentoIndicados[j].indicacion + "\n";
+
+        //console.log(`medic:${this.medicamentoIndicados[j].medicamento}; decode: ${decodeURI(this.medicamentoIndicados[j].medicamento)}; indica: ${this.medicamentoIndicados[j].indicacion}; `)
+      }      
       
       this.consultas={
         uid: undefined,
@@ -392,7 +502,7 @@ export class ConsultasComponent  implements OnInit  {
         id_patologia: this.selectedOptionPatolog.uid,        
         fecha_registro: formatDate(Date.now(), 'yyyy-MM-dd hh:mm:ss', 'en'),
         turno: 2,
-        indicaciones_comp: null,
+        indicaciones_comp: indicaciones,
         referencia_medica: referenciaMedica,                 
         autorizacion: this.autorizacion===true ? 'SI':'NO',
         
@@ -410,20 +520,37 @@ export class ConsultasComponent  implements OnInit  {
         observacion_medicamentos: this.consultas.observacion_medicamentos
         
       };
+
+      this.popoverConsulta = await this.validaEntradas(this.consultas.id_paciente, this.consultas.fecha);
+      console.log(this.popoverConsulta);
+      if ( this.popoverConsulta.alerta!=undefined){        
+        this.alertaRegistrar = this.popoverConsulta.alerta;
+        this.titleRegistrar = this.popoverConsulta.titulo 
+        return;
+      }
       
 			this.srvConsultas.nuevo(this.consultas)
 				//.toPromise()
 				.then(results => {
           this.consultas=results;
           if (this.consultas.uid && typeof this.consultas.uid === 'number'){
-            this.showSuccess('Atencion Medica Registrada satisfactoriamente', 'success');
-            this.limpiarFiltro();
-            this.buscarConsulta.uidConsulta=this.consultas.uid.toString();
+            this.showSuccess('Atencion Medica Registrada Satisfactoriamente', 'success');
+            this.buscarConsulta = { 
+              uidConsulta: this.consultas.uid.toString(),
+              uidPaciente: 'null',
+              uidMotivo: 'null',
+              fechaIni: 'null',
+              fechaFin: 'null',
+              ciMedico:'null',
+              ciParamedico: 'null',
+            }            
             this.consultasFilter().then(
             results => { 
                 consultaNew=results[0];                
                 this.consultasTodas.push(consultaNew);
                 this.guardarSignosVit(consultaNew.fecha, consultaNew.ci );
+                this.medicamentoAplicado.id_consulta=consultaNew.uid;
+                this.guardarMedicametosAplicados();
                 this.sortOrder =  this.sortOrder * (-1);
                 this.sortTable('uid');                
             })
@@ -445,6 +572,7 @@ export class ConsultasComponent  implements OnInit  {
 
 		}
 		this.consultas = {};
+    this.paciente={};
     this.signoVital = {};
     this.antropometria={};
     this.arrayReferencias=[];
@@ -454,7 +582,7 @@ export class ConsultasComponent  implements OnInit  {
 
   private addReferencia(){
     
-    if (this.referencia.especialidad!="" && this.referencia.especialidad != undefined && this.referencia.informe!="" && this.referencia.informe){
+    if (this.referencia.especialidad!="" && this.referencia.especialidad != undefined && this.referencia.informe!="" && this.referencia.informe != undefined){
       this.arrayReferencias.push(this.referencia);
       this.alertaReferencia='';
       this.titleReferencia=''
@@ -473,6 +601,80 @@ export class ConsultasComponent  implements OnInit  {
 
   private quitReferencia(ind: number){    
     this.arrayReferencias.splice(ind, 1);
+  }
+  
+  private async addMedicamento(){
+    
+    if (this.medicamentoAplic.id_medicamento!= undefined && this.medicamentoAplic.cantidad != undefined && this.medicamentoAplic.medidas!= undefined){      
+      let _med: IMedicamento={};      
+
+      for await (const value of this.arrayMedicamentos) {        
+        if (value.uid==this.medicamentoAplic.id_medicamento){
+          _med=value;          
+          break;
+        }  
+      }
+      
+      const medicina: IMedicinasAplicadas={        
+        medicamento: _med,
+        cantidad: this.medicamentoAplic.cantidad,
+        medidas: this.medicamentoAplic.medidas
+      }
+      
+      this.medicamentoAplicado.medicamentos.push(medicina);
+      this.alertaMedicamento='';
+      this.titleMedicamento=''
+      this.medicamentoAplic={};
+    }
+    else{
+      this.titleMedicamento='Error: Campo Vacio';
+      
+      if (this.medicamentoAplic.id_medicamento== undefined){        
+        this.alertaMedicamento='Debe Seleccionar Un Medicamento';
+      }
+      if (this.medicamentoAplic.cantidad == undefined){        
+        this.alertaMedicamento='Debe Colocar una Cantidad';
+      }
+      if (this.medicamentoAplic.medidas){        
+        this.alertaMedicamento='Debe Seleccionar una Medida';
+      }
+    }
+  }
+
+  private quitMedicamento(ind: number){    
+    this.medicamentoAplicado.medicamentos.splice(ind, 1);
+  }
+
+  private async addIndicacion(){
+    
+    if (this.medicamentoIndic.medicamento != undefined && this.medicamentoIndic.indicacion != undefined){
+      
+      for await (const value of this.arrayMedicamentosIndicados) {
+        //console.log(`this.medicamento: ${this.medicamentoIndic.medicamento}; valie.uid: ${value.uid}`);       
+        if (value.uid.toString()==this.medicamentoIndic.medicamento){
+          this.medicamentoIndic.medicamento=value.descripcion;         
+          break;
+        }  
+      }
+      
+      this.medicamentoIndicados.push(this.medicamentoIndic);
+      this.alertaIndicacion='';
+      this.titleIndicacion='';
+      this.medicamentoIndic={};
+    }
+    else{
+      this.titleIndicacion='Error: Campo Vacio';
+      if (this.medicamentoIndic.medicamento==undefined || this.medicamentoIndic.medicamento == undefined){        
+        this.alertaIndicacion='Debe Seleccionar un Medicamento';
+      }
+      if (this.medicamentoIndic.indicacion=="" || this.medicamentoIndic.indicacion == undefined){        
+        this.alertaIndicacion='Debe llenar El campo Indicacion';
+      }
+    }
+  }
+
+  private quitIndicacion(ind: number){    
+    this.medicamentoIndicados.splice(ind, 1);
   }
 
   private collapsed(event: any): void {
