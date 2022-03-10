@@ -13,7 +13,7 @@ export class DefaultLayoutComponent {
     this.sidebarMinimized = e;
   }*/
 
-  public sistemaActual: string;
+  private sistemaActual: string;
 
   constructor(){
     this.sistemaActual=sessionStorage.sistemaActual;
