@@ -20,14 +20,14 @@ import { AppComponent } from './app.component';
 
 // Import containers
 import { DefaultLayoutComponent } from './containers';
-
+import { LayoutServicioMedicoComponent } from './containers/layout-serviciomedico'
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
-import { LoginComponent } from './views/login/login.component';
+
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
-  DefaultLayoutComponent
+  DefaultLayoutComponent, LayoutServicioMedicoComponent
 ];
 
 import {
@@ -79,8 +79,7 @@ import { LoginServicioMedicoComponent } from './components/login-servicio-medico
     AppComponent,
     ...APP_CONTAINERS,
     P404Component,
-    P500Component,
-    LoginComponent,
+    P500Component,    
     RegisterComponent, 
     LoginServicioMedicoComponent,
     //PrincipalServicioMedicoComponent

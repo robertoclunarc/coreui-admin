@@ -16,4 +16,13 @@ export interface IParamedicos {
     activo?: boolean;
     ci?: string;    
     login?: string;
-}    
+}
+
+export interface ItotalAtenciones{
+    idUser?: number;
+    nombre?: string;
+    login?: string;
+    tipo_medico?: string;
+    totalconsulta?: number;
+    ultima_atencion?: string;
+}

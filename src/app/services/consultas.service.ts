@@ -34,6 +34,11 @@ export class ConsultasService {
 			);
   }
 
+  consultasCount(login: string) : Observable<number> { 
+
+    return this.http.get<number>(this.apiUrlConsultas + 'consultar/atenciones/' + login);
+  }
+
   consultaFilter(atencion: IFiltroConsulta) : Observable<IvConsulta[]> { 
     let parametrosUrl = atencion.uidPaciente + '/' + atencion.uidConsulta + '/' + atencion.fechaIni + '/' + atencion.fechaFin + '/' + atencion.ciMedico + '/' + atencion.ciParamedico + '/' + atencion.uidMotivo;
     return this.http.get<IvConsulta[]>(this.apiUrlConsultas + 'filtrar/' + parametrosUrl )

@@ -21,13 +21,13 @@ export const routes: Routes = [
     //component: PrincipalServicioMedicoComponent,
     pathMatch: 'full',
   },
-  /*{
+  {
     path: '',
     component: PortadaComponent,
     data: {
       title: 'Portada'
     }
-  },*/
+  },
   /*{
     path: 'consultas',
     component: TabsComponent,

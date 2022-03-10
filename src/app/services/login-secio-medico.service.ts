@@ -15,17 +15,13 @@ export class LoginSecioMedicoService {
 
   constructor(private http: HttpClient) { }
 
-  login(username: string, password: string) : Observable<IUsuarios> { 
+  usuariosFiltrados(departamento: number) : Observable<IUsuarios[]> {
 
-    return this.http.post<IUsuarios>(this.apiUrlLogin , { login: username, passw: password })
-        .pipe(user => {
-            console.log(user);
-            if (JSON.stringify(user).length>2) {
-                // store user details and jwt token in local storage to keep user logged in between page refreshes
-                sessionStorage.setItem('currentUser', JSON.stringify(user[0]));
-            }
-            return user;
-        });
+      return this.http.get<IUsuarios[]>(`${this.apiUrlLogin}/usuarios/filtrados/${departamento}`)
+			.pipe(
+				tap(result => console.log(`usuariosFiltrados`)),
+				catchError(this.handleError)
+			);
   }
 
   loguear(username: string, password: string): Observable<IUsuarios> {
@@ -38,17 +34,42 @@ export class LoginSecioMedicoService {
             console.log(JSON.stringify(result));
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             sessionStorage.setItem('currentUser', JSON.stringify(result));
-            
+            this.user=JSON.parse(sessionStorage.currentUser);
+            sessionStorage.setItem('tipoUser', this.tipoUser(this.user))
           }
         }),
 				catchError(this.handleError)
 			);
 	}
 
+  tipoUser(user: IUsuarios): string{
+    if (user) {      
+      if (user.fkdepartamento==61 && this.user.nivel==1) {
+        return "SISTEMA"
+      } 
+      else      
+        if (user.fkdepartamento==71 && this.user.nivel==1) {
+          return "MEDICO"
+        }
+        else      
+          if (user.fkdepartamento==71 && this.user.nivel==2) {
+            return "PARAMEDICO"
+          }
+          else
+            if (user.fkdepartamento==71 && this.user.nivel==2) {
+              return "PARAMEDICO"
+            }
+            else
+              return "ADMINISTRATIVO"
+    }
+    return "NINGUNO";
+  }  
+
   logout() {
     // remove user from local storage to log user out
     localStorage.removeItem('currentUser');
-  }
+    sessionStorage.removeItem('currentUser');
+  }       
 
   handleError(error: HttpErrorResponse) {
     return throwError(error.message || 'server Error');

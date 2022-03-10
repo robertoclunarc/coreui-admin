@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { IMedicos, IParamedicos } from '../models/medicos.model';
+import { IMedicos, IParamedicos, ItotalAtenciones } from '../models/medicos.model';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { environment } from '../../environments/environment';
@@ -13,7 +13,7 @@ export class MedicosService {
   public medico: IMedicos;
   public paraMedico: IParamedicos;
   private apiUrlMedicos : string = environment.apiUrlServMedico + 'personal/';
-
+  
   constructor(private http: HttpClient) { }
 
   medicosAll() : Observable<IMedicos[]> { 
@@ -30,6 +30,24 @@ export class MedicosService {
     return this.http.get<IMedicos[]>(this.apiUrlMedicos + 'paramedicos/consultar')
 			.pipe(
 				tap(result => console.log(`paramedicosAll`)),
+				catchError(this.handleError)
+			);
+  }
+
+  contadorAtenciones() : Observable<ItotalAtenciones[]> { 
+    
+    return this.http.get<ItotalAtenciones[]>(this.apiUrlMedicos + 'paramedicos/medicos/atenciones')
+			.pipe(
+				tap(result => console.log(`contadorAtenciones`)),
+				catchError(this.handleError)
+			);
+  }
+
+  contadorTotalAtenciones() : Observable<number> { 
+    
+    return this.http.get<number>(this.apiUrlMedicos + 'paramedicos/medicos/atenciones/total')
+			.pipe(
+				tap(result => console.log(`contadorTotalAtenciones:${result}`)),
 				catchError(this.handleError)
 			);
   }

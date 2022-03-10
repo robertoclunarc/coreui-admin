@@ -25,9 +25,9 @@ export class SignosVitalesService {
 			);
   }
 
-  signosVitalesOne(cedula: string) : Observable<IsignosVitales> { 
+  signosVitalesOne(cedula: string, fecha: string) : Observable<IsignosVitales> { 
 
-    return this.http.get<IsignosVitales>(this.apiUrlSignosVitales + 'consultar/' + cedula)
+    return this.http.get<IsignosVitales>(this.apiUrlSignosVitales + `consultar/${cedula}/${fecha}`)
 			.pipe(
 				tap(result => console.log(`signosVitalesOne`)),
 				catchError(this.handleError)

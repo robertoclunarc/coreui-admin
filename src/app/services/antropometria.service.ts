@@ -25,9 +25,9 @@ export class AntropometriaService {
 			);
   }
 
-  antropometriaOne(cedula: string) : Observable<Iantropometria> { 
+  antropometriaOne(cedula: string, fecha: string) : Observable<Iantropometria> { 
 
-    return this.http.get<Iantropometria>(this.apiUrlantropometria + 'consultar/' + cedula)
+    return this.http.get<Iantropometria>(this.apiUrlantropometria + `consultar/${cedula}/${fecha}`)
 			.pipe(
 				tap(result => console.log(`antropometriaOne`)),
 				catchError(this.handleError)

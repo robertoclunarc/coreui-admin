@@ -1,12 +1,14 @@
 //componentes
-import { Component, ViewChild, OnInit, SecurityContext } from '@angular/core';
+import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID } from '@angular/core';
 import { ModalDirective} from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
-import { DomSanitizer } from '@angular/platform-browser';
+//import { DomSanitizer } from '@angular/platform-browser';
+import { Router } from '@angular/router';
 
 //servicios
+
 import { ConsultasService } from '../../services/consultas.service';
 import { PacientesService } from '../../services/pacientes.service';
 import { MedicosService } from '../../services/medicos.service';
@@ -19,8 +21,11 @@ import { RemitidosService } from '../../services/remitidos.service';
 import { TiempoReposoService } from '../../services/tiemporeposos.service';
 import { AntropometriaService } from '../../services/antropometria.service';
 import { MedicamentosService } from '../../services/medicamentos.service';
+//import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
 
 //modelos
+import { Ipopover } from '../../models/varios.model';
+import { IUsuarios } from '../../models/usuarios.model';
 import { IConsultas, IConsultasConstraint, IvConsulta, IFiltroConsulta, Ireferencia } from '../../models/consultas.model';
 import { IsignosVitales } from '../../models/signos_vitales.model';
 import { Iantropometria  } from '../../models/antropometria.model';
@@ -34,12 +39,6 @@ import { IRemitido } from '../../models/remitidos.model';
 import { ITiempoReposo } from '../../models/tiemporeposos.model';
 import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinasAplicadas } from '../../models/medicamentos.model';
 import { IindicacionMedica } from '../../models/recetamedica.models'
-import { promise } from 'protractor';
-import { Ipopover } from '../../models/varios.model';
-
-/*
-import { CarouselConfig } from 'ngx-bootstrap/carousel';
-*/
 
 @Component({
   templateUrl: 'consultas.component.html',
@@ -63,6 +62,8 @@ export class ConsultasComponent  implements OnInit  {
   isCollapsed_1: boolean = true;
   iconCollapse_1: string = 'icon-arrow-down';
 
+  private user: IUsuarios={};
+  private tipoUser: string;  
   private buscarConsulta: IFiltroConsulta;
   private consultasTodas: IvConsulta[];
   private consultasAnteriores: IvConsulta[];
@@ -87,7 +88,7 @@ export class ConsultasComponent  implements OnInit  {
   private selectedOptionPatolog: any;  
   private searchText = ""; 
   private modalTitle = "";
-  private autorizacion: boolean = true;
+  private autorizacion: boolean = false;
   private remitidos: IRemitido[]=[];
   private tiemposReposo: ITiempoReposo[]=[];
   private referencia: Ireferencia={};
@@ -107,8 +108,8 @@ export class ConsultasComponent  implements OnInit  {
   private arrayMedicamentosIndicados: IMedicamento[]=[];
   private medicamentoIndicados: IindicacionMedica[]=[];
   private medicamentoIndic: IindicacionMedica={};
+  private turno: number;
   
-
   
   show = false;
   autohide = true;
@@ -138,7 +139,8 @@ export class ConsultasComponent  implements OnInit  {
   ];
 
   constructor(
-    private sanitizer: DomSanitizer,
+    private router: Router,
+    //private sanitizer: DomSanitizer,
     private srvConsultas: ConsultasService,
     private srvPacientes: PacientesService,
     private srvMedicos: MedicosService,
@@ -150,10 +152,25 @@ export class ConsultasComponent  implements OnInit  {
     private srvRemitidos: RemitidosService,
     private srvTiempoReposo: TiempoReposoService,
     private srvAntropometria: AntropometriaService,
-    private srvMedicamentos: MedicamentosService,  
+    private srvMedicamentos: MedicamentosService,    
+    @Inject(LOCALE_ID) public locale: string,  
     ) {  }
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
+    if (sessionStorage.currentUser){  
+
+        this.user=JSON.parse(sessionStorage.currentUser);
+        if (this.user) {
+             
+          this.tipoUser= sessionStorage.tipoUser;
+        }
+        else {
+              this.router.navigate(["login"]);
+        }
+    }else{
+      this.router.navigate(["login"]);
+    }
+    
 		this.llenarArrayConsultas();
     this.llenarArrayMedicos();
     this.llenarArrayMotivos();
@@ -162,6 +179,7 @@ export class ConsultasComponent  implements OnInit  {
     this.llenarArrayAfecciones();
     this.llenarArrayRemitidos();
     this.llenarArrayTiempoReposo();
+    this.llenarArraymedicamentos('EXISTECIA');
     
 	}
 
@@ -300,9 +318,46 @@ export class ConsultasComponent  implements OnInit  {
           this.paciente={} 
         
       })
-    }
-    
-  }  
+    }    
+  }
+
+  private buscarMedicamentosAplicados(idConsulta: number){
+    if ( idConsulta!= undefined){
+      this.srvMedicamentos.medicamentosAplicados(idConsulta)
+      .toPromise()
+      .then(result => {
+        if (result!= undefined){           
+           this.medicamentoAplicado=result;           
+        }
+        else
+        this.medicamentoAplicado={}
+        
+      })
+    }    
+  }
+  
+  private buscarSignosVitales(ci: string, fecha: string){
+    if (ci!="" &&  ci!= undefined){
+      this.srvSignosVitales.signosVitalesOne(ci, fecha)
+      .toPromise()
+      .then(result => {
+        if (result[0]!= undefined)
+          this.signoVital=result[0];
+        else
+          this.signoVital={} 
+        
+      });
+      this.srvAntropometria.antropometriaOne(ci, fecha)
+      .toPromise()
+      .then(result => {
+        if (result[0]!= undefined)
+          this.antropometria=result[0];
+        else
+          this.antropometria={} 
+        
+      });
+    }    
+  }
   
   Search(){
     
@@ -379,49 +434,192 @@ export class ConsultasComponent  implements OnInit  {
     }
   }
 
+  private verTurno(){
+    let tiempo=formatDate(Date.now(), 'HH:mm:ss', this.locale);
+    let array = tiempo.split(':');
+    let hora=Number(array[0]);
+    if (hora>=23 && hora<7){
+      this.turno=1;
+    }
+    if(hora>=7 && hora<15){
+        this.turno=2;
+    } 
+    if(hora>=15 && hora<23){
+          this.turno=3;
+    }    
+    console.log(array);
+    console.log(this.turno)
+  }
+
+  private chequeaAutorizacionMotivo(idMotivo: number){
+    if (idMotivo==1){
+      this.autorizacion=true;
+    }else{
+      this.autorizacion=false
+    }
+  }
+
+  private convReferenciaInArray(referencia: string){
+    if (referencia!=undefined){
+      let array = referencia.split('>>');
+      let rfcia: string[];
+      let Irefcia: Ireferencia;      
+      array.shift();//elimina el 1er elemento ya que esta siempre vacio
+      for (let i = 0; i<array.length; i++) {
+        rfcia=[];        
+        rfcia = array[i].split(':');
+        Irefcia={
+          especialidad: rfcia[0].trim(),
+          informe: rfcia[1].trim().replace(/\n/g, ''),
+        }        
+        this.arrayReferencias.push(Irefcia);
+        console.log(this.arrayReferencias)
+      }
+    }    
+  }
+
+  private convIndicacionesInArray(indicaciones: string){
+    if (indicaciones!=undefined){
+      let array = indicaciones.split('\n');
+      let indica: string[];      
+      let indicacion: IindicacionMedica;
+      array.pop();//elimina el ultimo elemento  ya que esta siempre vacio
+      for (let i = 0; i<array.length; i++) {
+        indica = array[i].split(':');        
+        indicacion={
+          medicamento: indica[0].trim(),
+          indicacion: indica[1].trim(),
+        }                
+        this.medicamentoIndicados.push(indicacion);
+        console.log(this.medicamentoIndicados);
+      }
+    }    
+  }
+
   private showModalRegistrar(){
+    this.autorizacion=false;
+    this.verTurno();
     this.newConsulta=true;
     this.modalTitle = "Nueva Consulta Medica";
     this.selectMedicos= this.medicos.filter( m => m.activo=true);
-    this.selectParamedicos= this.paramedicos.filter( m => m.activo=true);
-    this.autorizacion=true;
+    this.selectParamedicos= this.paramedicos.filter( m => m.activo=true);    
     this.selectedOptionPatolog= this.patologias.find(p => p.descripcion=='SIN ESPECIFICACION');
     this.paciente={};
     this.consultas={};
-    this.llenarArraymedicamentos('EXISTECIA');
+    //this.llenarArraymedicamentos('EXISTECIA');
     this.medicamentoAplicado={};
     this.medicamentoAplicado.medicamentos=[];
-    this.consultas.fecha= formatDate(Date.now(), 'yyyy-MM-dd', 'en')
+    this.consultas.fecha= formatDate(Date.now(), 'yyyy-MM-dd', 'en');
+    this.consultas.turno=this.turno;
+    this.signoVital={};
+    this.antropometria={};
+  }  
+
+  private async  showModalActualizar(item: IvConsulta){
+    this.signoVital = {};
+    this.antropometria={};
+    this.medicamentoAplicado={};
+    this.arrayReferencias=[];
+    this.medicamentoIndicados=[];
+    this.selectParamedicos= this.paramedicos;
+    this.selectMedicos= this.medicos;
+    this.turno=item.turno;
+    console.log(item);
+    this.consultas={};
+    this.paciente={};
+    this.consultas = {
+      fecha: item.fecha,
+      uid: item.uid,      
+      id_motivo: item.idmotivo,
+      id_area: item.id_area,      
+      fkafeccion: item.fkafeccion,      
+      condicion: item.condicion,
+      fecha_prox_cita: item.fecha_prox_cita,
+      sintomas: item.sintomas,
+      observaciones: item.observaciones,
+      resultado_eva: item.resultado_eva,
+      observacion_medicamentos: item.observacion_medicamentos,
+      autorizacion: item.autorizacion,
+      turno: item.turno,
+    }
+
+    for await (let i of this.selectParamedicos){      
+      if (i.ci==item.ci_paramedico){
+        this.consultas.id_paramedico = i.uid;        
+        break;
+      }
+    }
+
+    for await (let m of this.selectMedicos){
+      if (m.ci==item.ci_medico){
+        this.consultas.id_medico = m.uid;        
+        break;
+      }
+    }
+
+    for await (let r of this.remitidos){
+      if (r.descripcion==item.reposo){
+        this.consultas.id_remitido = r.uid;        
+        break;
+      }
+    }
+
+    for await (let p of this.tiemposReposo){
+      if (p.descripcion==item.reposo){
+        this.consultas.id_reposo = p.uid;        
+        break;
+      }
+    }
+
+    for await (let pt of this.patologias){
+      if (pt.descripcion==item.patologia){
+        this.selectedOptionPatolog= pt;
+        this.selectedPatolog=pt.descripcion
+        break;
+      }
+    }
+    
+    this.buscarSignosVitales(item.ci, item.fecha);    
+    this.convReferenciaInArray(item.referencia_medica);
+    this.buscarMedicamentosAplicados(item.uid);
+    this.convIndicacionesInArray(item.indicaciones_comp);
+
+    if (item.autorizacion=='NO')
+      this.autorizacion=false;
+    else
+      this.autorizacion=true; 
+    
+    this.paciente.ci=item.ci;
+    this.paciente.nombre_completo= item.nombre_completo;
+    this.buscarPaciente();
+    this.newConsulta=false;
+    this.modalTitle = "Detalles de la Consulta Nro."+item.uid;    
+    
   }
 
-  private guardarSignosVit(_fecha: string, _cedula: string){
-    if (_fecha!=undefined && _cedula!=undefined){
-      if (this.signoVital.fcard!=undefined || this.signoVital.pulso!=undefined || this.signoVital.temper!=undefined || this.signoVital.tart!=undefined || this.signoVital.fresp!=undefined){
-          let newSignos: IsignosVitales={
-            fcard: this.signoVital.fcard,
-            pulso: this.signoVital.pulso,
-            temper: this.signoVital.temper,
-            tart: this.signoVital.tart,
-            fresp: this.signoVital.fresp,
-            cedula: _cedula,
-            fecha: _fecha
-          }
-          this.srvSignosVitales.registrar(newSignos).toPromise();
-      }
-
-      if (this.antropometria.imc!=undefined || this.antropometria.talla!=undefined || this.antropometria.peso!=undefined){
-        
-        let newDatosAntrop: Iantropometria={
-          fecha: _fecha,
-          cedula: _cedula,
-          imc: this.antropometria.imc,
-          talla: this.antropometria.talla,
-          peso: this.antropometria.peso
-        }
-        this.srvAntropometria.registrar(newDatosAntrop).toPromise();
-      }  
+  private async guardarSignosVit(_fecha: string, _cedula: string){    
+    if (_fecha!=undefined && _cedula!=undefined){      
+      //if (this.signoVital.fcard!=undefined || this.signoVital.pulso!=undefined || this.signoVital.temper!=undefined || this.signoVital.tart!=undefined || this.signoVital.fresp!=undefined){          
+          this.signoVital.cedula=_cedula;
+          this.signoVital.fecha=_fecha;          
+          await this.srvSignosVitales.registrar(this.signoVital).toPromise();
+      //}
+      //if (this.antropometria.imc!=undefined || this.antropometria.talla!=undefined || this.antropometria.peso!=undefined){        
+          this.antropometria.fecha=_fecha;
+          this.antropometria.cedula=_cedula
+          await this.srvAntropometria.registrar(this.antropometria).toPromise();
+     // }  
     }
   }
+
+  private calc_imc(){    
+        let talla = Number(this.antropometria.talla);
+        let peso = Number(this.antropometria.peso)
+        let imc = 0;
+        if (peso > 0)
+           imc = Math.round((peso / (talla * talla)) * 100)/100;
+           this.antropometria.imc= imc.toFixed(2);     
+    }
 
   private async guardarMedicametosAplicados(){
     let medAplic: IMedicamentosAplicados;
@@ -448,6 +646,38 @@ export class ConsultasComponent  implements OnInit  {
       popOver= {
         titulo:"Error en el Registro",
         alerta: "No ha Seccionado el Paciente"
+      };      
+      return  popOver;
+    }
+
+    if (this.consultas.turno == undefined){
+      popOver= {
+        titulo:"Error en el Registro",
+        alerta: "No hay Turno especificado"
+      };      
+      return  popOver;
+    }
+
+    if (this.consultas.id_motivo == undefined || this.consultas.id_motivo.toString()==""){
+      popOver= {
+        titulo:"Error en el Registro",
+        alerta: "Debe Seleccionar un Motivo"
+      };      
+      return  popOver;
+    }
+
+    if (this.consultas.id_area == undefined || this.consultas.id_area.toString()==""){
+      popOver= {
+        titulo:"Error en el Registro",
+        alerta: "Debe Seleccionar un Area de Incidencia"
+      };      
+      return  popOver;
+    }    
+
+    if ((this.consultas.condicion == undefined || this.consultas.condicion=="N/A") && (this.consultas.id_motivo==8 || this.consultas.id_motivo==7)){
+      popOver= {
+        titulo:"Error en el Registro",
+        alerta: "Seleccione la Condicion del Paciente"
       };      
       return  popOver;
     }
@@ -486,7 +716,7 @@ export class ConsultasComponent  implements OnInit  {
       let consultaNew: IvConsulta={};
       let referenciaMedica: string="";
       for (let i=0; i< this.arrayReferencias.length; i++){
-        referenciaMedica = referenciaMedica + ">>" + this.arrayReferencias[i].especialidad.toUpperCase() + ":" + "\n" + this.arrayReferencias[i].informe + "\n";
+        referenciaMedica = referenciaMedica + ">>" + this.arrayReferencias[i].especialidad.toUpperCase().trim() + ":" + "\n" + this.arrayReferencias[i].informe.trim() + "\n";
       }
       let indicaciones: string="";
       for (let j=0; j< this.medicamentoIndicados.length; j++){
@@ -498,14 +728,13 @@ export class ConsultasComponent  implements OnInit  {
       this.consultas={
         uid: undefined,
         id_paciente: this.paciente.uid_paciente,
-        fecha: formatDate(Date.now(), 'yyyy-MM-dd', 'en'),        
+        fecha: formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale),        
         id_patologia: this.selectedOptionPatolog.uid,        
-        fecha_registro: formatDate(Date.now(), 'yyyy-MM-dd hh:mm:ss', 'en'),
-        turno: 2,
+        fecha_registro: formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale),
+        turno: this.turno,
         indicaciones_comp: indicaciones,
         referencia_medica: referenciaMedica,                 
-        autorizacion: this.autorizacion===true ? 'SI':'NO',
-        
+        autorizacion: this.autorizacion===true ? 'SI':'NO',        
         id_medico: this.consultas.id_medico,
         id_paramedico: this.consultas.id_paramedico,
         id_motivo: this.consultas.id_motivo,
@@ -522,7 +751,7 @@ export class ConsultasComponent  implements OnInit  {
       };
 
       this.popoverConsulta = await this.validaEntradas(this.consultas.id_paciente, this.consultas.fecha);
-      console.log(this.popoverConsulta);
+      
       if ( this.popoverConsulta.alerta!=undefined){        
         this.alertaRegistrar = this.popoverConsulta.alerta;
         this.titleRegistrar = this.popoverConsulta.titulo 
@@ -545,12 +774,13 @@ export class ConsultasComponent  implements OnInit  {
               ciParamedico: 'null',
             }            
             this.consultasFilter().then(
-            results => { 
-                consultaNew=results[0];                
+            async results => { 
+                consultaNew=results[0];
+                console.log(consultaNew);             
                 this.consultasTodas.push(consultaNew);
-                this.guardarSignosVit(consultaNew.fecha, consultaNew.ci );
+                await this.guardarSignosVit(consultaNew.fecha, consultaNew.ci );
                 this.medicamentoAplicado.id_consulta=consultaNew.uid;
-                this.guardarMedicametosAplicados();
+                await this.guardarMedicametosAplicados();
                 this.sortOrder =  this.sortOrder * (-1);
                 this.sortTable('uid');                
             })
@@ -573,8 +803,8 @@ export class ConsultasComponent  implements OnInit  {
 		}
 		this.consultas = {};
     this.paciente={};
-    this.signoVital = {};
-    this.antropometria={};
+    //this.signoVital = {};
+    //this.antropometria={};
     this.arrayReferencias=[];
 		this.newConsulta = false;
     this.primaryModal.hide();
@@ -708,5 +938,6 @@ export class ConsultasComponent  implements OnInit  {
 
   onSelect(event: TypeaheadMatch): void {
     this.selectedOptionPatolog = event.item;
+    console.log(this.selectedOptionPatolog);
   }
 }

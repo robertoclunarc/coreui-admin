@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
+import { Router } from '@angular/router';
 
 @Component({
   templateUrl: 'portada.component.html'
@@ -377,8 +378,22 @@ export class PortadaComponent implements OnInit {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
+  public seleccionaSistema(sistema: string){
+
+    sessionStorage.setItem('sistemaActual', sistema);
+    if (sistema==='ServicioMedico')
+        this.router.navigate(["login"]);
+  }
+
+  constructor(
+    private router: Router,
+    //private sanitizer: DomSanitizer,
+    
+    ) {  }
+
   ngOnInit(): void {
     // generate random values for mainChart
+    sessionStorage.removeItem('sistemaActual');
     for (let i = 0; i <= this.mainChartElements; i++) {
       this.mainChartData1.push(this.random(50, 200));
       this.mainChartData2.push(this.random(80, 100));
