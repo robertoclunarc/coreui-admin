@@ -44,6 +44,7 @@ export class LoginServicioMedicoComponent implements OnInit {
               this.error = 'Usuario no Autenticado';
               return;
           }
+          sessionStorage.setItem('sistemaActual', 'ServicioMedico');
           this.router.navigate(['/principal']);
 				
 			})

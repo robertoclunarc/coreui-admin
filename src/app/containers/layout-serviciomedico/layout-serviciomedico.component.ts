@@ -35,29 +35,32 @@ export class LayoutServicioMedicoComponent {
       else
         this.claseMensaje="badge badge-pill badge-info";
 
-      this.user=JSON.parse(sessionStorage.currentUser);
-      if (sessionStorage.sistemaActual=='ServicioMedico'){
-        srvConsultaMedica.consultasCount(this.user.login).toPromise().then(resutl => { this.totalAtenciones=resutl});        
-        this.sistemaActual=sessionStorage.sistemaActual;        
-        
-        this.imagenUser= 'assets/img/avatars/' + this.user.login + '.bmp';
-        
-        if (this.imageExists(this.imagenUser)==false)
-          this.imagenUser= 'assets/img/avatars/desconocido.png';
-
-        this.srvMedicos.contadorAtenciones()
-        .toPromise()
-        .then( result => {
-           
-          this.totalesAtenciones = result; 
+      if (sessionStorage.currentUser){  
+        this.user=JSON.parse(sessionStorage.currentUser);
+        if (sessionStorage.sistemaActual=='ServicioMedico'){
+          srvConsultaMedica.consultasCount(this.user.login).toPromise().then(resutl => { this.totalAtenciones=resutl});        
+          this.sistemaActual=sessionStorage.sistemaActual;        
           
-          this.srvMedicos.contadorTotalAtenciones().toPromise().then(resutl => { this.totalGlobalAtenciones=resutl});
-
-          this.srvLoginService.usuariosFiltrados(61).toPromise().then(resutl => { this.soportesUser=resutl});
+          this.imagenUser= 'assets/img/avatars/' + this.user.login + '.bmp';
           
-        });
+          if (this.imageExists(this.imagenUser)==false)
+            this.imagenUser= 'assets/img/avatars/desconocido.png';
+
+          this.srvMedicos.contadorAtenciones()
+          .toPromise()
+          .then( result => {
+            
+            this.totalesAtenciones = result; 
+            
+            this.srvMedicos.contadorTotalAtenciones().toPromise().then(resutl => { this.totalGlobalAtenciones=resutl});
+
+            this.srvLoginService.usuariosFiltrados(61).toPromise().then(resutl => { this.soportesUser=resutl});
+            
+          });
+        }
+      }else{
+        this.router.navigate(["/"]);
       }
-      
       
     }
 
@@ -71,6 +74,7 @@ export class LayoutServicioMedicoComponent {
 
   Logout(){
     this.srvLoginService.logout();
+    this.router.navigate(["login"]);
   }
 
   imageExists(url): boolean {

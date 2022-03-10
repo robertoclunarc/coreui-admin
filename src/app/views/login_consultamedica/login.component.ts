@@ -28,7 +28,7 @@ export class LoginServicioMedicoComponent implements OnInit {
 
     this.loading = true;
     console.log(this.model.login);
-    this.authenticationService.login( this.model.login , this.model.passw)        
+    this.authenticationService.loguear( this.model.login , this.model.passw)        
         .subscribe(
             data => {
                 this.user = data[0];

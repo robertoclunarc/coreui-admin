@@ -34,6 +34,7 @@ export class LoginSecioMedicoService {
             console.log(JSON.stringify(result));
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             sessionStorage.setItem('currentUser', JSON.stringify(result));
+            
             this.user=JSON.parse(sessionStorage.currentUser);
             sessionStorage.setItem('tipoUser', this.tipoUser(this.user))
           }
