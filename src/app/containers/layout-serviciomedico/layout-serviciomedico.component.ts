@@ -20,7 +20,7 @@ export class LayoutServicioMedicoComponent {
   private soportesUser: IUsuarios[]=[];
   private nroMensajes: number=0;
   private claseMensaje: string;
-  private imagenUser: string;
+  private imagenUser: string="";
   private totalesAtenciones: ItotalAtenciones[]=[];
   private totalGlobalAtenciones: number;
 
@@ -35,7 +35,7 @@ export class LayoutServicioMedicoComponent {
       else
         this.claseMensaje="badge badge-pill badge-info";
 
-      if (sessionStorage.currentUser){  
+      if (sessionStorage.currentUser){ 
         this.user=JSON.parse(sessionStorage.currentUser);
         if (sessionStorage.sistemaActual=='ServicioMedico'){
           srvConsultaMedica.consultasCount(this.user.login).toPromise().then(resutl => { this.totalAtenciones=resutl});        

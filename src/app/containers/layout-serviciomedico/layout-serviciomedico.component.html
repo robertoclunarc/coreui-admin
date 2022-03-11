@@ -36,12 +36,12 @@
       </a>
       <div *ngIf="sistemaActual == 'ServicioMedico'">
       <div  class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
-        <div class="dropdown-header text-center"><strong>Sesion</strong></div>
+        <div class="dropdown-header text-center"><strong>{{user.nombres}}</strong></div>
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-bell-o"></i> Actualizaciones<span class="badge badge-info">{{totalAtenciones}}</span></a>
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-envelope-o"></i> Mensajes<span class="badge badge-success">0</span></a>
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-tasks"></i> Tareas<span class="badge badge-danger">0</span></a>
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-comments"></i> Comentarios<span class="badge badge-warning">0</span></a>
-        <div class="dropdown-header text-center"><strong>Settings</strong></div>
+        <div class="dropdown-header text-center"><strong>{{user.login}}</strong></div>
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-user"></i> Perfil</a>
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-wrench"></i> Configuracion</a>
         <!--

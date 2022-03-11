@@ -102,9 +102,9 @@ export class ConsultasComponent  implements OnInit  {
   private medicamentoAplic: IMedicamentosAplicados={};
   private arrayMedicamentosIndicados: IMedicamento[]=[];
   private medicamentoIndicados: IindicacionMedica[]=[];
-  private medicamentoIndic: IindicacionMedica={};
-  //private arrayConnsultaMotivos: { id_motivo?: number, descripcion?: string, totalmotivos?: number}[];
+  private medicamentoIndic: IindicacionMedica={};  
   private turno: number;
+  private soloLectura: boolean;
   
   
   show = false;
@@ -172,9 +172,10 @@ export class ConsultasComponent  implements OnInit  {
     }else{
       this.router.navigate(["login"]);
     }
+    
     this.llenarArrayConsultasMotivos();
 		this.llenarArrayConsultas();    
-    this.llenarArrayMedicos();
+    //this.llenarArrayMedicos();
     this.llenarArrayMotivos();
     this.llenarArrayAreas();
     this.llenarArrayPatologias();
@@ -222,7 +223,7 @@ export class ConsultasComponent  implements OnInit  {
   
   private async llenarArrayConsultasMotivos() {    
     this.polarAreaChartLabels=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25'];
-    this.polarAreaChartData=[1,,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25];
+    this.polarAreaChartData=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25];
     let desc: string[]=[]
     let cant: number[]=[]
 		this.srvConsultas.consultasPorMotivos()
@@ -297,15 +298,42 @@ export class ConsultasComponent  implements OnInit  {
       });      
   }
 
-  private llenarArrayMedicos(){
+  private async llenarArrayMedicos(){
+    this.medicos=[];
+    this.paramedicos=[];
+      
+    await this.srvMedicos.medicosAll()
+      .toPromise()
+      .then(result => {
+        if (this.tipoUser=='MEDICO'){
+          this.medicos=result.filter(m => (m.login==this.user.login))
+        }else{
+          this.medicos=result;
+        }           
+      });
+   
 
-    this.srvMedicos.medicosAll()
+    await this.srvMedicos.paraMedicosAll()
+    .toPromise()
+    .then(result => {
+      if (this.tipoUser=='PARAMEDICO'){
+        this.paramedicos=result.filter(p => (p.login==this.user.login))
+      }else{
+        this.paramedicos=result;
+      }            
+    });
+  }
+
+  private async llenarArrayMedicosALL(){
+    this.medicos=[];
+    this.paramedicos=[];
+    await this.srvMedicos.medicosAll()
       .toPromise()
       .then(result => {
         this.medicos=result;           
       });
 
-      this.srvMedicos.paraMedicosAll()
+    await  this.srvMedicos.paraMedicosAll()
       .toPromise()
       .then(result => {
         this.paramedicos=result;            
@@ -471,8 +499,8 @@ export class ConsultasComponent  implements OnInit  {
     if(hora>=15 && hora<23){
           this.turno=3;
     }    
-    console.log(array);
-    console.log(this.turno)
+    //console.log(array);
+    //console.log(this.turno)
   }
 
   private chequeaAutorizacionMotivo(idMotivo: number){
@@ -497,7 +525,7 @@ export class ConsultasComponent  implements OnInit  {
           informe: rfcia[1].trim().replace(/\n/g, ''),
         }        
         this.arrayReferencias.push(Irefcia);
-        console.log(this.arrayReferencias)
+        //console.log(this.arrayReferencias)
       }
     }    
   }
@@ -515,21 +543,29 @@ export class ConsultasComponent  implements OnInit  {
           indicacion: indica[1].trim(),
         }                
         this.medicamentoIndicados.push(indicacion);
-        console.log(this.medicamentoIndicados);
+        //console.log(this.medicamentoIndicados);
       }
     }    
   }
 
-  private showModalRegistrar(){
+  private async showModalRegistrar(){
+    this.soloLectura=false;
     this.autorizacion=false;
     this.verTurno();
     this.newConsulta=true;
     this.modalTitle = "Nueva Consulta Medica";
+    await this.llenarArrayMedicos();    
     this.selectMedicos= this.medicos.filter( m => m.activo=true);
     this.selectParamedicos= this.paramedicos.filter( m => m.activo=true);    
     this.selectedOptionPatolog= this.patologias.find(p => p.descripcion=='SIN ESPECIFICACION');
     this.paciente={};
     this.consultas={};
+    if (this.tipoUser=='PARAMEDICO'){
+      this.consultas.id_paramedico=this.paramedicos.find(p => (p.login==this.user.login)).uid;
+    }
+    if (this.tipoUser=='MEDICO'){
+      this.consultas.id_medico=this.medicos.find(m => (m.login==this.user.login)).uid;
+    }
     //this.llenarArraymedicamentos('EXISTECIA');
     this.medicamentoAplicado={};
     this.medicamentoAplicado.medicamentos=[];
@@ -540,11 +576,16 @@ export class ConsultasComponent  implements OnInit  {
   }  
 
   private async  showModalActualizar(item: IvConsulta){
+    this.soloLectura=true;
+    if (this.tipoUser=='SISTEMA'){
+      this. soloLectura=false;
+    }
     this.signoVital = {};
     this.antropometria={};
     this.medicamentoAplicado={};
     this.arrayReferencias=[];
     this.medicamentoIndicados=[];
+    await this.llenarArrayMedicosALL();
     this.selectParamedicos= this.paramedicos;
     this.selectMedicos= this.medicos;
     this.turno=item.turno;
@@ -781,9 +822,10 @@ export class ConsultasComponent  implements OnInit  {
         this.titleRegistrar = this.popoverConsulta.titulo 
         return;
       }
+
+      console.log(this.consultas);
       
-			this.srvConsultas.nuevo(this.consultas)
-				//.toPromise()
+			this.srvConsultas.nuevo(this.consultas)				
 				.then(results => {
           this.consultas=results;
           if (this.consultas.uid && typeof this.consultas.uid === 'number'){

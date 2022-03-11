@@ -57,11 +57,11 @@ export class LoginSecioMedicoService {
             return "PARAMEDICO"
           }
           else
-            if (user.fkdepartamento==71 && this.user.nivel==2) {
-              return "PARAMEDICO"
+            if (this.user.nivel==3) {
+              return "ADMINISTRATIVO"
             }
             else
-              return "ADMINISTRATIVO"
+              return "VISITANTE"
     }
     return "NINGUNO";
   }  
