@@ -48,6 +48,15 @@ export class ConsultasService {
 			);
   }
 
+  consultasPorMotivos() : Observable<{id_motivo, descripcion, totalmotivos }[]> { 
+
+    return this.http.get<{id_motivo, descripcion, totalmotivos }[]>(this.apiUrlConsultas + 'motivos')
+			.pipe(
+				tap(result => console.log(`consultasPorMotivos`)),
+				catchError(this.handleError)
+			);
+  }
+
   registrar(consulta: IConsultas) {
     return  this.http.post<IConsultas>(this.apiUrlConsultas + 'insert', consulta).pipe(
         tap(result => { this.consulta = result; console.log(`Consulta insertada`) }),

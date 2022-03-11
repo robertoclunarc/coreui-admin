@@ -47,12 +47,7 @@ import { IindicacionMedica } from '../../models/recetamedica.models'
               MedicosService,
               { provide: AlertConfig }],  
 })
-export class ConsultasComponent  implements OnInit  {
-  // PolarArea
-  private polarAreaChartLabels: string[] = ['Download Sales', 'In-Store Sales', 'Mail Sales', 'Telesales', 'Corporate Sales'];
-  private polarAreaChartData: number[] = [300, 500, 100, 40, 120];
-  private polarAreaLegend = true;
-  private polarAreaChartType = 'polarArea';
+export class ConsultasComponent  implements OnInit  {  
 
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
 
@@ -108,6 +103,7 @@ export class ConsultasComponent  implements OnInit  {
   private arrayMedicamentosIndicados: IMedicamento[]=[];
   private medicamentoIndicados: IindicacionMedica[]=[];
   private medicamentoIndic: IindicacionMedica={};
+  //private arrayConnsultaMotivos: { id_motivo?: number, descripcion?: string, totalmotivos?: number}[];
   private turno: number;
   
   
@@ -137,6 +133,12 @@ export class ConsultasComponent  implements OnInit  {
     {valor:'N/A', display:'No Aplica'}, {valor: 'APTO', display:'APTO'},
     {valor:'NO APTO', display:'NO APTO'}, {valor:'APTO RESTR', display:'APTO CON RESTRICCIONES'}
   ];
+
+  // PolarArea
+  private polarAreaChartLabels: string[];
+  private polarAreaChartData: number[];
+  private polarAreaLegend= true;
+  private polarAreaChartType = 'polarArea';  
 
   constructor(
     private router: Router,
@@ -170,8 +172,8 @@ export class ConsultasComponent  implements OnInit  {
     }else{
       this.router.navigate(["login"]);
     }
-    
-		this.llenarArrayConsultas();
+    this.llenarArrayConsultasMotivos();
+		this.llenarArrayConsultas();    
     this.llenarArrayMedicos();
     this.llenarArrayMotivos();
     this.llenarArrayAreas();
@@ -207,7 +209,7 @@ export class ConsultasComponent  implements OnInit  {
 		this.srvConsultas.consultaFilter(this.buscarConsulta)
 			.toPromise()
 			.then(results => {				
-					
+				
 				this.consultasTodas = results;       
         
         this.totalItems = this.consultasTodas.length;
@@ -216,7 +218,29 @@ export class ConsultasComponent  implements OnInit  {
 				
 			})
 			.catch(err => { console.log(err) });
-	}  
+	} 
+  
+  private async llenarArrayConsultasMotivos() {    
+    this.polarAreaChartLabels=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25'];
+    this.polarAreaChartData=[1,,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25];
+    let desc: string[]=[]
+    let cant: number[]=[]
+		this.srvConsultas.consultasPorMotivos()
+			.toPromise()
+			.then(async results => {        
+				//this.arrayConnsultaMotivos = results;
+        
+        
+        for await (let mot of results){
+          desc.push(mot.descripcion)
+          cant.push(mot.totalmotivos)
+          
+        }	
+        this.polarAreaChartLabels=desc;
+        this.polarAreaChartData=cant
+			})
+			.catch(err => { console.log(err) });
+	} 
 
   // events
   private chartClicked(e: any): void {
