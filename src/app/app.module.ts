@@ -90,6 +90,7 @@ import { LoginServicioMedicoComponent } from './components/login-servicio-medico
       useClass: HashLocationStrategy
     },
     IconSetService,
+    
   ],
   bootstrap: [ AppComponent ]
 })

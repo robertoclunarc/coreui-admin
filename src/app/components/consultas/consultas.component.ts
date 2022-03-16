@@ -9,18 +9,18 @@ import { Router } from '@angular/router';
 
 //servicios
 
-import { ConsultasService } from '../../services/consultas.service';
-import { PacientesService } from '../../services/pacientes.service';
-import { MedicosService } from '../../services/medicos.service';
-import { MotivosService } from '../../services/motivos.service';
-import { AreasService } from '../../services/areas.sevice';
-import { PatologiasService } from '../../services/patologias.service';
-import { AfeccionesService } from '../../services/afecciones.service';
-import { SignosVitalesService } from '../../services/signosvitales.service';
-import { RemitidosService } from '../../services/remitidos.service';
-import { TiempoReposoService } from '../../services/tiemporeposos.service';
-import { AntropometriaService } from '../../services/antropometria.service';
-import { MedicamentosService } from '../../services/medicamentos.service';
+import { ConsultasService } from '../../services/servicio_medico/consultas.service';
+import { PacientesService } from '../../services/servicio_medico/pacientes.service';
+import { MedicosService } from '../../services/servicio_medico/medicos.service';
+import { MotivosService } from '../../services/servicio_medico/motivos.service';
+import { AreasService } from '../../services/servicio_medico/areas.sevice';
+import { PatologiasService } from '../../services/servicio_medico/patologias.service';
+import { AfeccionesService } from '../../services/servicio_medico/afecciones.service';
+import { SignosVitalesService } from '../../services/servicio_medico/signosvitales.service';
+import { RemitidosService } from '../../services/servicio_medico/remitidos.service';
+import { TiempoReposoService } from '../../services/servicio_medico/tiemporeposos.service';
+import { AntropometriaService } from '../../services/servicio_medico/antropometria.service';
+import { MedicamentosService } from '../../services/servicio_medico/medicamentos.service';
 //import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
 
 //modelos

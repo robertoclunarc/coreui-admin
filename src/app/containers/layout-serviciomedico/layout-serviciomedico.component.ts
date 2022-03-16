@@ -1,9 +1,10 @@
 import {Component} from '@angular/core';
 import { navItems } from '../../_nav';
 import { Router } from '@angular/router';
-import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
-import { ConsultasService } from '../../services/consultas.service';
-import { MedicosService } from '../../services/medicos.service';
+import { LoginSecioMedicoService } from '../../services/servicio_medico/login-secio-medico.service';
+import { ConsultasService } from '../../services/servicio_medico/consultas.service';
+import { MedicosService } from '../../services/servicio_medico/medicos.service';
+import { MenusService } from '../../services/servicio_medico/menu_serviciomedico.service';
 import { IUsuarios } from '../../models/usuarios.model';
 import { ItotalAtenciones } from '../../models/medicos.model';
  
@@ -29,6 +30,7 @@ export class LayoutServicioMedicoComponent {
     private srvLoginService: LoginSecioMedicoService,
     private srvConsultaMedica: ConsultasService, 
     private srvMedicos: MedicosService,
+    private srvMenuServicioMedico: MenusService,
     ) {
       if (this.nroMensajes>0)
         this.claseMensaje="badge badge-pill badge-danger";
@@ -60,13 +62,24 @@ export class LayoutServicioMedicoComponent {
         }
       }else{
         this.router.navigate(["/"]);
-      }
-      
+      }      
     }
 
-    /*ngOnInit(): void {
-      
-    }  */
+  ngOnInit(): void {
+    this.navItems = [];       
+    if (sessionStorage.sistemaActual=='ServicioMedico'){      
+      this.menusUsuarioServicioMedico(this.user.login);
+    }         
+  }
+    
+  private async menusUsuarioServicioMedico(user: string) {    
+		return await this.srvMenuServicioMedico.menusUser(user)
+			.toPromise()
+      .then(results => {				
+				this.navItems = results;				
+			})			
+			.catch(err => { console.log(err) });
+	}
 
   toggleMinimize(e) {
     this.sidebarMinimized = e;

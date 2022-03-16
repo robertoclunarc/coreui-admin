@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { IConsultas, IConsultasConstraint, IFiltroConsulta, IvConsulta } from '../models/consultas.model';
+import { IConsultas, IConsultasConstraint, IFiltroConsulta, IvConsulta } from '../../models/consultas.model';
 import { catchError, tap, map } from 'rxjs/operators';
 
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

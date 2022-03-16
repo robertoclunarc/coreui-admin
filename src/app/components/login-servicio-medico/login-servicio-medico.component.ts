@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
+import { LoginSecioMedicoService } from '../../services/servicio_medico/login-secio-medico.service';
 import { IUsuarios } from '../../models/usuarios.model';
 
 @Component({
