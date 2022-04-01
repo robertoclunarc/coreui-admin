@@ -1,0 +1,71 @@
+<div class="animated fadeIn">
+  <div class="row">    
+    <div class="col-md-12 mb-4">
+      <!-- Nav tabs -->
+      <tabset>        
+        <tab>
+          <ng-template tabHeading><i class="icon-calculator"></i> Ver &nbsp;<span class="badge badge-pill badge-danger">{{totalItems}}</span></ng-template>
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                 <strong>Registros de entrada</strong>                 
+                 <div class="card-header-actions">
+                  <button title="Registrar un nuevo pesaje" type="button" class="btn btn-pill btn-block btn-success" (click)="primaryModal.show(); showModalRegistrar()">+</button>
+                </div>
+              </div> 
+              <div class="card-body">
+                <div *ngFor="let alert of alertsDismiss">
+                  <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+                </div> 
+
+                <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()"  placeholder="Search by name" />
+                
+                <table class="table table-striped" id="dataConsultas">
+                  <thead>
+                    <tr>
+                      <th> </th>
+                      <th scope="col" *ngFor="let t of titulos">
+                        
+                        <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
+                          <button type="button" (click)="sortTable(t.campo)" class="btn btn-block btn-ghost-dark"><strong>{{t.titulo}}</strong></button>
+                        </div>
+                    </th>
+                    </tr> 
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let c of returnedArray">
+                      <td><button class="btn btn-brand btn-facebook text" title="Ver Detalles de la Consulta" (click)="showModalActualizar(c); primaryModal.show();"> <i class="fa fa-eye"></i></button></td>
+                      <td>{{c.idOperacion}}</td>
+                      <td>{{c.fechaEntrada | date:'dd/MM/yyyy'}}</td>
+                      <td>{{c.boleto}}</td>
+                      <td>{{c.chuto.chuto}}</td>
+                      <td>{{c.horaEntrada}}</td>
+                      <td>{{c.pesoEntrada}}</td>
+                      <td>{{c.balanzaEntrada.codigoBalanza}}</td>
+                      <td>{{c.registradorEntrada}}</td>                      
+                      <td>{{c.Transportista.razonSocial}}</td> 
+                      <td>{{c.conductor.nombreConductor}}</td> 
+                      <td>
+                        <span class="badge badge-success"></span> 
+                      </td>
+                    </tr>                    
+                   
+                  </tbody>
+                </table>
+                <ul class="pagination justify-content-center">
+                  <div class="col-xs-12 col-12 d-sm-down-none">
+                    <pagination [totalItems]="totalItems"  (pageChanged)="pageChanged($event)" [rotate]="true" [maxSize]="10"></pagination>
+                  </div>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+        </tab>
+
+      </tabset>
+
+
+    </div><!--/.col-->
+  </div><!--/.row-->
+</div>

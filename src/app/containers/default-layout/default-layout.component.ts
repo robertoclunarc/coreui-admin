@@ -1,3 +1,4 @@
+console.log('constainers/default-layout/default-layout.component.ts');
 import {Component} from '@angular/core';
 //import { navItems } from '../../_nav';
 
@@ -14,9 +15,9 @@ export class DefaultLayoutComponent {
   }*/
 
   private sistemaActual: string;
-
+ 
   constructor(){
     this.sistemaActual=sessionStorage.sistemaActual;
-    
+    console.log('constainers/default-layout/default-layout.component.ts('+this.sistemaActual+')'); 
   }
-}
+} 

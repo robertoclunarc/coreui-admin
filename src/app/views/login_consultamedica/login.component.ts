@@ -1,6 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 //import 'rxjs/add/operator/first';
+<<<<<<< HEAD
+//import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
+=======
+>>>>>>> 60c7ee7a7a3c7ae40bf9beb34b1dd9a385a408ce
 import { LoginSecioMedicoService } from '../../services/servicio_medico/login-secio-medico.service';
 import { IUsuarios } from '../../models/usuarios.model';
 
