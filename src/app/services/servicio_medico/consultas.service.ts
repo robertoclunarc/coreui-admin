@@ -57,6 +57,15 @@ export class ConsultasService {
 			);
   }
 
+  countAtencionPorMotivosMedicos(login: string, tipoMedico: string ) : Observable<{id_motivo:number, descripcion: string, totalmotivos:number }[]> { 
+
+    return this.http.get<{id_motivo:number, descripcion: string, totalmotivos:number}[]>(this.apiUrlConsultas + `motivos/medicos/${login}/${tipoMedico}`)
+			.pipe(
+				tap(result => console.log(`countAtencionPorMotivosMedicos (${result.length})`)),
+				catchError(this.handleError)
+			);
+  }
+
   consultasPorMotivosDelAnio() : Observable<{id_motivo, descripcion, diamesanio, cantmotivos }[]> { 
 
     return this.http.get<{id_motivo, descripcion, diamesanio, cantmotivos }[]>(this.apiUrlConsultas + 'motivos/delanio')
@@ -96,6 +105,24 @@ export class ConsultasService {
   consultasAfeccionesAll(interval: string) : Observable<{ fkafeccion: number, cantafeccion: number }[]> { 
 
     return this.http.get<{ fkafeccion: number, cantafeccion: number}[]>(this.apiUrlConsultas + `afecciones/all/${interval}`)
+			.pipe(
+				tap(result => console.log(`consultasAfeccionesAll (${result.length})`)),
+				catchError(this.handleError)
+			);
+  }
+
+  countResultadoEvalParamedicos(login: string) : Observable<{ id_paramedico: number, nombre: string, login: string, tipo_medico: string, mesanio: string, result_eva: string, conteval: number }[]> { 
+
+    return this.http.get<{ id_paramedico: number, nombre: string, login: string, tipo_medico: string, mesanio: string, result_eva: string, conteval: number}[]>(this.apiUrlConsultas + `resultadoevaluacion/paramedicos/${login}`)
+			.pipe(
+				tap(result => console.log(`consultasAfeccionesAll (${result.length})`)),
+				catchError(this.handleError)
+			);
+  }
+
+  countResultadoEvalMedicos(login: string) : Observable<{ id_medico: number, nombre: string, login: string, tipo_medico: string, mesanio: string, result_eva: string, conteval: number }[]> { 
+
+    return this.http.get<{ id_medico: number, nombre: string, login: string, tipo_medico: string, mesanio: string, result_eva: string, conteval: number}[]>(this.apiUrlConsultas + `resultadoevaluacion/medicos/${login}`)
 			.pipe(
 				tap(result => console.log(`consultasAfeccionesAll (${result.length})`)),
 				catchError(this.handleError)

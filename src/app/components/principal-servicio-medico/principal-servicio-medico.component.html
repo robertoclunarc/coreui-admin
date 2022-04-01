@@ -121,7 +121,9 @@
             <div class="small text-muted">del {{ inicioMainGraf  }} al {{ finMainGraf  }}</div>
           </div><!--/.col-->
           <div class="col-sm-7 d-none d-md-block">
+            <!--
             <button type="button" class="btn btn-primary float-right"><i class="icon-cloud-download"></i></button>
+            -->
             <div class="btn-group btn-group-toggle float-right mr-3" data-toggle="buttons">
               <label class="btn btn-outline-secondary" [(ngModel)]="radioModel" btnRadio="Day" (click)="llenarArrayAfecionesDay()" id="option1">Day</label>
               <label class="btn btn-outline-secondary" [(ngModel)]="radioModel" btnRadio="Month" (click)="llenarArrayAfecionesMes()" id="option2">Month</label>
@@ -139,6 +141,7 @@
           [chartType]="mainChartType"></canvas>
         </div>
       </div>
+      <!--
       <div class="card-footer">
         <div class="row text-center">
           <div class="col-sm-12 col-md mb-sm-2 mb-0">
@@ -178,13 +181,21 @@
           </div>
         </div>
       </div>
+      -->
     </div>
-    <!--/.card-->
+    
+    
+    <br>
     <div class="row">
+      
       <div class="col-sm-6 col-lg-3">
         <div class="brand-card">
           <div class="brand-card-header bg-facebook">
-            <i class="fa fa-facebook"></i>
+            <!--<i class="fa fa-facebook"></i>-->
+            <div class="avatar">
+              <img src="assets/img/avatars/{{loginHtml1}}.bmp" class="img-avatar" alt="{{loginHtml1}}@briqven.com.ve">
+              <span class="avatar-status badge-success"></span>
+            </div>
             <div class="chart-wrapper">
               <canvas baseChart class="chart"
               [datasets]="brandBoxChartData1"
@@ -197,20 +208,23 @@
           </div>
           <div class="brand-card-body">
             <div>
-              <div class="text-value">89k</div>
-              <div class="text-uppercase text-muted small">friends</div>
+              <div class="text-value">{{ countMotivos1 }}</div>
+              <div class="text-uppercase text-muted small">Motivos</div>
             </div>
             <div>
-              <div class="text-value">459</div>
-              <div class="text-uppercase text-muted small">feeds</div>
+              <div class="text-value">{{ cantMotivos1 }}</div>
+              <div class="text-uppercase text-muted small">Atenciones</div>
             </div>
           </div>
         </div>
-      </div><!--/.col-->
+      </div>
       <div class="col-sm-6 col-lg-3">
         <div class="brand-card">
           <div class="brand-card-header bg-twitter">
-            <i class="fa fa-twitter"></i>
+            <!--<i class="fa fa-twitter"></i>-->
+            <div class="avatar">
+              <img src="assets/img/avatars/{{loginHtml2}}.bmp" class="img-avatar" alt="{{loginHtml2}}@briqven.com.ve">              
+            </div>
             <div class="chart-wrapper">
               <canvas baseChart class="chart"
               [datasets]="brandBoxChartData2"
@@ -223,20 +237,23 @@
           </div>
           <div class="brand-card-body">
             <div>
-              <div class="text-value">973k</div>
-              <div class="text-uppercase text-muted small">followers</div>
+              <div class="text-value">{{ countMotivos2 }}</div>
+              <div class="text-uppercase text-muted small">Motivos</div>
             </div>
             <div>
-              <div class="text-value">1.792</div>
-              <div class="text-uppercase text-muted small">tweets</div>
+              <div class="text-value">{{ cantMotivos2 }}</div>
+              <div class="text-uppercase text-muted small">Atenciones</div>
             </div>
           </div>
         </div>
-      </div><!--/.col-->
+      </div>
       <div class="col-sm-6 col-lg-3">
         <div class="brand-card">
           <div class="brand-card-header bg-linkedin">
-            <i class="fa fa-linkedin"></i>
+            <!--<i class="fa fa-linkedin"></i>-->
+            <div class="avatar">
+              <img src="assets/img/avatars/{{loginHtml3}}.bmp" class="img-avatar" alt="{{loginHtml3}}@briqven.com.ve">              
+            </div>
             <div class="chart-wrapper">
               <canvas baseChart class="chart"
               [datasets]="brandBoxChartData3"
@@ -249,20 +266,23 @@
           </div>
           <div class="brand-card-body">
             <div>
-              <div class="text-value">500+</div>
-              <div class="text-uppercase text-muted small">contacts</div>
+              <div class="text-value">{{ countMotivos3 }}</div>
+              <div class="text-uppercase text-muted small">Motivos</div>
             </div>
             <div>
-              <div class="text-value">292</div>
-              <div class="text-uppercase text-muted small">feeds</div>
+              <div class="text-value">{{ cantMotivos3 }}</div>
+              <div class="text-uppercase text-muted small">Atenciones</div>
             </div>
           </div>
         </div>
-      </div><!--/.col-->
+      </div>
       <div class="col-sm-6 col-lg-3">
         <div class="brand-card">
           <div class="brand-card-header bg-google-plus">
-            <i class="fa fa-google-plus"></i>
+            <!--<i class="fa fa-google-plus"></i>-->
+            <div class="avatar">
+              <img src="assets/img/avatars/{{loginHtml4}}.bmp" class="img-avatar" alt="{{loginHtml4}}@briqven.com.ve">              
+            </div>
             <div class="chart-wrapper">
               <canvas baseChart class="chart"
               [datasets]="brandBoxChartData4"
@@ -275,24 +295,30 @@
           </div>
           <div class="brand-card-body">
             <div>
-              <div class="text-value">894</div>
-              <div class="text-uppercase text-muted small">followers</div>
+              <div class="text-value">{{ countMotivos4 }}</div>
+              <div class="text-uppercase text-muted small">Motivos</div>
             </div>
             <div>
-              <div class="text-value">92</div>
-              <div class="text-uppercase text-muted small">circles</div>
+              <div class="text-value">{{ cantMotivos4 }}</div>
+              <div class="text-uppercase text-muted small">Atenciones</div>
             </div>
           </div>
         </div>
-      </div><!--/.col-->
-    </div><!--/.row-->
+      </div>
+      
+    </div>
+    
     <div class="row">
       <div class="col-md-12">
+        <!--
         <div class="card">
+          
           <div class="card-header">
             Traffic &amp; Sales
           </div>
+          
           <div class="card-body">
+            
             <div class="row">
               <div class="col-sm-6">
                 <div class="row">
@@ -302,15 +328,15 @@
                       <br>
                       <strong class="h4">9,123</strong>
                     </div>
-                  </div><!--/.col-->
+                  </div>
                   <div class="col-sm-6">
                     <div class="callout callout-danger">
                       <small class="text-muted">Recuring Clients</small>
                       <br>
                       <strong class="h4">22,643</strong>
                     </div>
-                  </div><!--/.col-->
-                </div><!--/.row-->
+                  </div>
+                </div>
                 <hr class="mt-0">
                 <div class="progress-group mb-4">
                   <div class="progress-group-prepend">
@@ -417,7 +443,7 @@
                     </div>
                   </div>
                 </div>
-              </div><!--/.col-->
+              </div>
               <div class="col-sm-6">
                 <div class="row">
                   <div class="col-sm-6">
@@ -426,15 +452,15 @@
                       <br>
                       <strong class="h4">78,623</strong>
                     </div>
-                  </div><!--/.col-->
+                  </div>
                   <div class="col-sm-6">
                     <div class="callout callout-success">
                       <small class="text-muted">Organic</small>
                       <br>
                       <strong class="h4">49,123</strong>
                     </div>
-                  </div><!--/.col-->
-                </div><!--/.row-->
+                  </div>
+                </div>
                 <hr class="mt-0">
                 <div class="progress-group">
                   <div class="progress-group-header">
@@ -512,9 +538,11 @@
                     </div>
                   </div>
                 </div>
-              </div><!--/.col-->
-            </div><!--/.row-->
+              </div>
+            </div>
+            
             <br>
+           
             <table class="table table-responsive-sm table-hover table-outline mb-0">
               <thead class="thead-light">
                 <tr>
@@ -752,9 +780,13 @@
                 </tr>
               </tbody>
             </table>
+            
           </div>
+          
         </div>
-      </div><!--/.col-->
-    </div><!--/.row-->
+        -->
+      </div> 
+    </div>
+ 
   </div>
   
