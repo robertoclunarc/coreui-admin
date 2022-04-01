@@ -1,6 +1,7 @@
+console.log('_nav');
 import { INavData } from '@coreui/angular';
 
-console.log(sessionStorage.sistemaActual);
+//console.log(sessionStorage.sistemaActual);
 let _natItems: INavData[]=[];
 
 switch (sessionStorage.sistemaActual){

@@ -1,7 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 //import 'rxjs/add/operator/first';
-import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
+//import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
+import { LoginSecioMedicoService } from '../../services/servicio_medico/login-secio-medico.service';
 import { IUsuarios } from '../../models/usuarios.model';
 
 @Component({

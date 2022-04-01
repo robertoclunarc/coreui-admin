@@ -1,5 +1,6 @@
+console.log('views.portada.module');
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -11,6 +12,8 @@ import { PaginationModule } from 'ngx-bootstrap/pagination';
 //import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { NgbToastModule } from  'ngb-toast';
 import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular';
+import { authInterceptorProviders } from "../app/helpers/login.interceptor";
+
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -21,13 +24,14 @@ import { AppComponent } from './app.component';
 // Import containers
 import { DefaultLayoutComponent } from './containers';
 import { LayoutServicioMedicoComponent } from './containers/layout-serviciomedico'
+import { LayoutBalanzaComponent } from './containers/layout-balanza'
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
-  DefaultLayoutComponent, LayoutServicioMedicoComponent
+  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent 
 ];
 
 import {
@@ -47,7 +51,7 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 
 import { LoginServicioMedicoComponent } from './components/login-servicio-medico/login-servicio-medico.component';
-
+import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-balanza.component';
 //import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 @NgModule({
@@ -82,16 +86,18 @@ import { LoginServicioMedicoComponent } from './components/login-servicio-medico
     P500Component,    
     RegisterComponent, 
     LoginServicioMedicoComponent,
-    //PrincipalServicioMedicoComponent
+    LoginBalanzaComponent,
   ],
-  providers: [
+  /*providers: [
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy
     },
     IconSetService,
     
-  ],
+  ],*/
+  providers: [authInterceptorProviders],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
+ 

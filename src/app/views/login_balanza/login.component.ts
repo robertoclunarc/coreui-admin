@@ -1,3 +1,4 @@
+console.log('views/login-component.ts');
 import { Component } from '@angular/core';
 
 @Component({
