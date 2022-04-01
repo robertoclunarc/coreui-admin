@@ -52,7 +52,52 @@ export class ConsultasService {
 
     return this.http.get<{id_motivo, descripcion, totalmotivos }[]>(this.apiUrlConsultas + 'motivos')
 			.pipe(
-				tap(result => console.log(`consultasPorMotivos`)),
+				tap(result => console.log(`consultasPorMotivos (${result.length})`)),
+				catchError(this.handleError)
+			);
+  }
+
+  consultasPorMotivosDelAnio() : Observable<{id_motivo, descripcion, diamesanio, cantmotivos }[]> { 
+
+    return this.http.get<{id_motivo, descripcion, diamesanio, cantmotivos }[]>(this.apiUrlConsultas + 'motivos/delanio')
+			.pipe(
+				tap(result => console.log(`consultasPorMotivosDelAnio (${result.length})`)),
+				catchError(this.handleError)
+			);
+  }
+
+  consultasAfecciones() : Observable<{fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number }[]> { 
+
+    return this.http.get<{fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number}[]>(this.apiUrlConsultas + 'afecciones')
+			.pipe(
+				tap(result => console.log(`consultasAfecciones (${result.length})`)),
+				catchError(this.handleError)
+			);
+  }
+
+  consultasAfeccionesMeses() : Observable<{fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number }[]> { 
+
+    return this.http.get<{fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number}[]>(this.apiUrlConsultas + 'afecciones/meses')
+			.pipe(
+				tap(result => console.log(`consultasAfeccionesMeses (${result.length})`)),
+				catchError(this.handleError)
+			);
+  }
+
+  consultasAfeccionesAnios() : Observable<{fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number }[]> { 
+
+    return this.http.get<{fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number}[]>(this.apiUrlConsultas + 'afecciones/anios')
+			.pipe(
+				tap(result => console.log(`consultasAfeccionesAnios (${result.length})`)),
+				catchError(this.handleError)
+			);
+  }
+  
+  consultasAfeccionesAll(interval: string) : Observable<{ fkafeccion: number, cantafeccion: number }[]> { 
+
+    return this.http.get<{ fkafeccion: number, cantafeccion: number}[]>(this.apiUrlConsultas + `afecciones/all/${interval}`)
+			.pipe(
+				tap(result => console.log(`consultasAfeccionesAll (${result.length})`)),
 				catchError(this.handleError)
 			);
   }

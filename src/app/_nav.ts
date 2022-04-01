@@ -3,7 +3,7 @@ import { INavData } from '@coreui/angular';
 
 //console.log(sessionStorage.sistemaActual);
 let _natItems: INavData[]=[];
-
+/*
 switch (sessionStorage.sistemaActual){
   case "ServicioMedico":
     _natItems = [
@@ -526,4 +526,5 @@ switch (sessionStorage.sistemaActual){
     ];
     break;   
 }
+*/
 export const navItems: INavData[] = _natItems;
