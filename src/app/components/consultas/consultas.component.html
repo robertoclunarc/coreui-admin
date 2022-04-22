@@ -8,7 +8,7 @@
           <div class="col-lg-12">
             <div class="card">
               <div class="card-header">
-                 <strong>Atenciones Medicassssss</strong>                 
+                 <strong>Atenciones Medicas</strong>                 
                  <div class="card-header-actions">
                   <button title="Registrar una Nueva Consulta Medica" type="button" class="btn btn-pill btn-block btn-success" (click)="primaryModal.show(); showModalRegistrar()">+</button>
                 </div>
@@ -18,7 +18,7 @@
                   <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
                 </div>
 
-                <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]{1,80}" placeholder="Search by name" />
+                <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by name" />
                 
                 <table class="table table-striped" id="dataConsultas">
                   <thead>
@@ -36,7 +36,7 @@
                     <tr *ngFor="let c of returnedArray">
                       <td><button class="btn btn-brand btn-facebook text" title="Ver Detalles de la Consulta" (click)="showModalActualizar(c); primaryModal.show();"> <i class="fa fa-eye"></i></button></td>
                       <td>{{c.uid}}</td>
-                      <td>{{c.fecha | date:'dd/MM/yyyy'}}</td>
+                      <td>{{c.fecha | date:'yyyy-MM-dd'}}</td>
                       <td>{{c.ci}}</td>
                       <td>{{c.nombre_completo}}</td>
                       <td>{{c.sexo}}</td>
@@ -52,7 +52,7 @@
                 </table>
                 <ul class="pagination">
                   <div class="col-xs-12 col-12 d-sm-down-none">
-                    <pagination [totalItems]="totalItems"  (pageChanged)="pageChanged($event)"></pagination>
+                    <pagination [totalItems]="totalItems"  (pageChanged)="pageChanged($event)" [rotate]="true" [maxSize]="10"></pagination>
                   </div>
                 </ul>
               </div>

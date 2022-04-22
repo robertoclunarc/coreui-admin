@@ -40,12 +40,17 @@ export class ConsultasService {
   }
 
   consultaFilter(atencion: IFiltroConsulta) : Observable<IvConsulta[]> { 
-    let parametrosUrl = atencion.uidPaciente + '/' + atencion.uidConsulta + '/' + atencion.fechaIni + '/' + atencion.fechaFin + '/' + atencion.ciMedico + '/' + atencion.ciParamedico + '/' + atencion.uidMotivo;
+    let parametrosUrl = atencion.ciPaciente + '/' + atencion.uidConsulta + '/' + atencion.fechaIni + '/' + atencion.fechaFin + '/' + atencion.Medico + '/' + atencion.Paramedico + '/' + atencion.Motivo + '/' + atencion.uidMotivo  + '/' + atencion.nombrePaciente + '/' + atencion.cargo  + '/' + atencion.fecha; 
     return this.http.get<IvConsulta[]>(this.apiUrlConsultas + 'filtrar/' + parametrosUrl )
 			.pipe(
 				tap(result => console.log(`consultaFilter`)),
 				catchError(this.handleError)
 			);
+  }
+
+  async searchConsultaPromise(atencion: IFiltroConsulta) :  Promise<IvConsulta[]> { 
+    let parametrosUrl = atencion.ciPaciente + '/' + atencion.uidConsulta + '/' + atencion.fechaIni + '/' + atencion.fechaFin + '/' + atencion.Medico + '/' + atencion.Paramedico + '/' + atencion.Motivo + '/' + atencion.uidMotivo  + '/' + atencion.nombrePaciente + '/' + atencion.cargo + '/' + atencion.fecha; 
+    return await this.http.get<IvConsulta[]>(this.apiUrlConsultas + 'filtrar/' + parametrosUrl ).toPromise();
   }
 
   consultasPorMotivos() : Observable<{id_motivo, descripcion, totalmotivos }[]> { 

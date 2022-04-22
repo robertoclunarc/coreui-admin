@@ -108,13 +108,17 @@ export interface IvConsulta {
 }
 
 export interface IFiltroConsulta{
-    uidPaciente?: string,
+    ciPaciente?: string,
     uidConsulta?: string,
     fechaIni?: string,
     fechaFin?: string,
-    ciMedico?: string,
-    ciParamedico?: string,
-    uidMotivo?: string
+    Medico?: string,
+    Paramedico?: string,
+    Motivo?: string,
+    uidMotivo: string
+    nombrePaciente?: string,
+    cargo?: string,
+    fecha?: string
 }
 
 export interface Ireferencia{

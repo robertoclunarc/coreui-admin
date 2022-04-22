@@ -4,7 +4,7 @@ import { ModalDirective} from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
-//import { DomSanitizer } from '@angular/platform-browser';
+
 import { Router } from '@angular/router';
 
 //servicios
@@ -39,6 +39,7 @@ import { IRemitido } from '../../models/remitidos.model';
 import { ITiempoReposo } from '../../models/tiemporeposos.model';
 import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinasAplicadas } from '../../models/medicamentos.model';
 import { IindicacionMedica } from '../../models/recetamedica.models'
+import { Observable } from 'rxjs';
 
 @Component({
   templateUrl: 'consultas.component.html',
@@ -64,6 +65,7 @@ export class ConsultasComponent  implements OnInit  {
   private consultasAnteriores: IvConsulta[];
   private returnedArray: IvConsulta[];
   private returnedSearch: IvConsulta[];
+  
   private consultas: IConsultas={};
   private vConsultas: IvConsulta={};
   private signoVital: IsignosVitales={};
@@ -189,12 +191,16 @@ export class ConsultasComponent  implements OnInit  {
   private async limpiarFiltro(){
       this.buscarConsulta = { 
       uidConsulta: 'null',
-      uidPaciente: 'null',
+      ciPaciente: 'null',
+      Motivo: 'null',
       uidMotivo: 'null',
       fechaIni: 'null',
       fechaFin: 'null',
-      ciMedico:'null',
-      ciParamedico: 'null',
+      Medico:'null',
+      Paramedico: 'null',
+      nombrePaciente: 'null',
+      cargo: 'null',
+      fecha: 'null'
     }
   }
 
@@ -410,32 +416,72 @@ export class ConsultasComponent  implements OnInit  {
       });
     }    
   }
+
+  private stringContainsNumber(_input: string, search: string, field: string){
+    let string1 = _input.split('');
+    //if (field==='uid')
+    //  console.log(string1);
+    let string2: string='';
+    /*let length: number=0;
+
+    if (field==='fecha')
+      length=10;
+    else  
+      if (field==='uid' || field==='ci')
+        length=string1.length-1;*/
+    
+      for( let i = 0; i < search.length; i++){
+        string2 += string1[i];
+        
+        if(search==string2) {         
+          if (field==='uid')
+          console.log(`[${string1[i]}](${search.length})${_input}:${string2}==${search}`) 
+          return true;
+        }
+      }
+      return false;
+  }
+   
   
-  Search(){
+  async Search(){
     
     if(this.searchText!== ""){
-       let searchValue = this.searchText.toLocaleLowerCase();
+
+      let searchValue = this.searchText.toLocaleLowerCase();
+
+      let date_regex = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
+      let testDate = this.searchText;
+      let fecha: string='null';
+      if (date_regex.test(testDate)) {
+        fecha=searchValue;
+      }
       
-       this.returnedSearch = this.consultasTodas.filter((lista:IvConsulta) =>{
-         return lista.uid.toString().match(searchValue )
-         || lista.fecha.toLocaleLowerCase().match(searchValue )
-         || lista.ci.toString().match(searchValue )
-         || lista.nombre_completo.toLocaleLowerCase().includes(searchValue )
-         //|| lista.sexo==searchValue 
-         || lista.motivo.toLocaleLowerCase().match(searchValue )
-         || lista.paramedico?.toLocaleLowerCase().match(searchValue )
-         || lista.cargo.toLocaleLowerCase().match(searchValue )
-         || lista.login_atendio.toLocaleLowerCase().match(searchValue );
-       });
-       this.totalItems = this.returnedSearch.length;
-       this.returnedArray = this.returnedSearch.slice(1, this.numPages);       
-       this.maxSize = Math.ceil(this.totalItems/this.numPages);
-               
+      this.buscarConsulta = { 
+        uidConsulta: searchValue,
+        ciPaciente: searchValue,
+        Motivo: searchValue,
+        uidMotivo: 'null',
+        fechaIni: fecha,
+        fechaFin: fecha,
+        Medico: searchValue,
+        Paramedico: searchValue,
+        nombrePaciente: searchValue,
+        cargo: searchValue,
+        fecha: searchValue        
+      } 
+      
+      await this.srvConsultas.searchConsultaPromise(this.buscarConsulta)             
+      .then(async (res) => {          
+            this.returnedSearch= res            
+            this.totalItems = this.returnedSearch.length;            
+            this.returnedArray = this.returnedSearch.slice(0, this.numPages);            
+            this.maxSize = Math.ceil(this.totalItems/this.numPages);
+          });               
     }
     else { 
       this.totalItems = this.consultasTodas.length;
       this.returnedArray = this.consultasTodas;      
-      this.returnedArray = this.returnedArray.slice(1, this.numPages);
+      this.returnedArray = this.returnedArray.slice(0, this.numPages);
       this.maxSize = Math.ceil(this.totalItems/this.numPages);     
        
     } 
@@ -498,7 +544,7 @@ export class ConsultasComponent  implements OnInit  {
     } 
     if(hora>=15 && hora<23){
           this.turno=3;
-    }    
+    }  
     //console.log(array);
     //console.log(this.turno)
   }
@@ -749,12 +795,16 @@ export class ConsultasComponent  implements OnInit  {
 
     this.buscarConsulta = { 
       uidConsulta: 'null',
-      uidPaciente: idPaciente.toString(),
-      uidMotivo: 'null',
+      ciPaciente: idPaciente.toString(),
+      Motivo: 'null',
       fechaIni: fechaCons,
       fechaFin: fechaCons,
-      ciMedico:'null',
-      ciParamedico: 'null',
+      Medico:'null',
+      Paramedico: 'null',
+      nombrePaciente: 'null',
+      cargo: 'null',
+      uidMotivo: 'null',
+      fecha: 'null'
     }   
     
     for await  (let mot of motivosRepetidos){
@@ -832,12 +882,16 @@ export class ConsultasComponent  implements OnInit  {
             this.showSuccess('Atencion Medica Registrada Satisfactoriamente', 'success');
             this.buscarConsulta = { 
               uidConsulta: this.consultas.uid.toString(),
-              uidPaciente: 'null',
+              ciPaciente: 'null',
               uidMotivo: 'null',
+              Motivo: 'null',
               fechaIni: 'null',
               fechaFin: 'null',
-              ciMedico:'null',
-              ciParamedico: 'null',
+              Medico:'null',
+              Paramedico: 'null',
+              nombrePaciente:'null',
+              cargo: 'null',
+              fecha: 'null'
             }            
             this.consultasFilter().then(
             async results => { 

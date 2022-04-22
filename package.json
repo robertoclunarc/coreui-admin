@@ -58,7 +58,7 @@
     "ngx-perfect-scrollbar": "^10.1.0",
     "rxjs": "^6.6.6",
     "simple-line-icons": "^2.5.5",
-    "sweetalert2": "^11.4.7",
+    "sweetalert2": "^11.4.8",
     "ts-helpers": "^1.1.2",
     "ts-md5": "^1.2.10",
     "tslib": "^2.0.0",
