@@ -23,7 +23,7 @@
                 <table class="table table-striped" id="dataConsultas">
                   <thead>
                     <tr>
-                      <th> </th>
+                      <th> </th>                      
                       <th scope="col" *ngFor="let t of titulos">
                         
                         <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
@@ -33,8 +33,21 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let c of returnedArray">
-                      <td><button class="btn btn-brand btn-facebook text" title="Ver Detalles de la Consulta" (click)="showModalActualizar(c); primaryModal.show();"> <i class="fa fa-eye"></i></button></td>
+                    <tr *ngFor="let c of returnedArray">                      
+                      <td>
+                        <div class="btn-group" dropdown>
+                          <button type="button" class="btn btn-danger">Accion</button>
+                          <button type="button" dropdownToggle class="btn btn-danger dropdown-toggle dropdown-toggle-split">
+                            <span class="caret"></span>
+                            <span class="sr-only">Estirar buton!</span>
+                          </button>
+                          
+                          <ul *dropdownMenu class="dropdown-menu" role="menu">
+                            <li role="menuitem"><a class="dropdown-item" (click)="showModalActualizar(c); primaryModal.show();" href="javascript:void(0)">Detalles de Consulta</a></li>
+                            <li role="menuitem"><a class="dropdown-item" (click)="downloadAsPDF(c.uid);" href="javascript:void(0)">Descargar PDF</a></li>                            
+                          </ul>
+                        </div>
+                      </td>
                       <td>{{c.uid}}</td>
                       <td>{{c.fecha | date:'yyyy-MM-dd'}}</td>
                       <td>{{c.ci}}</td>
@@ -70,7 +83,7 @@
                 </div>
                 <div class="modal-body">
                   
-                  <form action="" method="post" class="form-horizontal">
+                  <form method="post" accept-charset="UTF-8" class="form-floating">
                       <div class="card-header">
                         <i class="fa fa-edit"></i>
                         <strong>Datos Generales para la Atenci&oacute;n:   <code *ngIf="consultas.uid != undefined">Nro. {{consultas.uid}}</code></strong>
@@ -86,14 +99,14 @@
                           
                             <div class="row">
                               <div class="col-sm-6">
-                                <span class="badge badge-info">Cedula Paciente</span>                                
+                                
                                 <div class="input-group">                            
                                   <span class="input-group-prepend">
                                     <button [disabled]="soloLectura" type="button"                                      
                                       (click)="buscarPaciente()" 
                                       class="btn btn-primary btn-sm">
                                       <i class="fa fa-search"></i> 
-                                      Search
+                                      Paciente
                                     </button>
                                   </span>
                                   <input type="text" id="txtCi" name="txtCi" [(ngModel)]="paciente.ci" [disabled]="soloLectura" (keyup.enter)="buscarPaciente()"  class="form-control form-control-sm" placeholder="Cedula Paciente">
@@ -170,8 +183,10 @@
                               </div>
                               <div class="col-sm-6">
                                 <div class="form-group">
-                                  <span class="badge badge-info">Nombre</span>                                  
-                                  <input type="text" class="form-control form-control-sm" id="txtNombre" readonly name="txtNombre" [(ngModel)]="paciente.nombre_completo" placeholder="Nombre del Paciente">
+                                  <span class="form-group has-float-label">                                                                    
+                                    <input type="text" class="form-control form-control-sm" id="txtNombre" readonly name="txtNombre" [(ngModel)]="paciente.nombre_completo" placeholder="Nombre del Paciente">
+                                    <label class="badge-light" for="txtNombre">Nombre</label>
+                                  </span>
                                 </div>
                               </div>
                             </div><!--/.row 1-->                            
@@ -179,49 +194,56 @@
                             <div class="row">
                               <div class="col-sm-6">
                                 <div class="form-group">
-                                  <span class="badge badge-info">M&eacute;dico de Guardia</span>                                  
+                                  <span class="form-group has-float-label">                                                                    
                                     <select [disabled]="soloLectura" class="form-control form-control-sm" name="cboMedicoGuardia" [(ngModel)]="consultas.id_medico"  id="cboMedicoGuardia">
                                       <option *ngFor="let medico of selectMedicos" [value]=" medico.uid">{{medico.nombre}}</option>
                                                                      
-                                    </select>                            
+                                    </select>
+                                    <label for="cboMedicoGuardia">M&eacute;dico de Guardia</label>
+                                </span>  
                                 </div>
                               </div>
         
                               <div class="col-sm-6">
-                                <div class="form-group"> 
-                                  <span class="badge badge-info">Paramedico de Guardia</span>                           
-                                    <!--<label for="cboParamedico">Paramedico de Guardia</label>-->
+                                <div class="form-group">
+                                  <span class="form-group has-float-label">
                                     <select  class="form-control form-control-sm" [disabled]="soloLectura" name="cboParamedico" [(ngModel)]="consultas.id_paramedico" id="cboParamedico">
                                       <option *ngFor="let para of selectParamedicos" [value]="para.uid">{{para.nombre}}</option>                                                                     
-                                    </select>                           
+                                    </select>
+                                    <label class="badge-light" for="cboParamedico">Paramedico de Guardia</label>
+                                  </span>  
                                 </div>
                               </div>
                             </div><!--/.row 2-->
                             <div class="row">
                               <div class="col-sm-6">
                                 <div class="form-group">
-                                    <span class="badge badge-info">Motivo</span>
-                                    <select class="form-control form-control-sm" id="cboMotivo" [disabled]="soloLectura" name="cboMotivo" (change)="chequeaAutorizacionMotivo($event.target.value)" [(ngModel)]="consultas.id_motivo">
-                                      <option *ngFor="let mov of motivos" [value]="mov.uid">{{mov.descripcion}}</option>
-                                                                      
-                                    </select>
-                                  </div>                          
+                                    <span class="form-group has-float-label">                                    
+                                      <select class="form-control form-control-sm" id="cboMotivo" [disabled]="soloLectura" name="cboMotivo" (change)="chequeaAutorizacionMotivo($event.target.value)" [(ngModel)]="consultas.id_motivo">
+                                        <option *ngFor="let mov of motivos" [value]="mov.uid">{{mov.descripcion}}</option>
+                                      </select>                                      
+                                      <label class="badge-light" for="cboMotivo">Motivo</label>
+                                    </span>
+                                </div>                          
                               </div>
         
                               <div class="col-sm-6">
-                                <div class="form-group">                                    
-                                    <span class="badge badge-info">&Aacute;rea Incidente  o Atenci&oacute;n</span>
+                                <div class="form-group">
+                                  <span class="form-group has-float-label">                                    
                                     <select class="form-control form-control-sm" [disabled]="soloLectura" id="cboAreaIncidente" name="cboAreaIncidente" [(ngModel)]="consultas.id_area">
                                       <option *ngFor="let are of areas" [value]="are.uid">{{are.descripcion}}</option>
-                                    </select>                            
+                                    </select>
+                                    <label class="badge-light" for="cboAreaIncidente">&Aacute;rea Incidente  o Atenci&oacute;n</label>
+
+                                  </span>                             
                                 </div>
                               </div>
                             </div><!--/.row 3-->
                             <div class="row">
                               <div class="col-sm-6">
                                 <div class="form-group">
-                                    <span class="badge badge-info">Patolog&iacute;a</span>
-                                    <input  [(ngModel)]="selectedPatolog" name="txtPatologia" id="txtPatologia" [disabled]="soloLectura" 
+                                    <span class="form-group has-float-label">                                    
+                                      <input  [(ngModel)]="selectedPatolog" name="txtPatologia" id="txtPatologia" [disabled]="soloLectura" 
                                       [typeahead]="patologias"
                                       typeaheadOptionField="descripcion"
                                       [isAnimated]="true"
@@ -233,102 +255,139 @@
                                       [typeaheadSingleWords]="false"
                                       (typeaheadOnSelect)="onSelect($event)"                                  
                                       class="form-control form-control-sm">
+                                      <label class="badge-light" for="txtPatologia">Patolog&iacute;a</label>
+
+                                    </span>  
                                 </div>
                               </div>
         
                               <div class="col-sm-6">
                                 <div class="form-group">
-                                    <span class="badge badge-info">Tipo de Afecci&oacute;n por Sistema</span>                                    
-                                    <select class="form-control form-control-sm" [disabled]="soloLectura" name="cboTipoAfecciones" [(ngModel)]="consultas.fkafeccion"  id="cboTipoAfecciones">
-                                      <option *ngFor="let afec of afecciones" [value]="afec.idafecciones">{{afec.descripcion_afeccion}}</option>
-                                    </select>                            
+                                  <span class="form-group has-float-label">                                                                       
+                                      <select class="form-control form-control-sm" [disabled]="soloLectura" name="cboTipoAfecciones" [(ngModel)]="consultas.fkafeccion"  id="cboTipoAfecciones">
+                                        <option *ngFor="let afec of afecciones" [value]="afec.idafecciones">{{afec.descripcion_afeccion}}</option>
+                                      </select>
+                                      <label class="badge-light" for="cboTipoAfecciones">Tipo de Afecci&oacute;n por Sistema</label>
+                                   </span>
                                 </div>
                               </div>
                             </div><!--/.row 4-->
                             <div class="row">
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">F. Resp.</span>
-                                <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtFResp" [(ngModel)]="signoVital.fresp" id="txtFResp" placeholder="Frecuencia Respiratoria">
+                                <span class="form-group has-float-label">
+                                  <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtFResp" [(ngModel)]="signoVital.fresp" id="txtFResp" placeholder="Frecuencia Respiratoria">
+                                  <label class="badge-light" for="txtFResp">F.Resp.</label>
+                                </span>
                               </div>
+                              
                               <div class="form-group col-sm-3">                                
-                                <span class="badge badge-info">Pulso</span>
-                                <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtPulso" [(ngModel)]="signoVital.pulso" id="txtPulso" placeholder="Pulsaciones x Min.">
+                                <span class="form-group has-float-label">
+                                  <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtPulso" [(ngModel)]="signoVital.pulso" id="txtPulso" placeholder="Pulsaciones x Min.">
+                                  <label for="txtPulso">Pulso</label>
+                                </span>
                               </div>
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">Temp.</span>
-                                <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtTemp" [(ngModel)]="signoVital.temper" id="txtTemp" placeholder="Temperatura">
+                                <span class="form-group has-float-label">
+                                  <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtTemp" [(ngModel)]="signoVital.temper" id="txtTemp" placeholder="Temperatura">
+                                  <label for="txtTemp">Temp.</label>
+                                </span>  
                               </div>
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">T. Art.</span>
-                                <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtTArt" [(ngModel)]="signoVital.tart" id="txtTArt" placeholder="Tension Arterial">
+                                <span class="form-group has-float-label">
+                                  <input type="text" [disabled]="soloLectura" class="form-control form-control-sm" name="txtTArt" [(ngModel)]="signoVital.tart" id="txtTArt" placeholder="Tension Arterial">
+                                  <label for="txtTArt">T.Art.</label>
+                                </span>
                               </div>
                             </div><!--/.row 5-->
                             <div class="row">
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">Talla</span>
-                                <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtTalla" [(ngModel)]="antropometria.talla" (change)="calc_imc()" id="txtTalla" placeholder="Nro. de Talla">
+                                <span class="form-group has-float-label">                                  
+                                  <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtTalla" [(ngModel)]="antropometria.talla" (change)="calc_imc()" id="txtTalla" placeholder="Nro. de Talla">
+                                  <label for="txtTalla">Talla</label>
+                                </span>
                               </div>
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">Peso</span>
-                                <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtPeso" [(ngModel)]="antropometria.peso" (change)="calc_imc()" id="txtPeso" placeholder="Peso">
+                                <span class="form-group has-float-label">
+                                  <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtPeso" [(ngModel)]="antropometria.peso" (change)="calc_imc()" id="txtPeso" placeholder="Peso">
+                                  <label for="txtPeso">Peso</label>
+                                </span>
                               </div>
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">IMC</span>
-                                <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtImc" [(ngModel)]="antropometria.imc" id="txtImc" placeholder="Indice Masa Corporal">
+                                <span class="form-group has-float-label">
+                                  <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtImc" [(ngModel)]="antropometria.imc" id="txtImc" placeholder="Indice Masa Corporal">
+                                  <label for="txtImc">IMC</label>
+                                </span>
                               </div>
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">F. Card.</span>
-                                <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtFCard" [(ngModel)]="signoVital.fcard" id="txtFCard" placeholder="Frecuencia Cardiaca">
+                                <span class="form-group has-float-label">
+                                  <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtFCard" [(ngModel)]="signoVital.fcard" id="txtFCard" placeholder="Frecuencia Cardiaca">
+                                  <label for="txtFCard">F. Card.</label>
+                                </span>
                               </div>
                             </div><!--/.row 6-->
 
                             <div class="row">
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">Remitido</span>
-                                <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="consultas.id_remitido" name="cboRemitido" id="cboRemitido">
-                                  <option *ngFor="let rem of remitidos" [value]="rem.uid">{{rem.descripcion}}</option>
-                                                                  
-                                </select>
+                                <span class="form-group has-float-label">
+                                  <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="consultas.id_remitido" name="cboRemitido" id="cboRemitido">
+                                    <option *ngFor="let rem of remitidos" [value]="rem.uid">{{rem.descripcion}}</option>                                                                  
+                                  </select>
+                                  <label for="cboRemitido">Remitido</label>
+                                </span> 
                               </div>
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">Tiempo Reposo</span>
-                                <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="consultas.id_reposo" name="cboTiempoReposo" id="cboTiempoReposo">
-                                  <option *ngFor="let tiempo of tiemposReposo" [value]="tiempo.uid">{{tiempo.descripcion}}</option>                                                                 
-                                </select>
+                                <span class="form-group has-float-label">                                  
+                                  <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="consultas.id_reposo" name="cboTiempoReposo" id="cboTiempoReposo">
+                                    <option *ngFor="let tiempo of tiemposReposo" [value]="tiempo.uid">{{tiempo.descripcion}}</option>
+                                  </select>
+                                  <label for="cboTiempoReposo">Tiempo Reposo</label>
+                                </span>
                               </div>
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">Condici&oacute;n</span>
-                                <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="consultas.condicion" name="cboCondicion" id="cboCondicion">
-                                  <option *ngFor="let cond of condiciones" [value]="cond.valor">{{cond.display}}</option>
-                                </select>
+                                <span class="form-group has-float-label">                                
+                                  <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="consultas.condicion" name="cboCondicion" id="cboCondicion">
+                                    <option *ngFor="let cond of condiciones" [value]="cond.valor">{{cond.display}}</option>
+                                  </select>
+                                  <label for="cboCondicion">Condici&oacute;n</label>
+                                </span>
                               </div>
                               <div class="form-group col-sm-3">
-                                <span class="badge badge-info">Fecha Prox. Cita</span>
-                                <input type="date" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFechaproxCita" [(ngModel)]="consultas.fecha_prox_cita" id="txtFechaproxCita">
+                                <span class="form-group has-float-label">                                
+                                  <input type="date" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFechaproxCita" [(ngModel)]="consultas.fecha_prox_cita" id="txtFechaproxCita">
+                                  <label for="txtFechaproxCita">Fecha Prox. Cita</label>
+                                </span>
                               </div>
                             </div><!--/.row 7-->
 
                             <div class="row">
                               <div class="col-md-6">
-                                <span class="badge badge-info">Motivo de la Consulta</span>
-                                <textarea id="txtMotivoConsulta" [disabled]="soloLectura" name="txtMotivoConsulta" [(ngModel)]="consultas.sintomas" rows="2"  class="form-control form-control-sm" placeholder="Descripcion Consulta..."></textarea>
+                                <span class="form-group has-float-label">                                  
+                                  <textarea id="txtMotivoConsulta" [disabled]="soloLectura" name="txtMotivoConsulta" [(ngModel)]="consultas.sintomas" rows="2"  class="form-control form-control-sm" placeholder="Descripcion Consulta..."></textarea>
+                                  <label for="txtMotivoConsulta">Motivo de la Consulta</label>
+                                </span>
                               </div>
                             
                               <div class="col-md-6">
-                                <span class="badge badge-info">Enfermedad Actual</span>
-                                <textarea id="enfermedadActual" [disabled]="soloLectura" name="enfermedadActual" rows="2" [(ngModel)]="consultas.observaciones" class="form-control form-control-sm" placeholder="Sintomas Actuales..."></textarea>
+                                <span class="form-group has-float-label">                                
+                                  <textarea id="enfermedadActual" [disabled]="soloLectura" name="enfermedadActual" rows="2" [(ngModel)]="consultas.observaciones" class="form-control form-control-sm" placeholder="Sintomas Actuales..."></textarea>
+                                  <label for="enfermedadActual">Enfermedad Actual</label>
+                                </span>
                               </div>
                             </div><!--/.row 8-->
 
                             <div class="row">
                               <div class="col-md-6">
-                                <span class="badge badge-info">Diagn&oacute;stico</span>
-                                <textarea id="diagnostico" name="diagnostico" [disabled]="soloLectura" rows="2" [(ngModel)]="consultas.resultado_eva" class="form-control form-control-sm" placeholder="Diagnostico..."></textarea>
+                                <span class="form-group has-float-label">
+                                  <textarea id="diagnostico" name="diagnostico" [disabled]="soloLectura" rows="2" [(ngModel)]="consultas.resultado_eva" class="form-control form-control-sm" placeholder="Diagnostico..."></textarea>
+                                  <label for="diagnostico">Diagn&oacute;stico</label>
+                                </span>
                               </div>
                             
                               <div class="col-md-6">
-                                <span class="badge badge-info">Observaci&oacute;n</span>
-                                <textarea id="observacion" name="observacion" [disabled]="soloLectura" rows="2" [(ngModel)]="consultas.observacion_medicamentos" class="form-control form-control-sm" placeholder="Observaciones..."></textarea>
+                                <span class="form-group has-float-label">                                
+                                  <textarea id="observacion" name="observacion" [disabled]="soloLectura" rows="2" [(ngModel)]="consultas.observacion_medicamentos" class="form-control form-control-sm" placeholder="Observaciones..."></textarea>
+                                  <label for="observacion">Observaci&oacute;n</label>
+                              </span>  
                               </div>
                             </div><!--/.row 9-->
 

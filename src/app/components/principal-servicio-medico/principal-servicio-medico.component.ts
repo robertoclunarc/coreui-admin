@@ -525,7 +525,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
     let i:number=2;
     
     this.arrayMedicos.splice(3, this.arrayMedicos.length);
-    console.log(this.arrayMedicos);
+    //console.log(this.arrayMedicos);
 
     for await (let m of this.arrayMedicos){
         if (m.login!=loginDr){
@@ -543,7 +543,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
             }
           )			
           .catch(err => { console.log(err) });
-          console.log(arrayMotivosMedicosData);
+          //console.log(arrayMotivosMedicosData);
           /////////////////////////////////////////////
           if (i==2){
             this.loginHtml2 = m.login;

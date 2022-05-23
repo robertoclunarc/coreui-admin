@@ -57,6 +57,10 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 
 import { AlertsComponent } from '../../views/notifications/alerts.component'; //'./alerts.component';
 import { AlertModule } from 'ngx-bootstrap/alert';
+
+import { PlanillaModule  } from '../planillas/planilla.module'
+//import { planillaConsultaComponent } from '../planillas/planilla_consulta.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -74,7 +78,8 @@ import { AlertModule } from 'ngx-bootstrap/alert';
     ChartsModule,
     TypeaheadModule.forRoot(),
     AlertModule.forRoot(),
-    
+    //planillaConsultaComponent,
+    PlanillaModule
   ],
   declarations: [
     CardsComponent,

@@ -40,6 +40,8 @@ import {
   AppHeaderModule,
   AppFooterModule,
   AppSidebarModule,
+  
+  
 } from '@coreui/angular';
 
 // Import routing module
@@ -77,6 +79,7 @@ import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-
    //BsDropdownModule,    
    //ButtonsModule.forRoot(),
     NgbToastModule,
+    
     
   ],
   declarations: [

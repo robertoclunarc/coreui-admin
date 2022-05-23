@@ -13,6 +13,7 @@ import { PopoversComponent } from '../../views/base/popovers.component';
 import { ProgressComponent } from '../../views/base/progress.component';
 import { TooltipsComponent } from '../../views/base/tooltips.component';
 import { NavbarsComponent } from '../../views/base/navbars/navbars.component';
+import { planillaConsultaComponent } from '../../components/planillas/planilla_consulta.component'
 
 const routes: Routes = [
   {
@@ -30,6 +31,13 @@ const routes: Routes = [
         component: CardsComponent,
         data: {
           title: 'Cards'
+        }
+      },
+      {
+        path: 'planillaconsulta/:uid',
+        component: planillaConsultaComponent,
+        data: {
+          title: 'Consulta'
         }
       },
       {

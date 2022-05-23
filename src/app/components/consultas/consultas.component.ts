@@ -1,10 +1,9 @@
 //componentes
-import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID } from '@angular/core';
+import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID, ElementRef } from '@angular/core';
 import { ModalDirective} from 'ngx-bootstrap/modal';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
-
 import { Router } from '@angular/router';
 
 //servicios
@@ -38,19 +37,21 @@ import { IAfecciones } from '../../models/afecciones.model';
 import { IRemitido } from '../../models/remitidos.model';
 import { ITiempoReposo } from '../../models/tiemporeposos.model';
 import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinasAplicadas } from '../../models/medicamentos.model';
-import { IindicacionMedica } from '../../models/recetamedica.models'
-import { Observable } from 'rxjs';
+import { IindicacionMedica } from '../../models/recetamedica.models';
+
 
 @Component({
   templateUrl: 'consultas.component.html',
   providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService, PatologiasService, 
               AfeccionesService, SignosVitalesService, RemitidosService, TiempoReposoService, AntropometriaService,
               MedicosService,
-              { provide: AlertConfig }],  
+              { provide: AlertConfig }],
+  styleUrls: ["consultas.component.css"]             
 })
 export class ConsultasComponent  implements OnInit  {  
 
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
+  @ViewChild('pdfTable', {static: false}) pdfTable: ElementRef;
 
   isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
@@ -187,6 +188,9 @@ export class ConsultasComponent  implements OnInit  {
     this.llenarArraymedicamentos('EXISTECIA');
     
 	}
+  public downloadAsPDF(uid: number) {
+    this.router.navigate([`/consultas/planillaconsulta/${uid}`]);
+  }
 
   private async limpiarFiltro(){
       this.buscarConsulta = { 
@@ -396,7 +400,8 @@ export class ConsultasComponent  implements OnInit  {
   
   private buscarSignosVitales(ci: string, fecha: string){
     if (ci!="" &&  ci!= undefined){
-      this.srvSignosVitales.signosVitalesOne(ci, fecha)
+      
+      this.srvSignosVitales.signosVitalesOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
       .toPromise()
       .then(result => {
         if (result[0]!= undefined)
@@ -405,7 +410,7 @@ export class ConsultasComponent  implements OnInit  {
           this.signoVital={} 
         
       });
-      this.srvAntropometria.antropometriaOne(ci, fecha)
+      this.srvAntropometria.antropometriaOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
       .toPromise()
       .then(result => {
         if (result[0]!= undefined)
@@ -635,7 +640,7 @@ export class ConsultasComponent  implements OnInit  {
     this.selectParamedicos= this.paramedicos;
     this.selectMedicos= this.medicos;
     this.turno=item.turno;
-    console.log(item);
+    //console.log(item);
     this.consultas={};
     this.paciente={};
     this.consultas = {
@@ -730,7 +735,7 @@ export class ConsultasComponent  implements OnInit  {
         if (peso > 0)
            imc = Math.round((peso / (talla * talla)) * 100)/100;
            this.antropometria.imc= imc.toFixed(2);     
-    }
+  }
 
   private async guardarMedicametosAplicados(){
     let medAplic: IMedicamentosAplicados;
