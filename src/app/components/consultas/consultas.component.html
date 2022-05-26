@@ -20,14 +20,14 @@
 
                 <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by name" />
                 
-                <table class="table table-striped" id="dataConsultas">
+                <table class="{{ classTable }} table-hover table-sm" id="dataConsultas">
                   <thead>
                     <tr>
                       <th> </th>                      
                       <th scope="col" *ngFor="let t of titulos">
                         
                         <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
-                          <button type="button" (click)="sortTable(t.campo)" class="btn btn-block btn-ghost-dark"><strong>{{t.titulo}}</strong></button>
+                          <button type="button" (click)="sortTable(t.campo)" class="{{ classButton }}"><strong>{{t.titulo}}</strong></button>
                         </div>
                     </th>
                     </tr>
@@ -72,9 +72,9 @@
             </div>
           </div>
           <!--/.col-->
-          <div bsModal #primaryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg modal-primary" role="document">
-              <div class="modal-content">
+          <div bsModal #primaryModal="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+              <div class="modal-content modal-primary" >
                 <div class="modal-header">
                   <h6 class="modal-title">{{modalTitle}}</h6>
                   <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">

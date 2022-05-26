@@ -1,56 +1,152 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
+import { Router } from '@angular/router';
+import { formatDate } from '@angular/common';
+
+//servicios
+import { ConsultasService } from '../../services/servicio_medico/consultas.service';
+import { SignosVitalesService } from '../../services/servicio_medico/signosvitales.service';
+import { AntropometriaService } from '../../services/servicio_medico/antropometria.service';
+import { MedicamentosService } from '../../services/servicio_medico/medicamentos.service';
+
+//modelos
+import { IvConsulta, IFiltroConsulta, Ireferencia, IvMorbilidad } from '../../models/consultas.model';
+import { IsignosVitales } from '../../models/signos_vitales.model';
+import { Iantropometria  } from '../../models/antropometria.model';
+import { IUsuarios } from '../../models/usuarios.model';
+import { ImedicamentosConsulta } from '../../models/medicamentos.model';
 
 @Component({
   selector: 'planilla-root',
   templateUrl: './planilla_consulta.html',
+  providers: [ConsultasService, SignosVitalesService, AntropometriaService, MedicamentosService],
   //styleUrls: ['./app.component.scss']
 })
 
 export class planillaConsultaComponent implements OnInit {
   id: string;
-  Posts = [
-    {
-      "id": 1,
-      "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-      "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-    },
-    {
-      "id": 2,
-      "title": "qui est esse",
-      "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
-    },
-    {
-      "id": 3,
-      "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
-      "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
-    },
-    {
-      "id": 4,
-      "title": "eum et est occaecati",
-      "body": "ullam et saepe reiciendis voluptatem adipisci\nsit amet autem assumenda provident rerum culpa\nquis hic commodi nesciunt rem tenetur doloremque ipsam iure\nquis sunt voluptatem rerum illo velit"
-    },
-    {
-      "id": 5,
-      "title": "nesciunt quas odio",
-      "body": "repudiandae veniam quaerat sunt sed\nalias aut fugiat sit autem sed est\nvoluptatem omnis possimus esse voluptatibus quis\nest aut tenetur dolor neque"
-    },
-    {
-      "id": 6,
-      "title": "dolorem eum magni eos aperiam quia",
-      "body": "ut aspernatur corporis harum nihil quis provident sequi\nmollitia nobis aliquid molestiae\nperspiciatis et ea nemo ab reprehenderit accusantium quas\nvoluptate dolores velit et doloremque molestiae"
-    }
-  ];
-
   
+  private vConsulta: IvConsulta={};
+  private vMorbilidad: IvMorbilidad={};
+  private signoVital: IsignosVitales={};
+  private antropometria: Iantropometria={};
+  private buscarConsulta: IFiltroConsulta;
+  private medicamentoAplicado: ImedicamentosConsulta ={};
+  private countMedicamentos: number=0
+  private user: IUsuarios={};
+  private tipoUser: string;
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute,private router: Router,
+    private srvConsultas: ConsultasService,    
+    private srvSignosVitales: SignosVitalesService,    
+    private srvAntropometria: AntropometriaService,
+    private srvMedicamentos: MedicamentosService,
+    @Inject(LOCALE_ID) public locale: string,
+    ) { }
 
   ngOnInit(): void {
-     this.id = this.route.snapshot.paramMap.get("uid");
-     console.log(this.id) 
+    if (sessionStorage.currentUser){  
+
+      this.user=JSON.parse(sessionStorage.currentUser);
+      if (this.user) {
+           
+        this.tipoUser= sessionStorage.tipoUser;
+        this.id = this.route.snapshot.paramMap.get("uid");
+      }
+      else {
+            this.router.navigate(["login"]);
+      }
+    }else{
+      this.router.navigate(["login"]);
+    }
+    this.consultasFilter(this.id);
+    this.morbilidadFilter(this.id);
+    this.buscarMedicamentosAplicados(parseInt(this.id));
+  }
+
+  private async consultasFilter(uid: string) {
+    this.limpiarFiltro();
+    this.buscarConsulta.uidConsulta=uid;
+		return await this.srvConsultas.consultaFilter(this.buscarConsulta)
+			.toPromise()
+      .then(results => {				
+				
+				this.vConsulta = results[0];
+        this.buscarSignosVitales(this.vConsulta.ci, this.vConsulta.fecha);
+				
+			})			
+			.catch(err => { console.log(err) });
+	}
+
+  private async morbilidadFilter(uid: string) {
+    this.limpiarFiltro();
+    this.buscarConsulta.uidConsulta=uid;
+		return await this.srvConsultas.morbilidadFilter('null',uid,'null','null','null','null','null',)
+			.toPromise()
+      .then(results => {				
+				
+				this.vMorbilidad = results[0];
+				
+			})			
+			.catch(err => { console.log(err) });
+	}
+
+  private async limpiarFiltro(){
+      this.buscarConsulta = { 
+      uidConsulta: 'null',
+      ciPaciente: 'null',
+      Motivo: 'null',
+      uidMotivo: 'null',
+      fechaIni: 'null',
+      fechaFin: 'null',
+      Medico:'null',
+      Paramedico: 'null',
+      nombrePaciente: 'null',
+      cargo: 'null',
+      fecha: 'null'
+    }
+  }
+
+  private buscarMedicamentosAplicados(idConsulta: number){
+    if ( idConsulta!= undefined){
+      this.srvMedicamentos.medicamentosAplicados(idConsulta)
+      .toPromise()
+      .then(result => {
+        if (result!= undefined){           
+           this.medicamentoAplicado=result;
+           this.countMedicamentos= this.medicamentoAplicado.medicamentos==undefined ? 0 : this.medicamentoAplicado.medicamentos.length ;           
+        }
+        else
+        this.medicamentoAplicado={}
+        
+      })
+    }    
+  }
+
+  private buscarSignosVitales(ci: string, fecha: string){
+    if (ci!="" &&  ci!= undefined){
+      
+      this.srvSignosVitales.signosVitalesOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
+      .toPromise()
+      .then(result => {
+        if (result[0]!= undefined)
+          this.signoVital=result[0];
+        else
+          this.signoVital={} 
+        
+      });
+      this.srvAntropometria.antropometriaOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
+      .toPromise()
+      .then(result => {
+        if (result[0]!= undefined)
+          this.antropometria=result[0];
+        else
+          this.antropometria={} 
+        
+      });
+    }    
   }
 
   public exportHtmlToPDF(){

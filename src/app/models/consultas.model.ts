@@ -125,3 +125,39 @@ export interface Ireferencia{
     especialidad?: string,
     informe?: string
 }
+
+export interface IvMorbilidad{
+    uid?: string;
+    ci?: string;
+    fecha?: string;
+    turno?: string;
+    motivo?: string;
+    fkafeccion?: string;
+    descripcion_afeccion?: string;
+    motivo_consulta?: string;
+    cargo?: string;
+    sexo?: string;
+    direccion_hab?: string;
+    mano_dominante?: string;
+    talla?: string;
+    peso?: string;
+    imc?: string;
+    edad?: string;
+    departamento?: string;
+    diagnostico?: string;
+    medicamentos?: string;
+    ci_paramedico?: string;
+    uid_paciente?: string;
+    paramedico?: string;
+    medico?: string;
+    ci_medico?: string;
+    patologia?: string;
+    nombre_completo?: string;
+    id_area?: string;
+    area?: string;
+    aplicacion?: string;
+    supervisor?: string;
+    nombres_jefe?: string;
+    login_atendio?: string;
+    reposo?: string;
+ }

@@ -78,8 +78,7 @@ import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-
    // TypeaheadModule.forRoot(),
    //BsDropdownModule,    
    //ButtonsModule.forRoot(),
-    NgbToastModule,
-    
+    NgbToastModule,    
     
   ],
   declarations: [

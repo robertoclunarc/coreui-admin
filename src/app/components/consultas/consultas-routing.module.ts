@@ -24,7 +24,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'tabs'
+        redirectTo: 'atencion'
       },
       {
         path: 'cards',
@@ -62,7 +62,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'tabs',
+        path: 'atencion',
         component: ConsultasComponent,
         data: {
           title: 'Tabs'
@@ -122,7 +122,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forChild(routes)],
+  imports: [RouterModule.forChild(routes),  ], 
   exports: [RouterModule]
 })
 export class ConsultasRoutingModule {}

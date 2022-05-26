@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { IConsultas, IConsultasConstraint, IFiltroConsulta, IvConsulta } from '../../models/consultas.model';
+import { IConsultas, IConsultasConstraint, IFiltroConsulta, IvConsulta, IvMorbilidad } from '../../models/consultas.model';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -44,6 +44,15 @@ export class ConsultasService {
     return this.http.get<IvConsulta[]>(this.apiUrlConsultas + 'filtrar/' + parametrosUrl )
 			.pipe(
 				tap(result => console.log(`consultaFilter`)),
+				catchError(this.handleError)
+			);
+  }
+
+  morbilidadFilter(ciPaciente: string , uidConsulta: string, fechaIni: string, fechaFin: string, motivo: string, uidArea: string, turno: string) : Observable<IvMorbilidad[]> { 
+    let parametrosUrl = ciPaciente + '/' + uidConsulta + '/' + fechaIni + '/' + fechaFin + '/' + motivo + '/' + uidArea  + '/' + turno; 
+    return this.http.get<IvMorbilidad[]>(this.apiUrlConsultas + 'morbilidad/' + parametrosUrl )
+			.pipe(
+				tap(result => console.log(`morbilidadFilter`)),
 				catchError(this.handleError)
 			);
   }

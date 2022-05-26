@@ -1,6 +1,6 @@
 <div class="container">
 
-    <button class="btn btn-primary btn-block" (click)="exportHtmlToPDF()">Download PDF</button>
+    <button class="btn btn-primary btn-block" (click)="exportHtmlToPDF()">Descargar PDF</button>
   
     <div class="container-fluid" id="htmltable" #htmltable>      
         <table width="90%" border="0" cellspacing="0" cellpadding="0">
@@ -21,16 +21,16 @@
                 </th>
             </tr>
         </table>
-        <table class="table table-bordered" width="90%" >
+        <table class="table table-bordered table-sm" width="90%" >
             <tr bgcolor="#F0ECEC">
                 <th width="15%">FECHA</th>
                 <th width="65%">APELLIDO Y NOMBRE DEL SOLICITANTE</th>
                 <th width="30%">CEDULA</th>
             </tr>
             <tr>
-                <td>2022-05-04</td>
-                <td>PEDRO JAVIER GIL.GIL</td>
-                <td>19803020</td>
+                <td>{{ vConsulta.fecha | date:'dd/MM/yyyy' }}</td>
+                <td>{{ vConsulta.nombre_completo }}</td>
+                <td>{{ vConsulta.ci }}</td>
             </tr>
             <tr bgcolor="#F0ECEC">
                 <th width="15%">TURNO</th>
@@ -38,8 +38,8 @@
                 <th width="30%">FIRMA</th>
             </tr>
             <tr>
-                <td >1</td>
-                <td>TECNICO DE LIMPIEZA INDUSTRIAL I        </td>
+                <td >{{ vConsulta.turno }}</td>
+                <td>{{ vConsulta.cargo }}</td>
                 <td></td>
             </tr>
             <tr bgcolor="#F0ECEC">
@@ -48,9 +48,9 @@
                 <th width="30%">CONTRATISTA</th>
             </tr>
             <tr>
-                <td  height="30px">Gerencia General Industrial</td>
-                <td>Coordinacion de Servicios Generales</td>
-                <td></td>
+                <td  height="30px">{{ vConsulta.gcia }}</td>
+                <td>{{ vConsulta.departamento }}</td>
+                <td>{{ vConsulta.contratista }}</td>
             </tr>
             <tr bgcolor="#F0ECEC">
                 <th width="55%">APELLIDOS Y NOMBRE DEL SUPERVISOR</th>
@@ -58,9 +58,9 @@
                 <th width="30%">CONDICION TRABAJADOR</th>
             </tr>
             <tr>
-                <td  height="30px">GRIMON B EDWUAR RUMMENYGG GRIMON B</td>
-                <td>20887303</td>
-                <td></td>
+                <td  height="30px">{{  vMorbilidad.nombres_jefe }}</td>
+                <td>{{  vMorbilidad.supervisor }}</td>
+                <td>{{ vConsulta.condicion }}</td>
             </tr>
             <tr bgcolor="#F0ECEC">
                 <th width="35%">MOTIVO</th>
@@ -68,65 +68,103 @@
                 <th width="30%">REPOSO</th>
             </tr>
             <tr>
-                <th height="30px">ENFERMEDAD CUMUN</th>
-                <td></td>
-                <td>N/A</td>
+                <td height="30px">{{ vConsulta.motivo }}</td>
+                <td>{{ vConsulta.remitido }}</td>
+                <td>{{ vConsulta.reposo }}</td>
             </tr>
             <tr bgcolor="#F0ECEC">
                 <th colspan="3" width="110%">ENFERMEDAD ACTUAL</th>
             </tr>
             <tr>
-                <td colspan="3"  height="30px"></td>
+                <td colspan="3"  height="30px">{{ vConsulta.observaciones }}</td>
             </tr>
             <tr bgcolor="#F0ECEC">
                 <th colspan="3" width="110%">MOTIVO DE LA CONSULTA</th>
             </tr>
             <tr>
-                <td colspan="3" height="30px">cefalea T/A 110/80MMHG</td>
+                <td colspan="3" height="30px">{{ vConsulta.sintomas }}</td>
             </tr>
             <tr bgcolor="#F0ECEC">
                 <th colspan="3" width="110%">PATOLOGIA</th>
             </tr>
             <tr>
-                <td colspan="3" height="30px">SIN ESPECIFICACION</td>
+                <td colspan="3" height="30px">{{ vConsulta.patologia }}</td>
             </tr>
             <tr bgcolor="#F0ECEC">
                 <th colspan="3" width="110%">DIAGNOSTICO</th>
             </tr>
             <tr>
-                <td colspan="3" height="30px">cefalea</td>
+                <td colspan="3" height="30px">{{ vConsulta.resultado_eva }}</td>
             </tr>
             <tr bgcolor="#F0ECEC">
                 <th colspan="3" width="110%">EVALUACION MEDICA</th>
             </tr>
             <tr>
-                <th colspan="3" height="30px">F. Resp.: N/A;&nbsp;&nbsp;&nbsp;&nbsp;Pulso: N/A;&nbsp;&nbsp;&nbsp;&nbsp;Temp.: N/A;&nbsp;&nbsp;&nbsp;&nbsp;Talla: N/A;&nbsp;&nbsp;&nbsp;&nbsp;Peso: N/A;&nbsp;&nbsp;&nbsp;&nbsp;T. Art.: 110/80;&nbsp;&nbsp;&nbsp;&nbsp;F. Card.: N/A;&nbsp;&nbsp;&nbsp;&nbsp;</th>
+                <th colspan="3" height="30px">F. Resp.: {{ signoVital.fresp }};&nbsp;&nbsp;&nbsp;&nbsp;Pulso: {{ signoVital.pulso }};&nbsp;&nbsp;&nbsp;&nbsp;Temp.: {{ signoVital.temper }};&nbsp;&nbsp;&nbsp;&nbsp;Talla: {{ antropometria.talla }};&nbsp;&nbsp;&nbsp;&nbsp;Peso: {{ antropometria.peso }};&nbsp;&nbsp;&nbsp;&nbsp;T. Art.: {{ signoVital.tart }};&nbsp;&nbsp;&nbsp;&nbsp;F. Card.: {{ signoVital.fcard }};&nbsp;&nbsp;&nbsp;&nbsp;IMC: {{ antropometria.imc }};&nbsp;&nbsp;&nbsp;&nbsp;</th>
             </tr>
             <tr bgcolor="#F0ECEC">
                 <th colspan="3" width="110%">OBSERVACION</th>
             </tr>
             <tr>
-                <td colspan="3" height="30px">1 tableta de acetaminofen</td>
+                <td colspan="3" height="30px">{{ vConsulta.observacion_medicamentos }}</td>
             </tr>
             <tr bgcolor="#F0ECEC">
                 <th colspan="3" width="110%">REFERENCIA MEDICA</th>
             </tr>
             <tr>
-                <td colspan="3" height="30px"></td>
+                <td colspan="3" height="30px">{{ vConsulta.referencia_medica }}</td>
+            </tr>            
+            
+            <tr *ngIf="countMedicamentos != undefined && countMedicamentos != 0" bgcolor="#F0ECEC">
+                <th colspan="3" width="110%">MEDICAMENTOS ADMINISTRADOS</th>
             </tr>
-            <tr bgcolor="#F0ECEC">
-                <th colspan="2" width="55%">MÉDICO DE GUARDIA</th>
-                <th width="55%">PARAMÉDICO/ENFERMERO(A) DE GUARDIA</th>
+        
+            <tr *ngIf="countMedicamentos != undefined && countMedicamentos != 0" bgcolor="#F0ECEC">
+                <th width="35%">MEDICAMENTO</th>
+                <th width="45%">UNIDAD/MEDIDA</th>
+                <th width="30%">CANTIDAD</th>
             </tr>
-            <tr>
-                <td colspan="2" width="55%"></td>
-                <th width="55%">FLORES E ANYER MARILIN</th>
+            
+            <tr *ngFor="let medA of medicamentoAplicado.medicamentos; let j=index">
+                <td>{{ medA.medicamento.descripcion }}</td>
+                <td>{{ medA.medidas }}</td>
+                <td>{{ medA.cantidad }}</td>
             </tr>
-            <tr>
-                <th colspan="2" width="55%"><font color="#F0ECEC">FIRMA</font></th>
-                <th width="55%"><font color="#F0ECEC">FIRMA</font></th>
+            <tr *ngIf="vConsulta.observacion_medicamentos != undefined && vConsulta.observacion_medicamentos != ''" >
+                <th colspan="3" width="110%">OBSERVACIÓN (MEDICAMENTOS)</th>
             </tr>
-        </table>
+		    <tr *ngIf="vConsulta.observacion_medicamentos != undefined && vConsulta.observacion_medicamentos != ''" bgcolor="#F0ECEC">
+                <td colspan="3" height="30px">{{ vConsulta.observacion_medicamentos }}</td>
+            </tr>
+        </table>            
+
+        <div class="container">
+            <div class="row align-items-start">
+                <div *ngIf="vConsulta.medico != undefined && vConsulta.medico != ''" class="col">
+                    <strong>MÉDICO DE GUARDIA</strong>
+                </div>                          
+                <div *ngIf="vConsulta.paramedico != undefined && vConsulta.paramedico != ''" class="col">
+                    <strong>PARAMÉDICO/ENFERMERO(A) DE GUARDIA</strong>
+                </div>
+            </div>
+            <div class="row align-items-start">
+                <div *ngIf="vConsulta.medico != undefined && vConsulta.medico != ''" class="col">
+                    {{ vConsulta.medico }}
+                </div>                          
+                <div *ngIf="vConsulta.paramedico != undefined && vConsulta.paramedico != ''" class="col">
+                    {{ vConsulta.paramedico }}
+                </div>
+            </div>
+            <div class="row align-items-start">
+                <div class="col">
+                    <font color="#F0ECEC">FIRMA</font>
+                </div>                          
+                <div class="col">
+                    <font color="#F0ECEC">FIRMA</font>
+                </div>
+            </div>
+        </div>            
+        
     </div>
   
   </div>

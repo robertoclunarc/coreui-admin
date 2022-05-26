@@ -39,8 +39,8 @@ import { ITiempoReposo } from '../../models/tiemporeposos.model';
 import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinasAplicadas } from '../../models/medicamentos.model';
 import { IindicacionMedica } from '../../models/recetamedica.models';
 
-
 @Component({
+  selector: 'app-consultas',
   templateUrl: 'consultas.component.html',
   providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService, PatologiasService, 
               AfeccionesService, SignosVitalesService, RemitidosService, TiempoReposoService, AntropometriaService,
@@ -108,8 +108,10 @@ export class ConsultasComponent  implements OnInit  {
   private medicamentoIndic: IindicacionMedica={};  
   private turno: number;
   private soloLectura: boolean;
-  
-  
+  public classTable: string;
+  public classButton: string;
+  public estiloOscuro: string;
+   
   show = false;
   autohide = true;
 
@@ -162,6 +164,20 @@ export class ConsultasComponent  implements OnInit  {
     ) {  }
 
   ngOnInit(): void {
+    
+    if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
+      this.classTable = "table table-striped";
+      this.classButton ="btn btn-block btn-ghost-dark"
+      this.estiloOscuro=""
+    }
+    else { 
+      this.classTable = sessionStorage.classTable;
+      this.classButton ="btn btn-block btn-ghost-dark active"
+      
+    }
+
+    
+    
     if (sessionStorage.currentUser){  
 
         this.user=JSON.parse(sessionStorage.currentUser);

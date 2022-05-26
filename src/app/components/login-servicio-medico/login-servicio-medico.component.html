@@ -21,7 +21,7 @@ text-align: center;" class="">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-lock"></i></span>
                     </div>
-                    <input name="passw" id="passw" type="password" class="form-control" placeholder="Password" [(ngModel)]="model.passw" #passw="ngModel" required autocomplete="current-password" required>
+                    <input name="passw" id="passw" type="password" class="form-control" (keyup.enter)="loguear()" placeholder="Password" [(ngModel)]="model.passw" #passw="ngModel" required autocomplete="current-password" required>
                   </div>
                   <div class="row">
                     <div class="col-6">
