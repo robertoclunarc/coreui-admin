@@ -1,4 +1,3 @@
-console.log('views/portada.component.ts');
 import { Component, OnInit } from '@angular/core';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
@@ -383,7 +382,7 @@ export class PortadaComponent implements OnInit {
 
     sessionStorage.setItem('sistemaActual', sistema);
     if (sistema==='ServicioMedico')
-        this.router.navigate(["login"]);
+        this.router.navigate(["serviciomedico/login"]);
     else 
       if (sistema==='Balanza')
           this.router.navigate(["loginBalanza"]);

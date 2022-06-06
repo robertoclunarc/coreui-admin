@@ -1,6 +1,7 @@
 //componentes
-import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID, ElementRef } from '@angular/core';
+import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID, ElementRef, NgModule } from '@angular/core';
 import { ModalDirective} from 'ngx-bootstrap/modal';
+import { FormsModule } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
@@ -8,36 +9,36 @@ import { Router } from '@angular/router';
 
 //servicios
 
-import { ConsultasService } from '../../services/servicio_medico/consultas.service';
-import { PacientesService } from '../../services/servicio_medico/pacientes.service';
-import { MedicosService } from '../../services/servicio_medico/medicos.service';
-import { MotivosService } from '../../services/servicio_medico/motivos.service';
-import { AreasService } from '../../services/servicio_medico/areas.sevice';
-import { PatologiasService } from '../../services/servicio_medico/patologias.service';
-import { AfeccionesService } from '../../services/servicio_medico/afecciones.service';
-import { SignosVitalesService } from '../../services/servicio_medico/signosvitales.service';
-import { RemitidosService } from '../../services/servicio_medico/remitidos.service';
-import { TiempoReposoService } from '../../services/servicio_medico/tiemporeposos.service';
-import { AntropometriaService } from '../../services/servicio_medico/antropometria.service';
-import { MedicamentosService } from '../../services/servicio_medico/medicamentos.service';
-//import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
+import { ConsultasService } from '../../../services/servicio_medico/consultas.service';
+import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
+import { MedicosService } from '../../../services/servicio_medico/medicos.service';
+import { MotivosService } from '../../../services/servicio_medico/motivos.service';
+import { AreasService } from '../../../services/servicio_medico/areas.sevice';
+import { PatologiasService } from '../../../services/servicio_medico/patologias.service';
+import { AfeccionesService } from '../../../services/servicio_medico/afecciones.service';
+import { SignosVitalesService } from '../../../services/servicio_medico/signosvitales.service';
+import { RemitidosService } from '../../../services/servicio_medico/remitidos.service';
+import { TiempoReposoService } from '../../../services/servicio_medico/tiemporeposos.service';
+import { AntropometriaService } from '../../../services/servicio_medico/antropometria.service';
+import { MedicamentosService } from '../../../services/servicio_medico/medicamentos.service';
+
 
 //modelos
-import { Ipopover } from '../../models/varios.model';
-import { IUsuarios } from '../../models/usuarios.model';
-import { IConsultas, IConsultasConstraint, IvConsulta, IFiltroConsulta, Ireferencia } from '../../models/consultas.model';
-import { IsignosVitales } from '../../models/signos_vitales.model';
-import { Iantropometria  } from '../../models/antropometria.model';
-import { IvPaciente } from '../../models/paciente.model';
-import { IMedicos, IParamedicos } from '../../models/medicos.model';
-import { IMotivo } from '../../models/motivos.model';
-import { IAreas } from '../../models/areas.model';
-import { IPatologia } from '../../models/patologias.model';
-import { IAfecciones } from '../../models/afecciones.model';
-import { IRemitido } from '../../models/remitidos.model';
-import { ITiempoReposo } from '../../models/tiemporeposos.model';
-import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinasAplicadas } from '../../models/medicamentos.model';
-import { IindicacionMedica } from '../../models/recetamedica.models';
+import { Ipopover } from '../../../models/servicio-medico/varios.model';
+import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
+import { IConsultas, IConsultasConstraint, IvConsulta, IFiltroConsulta, Ireferencia } from '../../../models/servicio-medico/consultas.model';
+import { IsignosVitales } from '../../../models/servicio-medico/signos_vitales.model';
+import { Iantropometria  } from '../../../models/servicio-medico/antropometria.model';
+import { IvPaciente } from '../../../models/servicio-medico/paciente.model';
+import { IMedicos, IParamedicos } from '../../../models/servicio-medico/medicos.model';
+import { IMotivo } from '../../../models/servicio-medico/motivos.model';
+import { IAreas } from '../../../models/servicio-medico/areas.model';
+import { IPatologia } from '../../../models/servicio-medico/patologias.model';
+import { IAfecciones } from '../../../models/servicio-medico/afecciones.model';
+import { IRemitido } from '../../../models/servicio-medico/remitidos.model';
+import { ITiempoReposo } from '../../../models/servicio-medico/tiemporeposos.model';
+import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinasAplicadas } from '../../../models/servicio-medico/medicamentos.model';
+import { IindicacionMedica } from '../../../models/servicio-medico/recetamedica.models';
 
 @Component({
   selector: 'app-consultas',
@@ -161,7 +162,7 @@ export class ConsultasComponent  implements OnInit  {
     private srvAntropometria: AntropometriaService,
     private srvMedicamentos: MedicamentosService,    
     @Inject(LOCALE_ID) public locale: string,  
-    ) {  }
+  ) {  }
 
   ngOnInit(): void {
     
@@ -175,8 +176,6 @@ export class ConsultasComponent  implements OnInit  {
       this.classButton ="btn btn-block btn-ghost-dark active"
       
     }
-
-    
     
     if (sessionStorage.currentUser){  
 
@@ -841,7 +840,7 @@ export class ConsultasComponent  implements OnInit  {
       }
       
     }
-    console.log('que bello');
+    
     return popOver;    
   }
 

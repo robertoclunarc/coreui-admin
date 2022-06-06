@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
-import { ConsultasService  } from '../../services/servicio_medico/consultas.service';
-import { VarioService  } from '../../services/servicio_medico/varios.service';
-import { MedicosService } from '../../services/servicio_medico/medicos.service';
-import { ItotalAtenciones } from '../../models/medicos.model';
+import { ConsultasService  } from '../../../services/servicio_medico/consultas.service';
+import { VarioService  } from '../../../services/servicio_medico/varios.service';
+import { MedicosService } from '../../../services/servicio_medico/medicos.service';
+import { ItotalAtenciones } from '../../../models/servicio-medico/medicos.model';
 import { formatDate } from '@angular/common';
 
 @Component({

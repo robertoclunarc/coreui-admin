@@ -1,4 +1,3 @@
-console.log('views.portada.module');
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule, APP_INITIALIZER } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -9,11 +8,12 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
-//import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
+import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { NgbToastModule } from  'ngb-toast';
 import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular';
 import { authInterceptorProviders } from "../app/helpers/login.interceptor";
-
+import { PopoverModule } from 'ngx-bootstrap/popover';
+import { AlertModule } from 'ngx-bootstrap/alert';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
@@ -23,15 +23,20 @@ import { AppComponent } from './app.component';
 
 // Import containers
 import { DefaultLayoutComponent } from './containers';
-import { LayoutServicioMedicoComponent } from './containers/layout-serviciomedico'
-import { LayoutBalanzaComponent } from './containers/layout-balanza'
+import { LayoutServicioMedicoComponent } from './containers/layout-serviciomedico';
+import { LayoutBalanzaComponent } from './containers/layout-balanza';
+
+//eliminar despues de terminar historial medico:
+import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
+///////////////////////////////////////////////
+
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
-  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent 
+  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent
 ];
 
 import {
@@ -52,7 +57,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 
-import { LoginServicioMedicoComponent } from './components/login-servicio-medico/login-servicio-medico.component';
+import { LoginServicioMedicoComponent } from './components/servicio-medico/login-servicio-medico/login-servicio-medico.component';
 import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-balanza.component';
 //import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
@@ -75,7 +80,9 @@ import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-
     HttpClientModule,
     FormsModule,
     PaginationModule.forRoot(),
-   // TypeaheadModule.forRoot(),
+    TypeaheadModule.forRoot(),
+    PopoverModule.forRoot(),
+    AlertModule.forRoot(),
    //BsDropdownModule,    
    //ButtonsModule.forRoot(),
     NgbToastModule,    

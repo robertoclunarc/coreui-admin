@@ -5,8 +5,8 @@ import { LoginSecioMedicoService } from '../../services/servicio_medico/login-se
 import { ConsultasService } from '../../services/servicio_medico/consultas.service';
 import { MedicosService } from '../../services/servicio_medico/medicos.service';
 import { MenusService } from '../../services/servicio_medico/menu_serviciomedico.service';
-import { IUsuarios } from '../../models/usuarios.model';
-import { ItotalAtenciones } from '../../models/medicos.model';
+import { IUsuarios } from '../../models/servicio-medico/usuarios.model';
+import { ItotalAtenciones } from '../../models/servicio-medico/medicos.model';
  
 @Component({
   selector: 'app-layout-serviciomedico',
@@ -111,7 +111,10 @@ export class LayoutServicioMedicoComponent {
       sessionStorage.setItem('modoOscuro', "Off")
       sessionStorage.setItem('classTable', "table table-striped")
     }
-    this.reloadCurrentRoute();
+    setTimeout(() => {
+      this.reloadCurrentRoute();
+    }, 1000);
+    
   }  
 
   reloadCurrentRoute() {

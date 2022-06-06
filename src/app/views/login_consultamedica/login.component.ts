@@ -1,12 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 //import 'rxjs/add/operator/first';
-<<<<<<< HEAD
 //import { LoginSecioMedicoService } from '../../services/login-secio-medico.service';
-=======
->>>>>>> 60c7ee7a7a3c7ae40bf9beb34b1dd9a385a408ce
 import { LoginSecioMedicoService } from '../../services/servicio_medico/login-secio-medico.service';
-import { IUsuarios } from '../../models/usuarios.model';
+import { IUsuarios } from '../../models/servicio-medico/usuarios.model';
 
 @Component({
   selector: 'app-login',
@@ -36,7 +33,7 @@ export class LoginServicioMedicoComponent implements OnInit {
         .subscribe(
             data => {
                 this.user = data[0];
-                console.log(this.user);
+                //console.log(this.user);
                 if (this.user && this.user.estatus != 'ACTIVO') {
                     console.log(this.user.estatus);
                     this.loading = false;
@@ -48,7 +45,7 @@ export class LoginServicioMedicoComponent implements OnInit {
                 //this.router.navigate(['/noticias']);
                 const currentUser = sessionStorage.getItem('currrentUser');
                 console.log(sessionStorage.getItem('currrentUser'));
-                console.log(currentUser);
+                //console.log(currentUser);
                 if (!currentUser) {
                     this.loading = false;
                     this.error = 'Usuario no Autenticado';

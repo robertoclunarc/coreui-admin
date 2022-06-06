@@ -5,6 +5,14 @@ import { PrincipalServicioMedicoComponent} from './principal-servicio-medico.com
 
 const routes: Routes = [
   {
+    path: 'serviciomedico',
+    component: PrincipalServicioMedicoComponent,
+    data: {
+      title: 'Principal',
+
+    }
+  },
+  {
     path: '',
     component: PrincipalServicioMedicoComponent,
     data: {

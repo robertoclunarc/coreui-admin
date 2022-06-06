@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { LoginSecioMedicoService } from '../../services/servicio_medico/login-secio-medico.service';
-import { IUsuarios } from '../../models/usuarios.model';
+import { LoginSecioMedicoService } from '../../../services/servicio_medico/login-secio-medico.service';
+import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 
 @Component({
   selector: 'app-login-servicio-medico',
@@ -45,7 +45,7 @@ export class LoginServicioMedicoComponent implements OnInit {
               return;
           }
           sessionStorage.setItem('sistemaActual', 'ServicioMedico');
-          this.router.navigate(['/principal']);
+          this.router.navigate(['serviciomedico/principal']);
 				
 			})
 			.catch(err => { 

@@ -6,17 +6,17 @@ import { Router } from '@angular/router';
 import { formatDate } from '@angular/common';
 
 //servicios
-import { ConsultasService } from '../../services/servicio_medico/consultas.service';
-import { SignosVitalesService } from '../../services/servicio_medico/signosvitales.service';
-import { AntropometriaService } from '../../services/servicio_medico/antropometria.service';
-import { MedicamentosService } from '../../services/servicio_medico/medicamentos.service';
+import { ConsultasService } from '../../../services/servicio_medico/consultas.service';
+import { SignosVitalesService } from '../../../services/servicio_medico/signosvitales.service';
+import { AntropometriaService } from '../../../services/servicio_medico/antropometria.service';
+import { MedicamentosService } from '../../../services/servicio_medico/medicamentos.service';
 
 //modelos
-import { IvConsulta, IFiltroConsulta, Ireferencia, IvMorbilidad } from '../../models/consultas.model';
-import { IsignosVitales } from '../../models/signos_vitales.model';
-import { Iantropometria  } from '../../models/antropometria.model';
-import { IUsuarios } from '../../models/usuarios.model';
-import { ImedicamentosConsulta } from '../../models/medicamentos.model';
+import { IvConsulta, IFiltroConsulta, Ireferencia, IvMorbilidad } from '../../../models/servicio-medico/consultas.model';
+import { IsignosVitales } from '../../../models/servicio-medico/signos_vitales.model';
+import { Iantropometria  } from '../../../models/servicio-medico/antropometria.model';
+import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
+import { ImedicamentosConsulta } from '../../../models/servicio-medico/medicamentos.model';
 
 @Component({
   selector: 'planilla-root',

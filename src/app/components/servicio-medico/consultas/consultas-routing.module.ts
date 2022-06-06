@@ -1,19 +1,19 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import { CardsComponent } from '../../views/base/cards.component';
-import { FormsComponent } from '../../views/base/forms.component';
-import { SwitchesComponent } from '../../views/base/switches.component';
-import { TablesComponent } from '../../views/base/tables.component';
+import { CardsComponent } from '../../../views/base/cards.component';
+import { FormsComponent } from '../../../views/base/forms.component';
+import { SwitchesComponent } from '../../../views/base/switches.component';
+import { TablesComponent } from '../../../views/base/tables.component';
 import { ConsultasComponent } from './consultas.component';
-import { CarouselsComponent } from '../../views/base/carousels.component';
-import { CollapsesComponent } from '../../views/base/collapses.component';
-import { PaginationsComponent } from '../../views/base/paginations.component';
-import { PopoversComponent } from '../../views/base/popovers.component';
-import { ProgressComponent } from '../../views/base/progress.component';
-import { TooltipsComponent } from '../../views/base/tooltips.component';
-import { NavbarsComponent } from '../../views/base/navbars/navbars.component';
-import { planillaConsultaComponent } from '../../components/planillas/planilla_consulta.component'
+import { CarouselsComponent } from '../../../views/base/carousels.component';
+import { CollapsesComponent } from '../../../views/base/collapses.component';
+import { PaginationsComponent } from '../../../views/base/paginations.component';
+import { PopoversComponent } from '../../../views/base/popovers.component';
+import { ProgressComponent } from '../../../views/base/progress.component';
+import { TooltipsComponent } from '../../../views/base/tooltips.component';
+import { NavbarsComponent } from '../../../views/base/navbars/navbars.component';
+import { planillaConsultaComponent } from '../planillas/planilla_consulta.component'
 
 const routes: Routes = [
   {

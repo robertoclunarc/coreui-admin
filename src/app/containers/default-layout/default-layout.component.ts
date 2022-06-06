@@ -1,4 +1,3 @@
-console.log('constainers/default-layout/default-layout.component.ts');
 import {Component} from '@angular/core';
 //import { navItems } from '../../_nav';
 

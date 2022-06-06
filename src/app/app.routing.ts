@@ -1,4 +1,3 @@
-console.log('views.portada.routing');
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -8,29 +7,34 @@ import { DefaultLayoutComponent } from './containers';
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
 //import { LoginComponent } from './views/login/login.component';
-import { LoginServicioMedicoComponent  } from './components/login-servicio-medico/login-servicio-medico.component'
+import { LoginServicioMedicoComponent  } from './components/servicio-medico/login-servicio-medico/login-servicio-medico.component'
 import { LoginBalanzaComponent  } from './components/balanza/login-balanza/login-balanza.component'
 import { RegisterComponent } from './views/register/register.component';
-//import { PacientesComponent } from './components/pacientes/pacientes.component';
+import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
 //import { PrincipalServicioMedicoComponent } from './components/principal-servicio-medico/principal-servicio-medico.component';
 import { PortadaComponent } from './views/portada/portada.component';
 //import {  ConsultasComponent } from './components/consultas/consultas.component';
 
 export const routes: Routes = [
   {
-    path: 'principal',
-    redirectTo: 'principal',
-    //component: PrincipalServicioMedicoComponent,
+    path: 'serviciomedico/principal',
+    redirectTo: 'serviciomedico/principal',    
     pathMatch: 'full',
   },
   {
     path: 'principalBalanza',
-    redirectTo: 'principalBalanza',
-    //component: PrincipalServicioMedicoComponent,
+    redirectTo: 'principalBalanza',    
     pathMatch: 'full',
   },
   {
     path: '',
+    component: PortadaComponent,
+    data: {
+      title: 'Portada'
+    }
+  },
+  {
+    path: 'serviciomedico',
     component: PortadaComponent,
     data: {
       title: 'Portada'
@@ -58,8 +62,15 @@ export const routes: Routes = [
     }
   },
   {
-    path: 'login',
+    path: 'serviciomedico/login',
     component: LoginServicioMedicoComponent,
+    data: {
+      title: 'Login Page'
+    }
+  },
+  {
+    path: 'serviciomedico/pacientes',
+    component: PacientesComponent,
     data: {
       title: 'Login Page'
     }
@@ -90,16 +101,16 @@ export const routes: Routes = [
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
       },
       {
-        path: 'consultas',
-        loadChildren: () => import('./components/consultas/consultas.module').then(m => m.ConsultasModule)
+        path: 'serviciomedico/consultas',
+        loadChildren: () => import('./components/servicio-medico/consultas/consultas.module').then(m => m.ConsultasModule)
       },
       {
         path: 'pesajeconsultas',
         loadChildren: () => import('./components/balanza/consultas/consultas.module').then(m => m.ConsultasModule)
       },
       {
-        path: 'principal',
-        loadChildren: () => import('./components/principal-servicio-medico/principal-servicio-medico.module').then(m => m.DashboardModule)
+        path: 'serviciomedico/principal',
+        loadChildren: () => import('./components/servicio-medico/principal-servicio-medico/principal-servicio-medico.module').then(m => m.DashboardModule)
       },
       {
         path: 'principalBalanza',
