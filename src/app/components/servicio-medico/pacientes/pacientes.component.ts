@@ -3,7 +3,6 @@ import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TypeaheadMatch} from 'ngx-bootstrap/typeahead';
-import {  } from 'ngx-bootstrap/typeahead';
 
 //modelos
 import { IvPaciente, IPaciente } from '../../../models/servicio-medico/paciente.model';

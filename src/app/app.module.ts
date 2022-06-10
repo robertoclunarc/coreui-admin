@@ -28,6 +28,7 @@ import { LayoutBalanzaComponent } from './containers/layout-balanza';
 
 //eliminar despues de terminar historial medico:
 import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
+import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
 ///////////////////////////////////////////////
 
 import { P404Component } from './views/error/404.component';
@@ -36,7 +37,7 @@ import { P500Component } from './views/error/500.component';
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
-  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent
+  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent, CargosAnterioresComponent
 ];
 
 import {

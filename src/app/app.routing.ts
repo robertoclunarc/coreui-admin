@@ -6,14 +6,12 @@ import { DefaultLayoutComponent } from './containers';
  
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
-//import { LoginComponent } from './views/login/login.component';
 import { LoginServicioMedicoComponent  } from './components/servicio-medico/login-servicio-medico/login-servicio-medico.component'
 import { LoginBalanzaComponent  } from './components/balanza/login-balanza/login-balanza.component'
 import { RegisterComponent } from './views/register/register.component';
 import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
-//import { PrincipalServicioMedicoComponent } from './components/principal-servicio-medico/principal-servicio-medico.component';
+import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
 import { PortadaComponent } from './views/portada/portada.component';
-//import {  ConsultasComponent } from './components/consultas/consultas.component';
 
 export const routes: Routes = [
   {
@@ -72,7 +70,14 @@ export const routes: Routes = [
     path: 'serviciomedico/pacientes',
     component: PacientesComponent,
     data: {
-      title: 'Login Page'
+      title: 'Datos Paciente'
+    }
+  },
+  {
+    path: 'serviciomedico/cargosanteriores/:idPaciente',
+    component: CargosAnterioresComponent,
+    data: {
+      title: 'Cargos Anteriores del Paciente'
     }
   },
   {

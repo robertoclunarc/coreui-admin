@@ -31,7 +31,7 @@ export class LoginSecioMedicoService {
 				tap(result => { 
           
           if (JSON.stringify(result).length>2) {
-            console.log(JSON.stringify(result));
+            //console.log(JSON.stringify(result));
             // store user details and jwt token in local storage to keep user logged in between page refreshes
             sessionStorage.setItem('currentUser', JSON.stringify(result));
             

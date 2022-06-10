@@ -17,6 +17,6 @@ export class DefaultLayoutComponent {
  
   constructor(){
     this.sistemaActual=sessionStorage.sistemaActual;
-    console.log('constainers/default-layout/default-layout.component.ts('+this.sistemaActual+')'); 
+    
   }
 } 
