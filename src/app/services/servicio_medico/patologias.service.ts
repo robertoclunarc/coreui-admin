@@ -25,6 +25,15 @@ export class PatologiasService {
 			);
   }
 
+  patologiasAntecedentesFamiliares() : Observable<IPatologia[]> { 
+
+    return this.http.get<IPatologia[]>(this.apiUrlPatologias + 'antecedentes')
+			.pipe(
+				tap(result => console.log(`patologiasAntecedentesFamiliares`)),
+				catchError(this.handleError)
+			);
+  }
+
   patologiaOne(id: number) : Observable<IPatologia> { 
 
     return this.http.get<IPatologia>(this.apiUrlPatologias + 'consultar/' + id)

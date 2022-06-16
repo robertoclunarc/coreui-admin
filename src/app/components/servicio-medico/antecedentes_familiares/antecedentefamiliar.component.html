@@ -1,0 +1,51 @@
+<div class="card">
+    <div class="card-header">
+      <strong>Antecedentes Familiares</strong> del Trabajador
+    </div>
+    <form action="" method="post" class="form-horizontal">
+      <div class="card-body">                 
+        <table class="table table-condensed" id="dataReferencias">                              
+          <tr>                                
+            <th scope="col">Enfermedad</th>
+            <th scope="col">Familiar que la Padece</th>
+            <th scope="col">Estatus</th>            
+            <th scope="col">Add+</th>
+          </tr>
+          <tr>                                
+            <th scope="col"><select  class="form-control form-control-sm"  name="cboPatologia" #cboPatologia [(ngModel)]="antecedenteFamiliar.fk_patologia" id="cboPatologia">
+              <option *ngFor="let pat of ArrayPatologias" [value]="pat.uid">{{pat.descripcion}}</option>                                                                     
+            </select></th>
+            <th scope="col"><select  class="form-control form-control-sm"  name="cboParentezco" #cboParentezco [(ngModel)]="antecedenteFamiliar.paterentezco" id="cboParentezco">
+              <option *ngFor="let fam of arrayFamiliares" [value]="fam.value">{{fam.label}}</option>                                                                     
+            </select></th>
+            <th scope="col"><select  class="form-control form-control-sm"  name="cboEstatusFamiliar" #cboEstatusFamiliar [(ngModel)]="antecedenteFamiliar.estatus_familiar" id="cboEstatusFamiliar">
+              <option *ngFor="let est of arrayEstatus" [value]="est.value">{{est.label}}</option>                                                                     
+            </select></th>            
+            
+            <th scope="col">              
+              <button title="Registrar Cargo" type="button" class="btn btn-pill btn-block btn-success" (click)="guardar()">
+                <i class="fa fa-paperclip"></i>
+              </button>
+            </th>
+          </tr> 
+          <tr *ngFor="let ant of antecedentesFamiliares; let i=index">                                
+            <th><i class="fa fa-paperclip"></i> {{ant.patologia.descripcion}}</th>
+            <th>{{ant.paterentezco}}</th>            
+            <th>{{ant.estatus_familiar}}</th>            
+            <th></th>
+            <!--<td><button type="button"                                                                         
+              (click)="quitReferencia(i)" 
+              class="btn btn-block btn-link">
+              <i class="icon-close"></i>
+            </button></td>--> 
+          </tr>                              
+        </table>            
+    
+      </div>
+    </form>
+    <div class="card-footer">        
+      <div *ngFor="let alert of alertsDismiss">
+        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+      </div>
+    </div>
+</div>

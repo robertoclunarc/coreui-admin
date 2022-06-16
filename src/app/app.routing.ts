@@ -11,6 +11,8 @@ import { LoginBalanzaComponent  } from './components/balanza/login-balanza/login
 import { RegisterComponent } from './views/register/register.component';
 import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
 import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
+import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
+
 import { PortadaComponent } from './views/portada/portada.component';
 
 export const routes: Routes = [
@@ -75,6 +77,13 @@ export const routes: Routes = [
   },
   {
     path: 'serviciomedico/cargosanteriores/:idPaciente',
+    component: AntecedenteFamiliarComponent,
+    data: {
+      title: 'Antecedentes Familiares del Paciente',
+    }
+  },
+  {
+    path: 'serviciomedico/antecedentesfamiliares/:idPaciente',
     component: CargosAnterioresComponent,
     data: {
       title: 'Cargos Anteriores del Paciente'

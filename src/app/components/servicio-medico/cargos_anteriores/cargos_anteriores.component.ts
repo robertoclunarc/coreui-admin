@@ -89,7 +89,11 @@ export class CargosAnterioresComponent implements OnInit {
         
         this.cargosAnteriores.push(result);
       }      
-      this.cargoAnterior={};      
+      this.cargoAnterior.cargo="";
+      this.cargoAnterior.actividad_laboral="";
+      this.cargoAnterior.desde="";
+      this.cargoAnterior.hasta="";
+      this.cargoAnterior.riesgos ="";
     })
   }  
 
@@ -110,7 +114,7 @@ export class CargosAnterioresComponent implements OnInit {
     await this.NuevoCargo();    
     
     if (this.cargoAnterior){      
-      this.showSuccess('Datos del cargador satisfactoriamente', 'success');
+      this.showSuccess('Datos cargados satisfactoriamente', 'success');
     }else{     
       
         this.showSuccess('Error en el registro del cargo', 'danger'); 
@@ -127,7 +131,11 @@ export class CargosAnterioresComponent implements OnInit {
   } 
 
   reset(){
-    this.cargoAnterior={};
+    this.cargoAnterior.cargo="";
+    this.cargoAnterior.actividad_laboral="";
+    this.cargoAnterior.desde="";
+    this.cargoAnterior.hasta="";
+    this.cargoAnterior.riesgos ="";
     this.cargosAnteriores=[];
     this.popHiden();
   } 

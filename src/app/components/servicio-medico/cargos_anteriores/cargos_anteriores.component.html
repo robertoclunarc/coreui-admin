@@ -19,9 +19,9 @@
             <th scope="col"><input type="date" class="form-control form-control-sm" [(ngModel)]="cargoAnterior.desde"  name="txtDesde" id="txtDesde" #txtDesde placeholder="Inicio"></th>
             <th scope="col"><input type="date" class="form-control form-control-sm" [(ngModel)]="cargoAnterior.hasta"  name="txtHasta" id="txtHasta" #txtHasta placeholder="Fin"></th>
             <th scope="col"><input type="text" class="form-control form-control-sm" [(ngModel)]="cargoAnterior.riesgos"  name="txtRiesgo" id="txtRiesgo" placeholder="Riesgos"></th>
-            <th scope="col">                                          
-              <button type="button" (click)="guardar()" class="btn btn-block btn-link">
-              <i class="fa fa-paperclip"></i>
+            <th scope="col">              
+              <button title="Registrar Cargo" type="button" class="btn btn-pill btn-block btn-success" (click)="guardar()">
+                <i class="fa fa-paperclip"></i>
               </button>
             </th>
           </tr> 
