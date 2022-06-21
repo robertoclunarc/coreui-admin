@@ -160,4 +160,5 @@ export interface IvMorbilidad{
     nombres_jefe?: string;
     login_atendio?: string;
     reposo?: string;
+    resultado_eva?: string;
  }

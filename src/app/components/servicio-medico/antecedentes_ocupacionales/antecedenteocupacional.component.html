@@ -1,0 +1,58 @@
+<div class="card">
+    <div class="card-header">
+      <strong>Antecedentes Ocupacionales</strong> del Trabajador
+    </div>
+    <form action="" method="post" class="form-horizontal">
+      <div class="card-body">                 
+        <table class="table table-condensed" id="dataReferencias">                              
+          <tr>                                
+            <th with="10%" scope="col">Agentes</th>
+            <th  with="35%"scope="col">Descripcion Exposicion</th>
+            <th  with="40%" scope="col">Detalles de Exposicion</th> 
+            <th  with="5%" scope="col">Tiempo</th> 
+            <th  with="5%" scope="col">Periodo</th>            
+            <th  with="5%" scope="col">Add+</th>
+          </tr>
+          <tr>                                
+            <th scope="col"><select  class="form-control form-control-sm" name="cboAgentes" #cboAgentes [(ngModel)]="agenteSelect" id="cboAgentes" (change)="llenarArrayExposiciones($event.target.value)">
+              
+              <option *ngFor="let agt of ArrayAgentes" [value]="agt.agente">{{agt.agente}}</option>
+                                                                                  
+            </select></th>
+            <th scope="col"><select  class="form-control form-control-sm"  name="cboRiesgos" #cboRiesgos [(ngModel)]="antecedenteOcupacional.fk_riesgo" (change)="colocarResp()" id="cboRiesgos">
+              <option *ngFor="let exp of ArrayExposiciones" [value]="exp.uid_riesgo">{{exp.descripcion}}</option>                                                                     
+            </select></th>
+            <th scope="col"><input type="text" class="form-control form-control-sm" [(ngModel)]="antecedenteOcupacional.resp" name="txtResp" id="txtResp" #txtResp placeholder="Detalles"></th>
+            <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="tiempo" name="txtTiempo" id="txtTiempo" placeholder="Tiempo"></th>
+            <th scope="col"><select  class="form-control form-control-sm"  name="cboTiempoExposicion" #cboTiempoExposicion [(ngModel)]="periodo" id="cboTiempoExposicion">
+              <option *ngFor="let per of arrayPeriodos" [value]="per.value">{{per.label}}</option>                                                                     
+            </select></th>
+            <th scope="col">              
+              <button title="Registrar Riesgo" type="button" class="btn btn-pill btn-block btn-success" (click)="guardar()">
+                <i class="fa fa-paperclip"></i>
+              </button>
+            </th>
+          </tr> 
+          <tr *ngFor="let ant of antecedentesOcupacionales; let i=index">                                
+            <th><i class="fa fa-paperclip"></i> {{ant.riesgo.agente}}</th>
+            <th>{{ant.riesgo.descripcion}}</th>            
+            <th>{{ant.resp}}</th>
+            <th>{{ant.tiempo_exposicion}}</th>                      
+            <th></th>
+            <th></th>
+            <!--<td><button type="button"                                                                         
+              (click)="quitReferencia(i)" 
+              class="btn btn-block btn-link">
+              <i class="icon-close"></i>
+            </button></td>--> 
+          </tr>                              
+        </table>            
+    
+      </div>
+    </form>
+    <div class="card-footer">        
+      <div *ngFor="let alert of alertsDismiss">
+        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+      </div>
+    </div>
+</div>

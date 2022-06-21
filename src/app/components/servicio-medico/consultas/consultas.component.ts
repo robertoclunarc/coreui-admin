@@ -893,7 +893,7 @@ export class ConsultasComponent  implements OnInit  {
         return;
       }
 
-      console.log(this.consultas);
+      
       
 			this.srvConsultas.nuevo(this.consultas)				
 				.then(results => {

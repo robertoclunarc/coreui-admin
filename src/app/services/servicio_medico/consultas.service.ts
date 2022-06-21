@@ -48,8 +48,8 @@ export class ConsultasService {
 			);
   }
 
-  morbilidadFilter(ciPaciente: string , uidConsulta: string, fechaIni: string, fechaFin: string, motivo: string, uidArea: string, turno: string) : Observable<IvMorbilidad[]> { 
-    let parametrosUrl = ciPaciente + '/' + uidConsulta + '/' + fechaIni + '/' + fechaFin + '/' + motivo + '/' + uidArea  + '/' + turno; 
+  morbilidadFilter(ciPaciente: string ,  uidPaciente: string , uidConsulta: string, fechaIni: string, fechaFin: string, motivo: string, uidArea: string, turno: string) : Observable<IvMorbilidad[]> { 
+    let parametrosUrl = ciPaciente + '/' + uidPaciente + '/' + uidConsulta + '/' + fechaIni + '/' + fechaFin + '/' + motivo + '/' + uidArea  + '/' + turno; 
     return this.http.get<IvMorbilidad[]>(this.apiUrlConsultas + 'morbilidad/' + parametrosUrl )
 			.pipe(
 				tap(result => console.log(`morbilidadFilter`)),

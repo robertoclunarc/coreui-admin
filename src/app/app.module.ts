@@ -30,6 +30,8 @@ import { LayoutBalanzaComponent } from './containers/layout-balanza';
 import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
 import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
 import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
+import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
+import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
 ///////////////////////////////////////////////
 
 import { P404Component } from './views/error/404.component';
@@ -38,7 +40,8 @@ import { P500Component } from './views/error/500.component';
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
-  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent, CargosAnterioresComponent, AntecedenteFamiliarComponent
+  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent, 
+  CargosAnterioresComponent,  AntecedenteFamiliarComponent, AntecedenteOcupacionalComponent, HistorialConsultasComponent,
 ];
 
 import {

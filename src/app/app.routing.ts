@@ -12,6 +12,8 @@ import { RegisterComponent } from './views/register/register.component';
 import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
 import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
 import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
+import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
+import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
 
 import { PortadaComponent } from './views/portada/portada.component';
 
@@ -79,14 +81,28 @@ export const routes: Routes = [
     path: 'serviciomedico/cargosanteriores/:idPaciente',
     component: AntecedenteFamiliarComponent,
     data: {
-      title: 'Antecedentes Familiares del Paciente',
+      title: 'Cargos Anteriores del Paciente',
     }
   },
   {
-    path: 'serviciomedico/antecedentesfamiliares/:idPaciente',
+    path: 'serviciomedico/antecedentes/familiares/:idPaciente',
     component: CargosAnterioresComponent,
     data: {
-      title: 'Cargos Anteriores del Paciente'
+      title: 'Antecedentes Familiares del Paciente'
+    }
+  },
+  {
+    path: 'serviciomedico/antecedentes/ocupacionales/:idPaciente',
+    component: AntecedenteOcupacionalComponent,
+    data: {
+      title: 'Antecedentes Ocupacionales del Paciente'
+    }
+  },
+  {
+    path: 'serviciomedico/historial/:idPaciente/:fechaIni/:fechaFin',
+    component: HistorialConsultasComponent,
+    data: {
+      title: 'Historia del Paciente'
     }
   },
   {

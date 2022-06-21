@@ -1,6 +1,5 @@
 import { Component, ViewChild, OnInit, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
-import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 
 //modelos
@@ -91,7 +90,7 @@ export class AntecedenteFamiliarComponent implements OnInit {
       await this.srvAntecedentesFamiliares.AntecedentesFamiliaresOnePaciente(this.antecedenteFamiliar.fk_paciente.toString())
       .toPromise()
       .then(result => {
-        if (result){
+        if (result.length>0){
           this.antecedentesFamiliares=result; 
         }
         else

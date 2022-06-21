@@ -1,0 +1,53 @@
+<div class="card">
+    <div class="card-header">
+      <strong>Historial de Atencion</strong> del Trabajador
+    </div>
+    <form action="" method="post" class="form-horizontal">
+      <div class="card-body">                 
+        <table class="table table-sm" id="dataReferencias"> 
+          <thead>                            
+            <tr>                                
+              <th *ngFor="let col of columnas | slice:sliceIndex; let i = index;" scope="col">{{ col }}</th>            
+            </tr>
+          </thead>
+          <tr *ngFor="let mor of returnedArray; let i = index;">                                            
+            <td *ngIf="sliceIndex==0">{{mor.ci}}</td>
+            <td *ngIf="sliceIndex==0">{{mor.nombre_completo}}</td>            
+            <td>{{mor.cargo}}</td>
+            <td>{{mor.nombres_jefe}}</td>
+            <td>{{mor.area}}</td>            
+            <td>{{mor.fecha  | date:'yyyy-MM-dd HH:mm'}}</td>
+            <td>{{mor.motivo}}</td>
+            <td>{{mor.resultado_eva}}</td>
+            <td>{{mor.descripcion_afeccion}}</td>
+            <td>{{mor.motivo_consulta}}</td>
+            <td>{{mor.aplicacion}}</td>
+            <td>{{mor.talla}}</td>
+            <td>{{mor.peso}}</td>
+            <td>{{mor.imc}}</td>
+            <td>{{mor.edad.years}}A {{mor.edad.months}}M</td>
+            <td>{{mor.direccion_hab}}</td>
+            <td>{{mor.mano_dominante}}</td>
+            <td>{{mor.sexo}}</td>
+            <td>{{mor.medico}}</td>                      
+            <td>{{mor.paramedico}}</td>            
+            <!--<td><button type="button"    
+              (click)="quitReferencia(i)" 
+              class="btn btn-block btn-link">
+              <i class="icon-close"></i>
+            </button></td>--> 
+          </tr>                              
+        </table>            
+        <ul class="pagination">
+          <div class="col-xs-12 col-12 d-sm-down-none">
+            <pagination [totalItems]="totalItems"  (pageChanged)="pageChanged($event)" [rotate]="true" [maxSize]="10"></pagination>
+          </div>
+        </ul>
+      </div>
+    </form>
+    <div class="card-footer">        
+      <div *ngFor="let alert of alertsDismiss">
+        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+      </div>
+    </div>
+</div>

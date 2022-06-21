@@ -27,12 +27,21 @@ export class PacientesService {
 
   pacienteOne(cedula: string) : Observable<IvPaciente> { 
 
-    return this.http.get<IvPaciente>(this.apiUrlPacientes + 'consultar/' + cedula)
+    return this.http.get<IvPaciente>(this.apiUrlPacientes + 'consultar/cedula/' + cedula)
 			.pipe(
 				tap(result => console.log(`pacienteOne`)),
 				catchError(this.handleError)
 			);
-  }  
+  }
+  
+  pacienteUid(idPaciente: number) : Observable<IvPaciente> { 
+
+    return this.http.get<IvPaciente>(this.apiUrlPacientes + 'consultar/uid/' + idPaciente)
+			.pipe(
+				tap(result => console.log(`pacienteUid`)),
+				catchError(this.handleError)
+			);
+  }
 
   registrar(reg: IPaciente) {
     return this.http.post<IPaciente>(this.apiUrlPacientes + 'insert', reg).pipe(

@@ -69,7 +69,7 @@ export class CargosAnterioresComponent implements OnInit {
       await this.srvCargoAnterior.cargosAnterioresAll(this.cargoAnterior.fk_paciente.toString())
       .toPromise()
       .then(result => {
-        if (result){
+        if (result.length>0){
           this.cargosAnteriores=result; 
         }
         else
