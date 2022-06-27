@@ -24,7 +24,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'atencion'
+        redirectTo: 'serviciomedico/atenciones'
       },
       {
         path: 'cards',
@@ -34,7 +34,7 @@ const routes: Routes = [
         }
       },
       {
-        path: 'planillaconsulta/:uid',
+        path: 'serviciomedico/atenciones/planillaconsulta/:uid',
         component: planillaConsultaComponent,
         data: {
           title: 'Consulta'
@@ -62,10 +62,10 @@ const routes: Routes = [
         }
       },
       {
-        path: 'atencion',
+        path: 'serviciomedico/atenciones',
         component: ConsultasComponent,
         data: {
-          title: 'Tabs'
+          title: 'Atenciones'
         }
       },
       {

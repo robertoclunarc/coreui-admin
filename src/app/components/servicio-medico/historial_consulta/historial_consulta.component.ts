@@ -1,12 +1,11 @@
-import { Component, OnInit, Inject, LOCALE_ID} from '@angular/core';
+import { Component, ViewChild, OnInit, Inject, LOCALE_ID,  ChangeDetectionStrategy} from '@angular/core';
 import { AlertConfig } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
-
+import { ModalDirective} from 'ngx-bootstrap/modal';
 //modelos
 
 import { IvMorbilidad } from '../../../models/servicio-medico/consultas.model'
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
-
 
 //servicios
 import { ConsultasService } from '../../../services/servicio_medico/consultas.service';
@@ -16,10 +15,13 @@ import { ConsultasService } from '../../../services/servicio_medico/consultas.se
   selector: 'app-historial_consulta',
   templateUrl: './historial_consulta.component.html',
   styleUrls: ['./historial_consulta.component.css'],
-  providers: [ HistorialConsultasComponent,
+  providers: [ 
     { provide: AlertConfig }],
 })
-export class HistorialConsultasComponent implements OnInit {  
+export class HistorialConsultasComponent implements OnInit {
+
+  @ViewChild('primaryModal') public primaryModal: ModalDirective;
+  //@Output() uidConsulta: number;
   
   constructor( 
     
@@ -30,6 +32,8 @@ export class HistorialConsultasComponent implements OnInit {
     
   ) { }
 
+  private idConsulta: string;
+
   private uidPaciente: string;
   private fechaIni: string;
   private fechaFin: string
@@ -38,7 +42,7 @@ export class HistorialConsultasComponent implements OnInit {
   private returnedArray: IvMorbilidad[]=[];
   private user: IUsuarios={};
   private tipoUser: string; 
-  private columnas: string[]=['Cedula','Paciente', 'Cargo', 'Supervisor', 'Area', 'Fec.Cosulta','Motivo','Tipo Afeccion','Diagnostico', 'Condicion', 'Medicamento(s)', 'Talla','Peso','IMC', 'Edad', 'Direccion_Hab.','Mano Dominante', 'Sexo','Medico','Paramedico'];
+  private columnas: string[]=['Cedula','Paciente', 'Cargo', 'Supervisor', 'Area', 'Fec.Cosulta','Motivo','Tipo Afeccion','Diagnostico', 'Condicion', 'Medicamento(s)', 'Talla','Peso','IMC', 'Edad', 'Direccion_Hab.','Mano Dominante', 'Sexo','Medico','Paramedico', 'Ver'];
   startItem: number;
   endItem: number;
   totalItems: number;//total number of items in all pages
@@ -95,6 +99,16 @@ export class HistorialConsultasComponent implements OnInit {
       })
     }    
   }
+
+  private irConsulta(uid: string){    
+    
+    this.idConsulta=uid;
+    
+  }
+
+  /*private close(){    
+    this.idConsulta
+  }*/
 
   pageChanged(event: any): void {
     this.startItem = (event.page - 1) * event.itemsPerPage;

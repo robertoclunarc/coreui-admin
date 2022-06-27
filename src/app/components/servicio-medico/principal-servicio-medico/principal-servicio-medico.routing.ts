@@ -19,6 +19,14 @@ const routes: Routes = [
       title: 'Principal',
 
     }
+  },
+  {
+    path: 'serviciomedico/principal',
+    component: PrincipalServicioMedicoComponent,
+    data: {
+      title: 'Principal',
+
+    }
   }
 ];
 

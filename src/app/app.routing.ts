@@ -14,6 +14,7 @@ import { CargosAnterioresComponent } from './components/servicio-medico/cargos_a
 import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
 import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
 import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
+import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
 
 import { PortadaComponent } from './views/portada/portada.component';
 
@@ -97,12 +98,19 @@ export const routes: Routes = [
     data: {
       title: 'Antecedentes Ocupacionales del Paciente'
     }
-  },
+  },  
   {
     path: 'serviciomedico/historial/:idPaciente/:fechaIni/:fechaFin',
     component: HistorialConsultasComponent,
     data: {
       title: 'Historia del Paciente'
+    }
+  },
+  {
+    path: 'serviciomedico/consulta/:uidConsulta',
+    component: ConsultaOneComponent,
+    data: {
+      title: 'Consulta del Paciente'
     }
   },
   {
@@ -131,7 +139,7 @@ export const routes: Routes = [
         loadChildren: () => import('./views/base/base.module').then(m => m.BaseModule)
       },
       {
-        path: 'serviciomedico/consultas',
+        path: 'serviciomedico/atenciones',
         loadChildren: () => import('./components/servicio-medico/consultas/consultas.module').then(m => m.ConsultasModule)
       },
       {

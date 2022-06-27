@@ -1,4 +1,3 @@
-console.log('_nav');
 import { INavData } from '@coreui/angular';
 
 //console.log(sessionStorage.sistemaActual);

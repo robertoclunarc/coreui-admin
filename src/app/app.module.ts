@@ -14,7 +14,8 @@ import { IconModule, IconSetModule, IconSetService } from '@coreui/icons-angular
 import { authInterceptorProviders } from "../app/helpers/login.interceptor";
 import { PopoverModule } from 'ngx-bootstrap/popover';
 import { AlertModule } from 'ngx-bootstrap/alert';
-
+import { CollapseModule } from 'ngx-bootstrap/collapse';
+import { ModalModule } from 'ngx-bootstrap/modal';
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
 };
@@ -32,6 +33,7 @@ import { CargosAnterioresComponent } from './components/servicio-medico/cargos_a
 import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
 import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
 import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
+import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
 ///////////////////////////////////////////////
 
 import { P404Component } from './views/error/404.component';
@@ -42,6 +44,7 @@ import { RegisterComponent } from './views/register/register.component';
 const APP_CONTAINERS = [
   DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent, 
   CargosAnterioresComponent,  AntecedenteFamiliarComponent, AntecedenteOcupacionalComponent, HistorialConsultasComponent,
+  ConsultaOneComponent,
 ];
 
 import {
@@ -79,6 +82,7 @@ import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-
     PerfectScrollbarModule,
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
+    CollapseModule.forRoot(),
     ChartsModule,
     IconModule,
     IconSetModule.forRoot(),
@@ -88,6 +92,7 @@ import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-
     TypeaheadModule.forRoot(),
     PopoverModule.forRoot(),
     AlertModule.forRoot(),
+    ModalModule.forRoot(),
    //BsDropdownModule,    
    //ButtonsModule.forRoot(),
     NgbToastModule,    

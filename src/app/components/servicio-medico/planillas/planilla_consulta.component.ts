@@ -83,7 +83,7 @@ export class planillaConsultaComponent implements OnInit {
   private async morbilidadFilter(uid: string) {
     this.limpiarFiltro();
     this.buscarConsulta.uidConsulta=uid;
-		return await this.srvConsultas.morbilidadFilter('null',uid,'null','null','null','null','null','null')
+		return await this.srvConsultas.morbilidadFilter('null','null',uid,'null','null','null','null','null')
 			.toPromise()
       .then(results => {				
 				
