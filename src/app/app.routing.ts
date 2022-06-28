@@ -15,6 +15,7 @@ import { AntecedenteFamiliarComponent } from './components/servicio-medico/antec
 import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
 import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
 import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
+import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
 
 import { PortadaComponent } from './views/portada/portada.component';
 
@@ -98,7 +99,14 @@ export const routes: Routes = [
     data: {
       title: 'Antecedentes Ocupacionales del Paciente'
     }
-  },  
+  }, 
+  {
+    path: 'serviciomedico/antecedentes/patologicos/:idPaciente',
+    component: AntecedentePatologicoComponent,
+    data: {
+      title: 'Antecedentes PAtologicos del Paciente'
+    }
+  }, 
   {
     path: 'serviciomedico/historial/:idPaciente/:fechaIni/:fechaFin',
     component: HistorialConsultasComponent,

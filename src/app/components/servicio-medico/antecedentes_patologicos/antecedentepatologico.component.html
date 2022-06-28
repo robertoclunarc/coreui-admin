@@ -1,0 +1,51 @@
+<div class="card">
+    <div class="card-header">
+      <strong>Examen Funcional</strong> Antecedentes Patologicos
+    </div>
+    <form action="" method="post" class="form-horizontal">
+      <div class="card-body">                 
+        <table class="table table-condensed" id="dataReferencias">                              
+          <tr>                                
+            <th with="30%" scope="col">Zona Corporal</th>
+            <th  with="30%"scope="col">Patologia</th>
+            <th  with="35%" scope="col">Observacion</th>
+            <th  with="5%" scope="col">Add+</th>
+          </tr>
+          <tr>                                
+            <th scope="col"><select  class="form-control form-control-sm" name="cboTipos" #cboTipos [(ngModel)]="TipoSelect" id="cboTipos" (change)="llenarArrayPatologias($event.target.value)">
+              
+              <option *ngFor="let tp of ArrayTiposAnatomias" [value]="tp.tipo">{{tp.tipo}}</option>
+                                                                                  
+            </select></th>
+            <th scope="col"><select  class="form-control form-control-sm"  name="cboPatologias" #cboPatologias [(ngModel)]="examen.fk_anatomia" id="cboPatologias">
+              <option *ngFor="let pt of ArrayPatologias" [value]="pt.uid_anatom">{{pt.descripcion}}</option>                                                                     
+            </select></th>
+            <th scope="col"><input type="text" class="form-control form-control-sm" [(ngModel)]="examen.observacion" name="txtObservacion" id="txtObservacion" #txtObservacion placeholder="Detalles"></th>
+            
+            <th scope="col">              
+              <button title="Registrar Examen" type="button" class="btn btn-pill btn-block btn-success" (click)="guardar()">
+                <i class="fa fa-paperclip"></i>
+              </button>
+            </th>
+          </tr> 
+          <tr *ngFor="let exm of examenes; let i=index">                                
+            <th><i class="fa fa-paperclip"></i> {{exm.anatomia.tipo}}</th>
+            <th>{{exm.anatomia.descripcion}}</th>            
+            <th>{{exm.observacion}}</th>            
+            <th></th>
+            <!--<td><button type="button"                                                                         
+              (click)="quitReferencia(i)" 
+              class="btn btn-block btn-link">
+              <i class="icon-close"></i>
+            </button></td>--> 
+          </tr>                              
+        </table>            
+    
+      </div>
+    </form>
+    <div class="card-footer">        
+      <div *ngFor="let alert of alertsDismiss">
+        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+      </div>
+    </div>
+</div>

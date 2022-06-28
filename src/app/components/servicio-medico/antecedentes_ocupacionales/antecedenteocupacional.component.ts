@@ -16,7 +16,7 @@ import { PacientesService } from '../../../services/servicio_medico/pacientes.se
   selector: 'app-antecedenteocupacional',
   templateUrl: './antecedenteocupacional.component.html',
   styleUrls: ['./antecedenteocupacional.component.css'],
-  providers: [ AntecedenteOcupacionalComponent , PacientesService,
+  providers: [ PacientesService,
     { provide: AlertConfig }],
 })
 export class AntecedenteOcupacionalComponent implements OnInit {
