@@ -18,6 +18,7 @@ import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one
 import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
 
 import { PortadaComponent } from './views/portada/portada.component';
+import { HabitosComponent } from './components/servicio-medico/habitos/habitos.component';
 
 export const routes: Routes = [
   {
@@ -104,7 +105,14 @@ export const routes: Routes = [
     path: 'serviciomedico/antecedentes/patologicos/:idPaciente',
     component: AntecedentePatologicoComponent,
     data: {
-      title: 'Antecedentes PAtologicos del Paciente'
+      title: 'Antecedentes Patologicos del Paciente'
+    }
+  },
+  {
+    path: 'serviciomedico/habitos/:idPaciente',
+    component: HabitosComponent,
+    data: {
+      title: 'Habitos del Paciente'
     }
   }, 
   {

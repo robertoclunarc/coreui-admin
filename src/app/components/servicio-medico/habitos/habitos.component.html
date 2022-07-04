@@ -1,0 +1,27 @@
+<div class="card">
+    <div class="card-header">
+      <strong>Examen Funcional</strong> Habitos
+    </div>
+    <form action="" method="post" class="form-horizontal">      
+        <div class="card-body">
+          <div *ngFor="let hab of habitosPacientes; let i=index">               
+            <div class="input-group mb-3">
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="width : 300px" >{{hab.habito.descripcion}}</span>
+              </div>
+              <input type="text" placeholder="Respuesta" [name]="'resp_' + i" [(ngModel)]="habitosPacientes[i].resp"  class="form-control">
+              <input type="text" placeholder="Observacion" [name]="'obs_' + i" [(ngModel)]="habitosPacientes[i].observacion"  class="form-control">        
+            </div>
+          </div>
+        </div>
+    
+      <div class="card-footer">
+        <div class="col col-lg-2">
+          <button type="button" [disabled]="soloLectura" (click)="guardar()" class="btn btn-primary" >Guardar</button>
+        </div>       
+        <div *ngFor="let alert of alertsDismiss">
+          <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+        </div>
+      </div>
+    </form>  
+</div>

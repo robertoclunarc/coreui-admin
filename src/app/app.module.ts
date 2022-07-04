@@ -35,6 +35,7 @@ import { AntecedenteOcupacionalComponent } from './components/servicio-medico/an
 import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
 import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
 import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
+import { HabitosComponent  } from './components/servicio-medico/habitos/habitos.component';
 ///////////////////////////////////////////////
 
 import { P404Component } from './views/error/404.component';
@@ -45,7 +46,7 @@ import { RegisterComponent } from './views/register/register.component';
 const APP_CONTAINERS = [
   DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent, 
   CargosAnterioresComponent,  AntecedenteFamiliarComponent, AntecedenteOcupacionalComponent, HistorialConsultasComponent,
-  ConsultaOneComponent, AntecedentePatologicoComponent,
+  ConsultaOneComponent, AntecedentePatologicoComponent, HabitosComponent,
 ];
 
 import {
