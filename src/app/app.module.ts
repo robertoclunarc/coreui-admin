@@ -36,6 +36,7 @@ import { HistorialConsultasComponent  } from './components/servicio-medico/histo
 import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
 import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
 import { HabitosComponent  } from './components/servicio-medico/habitos/habitos.component';
+import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anamnesis_psicologico/anamnesispsicologico.component';
 ///////////////////////////////////////////////
 
 import { P404Component } from './views/error/404.component';
@@ -46,7 +47,7 @@ import { RegisterComponent } from './views/register/register.component';
 const APP_CONTAINERS = [
   DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent, 
   CargosAnterioresComponent,  AntecedenteFamiliarComponent, AntecedenteOcupacionalComponent, HistorialConsultasComponent,
-  ConsultaOneComponent, AntecedentePatologicoComponent, HabitosComponent,
+  ConsultaOneComponent, AntecedentePatologicoComponent, HabitosComponent, AnamnesisPsicologicoComponent,
 ];
 
 import {
@@ -69,6 +70,7 @@ import { ChartsModule } from 'ng2-charts';
 
 import { LoginServicioMedicoComponent } from './components/servicio-medico/login-servicio-medico/login-servicio-medico.component';
 import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-balanza.component';
+
 //import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 @NgModule({

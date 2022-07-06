@@ -1,31 +1,32 @@
 import { Component, ViewChild, OnInit, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
+import { formatDate } from '@angular/common';
 
 //modelos
-import { IHabito, IvHabitos, IHabitoPaciente } from '../../../models/servicio-medico/habitos.model';
+import { IAnalisisPsicologico, IEstudioPsicologico, IAnamnesisPsicologico } from '../../../models/servicio-medico/anamnesispsicologico.model';
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { Ipopover } from '../../../models/servicio-medico/varios.model';
 
 //servicios
-import { HabitosService } from '../../../services/servicio_medico/habitos.service';
+import { AnamnesisPsicologicoService } from '../../../services/servicio_medico/anamnesispsicologico.service';
 import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
 
 @Component({
-  selector: 'app-habitos',
-  templateUrl: './habitos.component.html',
-  styleUrls: ['./habitos.component.css'],
-  providers: [  HabitosService, PacientesService,
+  selector: 'app-anamnesispsicologico',
+  templateUrl: './anamnesispsicologico.component.html',
+  styleUrls: ['./anamnesispsicologico.component.css'],
+  providers: [  AnamnesisPsicologicoService, PacientesService,
     { provide: AlertConfig }],
 })
 
-export class HabitosComponent implements OnInit {
+export class AnamnesisPsicologicoComponent implements OnInit {   
   
   constructor( 
     
     private route: ActivatedRoute,  
     private router: Router,
-    private srvHabitos: HabitosService, 
+    private srvAnamnesis: AnamnesisPsicologicoService, 
     private srvPaciente: PacientesService,   
     @Inject(LOCALE_ID) public locale: string,
     
@@ -34,9 +35,9 @@ export class HabitosComponent implements OnInit {
   private uidPaciente: number;
   private cedula: string;  
   private tipoSelect: string=null;
-  private habitosPacientes: IvHabitos[]=[]; 
-  private habitoPaciente: IHabitoPaciente={};
-  private ArrayHabitos: IHabito[];   
+  private estudiosPacientes: IAnamnesisPsicologico[]=[]; 
+  private analisisPaciente: IAnalisisPsicologico={};
+  private ArrayEstudios: IEstudioPsicologico[];   
   private user: IUsuarios={};
   private tipoUser: string; 
   private alertaRegistrar: string; 
@@ -63,8 +64,8 @@ export class HabitosComponent implements OnInit {
    
     this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
     await this.buscarPaciente();
-    await this.llenarArrayhabitos();
-    await this.buscarHabitosPorPaciente();
+    await this.llenarArrayEstudios();
+    await this.buscarEstudiosPorPaciente();
   }
 
   private async buscarPaciente(){
@@ -74,67 +75,76 @@ export class HabitosComponent implements OnInit {
       .toPromise()
       .then(result => {
         if (result){ 
-                  
+           
           this.cedula=result[0].ci;
         }        
       })
     }
   }
 
-  private async buscarHabitosPorPaciente(){
-    let habitosP: IvHabitos;    
+  private async buscarEstudiosPorPaciente(){
+    let analisisP: IAnamnesisPsicologico;    
     let obs: string="";
-    let rsp: string="";
+    let fecha: string="";
     if (this.cedula!= undefined && this.cedula!= null && this.cedula!=""){
-      await this.srvHabitos.habitosPorCedula(this.cedula)
+      await this.srvAnamnesis.estudiosPsicologicosPorCedula(this.cedula)
       .toPromise()
       .then(async result => {        
-        for await (let hab of this.ArrayHabitos){
-          habitosP={};
+        for await (let anm of this.ArrayEstudios){
+          analisisP={};
           obs="";
-          rsp="";         
-          for await (let hp of result){            
-            if (hp.habito.uid_habito==hab.uid_habito){
-              obs=hp.observacion;
-              rsp=hp.resp
+          fecha="";          
+          for await (let es of result){            
+            if (es.estudio.uid_estudio==anm.uid_estudio){
+              obs=es.observacion;
+              if (es.fecha_estudio==null || es.fecha_estudio==undefined || es.fecha_estudio=="")
+                  fecha=es.fecha_estudio
+              else 
+                  fecha=formatDate(es.fecha_estudio, 'yyyy-MM-dd', 'en')  
             }
-          }          
-          habitosP={
+          }                  
+          analisisP={
               cedula: this.cedula,
-              habito: hab,                   
+              estudio: anm,                   
               observacion: obs,
-              resp:  rsp
+              fecha_estudio: fecha
           };
-          this.habitosPacientes.push(habitosP);
-        }         
+          this.estudiosPacientes.push(analisisP) 
+        } 
+          
       })
     }    
   }
 
-  private async llenarArrayhabitos(){    
-      await this.srvHabitos.habitosAll()
+  private async llenarArrayEstudios(){    
+      await this.srvAnamnesis.estudiosPsicologicosAll()
       .toPromise()
       .then(result => {
-        if (result){          
-          this.ArrayHabitos=result;          
+        if (result){ 
+          
+          this.ArrayEstudios=result;          
         }
         else
-        this.ArrayHabitos=[];        
+          this.ArrayEstudios=[];        
       })       
   }  
 
-  private async nuevoHabito(){ 
-    await this.srvHabitos.eliminarPorCedula(this.cedula).toPromise();
-    for await (let hab of this.habitosPacientes){
-      if (hab.resp!=undefined && hab.resp!="" && hab.resp!="") { 
-        this.habitoPaciente={
+  private async nuevoEstudios(){ 
+    await this.srvAnamnesis.eliminarPorCedula(this.cedula).toPromise();
+    let fecha: string;
+    for await (let es of this.estudiosPacientes){
+      if (es.observacion!=null && es.observacion!=undefined && es.observacion!=""){
+        if (es.fecha_estudio==null || es.fecha_estudio==undefined || es.fecha_estudio=="")
+          fecha=es.fecha_estudio
+        else 
+          fecha=formatDate(es.fecha_estudio, 'yyyy-MM-dd', 'en')
+        this.analisisPaciente={
           cedula: this.cedula,
-          fk_habito: hab.habito.uid_habito,
-          resp: hab.resp,
-          observacion: hab.observacion
+          fk_estudio: es.estudio.uid_estudio,
+          fecha_estudio: fecha,
+          observacion: es.observacion
         }
-      
-        await this.srvHabitos.registrar(this.habitoPaciente)
+        await this.srvAnamnesis.registrar(this.analisisPaciente)
         .toPromise()
         .then( result  => {
           if (result){
@@ -142,17 +152,17 @@ export class HabitosComponent implements OnInit {
             
           }else{
             this.saved=false;
-            this.showSuccess('Error en el registro del habito del paciente: ' + hab.resp, 'danger'); 
+            this.showSuccess('Error en el registro del estudio del paciente: ' + es.estudio.descripcion, 'danger'); 
             return;
           }      
         })
       }
     }  
-  }  
+  }
 
   private async guardar(){
     this.saved=false;     
-    this.habitoPaciente.cedula=this.cedula;   
+    this.analisisPaciente.cedula=this.cedula;   
     this.popover = await this.validaEntradas();
     
     if ( this.popover.alerta!=undefined){ 
@@ -165,14 +175,13 @@ export class HabitosComponent implements OnInit {
       return;
     }
 
-    await this.nuevoHabito();    
+    await this.nuevoEstudios();    
     
     if (this.saved){ 
-      this.habitoPaciente={};     
+      this.analisisPaciente={};     
       this.showSuccess('Datos cargados satisfactoriamente', 'success');
-    }else{     
-      
-        this.showSuccess('Error en el registro del habito del paciente', 'danger'); 
+    }else{      
+        this.showSuccess('Error en el registro del estudio del paciente', 'danger'); 
     }    
   }   
 
@@ -183,15 +192,17 @@ export class HabitosComponent implements OnInit {
       popOver= {
         titulo:"Error en el Registro",
         alerta: "Debe especificar el paciente"
-      };         
+      };
+         
       return  popOver;
     }
 
-    for await (let hab of this.habitosPacientes){
-      if (hab.resp == undefined || hab.resp==null || hab.resp==""){
+    for await (let es of this.estudiosPacientes){
+      console.log(es.fecha_estudio);
+      if ((es.observacion != undefined && es.observacion!=null && es.observacion!="") &&  (es.fecha_estudio== undefined || es.fecha_estudio== null || es.fecha_estudio== "") ){
         popOver= {
           titulo:"Error en el Registro",
-          alerta: "Debe dar una repuesta a:  " + hab.habito.descripcion
+          alerta: "Debe dar una fecha a la repuesta de:  " + es.estudio.descripcion
         };           
         return  popOver;
       }

@@ -1,16 +1,16 @@
 <div class="card">
     <div class="card-header">
-      <strong>Examen Funcional</strong> Habitos
+      <strong>Anamnesis Psicologicos</strong> Evaluacion de Aspectos del Trabajo
     </div>
     <form action="" method="post" class="form-horizontal">      
         <div class="card-body">
-          <div *ngFor="let hab of habitosPacientes; let i=index">               
+          <div *ngFor="let es of estudiosPacientes; let i=index">               
             <div class="input-group mb-3">
               <div class="input-group-prepend">
-                <span class="input-group-text" style="width : 300px" >{{hab.habito.descripcion}}</span>
+                <span class="input-group-text" style="width : 300px" >{{es.estudio.descripcion}}</span>
               </div>
-              <input type="text" placeholder="Respuesta" maxlength="15" [name]="'resp_' + i" [(ngModel)]="habitosPacientes[i].resp"  class="form-control">
-              <input type="text" placeholder="Observacion" maxlength="50" [name]="'obs_' + i" [(ngModel)]="habitosPacientes[i].observacion"  class="form-control">        
+              <input type="text" placeholder="Respuesta/Observacion" maxlength="100" [name]="'obs_' + i" [(ngModel)]="estudiosPacientes[i].observacion"  class="form-control">
+              <input type="date" [name]="'fec_' + i" [(ngModel)]="estudiosPacientes[i].fecha_estudio"  class="form-control">        
             </div>
           </div>
         </div>

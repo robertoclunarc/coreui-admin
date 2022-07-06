@@ -19,6 +19,7 @@ import { AntecedentePatologicoComponent  } from './components/servicio-medico/an
 
 import { PortadaComponent } from './views/portada/portada.component';
 import { HabitosComponent } from './components/servicio-medico/habitos/habitos.component';
+import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anamnesis_psicologico/anamnesispsicologico.component';
 
 export const routes: Routes = [
   {
@@ -113,6 +114,13 @@ export const routes: Routes = [
     component: HabitosComponent,
     data: {
       title: 'Habitos del Paciente'
+    }
+  },
+  {
+    path: 'serviciomedico/analisispsicologico/:idPaciente',
+    component: AnamnesisPsicologicoComponent,
+    data: {
+      title: 'Analisis Psicologico del Paciente'
     }
   }, 
   {
