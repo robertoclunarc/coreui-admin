@@ -34,6 +34,15 @@ export class SignosVitalesService {
 			);
   }
 
+  signosVitalesPaciente(cedula: string) : Observable<IsignosVitales[]> { 
+
+    return this.http.get<IsignosVitales[]>(this.apiUrlSignosVitales + `consultar/${cedula}`)
+			.pipe(
+				tap(result => console.log(`signosVitalesPaciente`)),
+				catchError(this.handleError)
+			);
+  }
+
   registrar(reg: IsignosVitales) {
     return this.http.post<IsignosVitales>(this.apiUrlSignosVitales + 'insert', reg).pipe(
         tap(result => { this.signosVitales = result; console.log(`Signos Vitales insertados`) }),

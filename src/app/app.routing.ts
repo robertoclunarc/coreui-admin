@@ -21,6 +21,7 @@ import { PortadaComponent } from './views/portada/portada.component';
 import { HabitosComponent } from './components/servicio-medico/habitos/habitos.component';
 import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anamnesis_psicologico/anamnesispsicologico.component';
 import { EstudiosFisicosComponent } from './components/servicio-medico/examen_fisico/examenfisico.component';
+import { SignosVitalesComponent } from './components/servicio-medico/signos_vitales/signosvitales.component';
 
 export const routes: Routes = [
   {
@@ -134,6 +135,13 @@ export const routes: Routes = [
   {
     path: 'serviciomedico/historial/:idPaciente/:fechaIni/:fechaFin',
     component: HistorialConsultasComponent,
+    data: {
+      title: 'Historia del Paciente'
+    }
+  },
+  {
+    path: 'serviciomedico/examen/fisico/signosvitales/:idPaciente',
+    component: SignosVitalesComponent,
     data: {
       title: 'Historia del Paciente'
     }
