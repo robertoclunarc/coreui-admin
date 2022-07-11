@@ -22,6 +22,7 @@ import { HabitosComponent } from './components/servicio-medico/habitos/habitos.c
 import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anamnesis_psicologico/anamnesispsicologico.component';
 import { EstudiosFisicosComponent } from './components/servicio-medico/examen_fisico/examenfisico.component';
 import { SignosVitalesComponent } from './components/servicio-medico/signos_vitales/signosvitales.component';
+import { AntropometriaComponent } from './components/servicio-medico/antropometria/antropometria.component';
 
 export const routes: Routes = [
   {
@@ -143,7 +144,14 @@ export const routes: Routes = [
     path: 'serviciomedico/examen/fisico/signosvitales/:idPaciente',
     component: SignosVitalesComponent,
     data: {
-      title: 'Historia del Paciente'
+      title: 'Signos Vitales del Paciente'
+    }
+  },
+  {
+    path: 'serviciomedico/examen/fisico/antropometria/:idPaciente',
+    component: AntropometriaComponent,
+    data: {
+      title: 'Datos Antropometricos del Paciente'
     }
   },
   {

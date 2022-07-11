@@ -264,7 +264,6 @@ export class ConsultasComponent  implements OnInit  {
 			})
 			.catch(err => { console.log(err) });
 	} 
-
   // events
   private chartClicked(e: any): void {
     console.log(e);
@@ -457,8 +456,7 @@ export class ConsultasComponent  implements OnInit  {
         }
       }
       return false;
-  }
-   
+  }   
   
   async Search(){
     
@@ -743,10 +741,7 @@ export class ConsultasComponent  implements OnInit  {
   private calc_imc(){    
         let talla = Number(this.antropometria.talla);
         let peso = Number(this.antropometria.peso)
-        let imc = 0;
-        if (peso > 0)
-           imc = Math.round((peso / (talla * talla)) * 100)/100;
-           this.antropometria.imc= imc.toFixed(2);     
+        this.antropometria.imc= this.srvAntropometria.calculoImc(talla, peso);        
   }
 
   private async guardarMedicametosAplicados(){

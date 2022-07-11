@@ -3,36 +3,35 @@ import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
 //modelos
-import { IsignosVitales } from '../../../models/servicio-medico/signos_vitales.model';
+import { Iantropometria } from '../../../models/servicio-medico/antropometria.model';
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { Ipopover } from '../../../models/servicio-medico/varios.model';
 
 //servicios
-import { SignosVitalesService } from '../../../services/servicio_medico/signosvitales.service';
+import { AntropometriaService } from '../../../services/servicio_medico/antropometria.service';
 import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
 
 @Component({
-  selector: 'app-signosvitales',
-  templateUrl: './signosvitales.component.html',
-  styleUrls: ['./signosvitales.component.css'],
-  providers: [  SignosVitalesService, PacientesService,
+  selector: 'app-antropometria',
+  templateUrl: './antropometria.component.html',
+  styleUrls: ['./antropometria.component.css'],
+  providers: [  AntropometriaService, PacientesService,
     { provide: AlertConfig }],
 })
 
-export class SignosVitalesComponent implements OnInit {
+export class AntropometriaComponent implements OnInit {
 
-  @ViewChild('txtTemper') txtTemper!: ElementRef<HTMLInputElement>;
-  @ViewChild('txtTart') txtTart!: ElementRef<HTMLInputElement>; 
-  @ViewChild('txtPulso') txtPulso!: ElementRef<HTMLInputElement>;
-  @ViewChild('txtFresp') txtFresp!: ElementRef<HTMLInputElement>;
-  @ViewChild('txtFcard') txtFcard!: ElementRef<HTMLInputElement>;
+  @ViewChild('txtTalla') txtTalla!: ElementRef<HTMLInputElement>;
+  @ViewChild('txtPeso') txtPeso!: ElementRef<HTMLInputElement>; 
+  @ViewChild('txtImc') txtImc!: ElementRef<HTMLInputElement>;
   @ViewChild('txtFecha') txtFecha!: ElementRef<HTMLInputElement>;
+  
   
   constructor( 
     
     private route: ActivatedRoute,  
     private router: Router,
-    private srvSignosVitales: SignosVitalesService, 
+    private srvAntropometria: AntropometriaService, 
     private srvPaciente: PacientesService,   
     @Inject(LOCALE_ID) public locale: string,
     
@@ -40,9 +39,8 @@ export class SignosVitalesComponent implements OnInit {
 
   private uidPaciente: number;
   private cedula: string;  
-  private tipoSelect: string=null;
-  private examenes: IsignosVitales[]=[]; 
-  private examen: IsignosVitales={};
+  private examenes: Iantropometria[]=[]; 
+  private examen: Iantropometria={talla:'0', peso:'0', imc: '0', cedula:'', fecha:''};
   private user: IUsuarios={};
   private tipoUser: string; 
   private alertaRegistrar: string; 
@@ -87,7 +85,7 @@ export class SignosVitalesComponent implements OnInit {
   private async buscarExamenesFuncionales(){
     
     if (this.cedula!= undefined && this.cedula!= null && this.cedula!=""){
-      await this.srvSignosVitales.signosVitalesPaciente(this.cedula)
+      await this.srvAntropometria.antropometriaPaciente(this.cedula)
       .toPromise()
       .then(async result => {
         
@@ -103,7 +101,7 @@ export class SignosVitalesComponent implements OnInit {
   }
 
   private async nuevoExamen(){     
-    await this.srvSignosVitales.registrar(this.examen)
+    await this.srvAntropometria.registrar(this.examen)
     .toPromise()
     .then( result  => {
       if (result){
@@ -132,11 +130,11 @@ export class SignosVitalesComponent implements OnInit {
     await this.nuevoExamen();    
     
     if (this.examen){ 
-      this.examen={};     
+      this.examen={talla:'0', peso:'0', imc: '0', cedula:'', fecha:''};
       this.showSuccess('Datos cargados satisfactoriamente', 'success');
     }else{     
       
-        this.showSuccess('Error en el registro de los signos vitales', 'danger'); 
+        this.showSuccess('Error en el registro de la antropometria', 'danger'); 
     }
     
   }   
@@ -153,12 +151,12 @@ export class SignosVitalesComponent implements OnInit {
       return  popOver;
     }
 
-    if (this.objetoVacio(this.examen.fcard)){
+    if (this.objetoVacio(this.examen.talla)){
       popOver= {
         titulo:"Error en el Registro",
-        alerta: "Debe especificar la frecuencia cardiaca"
+        alerta: "Debe especificar la talla"
       };
-      this.txtFcard.nativeElement.focus();      
+      this.txtTalla.nativeElement.focus();      
       return  popOver;
     }
     if (this.objetoVacio(this.examen.fecha)){
@@ -169,40 +167,29 @@ export class SignosVitalesComponent implements OnInit {
       this.txtFecha.nativeElement.focus();      
       return  popOver;
     }
-    if (this.objetoVacio(this.examen.fresp)){
+    if (this.objetoVacio(this.examen.peso)){
       popOver= {
         titulo:"Error en el Registro",
-        alerta: "Debe especificar la frecuencia respiratoria"
+        alerta: "Debe especificar el peso"
       };
-      this.txtFresp.nativeElement.focus();      
+      this.txtPeso.nativeElement.focus();      
       return  popOver;
     }
-    if (this.objetoVacio(this.examen.pulso)){
+    if (Number(this.examen.peso)==0 && Number(this.examen.talla)==0){
       popOver= {
         titulo:"Error en el Registro",
-        alerta: "Debe especificar el pulso"
+        alerta: "Debe especificar algun dato en talla y/o peso"
       };
-      this.txtPulso.nativeElement.focus();      
+      this.txtPeso.nativeElement.focus();      
       return  popOver;
     }
-    if (this.objetoVacio(this.examen.tart)){
-      popOver= {
-        titulo:"Error en el Registro",
-        alerta: "Debe especificar la tension arterial"
-      };
-      this.txtTart.nativeElement.focus();      
-      return  popOver;
-    }
-    if (this.objetoVacio(this.examen.temper)){
-      popOver= {
-        titulo:"Error en el Registro",
-        alerta: "Debe especificar la temperatura"
-      };
-      //this.txtTemper.nativeElement.focus(); this.txtTart.nativeElement.focus(); this.txtPulso.nativeElement.focus();this.txtFresp.nativeElement.focus(); this.txtFecha.nativeElement.focus(); this.txtFcard.nativeElement.focus();   
-      return  popOver;
-    }
-
     return  popOver;
+  }
+
+  private calc_imc(){    
+    let talla = Number(this.examen.talla);
+    let peso = Number(this.examen.peso)
+    this.examen.imc=this.srvAntropometria.calculoImc(talla, peso);       
   }
 
   objetoVacio(object: any){

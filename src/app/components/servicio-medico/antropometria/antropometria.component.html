@@ -1,28 +1,24 @@
 <div class="card">
     <div class="card-header">
-      <strong>Examen Fisico</strong> Signos Vitales
+      <strong>Examen Fisico</strong> Datos Antropometricos
     </div>
     <form action="" method="post" class="form-horizontal">
       <div class="card-body">
         <div *ngFor="let alert of alertsDismiss">
           <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
-        </div>                 
+        </div>                
         <table class="table table-condensed" id="dataReferencias">                              
           <tr>                                
-            <th with="30%" scope="col">Frec. Resp.</th>
-            <th  with="30%"scope="col">Pulso</th>
-            <th  with="35%" scope="col">Temp.</th>
-            <th  with="35%" scope="col">Tens. Art.</th>
-            <th  with="35%" scope="col">Frec. Card.</th>
+            <th with="30%" scope="col">Talla</th>
+            <th  with="30%"scope="col">Peso</th>
+            <th  with="35%" scope="col">IMC</th>            
             <th  with="35%" scope="col">Fecha</th>
             <th  with="5%" scope="col">Add+</th>
           </tr>
           <tr>                                
-            <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.fresp" name="txtFresp" id="txtFresp" #txtFresp ></th>
-            <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.pulso" name="txtPulso" id="txtPulso" #txtPulso ></th>
-            <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.temper" name="txtTemper" id="txtTemper" #txtTemper ></th>
-            <th scope="col"><input type="text" class="form-control form-control-sm" [(ngModel)]="examen.tart" name="txtTart" id="txtTart" #txtTart ></th>
-            <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.fcard" name="txtFcard" id="txtFcard" #txtFcard ></th>
+            <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.talla" (change)="calc_imc()" name="txtTalla" id="txtTalla" #txtTalla ></th>
+            <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.peso" (change)="calc_imc()" name="txtPeso" id="txtPeso" #txtPeso ></th>
+            <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.imc" name="txtImc" id="txtImc" #txtImc readonly ></th>            
             <th scope="col"><input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="examen.fecha" name="txtFecha" id="txtFecha" #txtFecha ></th>
             <th scope="col">              
               <button title="Registrar Examen" type="button" class="btn btn-pill btn-block btn-success" (click)="guardar()">
@@ -31,12 +27,9 @@
             </th>
           </tr> 
           <tr *ngFor="let exm of examenes; let i=index">                                
-            <th><i class="fa fa-paperclip"></i> {{exm.fresp}}</th>
-            <th>{{exm.fresp}}</th>
-            <th>{{exm.pulso}}</th>
-            <th>{{exm.temper}}</th>
-            <th>{{exm.tart}}</th>
-            <th>{{exm.fcard}}</th>
+            <th><i class="fa fa-paperclip"></i> {{exm.talla}}</th>            
+            <th>{{exm.peso}}</th>
+            <th>{{exm.imc}}</th>            
             <th>{{exm.fecha  | date:'yyyy-MM-dd HH:mm:ss'}}</th>
             <th></th>
             <!--<td><button type="button"   this.txtTemper.nativeElement.focus(); this.txtTart.nativeElement.focus(); this.txtPulso.nativeElement.focus();this.txtFresp.nativeElement.focus(); this.txtFecha.nativeElement.focus(); this.txtFcard.nativeElement.focus();                                                                         

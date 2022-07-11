@@ -34,6 +34,15 @@ export class AntropometriaService {
 			);
   }
 
+  antropometriaPaciente(cedula: string) : Observable<Iantropometria[]> { 
+
+    return this.http.get<Iantropometria[]>(this.apiUrlantropometria + `consultar/${cedula}`)
+			.pipe(
+				tap(result => console.log(`antropometriaPaciente`)),
+				catchError(this.handleError)
+			);
+  }
+
   registrar(reg: Iantropometria) {
     return this.http.post<Iantropometria>(this.apiUrlantropometria + 'insert', reg).pipe(
         tap(result => { this.antropometria = result; console.log(`antropometria insertada`) }),
@@ -59,6 +68,13 @@ export class AntropometriaService {
         }),
         catchError(this.handleError)
     );
+  }
+
+  calculoImc(talla: number, peso: number): string{    
+        let imc = 0;
+        if (peso > 0)
+           imc = Math.round((peso / (talla * talla)) * 100)/100;
+        return imc.toFixed(2);
   }
 
   handleError(error: HttpErrorResponse) {

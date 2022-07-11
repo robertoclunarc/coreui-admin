@@ -504,11 +504,8 @@ export class ConsultaOneComponent implements OnChanges {
 
   private calc_imc(){    
         let talla = Number(this.antropometria.talla);
-        let peso = Number(this.antropometria.peso)
-        let imc = 0;
-        if (peso > 0)
-           imc = Math.round((peso / (talla * talla)) * 100)/100;
-           this.antropometria.imc= imc.toFixed(2);     
+        let peso = Number(this.antropometria.peso);        
+        this.antropometria.imc= this.srvAntropometria.calculoImc(talla, peso);
   }
 
   private async guardarMedicametosAplicados(){
