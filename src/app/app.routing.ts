@@ -189,11 +189,7 @@ export const routes: Routes = [
       {
         path: 'serviciomedico/atenciones',
         loadChildren: () => import('./components/servicio-medico/consultas/consultas.module').then(m => m.ConsultasModule)
-      },
-      {
-        path: 'pesajeconsultas',
-        loadChildren: () => import('./components/balanza/consultas/consultas.module').then(m => m.ConsultasModule)
-      },
+      },      
       {
         path: 'serviciomedico/principal',
         loadChildren: () => import('./components/servicio-medico/principal-servicio-medico/principal-servicio-medico.module').then(m => m.DashboardModule)

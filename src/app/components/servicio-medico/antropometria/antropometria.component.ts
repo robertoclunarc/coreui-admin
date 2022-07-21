@@ -39,16 +39,16 @@ export class AntropometriaComponent implements OnInit {
 
   private uidPaciente: number;
   private cedula: string;  
-  private examenes: Iantropometria[]=[]; 
-  private examen: Iantropometria={talla:'0', peso:'0', imc: '0', cedula:'', fecha:''};
+  examenes: Iantropometria[]=[]; 
+  examen: Iantropometria={talla:'0', peso:'0', imc: '0', cedula:'', fecha:''};
   private user: IUsuarios={};
   private tipoUser: string; 
-  private alertaRegistrar: string; 
-  private titleRegistrar: string;
+  alertaRegistrar: string; 
+  titleRegistrar: string;
   private popover: Ipopover={} ;
-  private soloLectura: boolean;  
+  soloLectura: boolean;  
   
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
 
   async ngOnInit() {
     if (sessionStorage.currentUser){  
@@ -113,7 +113,7 @@ export class AntropometriaComponent implements OnInit {
     })
   }  
 
-  private async guardar(){    
+  async guardar(){    
     this.examen.cedula=this.cedula;   
     this.popover = await this.validaEntradas();
     
@@ -186,7 +186,7 @@ export class AntropometriaComponent implements OnInit {
     return  popOver;
   }
 
-  private calc_imc(){    
+  calc_imc(){    
     let talla = Number(this.examen.talla);
     let peso = Number(this.examen.peso)
     this.examen.imc=this.srvAntropometria.calculoImc(talla, peso);       

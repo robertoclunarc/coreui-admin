@@ -34,16 +34,16 @@ export class AntecedenteFamiliarComponent implements OnInit {
     
   ) { }
 
-  private antecedentesFamiliares: IAntecedentesFamiliares[]=[]; 
-  private antecedenteFamiliar: IAntecedenteFamiliar={};
-  private ArrayPatologias: IPatologia[]; 
+  antecedentesFamiliares: IAntecedentesFamiliares[]=[]; 
+  public antecedenteFamiliar: IAntecedenteFamiliar={};
+  public ArrayPatologias: IPatologia[]; 
   private user: IUsuarios={};
   private tipoUser: string; 
   private alertaRegistrar: string; 
   private titleRegistrar: string;
   private popover: Ipopover={} ;
-  private soloLectura: boolean;
-  private arrayFamiliares=[
+  public soloLectura: boolean;
+  public arrayFamiliares=[
     {label: 'Padre', value:'Padre'},
     {label: 'Madre', value:'Madre'},
     {label: 'Abuelo Paterno', value:'Abuelo Paterno'},
@@ -56,13 +56,13 @@ export class AntecedenteFamiliarComponent implements OnInit {
     {label: 'Tia', value:'Tia'},
     {label: 'Otro Familiar', value:''}
   ];
-  private arrayEstatus=[
+  public arrayEstatus=[
     {label: 'Vivo', value:'Vivo'},
     {label: 'Fallecido', value:'Fallecido'},
   ];
   
   
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
 
   ngOnInit(): void {
     if (sessionStorage.currentUser){  
@@ -135,7 +135,7 @@ export class AntecedenteFamiliarComponent implements OnInit {
     })
   }  
 
-  private async guardar(){    
+  async guardar(){    
     
     this.popover = await this.validaEntradas();
     

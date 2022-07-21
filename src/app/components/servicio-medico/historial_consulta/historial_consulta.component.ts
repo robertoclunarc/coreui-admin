@@ -32,19 +32,20 @@ export class HistorialConsultasComponent implements OnInit {
     
   ) { }
 
-  private idConsulta: string;
+  idConsulta: string;
 
   private uidPaciente: string;
   private fechaIni: string;
   private fechaFin: string
-  private sliceIndex: number;  
+  sliceIndex: number;  
   private morbilidad: IvMorbilidad[]=[];
-  private returnedArray: IvMorbilidad[]=[];
+  returnedArray: IvMorbilidad[]=[];
   private user: IUsuarios={};
   private tipoUser: string; 
-  private columnas: string[]=['Cedula','Paciente', 'Cargo', 'Supervisor', 'Area', 'Fec.Cosulta','Motivo','Tipo Afeccion','Diagnostico', 'Condicion', 'Medicamento(s)', 'Talla','Peso','IMC', 'Edad', 'Direccion_Hab.','Mano Dominante', 'Sexo','Medico','Paramedico', 'Ver'];
+  columnas: string[]=['Cedula','Paciente', 'Cargo', 'Supervisor', 'Area', 'Fec.Cosulta','Motivo','Tipo Afeccion','Diagnostico', 'Condicion', 'Medicamento(s)', 'Talla','Peso','IMC', 'Edad', 'Direccion_Hab.','Mano Dominante', 'Sexo','Medico','Paramedico', 'Ver'];
   startItem: number;
   endItem: number;
+  alertsDismiss: any = [];
   totalItems: number;//total number of items in all pages
   //currentPage: number   = 1;
   //smallnumPages: number;

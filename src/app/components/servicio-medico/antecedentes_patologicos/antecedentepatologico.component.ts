@@ -35,11 +35,11 @@ export class AntecedentePatologicoComponent implements OnInit {
 
   private uidPaciente: number;
   private cedula: string;  
-  private tipoSelect: string=null;
-  private examenes: IExamenesFuncionales[]=[]; 
-  private examen: IExamenFuncional={};
-  private ArrayTiposAnatomias: {tipo: string}[]; 
-  private ArrayPatologias: IAnatomia[]=[]; 
+  public tipoSelect: string=null;
+  examenes: IExamenesFuncionales[]=[]; 
+  examen: IExamenFuncional={};
+  ArrayTiposAnatomias: {tipo: string}[]; 
+  ArrayPatologias: IAnatomia[]=[]; 
   private user: IUsuarios={};
   private tipoUser: string; 
   private alertaRegistrar: string; 
@@ -47,7 +47,7 @@ export class AntecedentePatologicoComponent implements OnInit {
   private popover: Ipopover={} ;
   private soloLectura: boolean;  
   
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
 
   async ngOnInit() {
     if (sessionStorage.currentUser){  
@@ -112,7 +112,7 @@ export class AntecedentePatologicoComponent implements OnInit {
       })       
   }
 
-  private async llenarArrayPatologias(tipo: string){ 
+  public async llenarArrayPatologias(tipo: string){ 
     
     await this.srvAnatomia.anatomiasPorTipos(tipo)
     .toPromise()
@@ -143,7 +143,7 @@ export class AntecedentePatologicoComponent implements OnInit {
     })
   }  
 
-  private async guardar(){    
+  async guardar(){    
     this.examen.cedula=this.cedula;   
     this.popover = await this.validaEntradas();
     

@@ -12,7 +12,7 @@
             <th  with="5%" scope="col">Add+</th>
           </tr>
           <tr>                                
-            <th scope="col"><select  class="form-control form-control-sm" name="cboTipos" #cboTipos [(ngModel)]="TipoSelect" id="cboTipos" (change)="llenarArrayPatologias($event.target.value)">
+            <th scope="col"><select  class="form-control form-control-sm" name="cboTipos" #cboTipos [(ngModel)]="tipoSelect" id="cboTipos" (change)="llenarArrayPatologias($event.target.value)">
               
               <option *ngFor="let tp of ArrayTiposAnatomias" [value]="tp.tipo">{{tp.tipo}}</option>
                                                                                   

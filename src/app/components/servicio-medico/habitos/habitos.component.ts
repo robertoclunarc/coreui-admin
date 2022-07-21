@@ -33,18 +33,18 @@ export class HabitosComponent implements OnInit {
 
   private uidPaciente: number;
   private cedula: string;  
-  private tipoSelect: string=null;
-  private habitosPacientes: IvHabitos[]=[]; 
-  private habitoPaciente: IHabitoPaciente={};
-  private ArrayHabitos: IHabito[];   
-  private user: IUsuarios={};
-  private tipoUser: string; 
-  private alertaRegistrar: string; 
-  private titleRegistrar: string;
-  private popover: Ipopover={} ;
-  private soloLectura: boolean;  
-  private saved: boolean;
-  private alertsDismiss: any = [];
+  tipoSelect: string=null;
+  habitosPacientes: IvHabitos[]=[]; 
+  habitoPaciente: IHabitoPaciente={};
+  ArrayHabitos: IHabito[];   
+  user: IUsuarios={};
+  tipoUser: string; 
+  alertaRegistrar: string; 
+  titleRegistrar: string;
+  popover: Ipopover={} ;
+  soloLectura: boolean;  
+  saved: boolean;
+   alertsDismiss: any = [];
 
   async ngOnInit() {
     if (sessionStorage.currentUser){  
@@ -150,7 +150,7 @@ export class HabitosComponent implements OnInit {
     }  
   }  
 
-  private async guardar(){
+  async guardar(){
     this.saved=false;     
     this.habitoPaciente.cedula=this.cedula;   
     this.popover = await this.validaEntradas();

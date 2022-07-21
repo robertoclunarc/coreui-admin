@@ -76,57 +76,57 @@ export class ConsultaOneComponent implements OnChanges {
   isCollapsed_1: boolean = true;
   iconCollapse_1: string = 'icon-arrow-down';
   
-  private fechaIni: string;
-  private fechaFin: string;  
-  private user: IUsuarios={};
-  private tipoUser: string;
-  private buscarConsulta: IFiltroConsulta;
-  private consultasTodas: IvConsulta[];
-  private consultas: IConsultas={};
-  private vConsultas: IvConsulta={};
-  private signoVital: IsignosVitales={};
-  private antropometria: Iantropometria={};
-  private paciente: IvPaciente={};
-  private newConsulta: boolean=false;
-  private alertsDismiss: any = [];
-  private medicos: IMedicos[]=[];
-  private paramedicos: IParamedicos[]=[];
-  private selectMedicos: IMedicos[]=[];
-  private selectParamedicos: IParamedicos[]=[];
-  private motivos: IMotivo[]=[];
-  private areas: IAreas[]=[];
-  private selectedPatolog: string;
-  private patologias: IPatologia[] = [];
-  private afecciones: IAfecciones[]=[];
-  private selectedOptionPatolog: any;  
-  private searchText = ""; 
-  private modalTitle = "";
-  private autorizacion: boolean = false;
-  private remitidos: IRemitido[]=[];
-  private tiemposReposo: ITiempoReposo[]=[];
-  private referencia: Ireferencia={};
-  private arrayReferencias: Ireferencia[]=[];
-  private alertaRegistrar: string=""; 
-  private titleRegistrar: string="";
-  private popoverConsulta: Ipopover={}
-  private alertaReferencia: string=""; 
-  private titleReferencia: string="";
-  private alertaMedicamento: string=""; 
-  private titleMedicamento: string="";
-  private alertaIndicacion: string=""; 
-  private titleIndicacion: string="";
-  private arrayMedicamentos: IMedicamento[]=[];
-  private medicamentoAplicado: ImedicamentosConsulta ={};
-  private medicamentoAplic: IMedicamentosAplicados={};
-  private arrayMedicamentosIndicados: IMedicamento[]=[];
-  private medicamentoIndicados: IindicacionMedica[]=[];
-  private medicamentoIndic: IindicacionMedica={};  
-  private turno: number;
-  private condiciones =[
+   fechaIni: string;
+   fechaFin: string;  
+   user: IUsuarios={};
+   tipoUser: string;
+   buscarConsulta: IFiltroConsulta;
+   consultasTodas: IvConsulta[];
+   consultas: IConsultas={};
+   vConsultas: IvConsulta={};
+   signoVital: IsignosVitales={};
+   antropometria: Iantropometria={};
+   paciente: IvPaciente={};
+   newConsulta: boolean=false;
+   alertsDismiss: any = [];
+   medicos: IMedicos[]=[];
+   paramedicos: IParamedicos[]=[];
+   selectMedicos: IMedicos[]=[];
+   selectParamedicos: IParamedicos[]=[];
+   motivos: IMotivo[]=[];
+   areas: IAreas[]=[];
+   selectedPatolog: string;
+   patologias: IPatologia[] = [];
+   afecciones: IAfecciones[]=[];
+   selectedOptionPatolog: any;  
+   searchText = ""; 
+   modalTitle = "";
+   autorizacion: boolean = false;
+   remitidos: IRemitido[]=[];
+   tiemposReposo: ITiempoReposo[]=[];
+   referencia: Ireferencia={};
+   arrayReferencias: Ireferencia[]=[];
+   alertaRegistrar: string=""; 
+   titleRegistrar: string="";
+   popoverConsulta: Ipopover={}
+   alertaReferencia: string=""; 
+   titleReferencia: string="";
+   alertaMedicamento: string=""; 
+   titleMedicamento: string="";
+   alertaIndicacion: string=""; 
+   titleIndicacion: string="";
+   arrayMedicamentos: IMedicamento[]=[];
+   medicamentoAplicado: ImedicamentosConsulta ={};
+   medicamentoAplic: IMedicamentosAplicados={};
+   arrayMedicamentosIndicados: IMedicamento[]=[];
+   medicamentoIndicados: IindicacionMedica[]=[];
+   medicamentoIndic: IindicacionMedica={};  
+   turno: number;
+   condiciones =[
     {valor:'N/A', display:'No Aplica'}, {valor: 'APTO', display:'APTO'},
     {valor:'NO APTO', display:'NO APTO'}, {valor:'APTO RESTR', display:'APTO CON RESTRICCIONES'}
   ];
-  private soloLectura: boolean;
+  soloLectura: boolean;
   @Input() uidConsulta: string = "-1"; 
 
   ngOnChanges(): void {
@@ -288,7 +288,7 @@ export class ConsultaOneComponent implements OnChanges {
       });      
   }
   
-  private buscarPaciente(){
+  buscarPaciente(){
     if (this.paciente.ci!="" &&  this.paciente.ci!= undefined){
       this.srvPacientes.pacienteOne(this.paciente.ci)
       .toPromise()
@@ -302,7 +302,7 @@ export class ConsultaOneComponent implements OnChanges {
     }    
   }
 
-  private buscarMedicamentosAplicados(idConsulta: number){
+  buscarMedicamentosAplicados(idConsulta: number){
     if ( idConsulta!= undefined){
       this.srvMedicamentos.medicamentosAplicados(idConsulta)
       .toPromise()
@@ -317,7 +317,7 @@ export class ConsultaOneComponent implements OnChanges {
     }    
   }
   
-  private buscarSignosVitales(ci: string, fecha: string){
+   buscarSignosVitales(ci: string, fecha: string){
     if (ci!="" &&  ci!= undefined){
       
       this.srvSignosVitales.signosVitalesOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
@@ -341,7 +341,7 @@ export class ConsultaOneComponent implements OnChanges {
     }    
   }
 
-  private verTurno(){
+  verTurno(){
     let tiempo=formatDate(Date.now(), 'HH:mm:ss', this.locale);
     let array = tiempo.split(':');
     let hora=Number(array[0]);
@@ -356,7 +356,7 @@ export class ConsultaOneComponent implements OnChanges {
     }    
   }
 
-  private chequeaAutorizacionMotivo(idMotivo: number){
+  chequeaAutorizacionMotivo(idMotivo: number){
     if (idMotivo==1){
       this.autorizacion=true;
     }else{
@@ -487,7 +487,7 @@ export class ConsultaOneComponent implements OnChanges {
     
   }
 
-  private async guardarSignosVit(_fecha: string, _cedula: string){    
+  async guardarSignosVit(_fecha: string, _cedula: string){    
     if (_fecha!=undefined && _cedula!=undefined){      
       //if (this.signoVital.fcard!=undefined || this.signoVital.pulso!=undefined || this.signoVital.temper!=undefined || this.signoVital.tart!=undefined || this.signoVital.fresp!=undefined){          
           this.signoVital.cedula=_cedula;
@@ -502,13 +502,13 @@ export class ConsultaOneComponent implements OnChanges {
     }
   }
 
-  private calc_imc(){    
+  calc_imc(){    
         let talla = Number(this.antropometria.talla);
         let peso = Number(this.antropometria.peso);        
         this.antropometria.imc= this.srvAntropometria.calculoImc(talla, peso);
   }
 
-  private async guardarMedicametosAplicados(){
+  async guardarMedicametosAplicados(){
     let medAplic: IMedicamentosAplicados;
     const idConsul: number = this.medicamentoAplicado.id_consulta;
 
@@ -600,7 +600,7 @@ export class ConsultaOneComponent implements OnChanges {
     return popOver;    
   }
 
-  private async registrar(){
+  async registrar(){
     this.popoverConsulta={};
     let msjAviso: string;
     if (this.newConsulta) {
@@ -679,7 +679,7 @@ export class ConsultaOneComponent implements OnChanges {
 		this.newConsulta = false;    
   }
 
-  private addReferencia(){
+  addReferencia(){
     
     if (this.referencia.especialidad!="" && this.referencia.especialidad != undefined && this.referencia.informe!="" && this.referencia.informe != undefined){
       this.arrayReferencias.push(this.referencia);
@@ -698,11 +698,11 @@ export class ConsultaOneComponent implements OnChanges {
     }
   }
 
-  private quitReferencia(ind: number){    
+  quitReferencia(ind: number){    
     this.arrayReferencias.splice(ind, 1);
   }
   
-  private async addMedicamento(){
+  async addMedicamento(){
     
     if (this.medicamentoAplic.id_medicamento!= undefined && this.medicamentoAplic.cantidad != undefined && this.medicamentoAplic.medidas!= undefined){      
       let _med: IMedicamento={};      
@@ -740,11 +740,11 @@ export class ConsultaOneComponent implements OnChanges {
     }
   }
 
-  private quitMedicamento(ind: number){    
+  quitMedicamento(ind: number){    
     this.medicamentoAplicado.medicamentos.splice(ind, 1);
   }
 
-  private async addIndicacion(){
+  async addIndicacion(){
     
     if (this.medicamentoIndic.medicamento != undefined && this.medicamentoIndic.indicacion != undefined){
       
@@ -771,7 +771,7 @@ export class ConsultaOneComponent implements OnChanges {
     }
   }
 
-  private quitIndicacion(ind: number){    
+  quitIndicacion(ind: number){    
     this.medicamentoIndicados.splice(ind, 1);
   }
 
@@ -785,15 +785,15 @@ export class ConsultaOneComponent implements OnChanges {
   }
 
 
-  private collapsed(event: any): void {
+  collapsed(event: any): void {
     // console.log(event);
   }
 
-  private expanded(event: any): void {
+  expanded(event: any): void {
     // console.log(event);
   }
 
-  private toggleCollapse(): void {
+  toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
 

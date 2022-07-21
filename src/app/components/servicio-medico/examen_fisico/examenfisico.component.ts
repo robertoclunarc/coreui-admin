@@ -34,18 +34,18 @@ export class EstudiosFisicosComponent implements OnInit {
 
   private uidPaciente: number;
   private cedula: string;  
-  private tipoSelect: string=null;
-  private estudiosPacientes: IExamenesFisicosPacientes[]=[]; 
-  private analisisPaciente: IExamenFisico={};
-  private ArrayEstudios: IEstudiosFisico[];   
-  private user: IUsuarios={};
-  private tipoUser: string; 
-  private alertaRegistrar: string; 
-  private titleRegistrar: string;
+  tipoSelect: string=null;
+  estudiosPacientes: IExamenesFisicosPacientes[]=[]; 
+  analisisPaciente: IExamenFisico={};
+  ArrayEstudios: IEstudiosFisico[];   
+  user: IUsuarios={};
+  tipoUser: string; 
+  alertaRegistrar: string; 
+  titleRegistrar: string;
   private popover: Ipopover={} ;
-  private soloLectura: boolean;  
-  private saved: boolean;
-  private alertsDismiss: any = [];
+  soloLectura: boolean;  
+  saved: boolean;
+  alertsDismiss: any = [];
 
   async ngOnInit() {
     if (sessionStorage.currentUser){  
@@ -160,7 +160,7 @@ export class EstudiosFisicosComponent implements OnInit {
     }  
   }
 
-  private async guardar(){
+  async guardar(){
     this.saved=false;     
     this.analisisPaciente.cedula=this.cedula;   
     this.popover = await this.validaEntradas();

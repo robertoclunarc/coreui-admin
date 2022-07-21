@@ -16,15 +16,15 @@ export class LayoutServicioMedicoComponent {
   public sidebarMinimized = false;
   public navItems = navItems;
   public totalAtenciones: any;
-  public sistemaActual: string;
+  sistemaActual: string;
   private user: IUsuarios={};
-  private soportesUser: IUsuarios[]=[];
-  private nroMensajes: number=0;
-  private claseMensaje: string;
-  private imagenUser: string="";
-  private totalesAtenciones: ItotalAtenciones[]=[];
-  private totalGlobalAtenciones: number;
-  public modoOscuro: boolean;
+  soportesUser: IUsuarios[]=[];
+  nroMensajes: number=0;
+  claseMensaje: string;
+  imagenUser: string="";
+  totalesAtenciones: ItotalAtenciones[]=[];
+  totalGlobalAtenciones: number;
+  modoOscuro: boolean;
   
   constructor(
     private router: Router,

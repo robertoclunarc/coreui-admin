@@ -28,13 +28,13 @@ import { ImedicamentosConsulta } from '../../../models/servicio-medico/medicamen
 export class planillaConsultaComponent implements OnInit {
   id: string;
   
-  private vConsulta: IvConsulta={};
-  private vMorbilidad: IvMorbilidad={};
-  private signoVital: IsignosVitales={};
-  private antropometria: Iantropometria={};
+  vConsulta: IvConsulta={};
+  vMorbilidad: IvMorbilidad={};
+  signoVital: IsignosVitales={};
+  antropometria: Iantropometria={};
   private buscarConsulta: IFiltroConsulta;
-  private medicamentoAplicado: ImedicamentosConsulta ={};
-  private countMedicamentos: number=0
+  medicamentoAplicado: ImedicamentosConsulta ={};
+  countMedicamentos: number=0
   private user: IUsuarios={};
   private tipoUser: string;
 
