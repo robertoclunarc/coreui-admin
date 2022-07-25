@@ -87,17 +87,17 @@
         <ng-template tabHeading><i class="icon-list"></i></ng-template>
         <div class="list-group list-group-accent">
           <div class="list-group-item list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">Usuarios</div>
-          <div *ngFor="let tot of totalesAtenciones" class="list-group-item list-group-item-accent-warning list-group-item-divider">
+          <div class="list-group-item list-group-item-accent-warning list-group-item-divider">
             <div class="avatar float-right">
-              <img class="img-avatar" src="assets/img/avatars/{{tot.login}}.bmp" alt="">
+              <img class="img-avatar" src="" alt="">
             </div>
-            <div>{{tot.tipo_medico}}
-              <strong>{{tot.nombre}}</strong>
+            <div>
+             
             </div>
             <small class="text-muted mr-3">
-              <i class="icon-calendar"></i> Ultima Atencion: {{tot.ultima_atencion | date:'dd/MM/yyyy h:mm:ss'}} </small>
+              <i class="icon-calendar"></i>  </small>
             <small class="text-muted">
-              <i class="icon-location-pin"></i> Total Atenciones: - {{tot.totalconsulta}} </small>
+              <i class="icon-location-pin"></i>  </small>
           </div>
           
           <div class="list-group-item list-group-item-accent-secondary bg-light text-center font-weight-bold text-muted text-uppercase small">TODAY</div>
@@ -109,8 +109,8 @@
             <small class="text-muted">
               <i class="icon-home"></i>  Total Atenciones: {{totalGlobalAtenciones}}</small>
             <div class="avatars-stack mt-2">
-              <div *ngFor="let tot of totalesAtenciones" class="avatar avatar-xs">
-                <img class="img-avatar" src="assets/img/avatars/{{tot.login}}.bmp" alt="">
+              <div class="avatar avatar-xs">
+                <img class="img-avatar" src="" alt="">
               </div>              
             </div>
           </div>          

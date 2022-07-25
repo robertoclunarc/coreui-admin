@@ -41,16 +41,16 @@ export class SignosVitalesComponent implements OnInit {
   private uidPaciente: number;
   private cedula: string;  
   private tipoSelect: string=null;
-  private examenes: IsignosVitales[]=[]; 
-  private examen: IsignosVitales={};
+  examenes: IsignosVitales[]=[]; 
+  examen: IsignosVitales={};
   private user: IUsuarios={};
-  private tipoUser: string; 
-  private alertaRegistrar: string; 
+  tipoUser: string; 
+  alertaRegistrar: string; 
   private titleRegistrar: string;
   private popover: Ipopover={} ;
-  private soloLectura: boolean;  
+  soloLectura: boolean;  
   
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
 
   async ngOnInit() {
     if (sessionStorage.currentUser){  
@@ -115,7 +115,7 @@ export class SignosVitalesComponent implements OnInit {
     })
   }  
 
-  private async guardar(){    
+  async guardar(){    
     this.examen.cedula=this.cedula;   
     this.popover = await this.validaEntradas();
     

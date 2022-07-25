@@ -14,24 +14,24 @@ import { formatDate } from '@angular/common';
 })
 export class PrincipalServicioMedicoComponent implements OnInit {
   
-  private arrayMotivos: {id_motivo: number, descripcion: string, totalmotivos: number }[]=[];
-  private arrayAfecciones: {fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number} []=[];
-  private mainChartFecha: string[]=[];
-  private inicioMainGraf: string;
-  private finMainGraf: string;
-  private arrayMedicos: ItotalAtenciones[]=[];
-  private countMotivos1: number=0;
-  private cantMotivos1: number=0;
-  private countMotivos2: number=0;
-  private cantMotivos2: number=0;
-  private countMotivos3: number=0;
-  private cantMotivos3: number=0;
-  private countMotivos4: number=0;
-  private cantMotivos4: number=0;
-  private loginHtml1: string='brismd';
-  private loginHtml2: string='brismd';
-  private loginHtml3: string='brismd';
-  private loginHtml4: string='brismd';
+  arrayMotivos: {id_motivo: number, descripcion: string, totalmotivos: number }[]=[];
+  arrayAfecciones: {fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number} []=[];
+  mainChartFecha: string[]=[];
+  inicioMainGraf: string;
+  finMainGraf: string;
+  arrayMedicos: ItotalAtenciones[]=[];
+  countMotivos1: number=0;
+  cantMotivos1: number=0;
+  countMotivos2: number=0;
+  cantMotivos2: number=0;
+  countMotivos3: number=0;
+  cantMotivos3: number=0;
+  countMotivos4: number=0;
+  cantMotivos4: number=0;
+  loginHtml1: string='brismd';
+  loginHtml2: string='brismd';
+  loginHtml3: string='brismd';
+  loginHtml4: string='brismd';
   constructor(
     private srvConsultas: ConsultasService,
     private srvVarios: VarioService,
@@ -87,7 +87,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
 			.catch(err => { console.log(err) });
 	}
 
-  private async llenarArrayMedicos(tipoMedico: string) {
+  async llenarArrayMedicos(tipoMedico: string) {
     
 		return await this.srvMedicos.contadorAtenciones()
 			.toPromise()
@@ -100,7 +100,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
 			.catch(err => { console.log(err) });
 	}
 
-  private async llenarArrayAfecionesDay() {    
+  async llenarArrayAfecionesDay() {    
     this.mainChartData1=[];
     this.mainChartData2=[];
     this.mainChartData3=[];
@@ -179,7 +179,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
 	}
   
 
-  private async llenarArrayAfecionesMes() {
+  async llenarArrayAfecionesMes() {
     this.mainChartLabels=[];
     this.mainChartData1=[];
     this.mainChartData2=[];
@@ -269,7 +269,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
 			.catch(err => { console.log(err) });
 	}
 
-  private async llenarArrayAfecionesAnio() {
+  async llenarArrayAfecionesAnio() {
     this.mainChartLabels=[];
     this.mainChartData1=[];
     this.mainChartData2=[];
@@ -359,7 +359,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
 			.catch(err => { console.log(err) });
 	}
 
-  private ConfigMainChartOptions(maxTicksLimit: number, max: number){
+  ConfigMainChartOptions(maxTicksLimit: number, max: number){
   this.mainChartOptions={
     tooltips: {
       enabled: false,
@@ -412,7 +412,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
   };
   }
 
-  private async llenarArrayMotivosDelanio() {
+  async llenarArrayMotivosDelanio() {
     let chart0data: number[]=[];
     let chart1data: number[]=[];
     let chart2data: number[]=[];
@@ -493,7 +493,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
 			.catch(err => { console.log(err) });
 	}
 
-  private async llenarBrandBoxChartData1(){
+  async llenarBrandBoxChartData1(){
     let arrayMotivosMedicoslabel: string[]=[];
     let arrayMotivosMedicosData: number[]=[];
     let cantMotivos: number=0;

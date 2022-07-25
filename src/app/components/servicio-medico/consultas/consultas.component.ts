@@ -60,55 +60,55 @@ export class ConsultasComponent  implements OnInit  {
   isCollapsed_1: boolean = true;
   iconCollapse_1: string = 'icon-arrow-down';
 
-  private user: IUsuarios={};
-  private tipoUser: string;  
-  private buscarConsulta: IFiltroConsulta;
-  private consultasTodas: IvConsulta[];
-  private consultasAnteriores: IvConsulta[];
-  private returnedArray: IvConsulta[];
-  private returnedSearch: IvConsulta[];
+  user: IUsuarios={};
+  tipoUser: string;  
+  buscarConsulta: IFiltroConsulta;
+  consultasTodas: IvConsulta[];
+  consultasAnteriores: IvConsulta[];
+  returnedArray: IvConsulta[];
+  returnedSearch: IvConsulta[];
   
-  private consultas: IConsultas={};
-  private vConsultas: IvConsulta={};
-  private signoVital: IsignosVitales={};
-  private antropometria: Iantropometria={};
-  private paciente: IvPaciente={};
-  private newConsulta: boolean=false;
-  private alertsDismiss: any = [];
-  private medicos: IMedicos[]=[];
-  private paramedicos: IParamedicos[]=[];
-  private selectMedicos: IMedicos[]=[];
-  private selectParamedicos: IParamedicos[]=[];
-  private motivos: IMotivo[]=[];
-  private areas: IAreas[]=[];
-  private selectedPatolog: string;
-  private patologias: IPatologia[] = [];
-  private afecciones: IAfecciones[]=[];
-  private selectedOptionPatolog: any;  
-  private searchText = ""; 
-  private modalTitle = "";
-  private autorizacion: boolean = false;
-  private remitidos: IRemitido[]=[];
-  private tiemposReposo: ITiempoReposo[]=[];
-  private referencia: Ireferencia={};
-  private arrayReferencias: Ireferencia[]=[];
-  private alertaRegistrar: string=""; 
-  private titleRegistrar: string="";
-  private popoverConsulta: Ipopover={}
-  private alertaReferencia: string=""; 
-  private titleReferencia: string="";
-  private alertaMedicamento: string=""; 
-  private titleMedicamento: string="";
-  private alertaIndicacion: string=""; 
-  private titleIndicacion: string="";
-  private arrayMedicamentos: IMedicamento[]=[];
-  private medicamentoAplicado: ImedicamentosConsulta ={};
-  private medicamentoAplic: IMedicamentosAplicados={};
-  private arrayMedicamentosIndicados: IMedicamento[]=[];
-  private medicamentoIndicados: IindicacionMedica[]=[];
-  private medicamentoIndic: IindicacionMedica={};  
-  private turno: number;
-  private soloLectura: boolean;
+  consultas: IConsultas={};
+  vConsultas: IvConsulta={};
+  signoVital: IsignosVitales={};
+  antropometria: Iantropometria={};
+  paciente: IvPaciente={};
+  newConsulta: boolean=false;
+  alertsDismiss: any = [];
+  medicos: IMedicos[]=[];
+  paramedicos: IParamedicos[]=[];
+  selectMedicos: IMedicos[]=[];
+  selectParamedicos: IParamedicos[]=[];
+  motivos: IMotivo[]=[];
+  areas: IAreas[]=[];
+  selectedPatolog: string;
+  patologias: IPatologia[] = [];
+  afecciones: IAfecciones[]=[];
+  selectedOptionPatolog: any;  
+  searchText = ""; 
+  modalTitle = "";
+  autorizacion: boolean = false;
+  remitidos: IRemitido[]=[];
+  tiemposReposo: ITiempoReposo[]=[];
+  referencia: Ireferencia={};
+  arrayReferencias: Ireferencia[]=[];
+  alertaRegistrar: string=""; 
+  titleRegistrar: string="";
+  popoverConsulta: Ipopover={}
+  alertaReferencia: string=""; 
+  titleReferencia: string="";
+  alertaMedicamento: string=""; 
+  titleMedicamento: string="";
+  alertaIndicacion: string=""; 
+  titleIndicacion: string="";
+  arrayMedicamentos: IMedicamento[]=[];
+  medicamentoAplicado: ImedicamentosConsulta ={};
+  medicamentoAplic: IMedicamentosAplicados={};
+  arrayMedicamentosIndicados: IMedicamento[]=[];
+  medicamentoIndicados: IindicacionMedica[]=[];
+  medicamentoIndic: IindicacionMedica={};  
+  turno: number;
+  soloLectura: boolean;
   public classTable: string;
   public classButton: string;
   public estiloOscuro: string;
@@ -130,21 +130,21 @@ export class ConsultasComponent  implements OnInit  {
   private sortOrder = 1;
   html: string = `<span class="btn btn-warning">Never trust not sanitized <code>HTML</code>!!!</span>`; 
 
-  private titulos = [
+  titulos = [
     {titulo: 'Nro.', campo:'uid'}, {titulo: 'Fecha', campo:'fecha'}, {titulo: 'Cedula', campo:'ci'}, {titulo: 'Nombre', campo:'nombre_completo'},{titulo: 'Sexo', campo:'sexo'}, 
     {titulo: 'Cargo', campo:'cargo'}, {titulo: 'Motivo', campo:'motivo'}, {titulo: 'Paramedico', campo:'paramedico'}, {titulo: 'Atendido por', campo:'login_atendio'}
   ];
 
-  private condiciones =[
+  condiciones =[
     {valor:'N/A', display:'No Aplica'}, {valor: 'APTO', display:'APTO'},
     {valor:'NO APTO', display:'NO APTO'}, {valor:'APTO RESTR', display:'APTO CON RESTRICCIONES'}
   ];
 
   // PolarArea
-  private polarAreaChartLabels: string[];
-  private polarAreaChartData: number[];
-  private polarAreaLegend= true;
-  private polarAreaChartType = 'polarArea';  
+  polarAreaChartLabels: string[];
+  polarAreaChartData: number[];
+  polarAreaLegend= true;
+  polarAreaChartType = 'polarArea';  
 
   constructor(
     private router: Router,
@@ -265,11 +265,11 @@ export class ConsultasComponent  implements OnInit  {
 			.catch(err => { console.log(err) });
 	} 
   // events
-  private chartClicked(e: any): void {
+  chartClicked(e: any): void {
     console.log(e);
   }
 
-  private chartHovered(e: any): void {
+  chartHovered(e: any): void {
     console.log(e);
   }
 
@@ -380,7 +380,7 @@ export class ConsultasComponent  implements OnInit  {
       });      
   }
   
-  private buscarPaciente(){
+  buscarPaciente(){
     if (this.paciente.ci!="" &&  this.paciente.ci!= undefined){
       this.srvPacientes.pacienteOne(this.paciente.ci)
       .toPromise()
@@ -394,7 +394,7 @@ export class ConsultasComponent  implements OnInit  {
     }    
   }
 
-  private buscarMedicamentosAplicados(idConsulta: number){
+  buscarMedicamentosAplicados(idConsulta: number){
     if ( idConsulta!= undefined){
       this.srvMedicamentos.medicamentosAplicados(idConsulta)
       .toPromise()
@@ -409,7 +409,7 @@ export class ConsultasComponent  implements OnInit  {
     }    
   }
   
-  private buscarSignosVitales(ci: string, fecha: string){
+  buscarSignosVitales(ci: string, fecha: string){
     if (ci!="" &&  ci!= undefined){
       
       this.srvSignosVitales.signosVitalesOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
@@ -512,7 +512,7 @@ export class ConsultasComponent  implements OnInit  {
    
   }
 
-  private sortTable(prop: string) {
+  sortTable(prop: string) {
     
       if(this.searchText== ""){        
         if (this.sortOrder==1)
@@ -529,7 +529,7 @@ export class ConsultasComponent  implements OnInit  {
       this.sortOrder =  this.sortOrder * (-1);
   }
 
-  private sortData (a: any, b: any, prop: string, type = ""){
+  sortData (a: any, b: any, prop: string, type = ""){
     
     if (type === "date" || type === 'string') {
       
@@ -564,7 +564,7 @@ export class ConsultasComponent  implements OnInit  {
     //console.log(this.turno)
   }
 
-  private chequeaAutorizacionMotivo(idMotivo: number){
+  chequeaAutorizacionMotivo(idMotivo: number){
     if (idMotivo==1){
       this.autorizacion=true;
     }else{
@@ -609,7 +609,7 @@ export class ConsultasComponent  implements OnInit  {
     }    
   }
 
-  private async showModalRegistrar(){
+  async showModalRegistrar(){
     this.soloLectura=false;
     this.autorizacion=false;
     this.verTurno();
@@ -636,7 +636,7 @@ export class ConsultasComponent  implements OnInit  {
     this.antropometria={};
   }  
 
-  private async  showModalActualizar(item: IvConsulta){
+  async  showModalActualizar(item: IvConsulta){
     this.soloLectura=true;
     if (this.tipoUser=='SISTEMA'){
       this. soloLectura=false;
@@ -723,7 +723,7 @@ export class ConsultasComponent  implements OnInit  {
     
   }
 
-  private async guardarSignosVit(_fecha: string, _cedula: string){    
+  async guardarSignosVit(_fecha: string, _cedula: string){    
     if (_fecha!=undefined && _cedula!=undefined){      
       //if (this.signoVital.fcard!=undefined || this.signoVital.pulso!=undefined || this.signoVital.temper!=undefined || this.signoVital.tart!=undefined || this.signoVital.fresp!=undefined){          
           this.signoVital.cedula=_cedula;
@@ -738,13 +738,13 @@ export class ConsultasComponent  implements OnInit  {
     }
   }
 
-  private calc_imc(){    
+  calc_imc(){    
         let talla = Number(this.antropometria.talla);
         let peso = Number(this.antropometria.peso)
         this.antropometria.imc= this.srvAntropometria.calculoImc(talla, peso);        
   }
 
-  private async guardarMedicametosAplicados(){
+  async guardarMedicametosAplicados(){
     let medAplic: IMedicamentosAplicados;
     const idConsul: number = this.medicamentoAplicado.id_consulta;
 
@@ -836,7 +836,7 @@ export class ConsultasComponent  implements OnInit  {
     return popOver;    
   }
 
-  private async registrar(){
+  async registrar(){
     this.popoverConsulta={};
     let msjAviso: string;
     if (this.newConsulta) {
@@ -942,7 +942,7 @@ export class ConsultasComponent  implements OnInit  {
     this.primaryModal.hide();
   }
 
-  private addReferencia(){
+  addReferencia(){
     
     if (this.referencia.especialidad!="" && this.referencia.especialidad != undefined && this.referencia.informe!="" && this.referencia.informe != undefined){
       this.arrayReferencias.push(this.referencia);
@@ -961,11 +961,11 @@ export class ConsultasComponent  implements OnInit  {
     }
   }
 
-  private quitReferencia(ind: number){    
+  quitReferencia(ind: number){    
     this.arrayReferencias.splice(ind, 1);
   }
   
-  private async addMedicamento(){
+  async addMedicamento(){
     
     if (this.medicamentoAplic.id_medicamento!= undefined && this.medicamentoAplic.cantidad != undefined && this.medicamentoAplic.medidas!= undefined){      
       let _med: IMedicamento={};      
@@ -1003,11 +1003,11 @@ export class ConsultasComponent  implements OnInit  {
     }
   }
 
-  private quitMedicamento(ind: number){    
+  quitMedicamento(ind: number){    
     this.medicamentoAplicado.medicamentos.splice(ind, 1);
   }
 
-  private async addIndicacion(){
+  async addIndicacion(){
     
     if (this.medicamentoIndic.medicamento != undefined && this.medicamentoIndic.indicacion != undefined){
       
@@ -1035,19 +1035,19 @@ export class ConsultasComponent  implements OnInit  {
     }
   }
 
-  private quitIndicacion(ind: number){    
+  quitIndicacion(ind: number){    
     this.medicamentoIndicados.splice(ind, 1);
   }
 
-  private collapsed(event: any): void {
+  collapsed(event: any): void {
     // console.log(event);
   }
 
-  private expanded(event: any): void {
+  expanded(event: any): void {
     // console.log(event);
   }
 
-  private toggleCollapse(): void {
+  toggleCollapse(): void {
     this.isCollapsed = !this.isCollapsed;
     this.iconCollapse = this.isCollapsed ? 'icon-arrow-down' : 'icon-arrow-up';
 

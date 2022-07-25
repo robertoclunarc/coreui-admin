@@ -35,7 +35,7 @@ export class AnamnesisPsicologicoComponent implements OnInit {
   private uidPaciente: number;
   private cedula: string;  
   private tipoSelect: string=null;
-  private estudiosPacientes: IAnamnesisPsicologico[]=[]; 
+  public estudiosPacientes: IAnamnesisPsicologico[]=[]; 
   private analisisPaciente: IAnalisisPsicologico={};
   private ArrayEstudios: IEstudioPsicologico[];   
   private user: IUsuarios={};
@@ -43,9 +43,9 @@ export class AnamnesisPsicologicoComponent implements OnInit {
   private alertaRegistrar: string; 
   private titleRegistrar: string;
   private popover: Ipopover={} ;
-  private soloLectura: boolean;  
+  public soloLectura: boolean;  
   private saved: boolean;
-  private alertsDismiss: any = [];
+  public alertsDismiss: any = [];
 
   async ngOnInit() {
     if (sessionStorage.currentUser){  
@@ -160,7 +160,7 @@ export class AnamnesisPsicologicoComponent implements OnInit {
     }  
   }
 
-  private async guardar(){
+  async guardar(){
     this.saved=false;     
     this.analisisPaciente.cedula=this.cedula;   
     this.popover = await this.validaEntradas();

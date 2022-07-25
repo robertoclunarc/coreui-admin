@@ -33,8 +33,8 @@ export class CargosAnterioresComponent implements OnInit {
     
   ) { }
 
-  private cargosAnteriores: ICargoAnterior[]=[]; 
-  private cargoAnterior: ICargoAnterior={}; 
+  cargosAnteriores: ICargoAnterior[]=[]; 
+  cargoAnterior: ICargoAnterior={}; 
   private user: IUsuarios={};
   private tipoUser: string; 
   private alertaRegistrar: string; 
@@ -42,7 +42,7 @@ export class CargosAnterioresComponent implements OnInit {
   private popover: Ipopover={} ;
   private soloLectura: boolean;
   
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
 
   ngOnInit(): void {
     if (sessionStorage.currentUser){  
@@ -97,7 +97,7 @@ export class CargosAnterioresComponent implements OnInit {
     })
   }  
 
-  private async guardar(){    
+  async guardar(){    
     
     this.popover = await this.validaEntradas();
     

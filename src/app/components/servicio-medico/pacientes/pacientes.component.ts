@@ -37,17 +37,17 @@ export class PacientesComponent implements OnInit {
     
   ) { }
 
-  private paciente: IvPaciente={};  
+  paciente: IvPaciente={};  
   private user: IUsuarios={};
   private tipoUser: string; 
-  private alertaRegistrar: string=""; 
-  private titleRegistrar: string="";
-  private popover: Ipopover={} ;
-  private soloLectura: boolean;
-  private gerencia: IGerencia={};
-  private arrayGerencias: IGerencia[]=[];
-  private arrayDepartamentos: IvDepartamentos[]=[];
-  private arrayFrecuenciaRotacion= [
+  alertaRegistrar: string=""; 
+  titleRegistrar: string="";
+  popover: Ipopover={} ;
+  soloLectura: boolean;
+  gerencia: IGerencia={};
+  arrayGerencias: IGerencia[]=[];
+  arrayDepartamentos: IvDepartamentos[]=[];
+  arrayFrecuenciaRotacion= [
     {valor: 'Indeterminada', display: 'Indeterminada'},
     {valor: 'Diaria', display: 'Diaria'},
     {valor: 'Semanal', display: 'Semanal'},
@@ -55,23 +55,23 @@ export class PacientesComponent implements OnInit {
     {valor: 'Trimestral', display: 'Semestral'},
     {valor: 'Anual', display: 'Anual'}    
   ];
-  private arrayNivelEducativo: INivelAcademico[]=[];
-  private arrayTipoDiscapacidad= [
+  arrayNivelEducativo: INivelAcademico[]=[];
+  arrayTipoDiscapacidad= [
     {label:'SIN CONDICION', value:'SIN CONDICION'},
     {label:'AUDITIVA', value:'AUDITIVA'},
     {label:'MOTRIZ', value:'MOTRIZ'},
     {label:'VISUAL', value:'VISUAL'},    
   ];
-  private arrayEdoCivil= [    
+  arrayEdoCivil= [    
     {label:'Solter@', value:'Solter@'},
     {label:'Casad@', value:'Casad@'},
     {label:'Divorciad@', value:'Divorciad@'},
     {label:'Concubin@', value:'Concubin@'},
   ];
 
-  private arrayContratista: IContratista[]=[];
-  private ObjContratista: IContratista={};
-  private alertsDismiss: any = [];
+  arrayContratista: IContratista[]=[];
+  ObjContratista: IContratista={};
+  alertsDismiss: any = [];
 
   ngOnInit(): void {
     if (sessionStorage.currentUser){  
@@ -96,7 +96,7 @@ export class PacientesComponent implements OnInit {
     this.llenarArrayContratistas();
   }
 
-  private async buscarPaciente(){
+  async buscarPaciente(){
     
     if (this.paciente.ci!="" && this.paciente.ci!= undefined && this.paciente.ci!= null){
       await this.srvPacientes.pacienteOne(this.paciente.ci)
@@ -172,7 +172,7 @@ export class PacientesComponent implements OnInit {
     })
   }
 
-  private async guardar(){    
+  async guardar(){    
     let pacienteAux: IvPaciente = this.paciente;
     this.popover={};
     if (this.paciente.es_contratista && (this.ObjContratista.uid== undefined ||  this.ObjContratista==null)){

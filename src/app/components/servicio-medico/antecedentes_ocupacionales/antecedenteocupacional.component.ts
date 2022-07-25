@@ -37,26 +37,26 @@ export class AntecedenteOcupacionalComponent implements OnInit {
 
   private uidPaciente: number;
   private cedula: string;
-  private tiempo: string;
-  private periodo: string;
-  private agenteSelect: string=null;
-  private antecedentesOcupacionales: IRiesgosHistorias[]=[]; 
-  private antecedenteOcupacional: IRiesgosHistoria={};
-  private ArrayAgentes: [{agente: string}]; 
-  private ArrayExposiciones: IRiesgos[]=[]; 
+  tiempo: string;
+  periodo: string;
+  agenteSelect: string=null;
+  antecedentesOcupacionales: IRiesgosHistorias[]=[]; 
+  antecedenteOcupacional: IRiesgosHistoria={};
+  ArrayAgentes: [{agente: string}]; 
+  ArrayExposiciones: IRiesgos[]=[]; 
   private user: IUsuarios={};
   private tipoUser: string; 
   private alertaRegistrar: string; 
   private titleRegistrar: string;
   private popover: Ipopover={} ;
   private soloLectura: boolean;
-  private arrayPeriodos=[
+  arrayPeriodos=[
     {label: 'Año(s)', value:'Año(s)'},
     {label: 'Mes(es)', value:'Mes(es)'},
     {label: 'Dia(s)', value:'Dia(s)'},    
   ]; 
   
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
 
   ngOnInit(): void {
     if (sessionStorage.currentUser){  
@@ -154,7 +154,7 @@ export class AntecedenteOcupacionalComponent implements OnInit {
     })
   }  
 
-  private async guardar(){    
+  async guardar(){    
     this.antecedenteOcupacional.cedula=this.cedula;
     this.popover = await this.validaEntradas();
     
@@ -179,7 +179,7 @@ export class AntecedenteOcupacionalComponent implements OnInit {
     
   }
 
-  private async llenarArrayExposiciones(agente: number){ 
+  async llenarArrayExposiciones(agente: number){ 
     this.antecedenteOcupacional.fk_riesgo=null;
     await this.srvAntecedentesOcupacionales.riesgosAgente(this.agenteSelect)
     .toPromise()
@@ -193,7 +193,7 @@ export class AntecedenteOcupacionalComponent implements OnInit {
     this.cboRiesgos.nativeElement.focus();     
   }
 
-  private async colocarResp(){    
+  async colocarResp(){    
     this.antecedenteOcupacional.resp="";    
     for await (let e of this.ArrayExposiciones){       
         if (e.uid_riesgo==this.antecedenteOcupacional.fk_riesgo){          

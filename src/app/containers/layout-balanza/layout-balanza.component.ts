@@ -24,13 +24,13 @@ export class LayoutBalanzaComponent {
   public navItems = navItems;
   public totalAtenciones: any;
   public sistemaActual: string;
-  private user: Ioperador={};
-  private soportesUser: Ioperador[]=[];
-  private nroMensajes: number=0;
-  private claseMensaje: string;
-  private imagenUser: string="";
+  user: Ioperador={};
+  soportesUser: Ioperador[]=[];
+  nroMensajes: number=0;
+  claseMensaje: string;
+  imagenUser: string="";
  // private totalesAtenciones: ItotalAtenciones[]=[];
-  private totalGlobalAtenciones: number;
+   totalGlobalAtenciones: number;
 
   constructor(
     private router: Router,
