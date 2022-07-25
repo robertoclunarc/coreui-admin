@@ -23,6 +23,7 @@ import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anam
 import { EstudiosFisicosComponent } from './components/servicio-medico/examen_fisico/examenfisico.component';
 import { SignosVitalesComponent } from './components/servicio-medico/signos_vitales/signosvitales.component';
 import { AntropometriaComponent } from './components/servicio-medico/antropometria/antropometria.component';
+//import { HistoriaMedicaComponent } from './components/servicio-medico/historia-medica/historial.component';
 
 export const routes: Routes = [
   {
@@ -50,10 +51,10 @@ export const routes: Routes = [
     }
   },
   /*{
-    path: 'consultas',
-    component: TabsComponent,
+    path: 'serviciomedico/historia',
+    component: HistoriaMedicaComponent,
     data: {
-      title: 'Consultas'
+      title: 'Historia'
     }
   },*/
   {
@@ -189,7 +190,11 @@ export const routes: Routes = [
       {
         path: 'serviciomedico/atenciones',
         loadChildren: () => import('./components/servicio-medico/consultas/consultas.module').then(m => m.ConsultasModule)
-      },      
+      },
+      {
+        path: 'serviciomedico/historia',
+        loadChildren: () => import('./components/servicio-medico/historia-medica/historial.module').then(m => m.HistorialConsultasModule)
+      },
       {
         path: 'serviciomedico/principal',
         loadChildren: () => import('./components/servicio-medico/principal-servicio-medico/principal-servicio-medico.module').then(m => m.DashboardModule)

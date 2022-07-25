@@ -14,6 +14,7 @@ import { ProgressComponent } from '../../../views/base/progress.component';
 import { TooltipsComponent } from '../../../views/base/tooltips.component';
 import { NavbarsComponent } from '../../../views/base/navbars/navbars.component';
 import { planillaConsultaComponent } from '../planillas/planilla_consulta.component'
+//import { HistoriaMedicaComponent } from '../historia-medica/historial.component';
 
 const routes: Routes = [
   {
@@ -40,6 +41,13 @@ const routes: Routes = [
           title: 'Consulta'
         }
       },
+      /*{
+        path: 'serviciomedico/historia',
+        component: HistoriaMedicaComponent,
+        data: {
+          title: 'Historia Medica'
+        }
+      },*/
       {
         path: 'forms',
         component: FormsComponent,
