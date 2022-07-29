@@ -3,6 +3,7 @@ import { Routes, RouterModule } from '@angular/router';
 
 import { PrincipalServicioMedicoComponent} from './principal-servicio-medico.component';
 
+
 const routes: Routes = [
   {
     path: 'serviciomedico',
@@ -27,7 +28,8 @@ const routes: Routes = [
       title: 'Principal',
 
     }
-  }
+  },
+  
 ];
 
 @NgModule({

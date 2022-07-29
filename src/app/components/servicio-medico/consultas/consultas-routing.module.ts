@@ -20,12 +20,19 @@ const routes: Routes = [
   {
     path: '',
     data: {
-      title: 'Base'
+      title: 'Atenciones'
     },
     children: [
       {
         path: '',
-        redirectTo: 'serviciomedico/atenciones'
+        redirectTo: 'atenciones'
+      },
+      {
+        path: 'atenciones',
+        component: ConsultasComponent,
+        data: {
+          title: 'Atenciones'
+        }
       },
       {
         path: 'cards',
@@ -68,14 +75,7 @@ const routes: Routes = [
         data: {
           title: 'Tables'
         }
-      },
-      {
-        path: 'serviciomedico/atenciones',
-        component: ConsultasComponent,
-        data: {
-          title: 'Atenciones'
-        }
-      },
+      },      
       {
         path: 'carousels',
         component: CarouselsComponent,

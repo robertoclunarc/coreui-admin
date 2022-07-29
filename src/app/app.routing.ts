@@ -13,7 +13,7 @@ import { PacientesComponent } from './components/servicio-medico/pacientes/pacie
 import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
 import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
 import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
-import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
+//import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
 import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
 import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
 
@@ -23,7 +23,7 @@ import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anam
 import { EstudiosFisicosComponent } from './components/servicio-medico/examen_fisico/examenfisico.component';
 import { SignosVitalesComponent } from './components/servicio-medico/signos_vitales/signosvitales.component';
 import { AntropometriaComponent } from './components/servicio-medico/antropometria/antropometria.component';
-//import { HistoriaMedicaComponent } from './components/servicio-medico/historia-medica/historial.component';
+
 
 export const routes: Routes = [
   {
@@ -49,14 +49,7 @@ export const routes: Routes = [
     data: {
       title: 'Portada'
     }
-  },
-  /*{
-    path: 'serviciomedico/historia',
-    component: HistoriaMedicaComponent,
-    data: {
-      title: 'Historia'
-    }
-  },*/
+  },  
   {
     path: '404',
     component: P404Component,
@@ -134,13 +127,13 @@ export const routes: Routes = [
       title: 'examen fisico del Paciente'
     }
   },
-  {
+  /*{
     path: 'serviciomedico/historial/:idPaciente/:fechaIni/:fechaFin',
     component: HistorialConsultasComponent,
     data: {
       title: 'Historia del Paciente'
     }
-  },
+  },*/
   {
     path: 'serviciomedico/examen/fisico/signosvitales/:idPaciente',
     component: SignosVitalesComponent,

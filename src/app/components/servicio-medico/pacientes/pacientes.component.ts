@@ -112,7 +112,6 @@ export class PacientesComponent implements OnInit {
           this.gerencia.uid = this.arrayGerencias.find( g => (g.nombre==this.paciente.gcia)).uid;
           this.gerencia.nombre = this.paciente.gcia;
           
-          console.log(this.paciente);
         }
         else
           this.paciente={} 

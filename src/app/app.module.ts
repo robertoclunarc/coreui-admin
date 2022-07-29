@@ -32,8 +32,8 @@ import { PacientesComponent } from './components/servicio-medico/pacientes/pacie
 import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
 import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
 import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
-import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
-import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
+//import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
+//import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
 import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
 import { HabitosComponent  } from './components/servicio-medico/habitos/habitos.component';
 import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anamnesis_psicologico/anamnesispsicologico.component';
@@ -49,8 +49,8 @@ import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
   DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent, 
-  CargosAnterioresComponent,  AntecedenteFamiliarComponent, AntecedenteOcupacionalComponent, HistorialConsultasComponent,
-  ConsultaOneComponent, AntecedentePatologicoComponent, HabitosComponent, AnamnesisPsicologicoComponent, EstudiosFisicosComponent,
+  CargosAnterioresComponent,  AntecedenteFamiliarComponent, AntecedenteOcupacionalComponent/*, HistorialConsultasComponent,
+  ConsultaOneComponent*/, AntecedentePatologicoComponent, HabitosComponent, AnamnesisPsicologicoComponent, EstudiosFisicosComponent,
   SignosVitalesComponent, AntropometriaComponent
 ];
 
