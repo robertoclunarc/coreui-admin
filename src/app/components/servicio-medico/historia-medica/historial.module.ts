@@ -15,6 +15,15 @@ import { AlertModule } from 'ngx-bootstrap/alert';*/
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { ConsultaOneComponent } from '../consulta_one/consulta_one.component';
+import { CargosAnterioresComponent } from '../cargos_anteriores/cargos_anteriores.component';
+import { AntecedenteFamiliarComponent } from '../antecedentes_familiares/antecedentefamiliar.component';
+import { AntecedenteOcupacionalComponent } from '../antecedentes_ocupacionales/antecedenteocupacional.component';
+import { AntecedentePatologicoComponent } from '../antecedentes_patologicos/antecedentepatologico.component';
+import { HabitosComponent } from '../habitos/habitos.component';
+import { AnamnesisPsicologicoComponent } from '../anamnesis_psicologico/anamnesispsicologico.component';
+import { SignosVitalesComponent } from '../signos_vitales/signosvitales.component';
+import { AntropometriaComponent } from '../antropometria/antropometria.component';
+import { EstudiosFisicosComponent } from '../examen_fisico/examenfisico.component';
 
 @NgModule({
   imports: [
@@ -31,8 +40,18 @@ import { ConsultaOneComponent } from '../consulta_one/consulta_one.component';
   ],
   declarations: [
     
-    HistoriaMedicaComponent,HistorialConsultasComponent,ConsultaOneComponent
-    
+    HistoriaMedicaComponent,
+    HistorialConsultasComponent,
+    ConsultaOneComponent, 
+    CargosAnterioresComponent, 
+    AntecedenteFamiliarComponent,
+    AntecedenteOcupacionalComponent,
+    AntecedentePatologicoComponent,
+    HabitosComponent,
+    AnamnesisPsicologicoComponent,
+    SignosVitalesComponent,
+    AntropometriaComponent,
+    EstudiosFisicosComponent
   ]
 })
 export class HistorialConsultasModule { }

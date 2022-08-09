@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Inject, LOCALE_ID, NgModule, Input, ElementRef} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -18,8 +18,9 @@ import { CargosAnterioresService } from '../../../services/servicio_medico/cargo
   providers: [ CargosAnterioresService , 
     { provide: AlertConfig }],
 })
-export class CargosAnterioresComponent implements OnInit {
+export class CargosAnterioresComponent implements OnChanges {
 
+  @Input() _uidPaciente: string;
   @ViewChild('txtCargo') inputCargo!: ElementRef<HTMLInputElement>;
   @ViewChild('txtActividad') inputActividad!: ElementRef<HTMLInputElement>;
   @ViewChild('txtDesde') inputDesde!: ElementRef<HTMLInputElement>;
@@ -44,7 +45,7 @@ export class CargosAnterioresComponent implements OnInit {
   
   alertsDismiss: any = [];
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -58,13 +59,20 @@ export class CargosAnterioresComponent implements OnInit {
     }else{
       this.router.navigate(["login"]);
     }
-   
-    this.cargoAnterior.fk_paciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+    
+    if (this._uidPaciente!=undefined && !isNaN(Number(this._uidPaciente)))
+      this.cargoAnterior.fk_paciente = Number(this._uidPaciente);
+    if (this.route.snapshot.paramMap.get("idPaciente")!=undefined)
+      this.cargoAnterior.fk_paciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+    if (isNaN(Number(this._uidPaciente)))
+      this.cargoAnterior.fk_paciente = -1;
+
+      
     this.buscarCargos();    
   }
 
   private async buscarCargos(){
-    
+    console.log(`fk_paciente: ${this.cargoAnterior.fk_paciente}`)
     if (this.cargoAnterior.fk_paciente!= undefined && this.cargoAnterior.fk_paciente!= null){
       await this.srvCargoAnterior.cargosAnterioresAll(this.cargoAnterior.fk_paciente.toString())
       .toPromise()
@@ -76,7 +84,8 @@ export class CargosAnterioresComponent implements OnInit {
           this.cargosAnteriores=[]
         
       })
-    }    
+    }
+      
   }
 
   private async NuevoCargo(){

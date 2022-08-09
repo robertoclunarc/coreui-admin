@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -19,8 +19,9 @@ import { PacientesService } from '../../../services/servicio_medico/pacientes.se
     { provide: AlertConfig }],
 })
 
-export class AntecedentePatologicoComponent implements OnInit {
+export class AntecedentePatologicoComponent implements OnChanges {
 
+  @Input() _uidPaciente: string;
   @ViewChild('cboPatologias') cboPatologias!: ElementRef<HTMLInputElement>;   
   
   constructor( 
@@ -49,7 +50,7 @@ export class AntecedentePatologicoComponent implements OnInit {
   
   alertsDismiss: any = [];
 
-  async ngOnInit() {
+  async ngOnChanges() {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -63,8 +64,14 @@ export class AntecedentePatologicoComponent implements OnInit {
     }else{
       this.router.navigate(["login"]);
     }
-   
-    this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+
+    if (this._uidPaciente!=undefined && !isNaN(Number(this._uidPaciente)))
+      this.uidPaciente = Number(this._uidPaciente);
+    if (this.route.snapshot.paramMap.get("idPaciente")!=undefined)
+      this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+    if (isNaN(Number(this._uidPaciente)))
+      this.uidPaciente = -1;    
+    
     await this.buscarPaciente();
     this.llenarArrayZonaCorporal();
     this.buscarExamenesFuncionales();    

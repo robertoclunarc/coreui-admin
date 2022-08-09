@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Inject, LOCALE_ID, NgModule, ElementRef, Input} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -19,8 +19,9 @@ import { PatologiasService } from '../../../services/servicio_medico/patologias.
   providers: [ AntecedenteFamiliarComponent , PatologiasService,
     { provide: AlertConfig }],
 })
-export class AntecedenteFamiliarComponent implements OnInit {
+export class AntecedenteFamiliarComponent implements OnChanges {
 
+  @Input() _uidPaciente: string;
   @ViewChild('cboPatologia') cboPatologia!: ElementRef<HTMLInputElement>;
   @ViewChild('cboParentezco') cboParentezco!: ElementRef<HTMLInputElement>;
   @ViewChild('cboEstatusFamiliar') cboEstatusFamiliar!: ElementRef<HTMLInputElement>;  
@@ -64,7 +65,7 @@ export class AntecedenteFamiliarComponent implements OnInit {
   
   alertsDismiss: any = [];
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -78,8 +79,14 @@ export class AntecedenteFamiliarComponent implements OnInit {
     }else{
       this.router.navigate(["login"]);
     }
-   
-    this.antecedenteFamiliar.fk_paciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+
+    if (this._uidPaciente!=undefined && !isNaN(Number(this._uidPaciente)))
+      this.antecedenteFamiliar.fk_paciente = Number(this._uidPaciente);
+    if (this.route.snapshot.paramMap.get("idPaciente")!=undefined)
+      this.antecedenteFamiliar.fk_paciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+    if (isNaN(Number(this._uidPaciente)))
+      this.antecedenteFamiliar.fk_paciente = -1;
+    
     this.llenarArrayPatologias();
     this.buscarAntecedentesFamiliares();    
   }

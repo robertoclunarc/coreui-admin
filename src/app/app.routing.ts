@@ -78,55 +78,55 @@ export const routes: Routes = [
       title: 'Datos Paciente'
     }
   },
-  {
+  /*{
     path: 'serviciomedico/cargosanteriores/:idPaciente',
-    component: AntecedenteFamiliarComponent,
+    component: CargosAnterioresComponent,
     data: {
       title: 'Cargos Anteriores del Paciente',
     }
-  },
-  {
+  },*/
+  /*{
     path: 'serviciomedico/antecedentes/familiares/:idPaciente',
-    component: CargosAnterioresComponent,
+    component: AntecedenteFamiliarComponent,
     data: {
       title: 'Antecedentes Familiares del Paciente'
     }
-  },
-  {
+  },*/
+  /*{
     path: 'serviciomedico/antecedentes/ocupacionales/:idPaciente',
     component: AntecedenteOcupacionalComponent,
     data: {
       title: 'Antecedentes Ocupacionales del Paciente'
     }
-  }, 
-  {
+  }, */
+  /*{
     path: 'serviciomedico/antecedentes/patologicos/:idPaciente',
     component: AntecedentePatologicoComponent,
     data: {
       title: 'Antecedentes Patologicos del Paciente'
     }
-  },
-  {
+  },*/
+  /*{
     path: 'serviciomedico/habitos/:idPaciente',
     component: HabitosComponent,
     data: {
       title: 'Habitos del Paciente'
     }
-  },
-  {
+  },*/
+  /*{
     path: 'serviciomedico/examen/psicologico/:idPaciente',
     component: AnamnesisPsicologicoComponent,
     data: {
       title: 'Analisis Psicologico del Paciente'
     }
-  }, 
-  {
+  }, */
+  /*{
     path: 'serviciomedico/examen/fisico/:idPaciente',
     component: EstudiosFisicosComponent,
     data: {
       title: 'examen fisico del Paciente'
     }
-  },
+  },*/
   /*{
     path: 'serviciomedico/historial/:idPaciente/:fechaIni/:fechaFin',
     component: HistorialConsultasComponent,
@@ -134,20 +134,20 @@ export const routes: Routes = [
       title: 'Historia del Paciente'
     }
   },*/
-  {
+  /*{
     path: 'serviciomedico/examen/fisico/signosvitales/:idPaciente',
     component: SignosVitalesComponent,
     data: {
       title: 'Signos Vitales del Paciente'
     }
-  },
-  {
+  },*/
+  /*{
     path: 'serviciomedico/examen/fisico/antropometria/:idPaciente',
     component: AntropometriaComponent,
     data: {
       title: 'Datos Antropometricos del Paciente'
     }
-  },
+  },*/
   {
     path: 'serviciomedico/consulta/:uidConsulta',
     component: ConsultaOneComponent,

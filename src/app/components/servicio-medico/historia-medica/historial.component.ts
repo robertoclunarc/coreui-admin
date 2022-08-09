@@ -25,7 +25,7 @@ export class HistoriaMedicaComponent  implements OnInit  {
 
   private user: IUsuarios={};
   private tipoUser: string;    
-  
+  itemsConsulta: number;
   fechaIni='null';
   fechaFin='null';  
   paciente: IPaciente={};
@@ -42,7 +42,7 @@ export class HistoriaMedicaComponent  implements OnInit  {
   ngOnInit(): void {}
 
   async buscarPaciente(e){
-    console.log(e);
+    
     this.paciente.ci=e;
     if (this.paciente.ci!="" && this.paciente.ci!= undefined && this.paciente.ci!= null){
       await this.srvPacientes.pacienteOne(this.paciente.ci)

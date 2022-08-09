@@ -48,10 +48,19 @@ import { P500Component } from './views/error/500.component';
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
-  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent, 
-  CargosAnterioresComponent,  AntecedenteFamiliarComponent, AntecedenteOcupacionalComponent/*, HistorialConsultasComponent,
-  ConsultaOneComponent*/, AntecedentePatologicoComponent, HabitosComponent, AnamnesisPsicologicoComponent, EstudiosFisicosComponent,
-  SignosVitalesComponent, AntropometriaComponent
+  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , 
+  PacientesComponent, 
+  //CargosAnterioresComponent,  
+  //AntecedenteFamiliarComponent, 
+  //AntecedenteOcupacionalComponent, 
+  //HistorialConsultasComponent,
+  //ConsultaOneComponent, 
+  //AntecedentePatologicoComponent, 
+  //HabitosComponent, 
+  //AnamnesisPsicologicoComponent, 
+  //EstudiosFisicosComponent,
+  //SignosVitalesComponent, 
+  //AntropometriaComponent
 ];
 
 import {

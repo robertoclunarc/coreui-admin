@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -19,8 +19,9 @@ import { PacientesService } from '../../../services/servicio_medico/pacientes.se
     { provide: AlertConfig }],
 })
 
-export class SignosVitalesComponent implements OnInit {
+export class SignosVitalesComponent implements OnChanges {
 
+  @Input() _uidPaciente: string;
   @ViewChild('txtTemper') txtTemper!: ElementRef<HTMLInputElement>;
   @ViewChild('txtTart') txtTart!: ElementRef<HTMLInputElement>; 
   @ViewChild('txtPulso') txtPulso!: ElementRef<HTMLInputElement>;
@@ -52,7 +53,7 @@ export class SignosVitalesComponent implements OnInit {
   
   alertsDismiss: any = [];
 
-  async ngOnInit() {
+  async ngOnChanges() {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -66,8 +67,15 @@ export class SignosVitalesComponent implements OnInit {
     }else{
       this.router.navigate(["login"]);
     }
+
+    if (this._uidPaciente!=undefined && !isNaN(Number(this._uidPaciente)))
+      this.uidPaciente = Number(this._uidPaciente);
+    if (this.route.snapshot.paramMap.get("idPaciente")!=undefined)
+      this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+    if (isNaN(Number(this._uidPaciente)))
+      this.uidPaciente = -1;  
    
-    this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+    //this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
     await this.buscarPaciente();    
     this.buscarExamenesFuncionales();    
   }
