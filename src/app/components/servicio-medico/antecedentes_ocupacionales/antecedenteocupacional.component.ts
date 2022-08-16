@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnChanges, Input , Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Input , Inject, LOCALE_ID, NgModule, ElementRef, Output, EventEmitter} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -21,6 +21,7 @@ import { PacientesService } from '../../../services/servicio_medico/pacientes.se
 })
 export class AntecedenteOcupacionalComponent implements OnChanges {
 
+  @Output() itemOcupaciones= new EventEmitter<number>();
   @Input() _uidPaciente: string;
   @ViewChild('cboRiesgos') cboRiesgos!: ElementRef<HTMLInputElement>;  
   @ViewChild('txtResp') txtResp!: ElementRef<HTMLInputElement>;
@@ -91,8 +92,8 @@ export class AntecedenteOcupacionalComponent implements OnChanges {
       await this.srvPaciente.pacienteUid(this.uidPaciente)
       .toPromise()
       .then(result => {
-        if (result){          
-          this.cedula=result[0].ci;
+        if (result!=null && result.ci!=undefined){
+          this.cedula=result.ci;
         }        
       })
     }
@@ -105,19 +106,17 @@ export class AntecedenteOcupacionalComponent implements OnChanges {
       .toPromise()
       .then(async result => {
         
-        if (result.length>0){
-          
+        if (result.length>0){          
           this.antecedentesOcupacionales=result;          
           this.cedula=result[0].cedula; 
           this.tiempo="";
-          this.periodo="";
-          console.log(this.cedula);
-                
+          this.periodo="";                
         }
         else{
           await this.buscarPaciente();          
-          this.antecedentesOcupacionales=[];
-        }         
+          this.antecedentesOcupacionales=[];          
+        }
+        this.itemOcupaciones.emit(result.length);
       })
     }    
   }

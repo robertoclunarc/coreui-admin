@@ -29,7 +29,7 @@ export class PacientesService {
 
     return this.http.get<IvPaciente>(this.apiUrlPacientes + 'consultar/cedula/' + cedula)
 			.pipe(
-				tap(result => console.log(`pacienteOne`)),
+				tap(),
 				catchError(this.handleError)
 			);
   }
@@ -38,7 +38,7 @@ export class PacientesService {
 
     return this.http.get<IvPaciente>(this.apiUrlPacientes + 'consultar/uid/' + idPaciente)
 			.pipe(
-				tap(result => console.log(`pacienteUid`)),
+				tap(),
 				catchError(this.handleError)
 			);
   }

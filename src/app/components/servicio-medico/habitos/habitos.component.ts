@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef, Output, EventEmitter} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -21,6 +21,7 @@ import { PacientesService } from '../../../services/servicio_medico/pacientes.se
 
 export class HabitosComponent implements OnChanges {
 
+  @Output() itemExamenFuncionalB= new EventEmitter<number>();
   @Input() _uidPaciente: string;
   
   constructor( 
@@ -76,15 +77,15 @@ export class HabitosComponent implements OnChanges {
   }
 
   private async buscarPaciente(){
-    if (this.uidPaciente!= undefined && this.uidPaciente!= null){
-      
+    if (this.uidPaciente!= undefined && this.uidPaciente!= null){      
       await this.srvPaciente.pacienteUid(this.uidPaciente)
       .toPromise()
-      .then(result => {
-        if (result){ 
-                  
-          this.cedula=result[0].ci;
-        }        
+      .then(result => { 
+        
+        if (result!=null && result.ci!=undefined){                   
+          this.cedula=result.ci;
+          
+        }         
       })
     }
   }
@@ -114,6 +115,7 @@ export class HabitosComponent implements OnChanges {
               resp:  rsp
           };
           this.habitosPacientes.push(habitosP);
+          this.itemExamenFuncionalB.emit(result.length);
         }         
       })
     }    

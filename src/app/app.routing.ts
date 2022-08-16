@@ -9,20 +9,20 @@ import { P500Component } from './views/error/500.component';
 import { LoginServicioMedicoComponent  } from './components/servicio-medico/login-servicio-medico/login-servicio-medico.component'
 import { LoginBalanzaComponent  } from './components/balanza/login-balanza/login-balanza.component'
 import { RegisterComponent } from './views/register/register.component';
-import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
-import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
-import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
-import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
+//import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
+//import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
+//import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
+//import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
 //import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
 import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
-import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
+//import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
 
 import { PortadaComponent } from './views/portada/portada.component';
-import { HabitosComponent } from './components/servicio-medico/habitos/habitos.component';
-import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anamnesis_psicologico/anamnesispsicologico.component';
-import { EstudiosFisicosComponent } from './components/servicio-medico/examen_fisico/examenfisico.component';
-import { SignosVitalesComponent } from './components/servicio-medico/signos_vitales/signosvitales.component';
-import { AntropometriaComponent } from './components/servicio-medico/antropometria/antropometria.component';
+//import { HabitosComponent } from './components/servicio-medico/habitos/habitos.component';
+//import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anamnesis_psicologico/anamnesispsicologico.component';
+//import { EstudiosFisicosComponent } from './components/servicio-medico/examen_fisico/examenfisico.component';
+//import { SignosVitalesComponent } from './components/servicio-medico/signos_vitales/signosvitales.component';
+//import { AntropometriaComponent } from './components/servicio-medico/antropometria/antropometria.component';
 
 
 export const routes: Routes = [
@@ -71,13 +71,13 @@ export const routes: Routes = [
       title: 'Login Page'
     }
   },
-  {
+  /*{
     path: 'serviciomedico/pacientes',
     component: PacientesComponent,
     data: {
       title: 'Datos Paciente'
     }
-  },
+  },*/
   /*{
     path: 'serviciomedico/cargosanteriores/:idPaciente',
     component: CargosAnterioresComponent,

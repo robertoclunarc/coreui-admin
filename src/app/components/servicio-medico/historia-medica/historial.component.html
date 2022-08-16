@@ -2,42 +2,36 @@
   <div class="row">    
     <div class="col-md-12 mb-4">
       <div class="row" >
-        <div class="col-lg-6">           
-          <div class="input-group">                            
-            <span class="input-group-prepend">
-              <button [disabled]="soloLectura" type="button"                                      
-                (click)="buscarPaciente(paciente.ci)" 
-                class="btn btn-primary btn-sm">
-                <i class="fa fa-search"></i> 
-                Paciente
-              </button>
-            </span>
-            <input type="text" id="txtCi" name="txtCi" [(ngModel)]="paciente.ci" [disabled]="soloLectura" (keyup.enter)="buscarPaciente($event.value)"  class="form-control form-control-sm" placeholder="Cedula Paciente">
-            <span class="input-group-append">
-              
-              <button type="button" 
-                placement="right"
-                (click)="buscarPaciente('null')" 
-                class="btn btn-primary btn-sm">
-                <i class="fa fa-eye fa-sm"></i>
-              </button>
-            </span>
-          </div>
+        <div class="col-lg-12">
+            
+            <alert type="info" *ngIf="paciente.ci!=undefined">
+              <strong>{{paciente.nombre}} {{paciente.apellido}}: {{paciente.cargo}} </strong>
+            </alert>            
+          
         </div>
-        <div class="col-lg-6">
-          <label *ngIf="paciente.nombre!=undefined"><strong>{{paciente.nombre}} {{paciente.apellido}}</strong></label>
-        </div>
+        
       </div>
       <!-- Nav tabs -->
       <tabset> 
-               
         <tab>
-          <ng-template tabHeading><i class="icon-user"></i> Atenciones &nbsp;<span class="badge badge-pill badge-danger">{{itemsConsulta}}</span></ng-template>
+          <ng-template tabHeading><i class="icon-user"></i> Datos Generales &nbsp;</ng-template>          
+          <div class="col-lg-12">
+            <div class="card">              
+              <div class="card-body">                
+                     <app-pacientes (outPaciente)="buscarPaciente($event)"></app-pacientes>          
+              </div>
+            </div>
+          </div>
+          <!--/.col-->
+          
+        </tab>       
+        <tab>
+          <ng-template tabHeading><i class="icon-note"></i> Atenciones &nbsp;<span class="badge badge-pill badge-danger">{{itemsConsulta}}</span></ng-template>
           
           <div class="col-lg-12">
             <div class="card">              
               <div class="card-body">                
-                <app-historial_consulta [_uidPaciente]="uidPaciente" [_fechaIni]="fechaIni" [_fechaFin]="fechaFin" [itemsConsulta]="itemsConsulta"></app-historial_consulta>                
+                <app-historial_consulta [_uidPaciente]="uidPaciente" [_fechaIni]="fechaIni" [_fechaFin]="fechaFin" (itemsConsulta)="ouputEmiterItemsConsulta($event)"></app-historial_consulta>                
               </div>
             </div>
           </div>
@@ -45,74 +39,74 @@
           
         </tab>
         <tab>
-          <ng-template tabHeading><i class="icon-wrench"></i> Cargos Anteriores</ng-template>
+          <ng-template tabHeading><i class="icon-wrench"></i> Cargos Anteriores &nbsp;<span class="badge badge-pill badge-danger">{{itemCargos}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
-                <app-cargos-anteriores [_uidPaciente]="uidPaciente"></app-cargos-anteriores>
+                <app-cargos-anteriores [_uidPaciente]="uidPaciente" (itemsCargos)="outputEmiterItemsCargos($event)"></app-cargos-anteriores>
             </div>
           </div>
         </tab>
         <tab>
-          <ng-template tabHeading><i class="icon-people"></i> Antecedentes Familiares</ng-template>
+          <ng-template tabHeading><i class="icon-people"></i> Antecedentes Familiares &nbsp;<span class="badge badge-pill badge-danger">{{itemAntecedentes}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
-              <app-antecedentefamiliar [_uidPaciente]="uidPaciente"></app-antecedentefamiliar>
+              <app-antecedentefamiliar [_uidPaciente]="uidPaciente" (itemsAntecedentes)="outputEmiterItemsAntecedentes($event)"></app-antecedentefamiliar>
             </div>
           </div>
         </tab>
         <tab>
-          <ng-template tabHeading><i class="icon-book-open"></i> Antecedentes Ocupacionales</ng-template>
+          <ng-template tabHeading><i class="icon-book-open"></i> Antecedentes Ocupacionales &nbsp;<span class="badge badge-pill badge-danger">{{itemOcupaciones}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
-                <app-antecedenteocupacional [_uidPaciente]="uidPaciente"></app-antecedenteocupacional>
+                <app-antecedenteocupacional [_uidPaciente]="uidPaciente" (itemOcupaciones)="outputEmiterItemsOcupaciones($event)"></app-antecedenteocupacional>
             </div>
           </div>
         </tab>
         <tab>
-          <ng-template tabHeading><i class="icon-heart"></i> Examen Funcional(1)</ng-template>
+          <ng-template tabHeading><i class="icon-heart"></i> a. Examen Funcional &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFuncionalA}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
-              <app-antecedentepatologico [_uidPaciente]="uidPaciente"></app-antecedentepatologico>
+              <app-antecedentepatologico [_uidPaciente]="uidPaciente" (itemExamenFuncionalA)="outputEmiterItemsExamenFucional1($event)"></app-antecedentepatologico>
             </div>
           </div>
         </tab>
         <tab>
-          <ng-template tabHeading><i class="icon-heart"></i> Examen Funcional(2)</ng-template>
+          <ng-template tabHeading><i class="icon-heart"></i> b. Examen Funcional &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFuncionalB}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
-                <app-habitos [_uidPaciente]="uidPaciente"></app-habitos>
+                <app-habitos [_uidPaciente]="uidPaciente" (itemExamenFuncionalB)="outputEmiterItemsExamenFuncional2($event)"></app-habitos>
             </div>
           </div>
         </tab>
         <tab>
-          <ng-template tabHeading><i class="icon-emotsmile"></i> Anamnesis Psicologicos</ng-template>
+          <ng-template tabHeading><i class="icon-emotsmile"></i> Anamnesis Psicológicos &nbsp;<span class="badge badge-pill badge-danger">{{itemAnamnesis}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
-              <app-anamnesispsicologico [_uidPaciente]="uidPaciente"></app-anamnesispsicologico>
+              <app-anamnesispsicologico [_uidPaciente]="uidPaciente" (itemAnamnesis)="outputEmiterItemsAnamnesis($event)"></app-anamnesispsicologico>
             </div>
           </div>
         </tab>
         <tab>
-          <ng-template tabHeading><i class="icon-eyeglass"></i> Examen Fisico(1)</ng-template>
+          <ng-template tabHeading><i class="icon-eyeglass"></i> 1. Examen Físico &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFisico1}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
-              <app-signosvitales [_uidPaciente]="uidPaciente"></app-signosvitales>
+              <app-signosvitales [_uidPaciente]="uidPaciente" (itemExamenFisico1)="outputEmiterItemsFisico1($event)"></app-signosvitales>
             </div>
           </div>
         </tab>
         <tab>
-          <ng-template tabHeading><i class="icon-eyeglass"></i> Examen fisico(2)</ng-template>
+          <ng-template tabHeading><i class="icon-eyeglass"></i>  2. Examen Físico &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFisico2}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
-              <app-antropometria [_uidPaciente]="uidPaciente"></app-antropometria>
+              <app-antropometria [_uidPaciente]="uidPaciente" (itemExamenFisico2)="outputEmiterItemsFisico2($event)"></app-antropometria>
             </div>
           </div>
         </tab>
         <tab>
-          <ng-template tabHeading><i class="icon-eyeglass"></i> Examen Fisico(3)</ng-template>
+          <ng-template tabHeading><i class="icon-eyeglass"></i> 3. Examen Físico &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFisico3}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
-              <app-examenfisico [_uidPaciente]="uidPaciente"></app-examenfisico>
+              <app-examenfisico [_uidPaciente]="uidPaciente" (itemExamenFisico3)="outputEmiterItemsFisico3($event)"></app-examenfisico>
             </div>
           </div>
         </tab>

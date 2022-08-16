@@ -6,11 +6,11 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { HistoriaMedicaComponent } from './historial.component';
 import { HistoriaMedicaRoutingModule } from './historial-routing.module';
 import { HistorialConsultasComponent } from '../historial_consulta/historial_consulta.component'
-/*import { PopoverModule } from 'ngx-bootstrap/popover';
-import { TooltipModule } from 'ngx-bootstrap/tooltip';
-import { ModalModule } from 'ngx-bootstrap/modal';
+import { PopoverModule } from 'ngx-bootstrap/popover';
+//import { TooltipModule } from 'ngx-bootstrap/tooltip';
+//import { ModalModule } from 'ngx-bootstrap/modal';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
-import { AlertModule } from 'ngx-bootstrap/alert';*/
+import { AlertModule } from 'ngx-bootstrap/alert';
 // Pagination Component
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -24,6 +24,7 @@ import { AnamnesisPsicologicoComponent } from '../anamnesis_psicologico/anamnesi
 import { SignosVitalesComponent } from '../signos_vitales/signosvitales.component';
 import { AntropometriaComponent } from '../antropometria/antropometria.component';
 import { EstudiosFisicosComponent } from '../examen_fisico/examenfisico.component';
+import { PacientesComponent } from '../pacientes/pacientes.component';
 
 @NgModule({
   imports: [
@@ -32,11 +33,12 @@ import { EstudiosFisicosComponent } from '../examen_fisico/examenfisico.componen
     HistoriaMedicaRoutingModule,    
     TabsModule,PaginationModule.forRoot(), ModalModule.forRoot(),
     //HistorialConsultasComponent,    
-    /*PopoverModule.forRoot(),    
-    TooltipModule.forRoot(),
-    ModalModule.forRoot(),    
+    PopoverModule.forRoot(),    
+    //TooltipModule.forRoot(),
+    //ModalModule.forRoot(),    
     TypeaheadModule.forRoot(),
-    AlertModule.forRoot(),*/
+    AlertModule.forRoot(),
+    
   ],
   declarations: [
     
@@ -51,7 +53,8 @@ import { EstudiosFisicosComponent } from '../examen_fisico/examenfisico.componen
     AnamnesisPsicologicoComponent,
     SignosVitalesComponent,
     AntropometriaComponent,
-    EstudiosFisicosComponent
+    EstudiosFisicosComponent,
+    PacientesComponent
   ]
 })
 export class HistorialConsultasModule { }

@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef, Output, EventEmitter} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -21,6 +21,7 @@ import { PacientesService } from '../../../services/servicio_medico/pacientes.se
 
 export class AntropometriaComponent implements OnChanges {
 
+  @Output() itemExamenFisico2= new EventEmitter<number>();
   @Input() _uidPaciente: string;
   @ViewChild('txtTalla') txtTalla!: ElementRef<HTMLInputElement>;
   @ViewChild('txtPeso') txtPeso!: ElementRef<HTMLInputElement>; 
@@ -82,8 +83,8 @@ export class AntropometriaComponent implements OnChanges {
       await this.srvPaciente.pacienteUid(this.uidPaciente)
       .toPromise()
       .then(result => {
-        if (result){          
-          this.cedula=result[0].ci;
+        if (result!=null && result.ci!=undefined){
+          this.cedula=result.ci;
         }        
       })
     }
@@ -94,15 +95,14 @@ export class AntropometriaComponent implements OnChanges {
     if (this.cedula!= undefined && this.cedula!= null && this.cedula!=""){
       await this.srvAntropometria.antropometriaPaciente(this.cedula)
       .toPromise()
-      .then(async result => {
-        
+      .then(async result => {        
         if (result.length>0){          
-          this.examenes=result; 
-                    
+          this.examenes=result;                    
         }
         else{                   
           this.examenes=[];
-        }         
+        }
+        this.itemExamenFisico2.emit(result.length)         
       })
     }    
   }

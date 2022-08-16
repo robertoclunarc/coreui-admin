@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnChanges, Inject, LOCALE_ID, NgModule, ElementRef, Input} from '@angular/core';
+import { Component, ViewChild, OnChanges, Inject, LOCALE_ID, NgModule, ElementRef, Input, Output, EventEmitter} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -21,6 +21,7 @@ import { PatologiasService } from '../../../services/servicio_medico/patologias.
 })
 export class AntecedenteFamiliarComponent implements OnChanges {
 
+  @Output() itemsAntecedentes= new EventEmitter<number>();
   @Input() _uidPaciente: string;
   @ViewChild('cboPatologia') cboPatologia!: ElementRef<HTMLInputElement>;
   @ViewChild('cboParentezco') cboParentezco!: ElementRef<HTMLInputElement>;
@@ -98,11 +99,12 @@ export class AntecedenteFamiliarComponent implements OnChanges {
       .toPromise()
       .then(result => {
         if (result.length>0){
-          this.antecedentesFamiliares=result; 
+          this.antecedentesFamiliares=result;          
         }
-        else
-          this.antecedentesFamiliares=[];
-        
+        else{
+          this.antecedentesFamiliares=[];          
+        }
+        this.itemsAntecedentes.emit(result.length);
       })
     }    
   }

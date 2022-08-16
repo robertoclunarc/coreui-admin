@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, LOCALE_ID, NgModule} from '@angular/core';
+import { Component, OnChanges, Inject, LOCALE_ID, Output, EventEmitter, NgModule} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -25,7 +25,7 @@ import { VarioService } from '../../../services/servicio_medico/varios.service';
   providers: [ PacientesService, DepartamentosService, VarioService, 
     { provide: AlertConfig }],
 })
-export class PacientesComponent implements OnInit {
+export class PacientesComponent implements OnChanges {
 
   constructor( 
     private route: ActivatedRoute,  
@@ -36,6 +36,8 @@ export class PacientesComponent implements OnInit {
     @Inject(LOCALE_ID) public locale: string,
     
   ) { }
+
+  @Output() outPaciente = new EventEmitter<IvPaciente>();
 
   paciente: IvPaciente={};  
   private user: IUsuarios={};
@@ -73,7 +75,7 @@ export class PacientesComponent implements OnInit {
   ObjContratista: IContratista={};
   alertsDismiss: any = [];
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -101,7 +103,7 @@ export class PacientesComponent implements OnInit {
     if (this.paciente.ci!="" && this.paciente.ci!= undefined && this.paciente.ci!= null){
       await this.srvPacientes.pacienteOne(this.paciente.ci)
       .toPromise()
-      .then(result => {
+      .then(async result => {
         if (result[0]!= undefined){
           this.paciente=result[0];
           this.paciente.fechanac= formatDate(this.paciente.fechanac, 'yyyy-MM-dd', 'en');
@@ -109,9 +111,15 @@ export class PacientesComponent implements OnInit {
           this.paciente.antiguedad_puesto=formatDate(this.paciente.antiguedad_puesto, 'yyyy-MM-dd', 'en');
           this.ObjContratista.uid=this.paciente.id_contratista;
           this.ObjContratista.nombre=this.paciente.contratista;
-          this.gerencia.uid = this.arrayGerencias.find( g => (g.nombre==this.paciente.gcia)).uid;
+          //this.gerencia.uid = this.arrayGerencias.find( (g: any) => {return g.nombre==this.paciente.gcia}).uid;
+          for await (let g of this.arrayGerencias){
+            if (g.nombre==this.paciente.gcia){
+              this.gerencia.uid=g.uid;
+              break;
+            }
+          }
           this.gerencia.nombre = this.paciente.gcia;
-          
+          this.outPaciente.emit(this.paciente);
         }
         else
           this.paciente={} 
@@ -244,6 +252,7 @@ export class PacientesComponent implements OnInit {
 
   reset(){
     this.paciente={};
+    this.outPaciente.emit(this.paciente);
     this.gerencia={};
     this.ObjContratista={};
   }

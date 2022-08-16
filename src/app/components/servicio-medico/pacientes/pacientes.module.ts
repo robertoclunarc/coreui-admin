@@ -1,5 +1,4 @@
-// Angular
-import { CommonModule } from '@angular/common';
+/*import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { PacientesComponent } from './pacientes.component';
@@ -19,4 +18,4 @@ import { AlertModule } from 'ngx-bootstrap/alert';
     AlertsComponent
   ]
 })
-export class PacientesModule { }
+export class PacientesModule { }*/

@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnChanges, Inject, LOCALE_ID, Input, Output,  ChangeDetectionStrategy} from '@angular/core';
+import { Component, ViewChild, OnChanges, Inject, LOCALE_ID, Input, Output, EventEmitter,  ChangeDetectionStrategy} from '@angular/core';
 import { AlertConfig } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ModalDirective} from 'ngx-bootstrap/modal';
@@ -20,8 +20,8 @@ import { ConsultasService } from '../../../services/servicio_medico/consultas.se
 })
 export class HistorialConsultasComponent implements OnChanges {
 
-  @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  @Output() itemsConsulta: number;
+  @Output() itemsConsulta = new EventEmitter<number>();
+  @ViewChild('primaryModal') public primaryModal: ModalDirective;  
   @Input() _uidPaciente: string;
   @Input() _fechaIni: string;
   @Input() _fechaFin: string;
@@ -97,7 +97,7 @@ export class HistorialConsultasComponent implements OnChanges {
           this.totalItems = this.morbilidad.length;
           this.maxSize = Math.ceil(this.totalItems/this.numPages);             
           this.returnedArray = this.morbilidad.slice(0, this.numPages);
-          this.itemsConsulta = this.totalItems;           
+          this.itemsConsulta.emit(this.totalItems);                
         }
         else{                   
           this.morbilidad=[];

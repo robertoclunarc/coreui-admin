@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnChanges,Input, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges,Input, Inject, LOCALE_ID, NgModule, ElementRef, Output, EventEmitter} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 import { formatDate } from '@angular/common';
@@ -32,6 +32,7 @@ export class EstudiosFisicosComponent implements OnChanges {
     
   ) { }
 
+  @Output() itemExamenFisico3= new EventEmitter<number>();
   @Input() _uidPaciente: string;
   private uidPaciente: number;
   private cedula: string;  
@@ -82,9 +83,9 @@ export class EstudiosFisicosComponent implements OnChanges {
       await this.srvPaciente.pacienteUid(this.uidPaciente)
       .toPromise()
       .then(result => {
-        if (result){ 
+        if (result!=null && result.ci!=undefined){
            
-          this.cedula=result[0].ci;
+          this.cedula=result.ci;
         }        
       })
     }
@@ -119,7 +120,7 @@ export class EstudiosFisicosComponent implements OnChanges {
           };
           this.estudiosPacientes.push(analisisP) 
         } 
-          
+        this.itemExamenFisico3.emit(result.length); 
       })
     }    
   }

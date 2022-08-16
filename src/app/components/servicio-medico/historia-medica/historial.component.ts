@@ -8,17 +8,15 @@ import { Router } from '@angular/router';
 
 //servicios
 
-import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
-
 //modelos
 import { Ipopover } from '../../../models/servicio-medico/varios.model';
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
-import { IPaciente } from '../../../models/servicio-medico/paciente.model';
+import { IvPaciente } from '../../../models/servicio-medico/paciente.model';
 
 @Component({
   selector: 'app-historial',
   templateUrl: 'historial.component.html',
-  providers: [ PacientesService,   { provide: AlertConfig }],
+  providers: [ { provide: AlertConfig }],
   styleUrls: ["historial.component.css"]             
 })
 export class HistoriaMedicaComponent  implements OnInit  {  
@@ -26,45 +24,81 @@ export class HistoriaMedicaComponent  implements OnInit  {
   private user: IUsuarios={};
   private tipoUser: string;    
   itemsConsulta: number;
+  itemCargos: number;
+  itemAntecedentes: number;
+  itemOcupaciones: number;
+  itemExamenFuncionalA: number;
+  itemExamenFuncionalB: number;
+  itemAnamnesis: number;
+  itemExamenFisico1: number;
+  itemExamenFisico2: number;
+  itemExamenFisico3: number;
   fechaIni='null';
   fechaFin='null';  
-  paciente: IPaciente={};
+  paciente: IvPaciente={};
   uidPaciente: string;
   soloLectura: boolean=false;
   private alertsDismiss: any = [];  
 
   constructor(
     private router: Router, 
-    private srvPacientes: PacientesService,   
+       
     @Inject(LOCALE_ID) public locale: string,  
     ) {  }
 
   ngOnInit(): void {}
 
-  async buscarPaciente(e){
+  async buscarPaciente(e: IvPaciente){
     
-    this.paciente.ci=e;
+    this.paciente=e;
     if (this.paciente.ci!="" && this.paciente.ci!= undefined && this.paciente.ci!= null){
-      await this.srvPacientes.pacienteOne(this.paciente.ci)
-      .toPromise()
-      .then(result => {
-        if (result[0]!= undefined){
-          this.paciente=result[0];
-          this.paciente.fechanac= formatDate(this.paciente.fechanac, 'yyyy-MM-dd', 'en');
-          this.paciente.fecha_ingreso=formatDate(this.paciente.fecha_ingreso, 'yyyy-MM-dd', 'en');
-          this.paciente.antiguedad_puesto=formatDate(this.paciente.antiguedad_puesto, 'yyyy-MM-dd', 'en');
-          this.uidPaciente=this.paciente.uid_paciente.toString();          
-          
-        }
-        else{
-          this.paciente={};
-          this.uidPaciente= "null";        }
-        
-      })
+      console.log(this.paciente);
+      this.uidPaciente=this.paciente.uid_paciente.toString();
+      
     } else {
       this.paciente={};
       this.uidPaciente="null";
     }   
-  } 
+  }
+  
+  ouputEmiterItemsConsulta(miVar:number){
+    this.itemsConsulta= miVar;
+  }
+
+  outputEmiterItemsCargos(total:number){
+    this.itemCargos=total;
+  }
+
+  outputEmiterItemsAntecedentes(total:number){
+    this.itemAntecedentes=total;
+  }
+
+  outputEmiterItemsOcupaciones(total:number){
+    this.itemOcupaciones=total;
+  }
+
+  outputEmiterItemsExamenFucional1(total:number){
+    this.itemExamenFuncionalA=total;
+  }
+
+  outputEmiterItemsExamenFuncional2(total:number){
+    this.itemExamenFuncionalB=total;
+  }
+
+  outputEmiterItemsAnamnesis(total:number){
+    this.itemAnamnesis=total;
+  }
+
+  outputEmiterItemsFisico1(total:number){
+    this.itemExamenFisico1=total;
+  }
+
+  outputEmiterItemsFisico2(total:number){
+    this.itemExamenFisico2=total;
+  }
+
+  outputEmiterItemsFisico3(total:number){
+    this.itemExamenFisico3=total;
+  }
  
 }

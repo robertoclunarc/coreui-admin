@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef, Output, EventEmitter} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -21,6 +21,7 @@ import { PacientesService } from '../../../services/servicio_medico/pacientes.se
 
 export class AntecedentePatologicoComponent implements OnChanges {
 
+  @Output() itemExamenFuncionalA= new EventEmitter<number>();
   @Input() _uidPaciente: string;
   @ViewChild('cboPatologias') cboPatologias!: ElementRef<HTMLInputElement>;   
   
@@ -82,8 +83,8 @@ export class AntecedentePatologicoComponent implements OnChanges {
       await this.srvPaciente.pacienteUid(this.uidPaciente)
       .toPromise()
       .then(result => {
-        if (result){          
-          this.cedula=result[0].ci;
+        if (result!=null && result.ci!=undefined){
+          this.cedula=result.ci;
         }        
       })
     }
@@ -102,7 +103,8 @@ export class AntecedentePatologicoComponent implements OnChanges {
         }
         else{                   
           this.examenes=[];
-        }         
+        }
+        this.itemExamenFuncionalA.emit(result.length)         
       })
     }    
   }

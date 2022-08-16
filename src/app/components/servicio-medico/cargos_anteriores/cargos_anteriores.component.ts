@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnChanges, Inject, LOCALE_ID, NgModule, Input, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Inject, LOCALE_ID, NgModule, Input, Output, EventEmitter, ElementRef} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -20,6 +20,7 @@ import { CargosAnterioresService } from '../../../services/servicio_medico/cargo
 })
 export class CargosAnterioresComponent implements OnChanges {
 
+  @Output() itemsCargos= new EventEmitter<number>();
   @Input() _uidPaciente: string;
   @ViewChild('txtCargo') inputCargo!: ElementRef<HTMLInputElement>;
   @ViewChild('txtActividad') inputActividad!: ElementRef<HTMLInputElement>;
@@ -72,13 +73,14 @@ export class CargosAnterioresComponent implements OnChanges {
   }
 
   private async buscarCargos(){
-    console.log(`fk_paciente: ${this.cargoAnterior.fk_paciente}`)
+    
     if (this.cargoAnterior.fk_paciente!= undefined && this.cargoAnterior.fk_paciente!= null){
       await this.srvCargoAnterior.cargosAnterioresAll(this.cargoAnterior.fk_paciente.toString())
       .toPromise()
       .then(result => {
         if (result.length>0){
-          this.cargosAnteriores=result; 
+          this.cargosAnteriores=result;
+          this.itemsCargos.emit(this.cargosAnteriores.length);
         }
         else
           this.cargosAnteriores=[]
