@@ -118,7 +118,8 @@ export interface IFiltroConsulta{
     uidMotivo: string
     nombrePaciente?: string,
     cargo?: string,
-    fecha?: string
+    fecha?: string,
+    condlogica?: string
 }
 
 export interface Ireferencia{

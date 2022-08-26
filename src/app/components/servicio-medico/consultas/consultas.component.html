@@ -110,8 +110,9 @@
                                     </button>
                                   </span>
                                   <input type="text" id="txtCi" name="txtCi" [(ngModel)]="paciente.ci" [disabled]="soloLectura" (keyup.enter)="buscarPaciente()"  class="form-control form-control-sm" placeholder="Cedula Paciente">
-                                  <span class="input-group-append">
-                                    <ng-template #popTemplate>                                      
+                                  <span  class="input-group-append">
+                                    <ng-template #popTemplate>
+                                      <div *ngIf="paciente.nombre_completo!=undefined">                                      
                                       <span class="badge badge-light">Sexo:
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -136,13 +137,15 @@
                                       </span>
                                       <span class="badge badge-dark">{{paciente.cargo}}</span>
                                       <br>
-                                      <span class="badge badge-light">Edad:
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        
-                                      </span>
-                                      <span class="badge badge-dark">{{paciente.edad.years}}</span>
-                                      <br>
+                                      
+                                        <span class="badge badge-light">Edad:
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          
+                                        </span>
+                                        <span class="badge badge-dark">{{paciente.edad.years}}</span>
+                                        <br>
+                                      
                                       <span class="badge badge-light">Fecha Nac.:
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                        
@@ -169,6 +172,7 @@
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                       </span>
                                       <span class="badge badge-dark">{{paciente.mano_dominante}}</span>
+                                      </div>
                                     </ng-template>
                                     <button type="button"                                       
                                       [popover]="popTemplate"

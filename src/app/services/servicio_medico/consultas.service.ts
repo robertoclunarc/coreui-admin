@@ -40,7 +40,7 @@ export class ConsultasService {
   }
 
   consultaFilter(atencion: IFiltroConsulta) : Observable<IvConsulta[]> { 
-    let parametrosUrl = atencion.ciPaciente + '/' + atencion.uidConsulta + '/' + atencion.fechaIni + '/' + atencion.fechaFin + '/' + atencion.Medico + '/' + atencion.Paramedico + '/' + atencion.Motivo + '/' + atencion.uidMotivo  + '/' + atencion.nombrePaciente + '/' + atencion.cargo  + '/' + atencion.fecha; 
+    let parametrosUrl = `${atencion.ciPaciente}/${atencion.uidConsulta}/${atencion.fechaIni}/${atencion.fechaFin}/${atencion.Medico}/${atencion.Paramedico}/${atencion.Motivo}/${atencion.uidMotivo}/${atencion.nombrePaciente}/${atencion.cargo}/${atencion.fecha}/${atencion.condlogica}`; 
     return this.http.get<IvConsulta[]>(this.apiUrlConsultas + 'filtrar/' + parametrosUrl )
 			.pipe(
 				tap(result => console.log(`consultaFilter`)),
@@ -58,7 +58,7 @@ export class ConsultasService {
   }
 
   async searchConsultaPromise(atencion: IFiltroConsulta) :  Promise<IvConsulta[]> { 
-    let parametrosUrl = atencion.ciPaciente + '/' + atencion.uidConsulta + '/' + atencion.fechaIni + '/' + atencion.fechaFin + '/' + atencion.Medico + '/' + atencion.Paramedico + '/' + atencion.Motivo + '/' + atencion.uidMotivo  + '/' + atencion.nombrePaciente + '/' + atencion.cargo + '/' + atencion.fecha; 
+    let parametrosUrl = `${atencion.ciPaciente}/${atencion.uidConsulta}/${atencion.fechaIni}/${atencion.fechaFin}/${atencion.Medico}/${atencion.Paramedico}/${atencion.Motivo}/${atencion.uidMotivo}/${atencion.nombrePaciente}/${atencion.cargo}/${atencion.fecha}/${atencion.condlogica}`; 
     return await this.http.get<IvConsulta[]>(this.apiUrlConsultas + 'filtrar/' + parametrosUrl ).toPromise();
   }
 
