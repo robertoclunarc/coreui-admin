@@ -1,4 +1,4 @@
-import { Component, OnChanges, Inject, LOCALE_ID, Output, EventEmitter, NgModule} from '@angular/core';
+import { Component, OnChanges, Inject, LOCALE_ID, Output, Input, EventEmitter, NgModule} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -15,8 +15,6 @@ import { IvDepartamentos, IGerencia } from '../../../models/servicio-medico/depa
 import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
 import { DepartamentosService } from '../../../services/servicio_medico/departamentos.service';
 import { VarioService } from '../../../services/servicio_medico/varios.service';
-
-
 
 @Component({
   selector: 'app-pacientes',
@@ -38,6 +36,7 @@ export class PacientesComponent implements OnChanges {
   ) { }
 
   @Output() outPaciente = new EventEmitter<IvPaciente>();
+  @Input() ciPaciente: string = "-1";
 
   paciente: IvPaciente={};  
   private user: IUsuarios={};
@@ -89,8 +88,15 @@ export class PacientesComponent implements OnChanges {
     }else{
       this.router.navigate(["login"]);
     }
+
+    if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+      this.soloLectura=false;
+    }
+    else{
+      this.soloLectura=true;
+    }
    
-    this.paciente.ci = this.route.snapshot.paramMap.get("ci");
+    this.paciente.ci = this.route.snapshot.paramMap.get("ci")==undefined? this.ciPaciente: this.route.snapshot.paramMap.get("ci")
     this.buscarPaciente();
     this.llenarArrayDepartamento();
     this.llenarArrayGerencias();

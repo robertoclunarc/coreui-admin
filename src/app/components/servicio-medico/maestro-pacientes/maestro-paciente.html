@@ -6,7 +6,7 @@
                 <div class="card-header">
                    <strong>Pacientes</strong>                 
                    <div class="card-header-actions">
-                    <button title="Registrar una Nuevo Paciente" type="button" class="btn btn-pill btn-block btn-success" >+</button>
+                    <button [disabled]="soloLectura" (click)="showModalRegistrar(); primaryModal.show();" title="Registrar una Nuevo Paciente" type="button" class="btn btn-pill btn-block btn-success" >+</button>
                   </div>
                 </div>
                 <div class="card-body">
@@ -19,31 +19,31 @@
                   <table class="{{ classTable }} table-hover table-sm" id="dataConsultas">
                     <thead>
                       <tr>
-                        <th> </th>                      
+                        <th>&nbsp;</th>                      
                         <th scope="col" *ngFor="let t of titulos">
                           
                           <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
-                            <button type="button" class="{{ classButton }}"><strong>{{t.titulo}}</strong></button>
+                            <button type="button" (click)="sortTable(t.campo)" class="{{ classButton }}"><strong>{{t.titulo}}</strong></button>
                           </div>
                       </th>
                       </tr>
                     </thead>
                     <tbody>
-                      <tr>                      
+                      <tr *ngFor="let p of returnedArray">                      
                         <td>
                           <div class="btn-group" dropdown>
-                            <button type="button" title="Ver Consulta" class="btn btn-block btn-link"><i class="icon-eye"></i></button>                           
+                            <button [disabled]="soloLectura"  type="button" title="Ver Paciente" (click)="showModalActualizar(p); primaryModal.show();" class="btn btn-block btn-link"><i class="icon-eye"></i></button>                           
                           </div>
                         </td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>                      
-                        <td>&nbsp;</td>
+                        <td>{{ p.ci}}</td>
+                        <td>{{ p.nombre_completo}}</td>
+                        <td>{{ p.cargo}}</td>
+                        <td>{{ p.departamento}}</td>
+                        <td>{{ p.sexo}}</td>
+                        <td>{{ p.tipo_sangre}}</td>
+                        <td>{{ p.alergia}}</td>
+                        <td>{{ p.edad.years}}</td>                      
+                        <td>{{ p.nombres_jefe}}</td>
                       </tr>                    
                      
                     </tbody>
@@ -59,3 +59,12 @@
     </div>
   </div>
 </div>
+<div bsModal #primaryModal="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" >
+      <div class="modal-content modal-primary" >        
+        <div class="modal-body">
+            <app-pacientes [ciPaciente]="ciPaciente"></app-pacientes>
+        </div>
+      </div>
+    </div>
+</div>            

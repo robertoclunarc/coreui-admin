@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { IPaciente, IvPaciente } from '../../models/servicio-medico/paciente.model';
+import { IPaciente, IvPaciente, IPacienteConSupervisores } from '../../models/servicio-medico/paciente.model';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -41,6 +41,11 @@ export class PacientesService {
 				tap(),
 				catchError(this.handleError)
 			);
+  }
+
+  async searchPacientesPromise(ciPaciente: string, nombre: string, supervisor: string, cargo: string, dpto: string,condlogica: string) :  Promise<IPacienteConSupervisores[]> { 
+    let parametrosUrl = `${ciPaciente}/${nombre}/${supervisor}/${cargo}/${dpto}/${condlogica}`; 
+    return await this.http.get<IPacienteConSupervisores[]>(this.apiUrlPacientes + 'filtrar/' + parametrosUrl ).toPromise();
   }
 
   registrar(reg: IPaciente) {

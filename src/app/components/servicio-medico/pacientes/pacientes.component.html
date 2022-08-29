@@ -244,8 +244,8 @@
     </div>
     <div class="card-footer">
       
-      <button type="button" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
-      <button type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-dot-circle-o"></i> Reset</button>
+      <button type="button" [disabled]="soloLectura" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
+      <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-dot-circle-o"></i> Reset</button>
       <div *ngFor="let alert of alertsDismiss">
         <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
       </div>
