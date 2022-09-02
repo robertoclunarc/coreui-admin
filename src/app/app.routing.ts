@@ -197,6 +197,10 @@ export const routes: Routes = [
         loadChildren: () => import('./components/servicio-medico/principal-servicio-medico/principal-servicio-medico.module').then(m => m.DashboardModule)
       },
       {
+        path: 'serviciomedico/medicos',
+        loadChildren: () => import('./components/servicio-medico/maestro-medicos/maestro-medico.module').then(m => m.MaestroMedicoModule)
+      },
+      {
         path: 'principalBalanza',
         loadChildren: () => import('./components/balanza/principal-Balanza/principal-balanza.module').then(m => m.DashboardModule)
       },      

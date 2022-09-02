@@ -1,0 +1,97 @@
+<div class="card">
+    <div class="card-header">
+      <strong>Personal Medico</strong> De La Empresa
+    </div>
+    <div class="card-body">
+      <form action="" method="post" class="form-horizontal">
+        <div class="row">
+            <div class="col-sm-3">              
+              <div class="input-group">                            
+                <span class="input-group-prepend">
+                 <button [disabled]="soloLectura" type="button"                                      
+                    (click)="buscarMedicoOne()"                      
+                    class="btn btn-primary btn-sm">
+                    <i class="fa fa-search"></i> 
+                    Personal
+                  </button>
+                </span>
+                <input type="text" id="txtCi" name="txtCi" [(ngModel)]="medico.ci" [disabled]="soloLectura" (keyup.enter)="buscarMedicoOne()" class="form-control form-control-sm" placeholder="Cedula del Personal">
+                
+              </div>
+            </div>
+            <div class="col-sm-3">
+              <div class="form-group">
+                <span class="form-group has-float-label">                                                                    
+                  <input type="text" class="form-control form-control-sm" id="txtNombre" name="txtNombre" [(ngModel)]="medico.nombre" placeholder="Nombre del Personal">
+                  <label class="badge-light" for="txtNombre">Nombre</label>
+                </span>
+              </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <span class="form-group has-float-label">                                                                       
+                        <select [disabled]="!nuevo" class="form-control form-control-sm" name="cbotipoPersonal"  id="cbotipoPersonal" [(ngModel)]="medico.tipo_medico">
+                          <option *ngFor="let tipo of arraytipoPersonal" [value]="tipo.valor">{{tipo.display}}</option>                          
+                        </select>
+                        <label class="badge-light" for="cbotipoPersonal">Tipo Personal</label>                        
+                    </span>
+                </div>
+            </div>            
+            <div class="col-sm-3">
+                <div class="form-group">
+                    <span class="form-group has-float-label">
+                        <input type="text" [disabled]="!nuevo" class="form-control form-control-sm" name="txtLogin" id="txtlogin" [(ngModel)]="medico.login" placeholder="Login">
+                        <label class="badge-light" for="txtLogin">Login</label>
+                    </span>
+                </div>
+            </div>
+        </div><!--/.row 1-->
+        <div class="row">
+                <div class="col-sm-3">                    
+                    <div class="form-group">
+                        <span class="form-group has-float-label">                                                                    
+                            <select  class="form-control form-control-sm" name="cboActivo" [(ngModel)]="medico.activo"  id="cboActivo">
+                            <option value="true">ACTIVO</option>
+                            <option value="false">INACTIVO</option>                               
+                            </select>
+                            <label for="cboActivo">Estatus</label>
+                        </span>  
+                    </div>                    
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <span class="form-group has-float-label">                                    
+                            <input [disabled]="medico.tipo_medico=='PARAMEDICO'" type="text" class="form-control form-control-sm" name="txtId_ss"  id="txtId_ss" [(ngModel)]="medico.id_ss" placeholder="IDSS">                                     
+                            <label class="badge-light" for="txtId_ss">MPPS</label>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <span class="form-group has-float-label">                                    
+                            <input type="text" [disabled]="medico.tipo_medico=='PARAMEDICO'" class="form-control form-control-sm" name="txtNro_colegiado"  id="txtNro_colegiado" [(ngModel)]="medico.nro_colegiado" placeholder="Nro Colegiado">                                     
+                            <label class="badge-light" for="txtNro_colegiado">Nro Colegiado</label>
+                        </span>
+                    </div>                          
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <span class="form-group has-float-label">
+                        <input type="text" [disabled]="medico.tipo_medico=='PARAMEDICO'" class="form-control form-control-sm" name="txtTipo_ssst" id="txtTipo_ssst" [(ngModel)]="medico.tipo_ssst" placeholder="Tipo SSST">
+                        <label class="badge-light" for="txtTipo_ssst">Tipo SSST</label>
+                        </span>
+                    </div>
+                </div>
+        </div><!--/.row 2-->        
+        
+      </form>
+    </div>
+    <div class="card-footer">
+      
+      <button type="button" [disabled]="soloLectura" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
+      <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-dot-circle-o"></i> Reset</button>
+      <div *ngFor="let alert of alertsDismiss">
+        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+      </div>
+    </div>
+  </div>

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { IMedicos, IParamedicos, ItotalAtenciones } from '../../models/servicio-medico/medicos.model';
+import { IMedicos, IParamedicos, ItotalAtenciones, IMedicosParamedicos } from '../../models/servicio-medico/medicos.model';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -12,6 +12,7 @@ import { environment } from '../../../environments/environment';
 export class MedicosService {  
   public medico: IMedicos;
   public paraMedico: IParamedicos;
+  public mensaje: any;
   private apiUrlMedicos : string = environment.apiUrlServMedico + 'personal/';
   
   constructor(private http: HttpClient) { }
@@ -32,6 +33,11 @@ export class MedicosService {
 				tap(result => console.log(`paramedicosAll`)),
 				catchError(this.handleError)
 			);
+  }
+
+  async searchMedicosPromise(ciMedico: string, nombre: string, uid: string, tipo: string, condlogica: string) :  Promise<IMedicosParamedicos[]> { 
+    let parametrosUrl = `${ciMedico}/${nombre}/${uid}/${tipo}/${condlogica}`; 
+    return await this.http.get<IMedicosParamedicos[]>(this.apiUrlMedicos + 'filtrar/' + parametrosUrl ).toPromise();
   }
 
   contadorAtenciones() : Observable<ItotalAtenciones[]> { 
@@ -85,20 +91,20 @@ export class MedicosService {
   }
 
   actualizarMedico(reg: IMedicos) {
-    const url = `${this.apiUrlMedicos}/medicos/update/${reg.uid}`;
+    const url = `${this.apiUrlMedicos}medicos/update/${reg.uid}`;
 
     return this.http.put(url, reg).pipe(
-        tap(result => {
+        tap(result => { this.mensaje=result; console.log(result)
         }),
         catchError(this.handleError)
     );
   }
 
   actualizarParaMedico(reg: IParamedicos) {
-    const url = `${this.apiUrlMedicos}/paramedicos/update/${reg.uid}`;
+    const url = `${this.apiUrlMedicos}paramedicos/update/${reg.uid}`;
 
     return this.http.put(url, reg).pipe(
-        tap(result => {
+        tap(result => { this.mensaje=result; console.log(result);
         }),
         catchError(this.handleError)
     );

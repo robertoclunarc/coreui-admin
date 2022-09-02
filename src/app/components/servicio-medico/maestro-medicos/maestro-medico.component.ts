@@ -5,24 +5,24 @@ import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router } from '@angular/router';
 
 //servicios
-import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
+import { MedicosService } from '../../../services/servicio_medico/medicos.service';
 
 //modelos
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
-import { IvPaciente, IPaciente, IPacienteConSupervisores } from '../../../models/servicio-medico/paciente.model';
+import { IMedicosParamedicos } from '../../../models/servicio-medico/medicos.model';
 
 @Component({
-  selector: 'app-maestro-paciente',
-  templateUrl: 'maestro-paciente.html',
-  providers: [ { provide: AlertConfig }, PacientesService],
-  styleUrls: ["maestro-paciente.css"]             
+  selector: 'app-maestro-medico',
+  templateUrl: 'maestro-medico.html',
+  providers: [ { provide: AlertConfig }, MedicosService],
+  styleUrls: ["maestro-medico.css"]             
 })
-export class MaestroPacienteComponent  implements OnInit  {  
+export class MaestroMedicoComponent  implements OnInit  {  
 
   private user: IUsuarios={};
   private tipoUser: string;  
   private nuevo: boolean = false;
-  paciente: IvPaciente={};  
+  medico: IMedicosParamedicos={};  
   soloLectura: boolean;
   private alertsDismiss: any = [];
   searchText: string='';
@@ -48,17 +48,16 @@ export class MaestroPacienteComponent  implements OnInit  {
   html: string = `<span class="btn btn-warning">Never trust not sanitized <code>HTML</code>!!!</span>`; 
 
   titulos = [
-    {titulo: 'C.I.', campo:'ci'}, {titulo: 'Nombre', campo:'nombre_completo'}, {titulo: 'Cargo', campo:'cargo'}, {titulo: 'Depto.', campo:'departamento'},{titulo: 'Sexo', campo:'sexo'}, 
-    {titulo: 'G.S.', campo:'tipo_sangre'}, {titulo: 'Alergia', campo:'alergia'}, {titulo: 'Edad', campo:'edad.years'}, {titulo: 'Supervisor', campo:'nombre_jefe'}
+    {titulo: 'C.I.', campo:'ci'}, {titulo: 'Nombre', campo:'nombre'}, {titulo: 'Activo', campo:'activo'}, {titulo: 'T. Personal', campo:'tipo_medico'}
   ];
 
-  arrayPacientes: IPacienteConSupervisores[]=[];
-  returnedArray: IPacienteConSupervisores[]=[];
-  returnedSearch: IPacienteConSupervisores[]=[];
-  ciPaciente: string;
+  arrayMedicos: IMedicosParamedicos[]=[];
+  returnedArray: IMedicosParamedicos[]=[];
+  returnedSearch: IMedicosParamedicos[]=[];
+  ciMedico: string;
   constructor(
     private router: Router, 
-    private srvPacientes: PacientesService,   
+    private srvMedico: MedicosService,   
     @Inject(LOCALE_ID) public locale: string,  
     ) {  }
 
@@ -86,37 +85,37 @@ export class MaestroPacienteComponent  implements OnInit  {
         this.router.navigate(["login"]);
       }
       
-      if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+      if (this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
         this.soloLectura=false;
       }
       else{
         this.soloLectura=true;
       }     
 
-      this.llenarArrayPacientes('null','null','null','null','null','OR');
+      this.llenarArrayMedicos('null','null','null','null','OR');
   }
 
-  private async llenarArrayPacientes(ciPaciente: string, nombre: string, supervisor: string, cargo: string, dpto: string,condlogica: string) {
+  private async llenarArrayMedicos(ciMedico: string, nombre: string, uid: string, tipo: string, condlogica: string) {
     
-		this.srvPacientes.searchPacientesPromise(ciPaciente, nombre, supervisor, cargo, dpto,condlogica)			
+		this.srvMedico.searchMedicosPromise(ciMedico, nombre, uid, tipo, condlogica)			
 			.then(results => {				
 				
-				this.arrayPacientes = results;        
-                this.totalItems = this.arrayPacientes.length;
+				this.arrayMedicos = results;        
+                this.totalItems = this.arrayMedicos.length;
                 this.maxSize = Math.ceil(this.totalItems/this.numPages);             
-                this.returnedArray = this.arrayPacientes.slice(0, this.numPages);
+                this.returnedArray = this.arrayMedicos.slice(0, this.numPages);
 			})
 			.catch(err => { console.log(err) });
 	} 
 
   
   async showModalRegistrar(){
-    this.ciPaciente="-1";    
+    this.ciMedico="-1";    
   }
 
-  async  showModalActualizar(item: IPacienteConSupervisores){
+  async  showModalActualizar(item: IMedicosParamedicos){
     
-    this.ciPaciente=item.ci;
+    this.ciMedico=item.ci;
   }
 
   showSuccess(mensaje: any, clase: string): void {
@@ -148,7 +147,7 @@ export class MaestroPacienteComponent  implements OnInit  {
       }
       */
       
-      await this.srvPacientes.searchPacientesPromise(searchValue, searchValue, searchValue, searchValue, searchValue, 'OR')        
+      await this.srvMedico.searchMedicosPromise(searchValue, searchValue, searchValue, searchValue, 'OR')        
       .then(async (res) => {          
             this.returnedSearch= res            
             this.totalItems = this.returnedSearch.length;            
@@ -157,8 +156,8 @@ export class MaestroPacienteComponent  implements OnInit  {
           });               
     }
     else { 
-      this.totalItems = this.arrayPacientes.length;
-      this.returnedArray = this.arrayPacientes;      
+      this.totalItems = this.arrayMedicos.length;
+      this.returnedArray = this.arrayMedicos;      
       this.returnedArray = this.returnedArray.slice(0, this.numPages);
       this.maxSize = Math.ceil(this.totalItems/this.numPages);     
        
@@ -169,7 +168,7 @@ export class MaestroPacienteComponent  implements OnInit  {
     this.startItem = (event.page - 1) * event.itemsPerPage;
     this.endItem = event.page * event.itemsPerPage;
     if(this.searchText== "")
-      this.returnedArray = this.arrayPacientes.slice(this.startItem, this.endItem);
+      this.returnedArray = this.arrayMedicos.slice(this.startItem, this.endItem);
     else
       this.returnedArray = this.returnedSearch.slice(this.startItem, this.endItem);
    
@@ -179,9 +178,9 @@ export class MaestroPacienteComponent  implements OnInit  {
      
       if(this.searchText== ""){        
         if (this.sortOrder==1)
-          {this.returnedArray = this.arrayPacientes.sort(((a , b) => {  return this.sortData(a, b, prop, typeof a[prop]) } )).slice(0, this.numPages);}
+          {this.returnedArray = this.arrayMedicos.sort(((a , b) => {  return this.sortData(a, b, prop, typeof a[prop]) } )).slice(0, this.numPages);}
         else
-          {this.returnedArray = this.arrayPacientes.sort(((a , b) => {  return this.sortData(b, a, prop, typeof a[prop]) } )).slice(0, this.numPages);}        
+          {this.returnedArray = this.arrayMedicos.sort(((a , b) => {  return this.sortData(b, a, prop, typeof a[prop]) } )).slice(0, this.numPages);}        
       }
       else{
         if (this.sortOrder==1)  
@@ -207,6 +206,13 @@ export class MaestroPacienteComponent  implements OnInit  {
     }
     else{
       return a[prop] - b[prop]
+    }
+  }
+
+  outMedicoEvent(entrada: IMedicosParamedicos){
+    
+    if (entrada){
+      this.llenarArrayMedicos('null','null','null','null','OR');
     }
   }
  
