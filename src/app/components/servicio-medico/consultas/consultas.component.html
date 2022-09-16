@@ -44,7 +44,7 @@
                           
                           <ul *dropdownMenu class="dropdown-menu" role="menu">
                             <li role="menuitem"><a class="dropdown-item" (click)="showModalActualizar(c); primaryModal.show();" href="javascript:void(0)">Detalles de Consulta</a></li>
-                            <li role="menuitem"><a class="dropdown-item" (click)="downloadAsPDF(c.uid);" href="javascript:void(0)">Descargar PDF</a></li>                            
+                            <li role="menuitem"><a class="dropdown-item" (click)="downloadAsPDF(c.uid); myModalPlanilla.show();" href="javascript:void(0)">Descargar PDF</a></li>                            
                           </ul>
                         </div>
                       </td>
@@ -569,3 +569,22 @@
     </div><!--/.col-->
   </div><!--/.row-->
 </div>
+
+<div bsModal #myModalPlanilla="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalPlanilla" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content modal-primary" >
+      <div class="modal-header">        
+        <button type="button" class="close" (click)="myModalPlanilla.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <planilla-consulta [uidPaciente]="uidPaciente" ></planilla-consulta>
+      </div>
+                
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="myModalPlanilla.hide()">Close</button>      
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

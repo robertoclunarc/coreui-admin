@@ -20,7 +20,7 @@ export class AntropometriaService {
 
     return this.http.get<Iantropometria[]>(this.apiUrlantropometria + 'consultar')
 			.pipe(
-				tap(result => console.log(`antropometriaAll`)),
+			//	tap(result => console.log(`antropometriaAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class AntropometriaService {
 
     return this.http.get<Iantropometria>(this.apiUrlantropometria + `consultar/${cedula}/${fecha}`)
 			.pipe(
-				tap(result => console.log(`antropometriaOne`)),
+			//	tap(result => console.log(`antropometriaOne`)),
 				catchError(this.handleError)
 			);
   }
@@ -38,7 +38,7 @@ export class AntropometriaService {
 
     return this.http.get<Iantropometria[]>(this.apiUrlantropometria + `consultar/${cedula}`)
 			.pipe(
-				tap(result => console.log(`antropometriaPaciente`)),
+			//	tap(result => console.log(`antropometriaPaciente`)),
 				catchError(this.handleError)
 			);
   }

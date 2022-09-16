@@ -1,7 +1,7 @@
 // Angular
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgModule } from '@angular/core';
+import {  NgModule } from '@angular/core';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { HistoriaMedicaComponent } from './historial.component';
 import { HistoriaMedicaRoutingModule } from './historial-routing.module';
@@ -24,7 +24,7 @@ import { AnamnesisPsicologicoComponent } from '../anamnesis_psicologico/anamnesi
 import { SignosVitalesComponent } from '../signos_vitales/signosvitales.component';
 import { AntropometriaComponent } from '../antropometria/antropometria.component';
 import { EstudiosFisicosComponent } from '../examen_fisico/examenfisico.component';
-import { PacientesComponent } from '../pacientes/pacientes.component';
+import { PacientesHistoriaComponent } from '../paciente-historia/pacientes.component';
 
 @NgModule({
   imports: [
@@ -38,8 +38,9 @@ import { PacientesComponent } from '../pacientes/pacientes.component';
     //ModalModule.forRoot(),    
     TypeaheadModule.forRoot(),
     AlertModule.forRoot(),
-    
+    //PacientesModule
   ],
+  
   declarations: [
     
     HistoriaMedicaComponent,
@@ -53,8 +54,8 @@ import { PacientesComponent } from '../pacientes/pacientes.component';
     AnamnesisPsicologicoComponent,
     SignosVitalesComponent,
     AntropometriaComponent,
-    EstudiosFisicosComponent,
-    PacientesComponent
+    EstudiosFisicosComponent, 
+    PacientesHistoriaComponent   
   ]
 })
-export class HistorialConsultasModule { }
+export class HistorialModule { }

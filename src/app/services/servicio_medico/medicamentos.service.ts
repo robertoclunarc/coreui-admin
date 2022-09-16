@@ -20,7 +20,7 @@ export class MedicamentosService {
 
     return this.http.get<IMedicamento[]>(this.apiUrlMedicamentos + 'consultar')
 			.pipe(
-				tap(result => console.log(`medicamentosAll`)),
+		//		tap(result => console.log(`medicamentosAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class MedicamentosService {
 
     return this.http.get<ImedicamentosConsulta>(this.apiUrlMedicamentos + 'consultar/aplicados/' + id)
 			.pipe(
-				tap(result => console.log(`medicamentosAplicados`)),
+		//		tap(result => console.log(`medicamentosAplicados`)),
 				catchError(this.handleError)
 			);
   }  

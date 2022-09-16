@@ -20,7 +20,7 @@ export class ConsultasService {
 
     return this.http.get<IConsultas[]>(this.apiUrlConsultas + 'consultar')
 			.pipe(
-				tap(result => console.log(`consultasAll`)),
+				//tap(result => console.log(`consultasAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class ConsultasService {
 
     return this.http.get<IConsultas>(this.apiUrlConsultas + 'consultar/' + id)
 			.pipe(
-				tap(result => console.log(`consultasOne`)),
+				//tap(result => console.log(`consultasOne`)),
 				catchError(this.handleError)
 			);
   }
@@ -43,7 +43,7 @@ export class ConsultasService {
     let parametrosUrl = `${atencion.ciPaciente}/${atencion.uidConsulta}/${atencion.fechaIni}/${atencion.fechaFin}/${atencion.Medico}/${atencion.Paramedico}/${atencion.Motivo}/${atencion.uidMotivo}/${atencion.nombrePaciente}/${atencion.cargo}/${atencion.fecha}/${atencion.condlogica}`; 
     return this.http.get<IvConsulta[]>(this.apiUrlConsultas + 'filtrar/' + parametrosUrl )
 			.pipe(
-				tap(result => console.log(`consultaFilter`)),
+				///tap(result => console.log(`consultaFilter`)),
 				catchError(this.handleError)
 			);
   }
@@ -52,7 +52,7 @@ export class ConsultasService {
     let parametrosUrl = ciPaciente + '/' + uidPaciente + '/' + uidConsulta + '/' + fechaIni + '/' + fechaFin + '/' + motivo + '/' + uidArea  + '/' + turno; 
     return this.http.get<IvMorbilidad[]>(this.apiUrlConsultas + 'morbilidad/' + parametrosUrl )
 			.pipe(
-				tap(result => console.log(`morbilidadFilter`)),
+				//tap(result => console.log(`morbilidadFilter`)),
 				catchError(this.handleError)
 			);
   }
@@ -66,7 +66,7 @@ export class ConsultasService {
 
     return this.http.get<{id_motivo, descripcion, totalmotivos }[]>(this.apiUrlConsultas + 'motivos')
 			.pipe(
-				tap(result => console.log(`consultasPorMotivos (${result.length})`)),
+				//tap(result => console.log(`consultasPorMotivos (${result.length})`)),
 				catchError(this.handleError)
 			);
   }
@@ -75,7 +75,7 @@ export class ConsultasService {
 
     return this.http.get<{id_motivo:number, descripcion: string, totalmotivos:number}[]>(this.apiUrlConsultas + `motivos/medicos/${login}/${tipoMedico}`)
 			.pipe(
-				tap(result => console.log(`countAtencionPorMotivosMedicos (${result.length})`)),
+				//tap(result => console.log(`countAtencionPorMotivosMedicos (${result.length})`)),
 				catchError(this.handleError)
 			);
   }
@@ -84,7 +84,7 @@ export class ConsultasService {
 
     return this.http.get<{id_motivo, descripcion, diamesanio, cantmotivos }[]>(this.apiUrlConsultas + 'motivos/delanio')
 			.pipe(
-				tap(result => console.log(`consultasPorMotivosDelAnio (${result.length})`)),
+				//tap(result => console.log(`consultasPorMotivosDelAnio (${result.length})`)),
 				catchError(this.handleError)
 			);
   }
@@ -93,7 +93,7 @@ export class ConsultasService {
 
     return this.http.get<{fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number}[]>(this.apiUrlConsultas + 'afecciones')
 			.pipe(
-				tap(result => console.log(`consultasAfecciones (${result.length})`)),
+				//tap(result => console.log(`consultasAfecciones (${result.length})`)),
 				catchError(this.handleError)
 			);
   }
@@ -102,7 +102,7 @@ export class ConsultasService {
 
     return this.http.get<{fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number}[]>(this.apiUrlConsultas + 'afecciones/meses')
 			.pipe(
-				tap(result => console.log(`consultasAfeccionesMeses (${result.length})`)),
+				//tap(result => console.log(`consultasAfeccionesMeses (${result.length})`)),
 				catchError(this.handleError)
 			);
   }
@@ -111,7 +111,7 @@ export class ConsultasService {
 
     return this.http.get<{fecha: string, dia: string, fkafeccion?: number, descripcion_afeccion?: string, cantafeccion: number}[]>(this.apiUrlConsultas + 'afecciones/anios')
 			.pipe(
-				tap(result => console.log(`consultasAfeccionesAnios (${result.length})`)),
+				//tap(result => console.log(`consultasAfeccionesAnios (${result.length})`)),
 				catchError(this.handleError)
 			);
   }
@@ -120,7 +120,7 @@ export class ConsultasService {
 
     return this.http.get<{ fkafeccion: number, cantafeccion: number}[]>(this.apiUrlConsultas + `afecciones/all/${interval}`)
 			.pipe(
-				tap(result => console.log(`consultasAfeccionesAll (${result.length})`)),
+				//tap(result => console.log(`consultasAfeccionesAll (${result.length})`)),
 				catchError(this.handleError)
 			);
   }
@@ -129,7 +129,7 @@ export class ConsultasService {
 
     return this.http.get<{ id_paramedico: number, nombre: string, login: string, tipo_medico: string, mesanio: string, result_eva: string, conteval: number}[]>(this.apiUrlConsultas + `resultadoevaluacion/paramedicos/${login}`)
 			.pipe(
-				tap(result => console.log(`consultasAfeccionesAll (${result.length})`)),
+				//tap(result => console.log(`consultasAfeccionesAll (${result.length})`)),
 				catchError(this.handleError)
 			);
   }
@@ -138,7 +138,7 @@ export class ConsultasService {
 
     return this.http.get<{ id_medico: number, nombre: string, login: string, tipo_medico: string, mesanio: string, result_eva: string, conteval: number}[]>(this.apiUrlConsultas + `resultadoevaluacion/medicos/${login}`)
 			.pipe(
-				tap(result => console.log(`consultasAfeccionesAll (${result.length})`)),
+				//tap(result => console.log(`consultasAfeccionesAll (${result.length})`)),
 				catchError(this.handleError)
 			);
   }

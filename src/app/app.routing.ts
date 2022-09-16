@@ -186,7 +186,7 @@ export const routes: Routes = [
       },
       {
         path: 'serviciomedico/historia',
-        loadChildren: () => import('./components/servicio-medico/historia-medica/historial.module').then(m => m.HistorialConsultasModule)
+        loadChildren: () => import('./components/servicio-medico/historia-medica/historial.module').then(m => m.HistorialModule)
       }, 
       {
         path: 'serviciomedico/pacientes',
@@ -199,6 +199,10 @@ export const routes: Routes = [
       {
         path: 'serviciomedico/medicos',
         loadChildren: () => import('./components/servicio-medico/maestro-medicos/maestro-medico.module').then(m => m.MaestroMedicoModule)
+      },
+      {
+        path: 'serviciomedico/historias',
+        loadChildren: () => import('./components/servicio-medico/maestro-historias/maestro-historias.module').then(m => m.MaestrHistoriasModule)
       },
       {
         path: 'principalBalanza',

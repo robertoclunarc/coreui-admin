@@ -19,7 +19,7 @@ export class LoginSecioMedicoService {
 
       return this.http.get<IUsuarios[]>(`${this.apiUrlLogin}/usuarios/filtrados/${departamento}`)
 			.pipe(
-				tap(result => console.log(`usuariosFiltrados`)),
+			//	tap(result => console.log(`usuariosFiltrados`)),
 				catchError(this.handleError)
 			);
   }

@@ -20,7 +20,7 @@ export class TiempoReposoService {
 
     return this.http.get<ITiempoReposo[]>(this.apiUrltiempoReposo + 'consultar')
 			.pipe(
-				tap(result => console.log(`tiempoReposoAll`)),
+			//	tap(result => console.log(`tiempoReposoAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class TiempoReposoService {
 
     return this.http.get<ITiempoReposo>(this.apiUrltiempoReposo + 'consultar/' + id)
 			.pipe(
-				tap(result => console.log(`tiempoReposoOne`)),
+			//	tap(result => console.log(`tiempoReposoOne`)),
 				catchError(this.handleError)
 			);
   }
@@ -38,7 +38,7 @@ export class TiempoReposoService {
 
     return this.http.get<ITiempoReposo>(this.apiUrltiempoReposo + 'filtrar/' + descripcion)
 			.pipe(
-				tap(result => console.log(`remitidofilter`)),
+			//	tap(result => console.log(`remitidofilter`)),
 				catchError(this.handleError)
 			);
   } 

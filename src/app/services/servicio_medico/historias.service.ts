@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { IHistoria_paciente, IHistoria_medica } from '../../models/servicio-medico/historias.model';
+import { IHistoria_paciente, IHistoria_medica, IHistoriaGral } from '../../models/servicio-medico/historias.model';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -32,6 +32,11 @@ export class HistoriaService {
 				tap(result => console.log(`HistoriaMedicaAll`)),
 				catchError(this.handleError)
 			);
+  }
+
+  async searchHistoriasPromise(idHistoria: string, idPaciente: string, ci:string, nombre: string, cargo: string, depto:string, condlogica: string) :  Promise<IHistoriaGral[]> { 
+    let parametrosUrl = `${idHistoria}/${idPaciente}/${ci}/${nombre}/${cargo}/${depto}/${condlogica}`; 
+    return await this.http.get<IHistoriaGral[]>(this.apiUrlHistoria + 'filtrar/' + parametrosUrl ).toPromise();
   }
 
   async historia_paciente(fk_historia: string, fk_consulta: string) :  Promise<IHistoria_paciente[]> { 

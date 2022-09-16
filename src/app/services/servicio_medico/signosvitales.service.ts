@@ -20,7 +20,7 @@ export class SignosVitalesService {
 
     return this.http.get<IsignosVitales[]>(this.apiUrlSignosVitales + 'consultar')
 			.pipe(
-				tap(result => console.log(`signosVitalesAll`)),
+				tap(),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class SignosVitalesService {
 
     return this.http.get<IsignosVitales>(this.apiUrlSignosVitales + `consultar/${cedula}/${fecha}`)
 			.pipe(
-				tap(result => console.log(`signosVitalesOne`)),
+				tap(),
 				catchError(this.handleError)
 			);
   }
@@ -38,7 +38,7 @@ export class SignosVitalesService {
 
     return this.http.get<IsignosVitales[]>(this.apiUrlSignosVitales + `consultar/${cedula}`)
 			.pipe(
-				tap(result => console.log(`signosVitalesPaciente`)),
+				tap(),
 				catchError(this.handleError)
 			);
   }

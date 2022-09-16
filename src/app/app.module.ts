@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER,  } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -29,7 +29,7 @@ import { LayoutServicioMedicoComponent } from './containers/layout-serviciomedic
 import { LayoutBalanzaComponent } from './containers/layout-balanza';
 
 //eliminar despues de terminar historial medico:
-//import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
+
 //import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
 //import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
 //import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
@@ -41,6 +41,7 @@ import { LayoutBalanzaComponent } from './containers/layout-balanza';
 //import { EstudiosFisicosComponent } from './components/servicio-medico/examen_fisico/examenfisico.component';
 //import { SignosVitalesComponent } from './components/servicio-medico/signos_vitales/signosvitales.component';
 //import { AntropometriaComponent } from './components/servicio-medico/antropometria/antropometria.component';
+
 ///////////////////////////////////////////////
 
 import { P404Component } from './views/error/404.component';
@@ -50,7 +51,7 @@ import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
   DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , 
-  //PacientesComponent, 
+  
   //CargosAnterioresComponent,  
   //AntecedenteFamiliarComponent, 
   //AntecedenteOcupacionalComponent, 
@@ -114,8 +115,9 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     BsDropdownModule,    
     ButtonsModule.forRoot(),
     NgbToastModule, 
-    
+   
   ],
+  
   declarations: [
     AppComponent,
     ...APP_CONTAINERS,
@@ -124,7 +126,8 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     RegisterComponent, 
     LoginServicioMedicoComponent,
     LoginBalanzaComponent,
-  ],
+    
+  ],  
   /*providers: [
     {
       provide: LocationStrategy,

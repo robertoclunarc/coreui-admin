@@ -20,7 +20,7 @@ export class AreasService {
 
     return this.http.get<IAreas[]>(this.apiUrlareas + 'consultar')
 			.pipe(
-				tap(result => console.log(`areasAll`)),
+			//	tap(result => console.log(`areasAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class AreasService {
 
     return this.http.get<IAreas>(this.apiUrlareas + 'consultar/' + id)
 			.pipe(
-				tap(result => console.log(`areaOne`)),
+			//	tap(result => console.log(`areaOne`)),
 				catchError(this.handleError)
 			);
   }  

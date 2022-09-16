@@ -20,7 +20,7 @@ export class EstudiosFisicosService {
 
     return this.http.get<IEstudiosFisico[]>(this.apiUrlEstudiosFisicos + 'consultar')
 			.pipe(
-				tap(result => console.log(`EstudiosFisicosAll`)),
+			//	tap(result => console.log(`EstudiosFisicosAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,14 +29,14 @@ export class EstudiosFisicosService {
 
     return this.http.get<IExamenesFisicosPacientes[]>(this.apiUrlEstudiosFisicos + 'pacientes/' + cedula)
 			.pipe(
-				tap(result => console.log(`EstudiosFisicosPorCedula`)),
+			//	tap(result => console.log(`EstudiosFisicosPorCedula`)),
 				catchError(this.handleError)
 			);
   }  
 
   registrar(reg: IExamenFisico) {
     return this.http.post<IExamenFisico>(this.apiUrlEstudiosFisicos + 'insertar', reg).pipe(
-        tap(result => { this.EstudiosFisicos = result; console.log(`EstudiosFisicos insertado`) }),
+      //  tap(result => { this.EstudiosFisicos = result; console.log(`EstudiosFisicos insertado`) }),
         catchError(this.handleError)
     );
   }

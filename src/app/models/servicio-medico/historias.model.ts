@@ -1,3 +1,6 @@
+import { IPaciente } from './paciente.model';
+import { Idepartamentos } from './departamentos.model';
+
 export interface IHistoria_medica{
     uid_historia?: number;
     fecha_apertura?: string;
@@ -22,3 +25,13 @@ export interface IHistoria_paciente{
     fk_medico?: number;
     fk_consulta?: number;
 }
+
+export interface IHistoriaGral {
+    historia?: IHistoria_medica,
+    paciente?: IPaciente,
+    depto?: Idepartamentos,
+    examenfisico?: string,
+    habitos?: string,
+    riesgos?: string,
+    psicologicos?: string,
+ }

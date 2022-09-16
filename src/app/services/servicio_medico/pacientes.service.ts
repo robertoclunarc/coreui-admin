@@ -20,7 +20,7 @@ export class PacientesService {
 
     return this.http.get<IvPaciente[]>(this.apiUrlPacientes + 'consultar')
 			.pipe(
-				tap(result => console.log(`pacientesAll`)),
+			//	tap(result => console.log(`pacientesAll`)),
 				catchError(this.handleError)
 			);
   }

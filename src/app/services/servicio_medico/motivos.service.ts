@@ -20,7 +20,7 @@ export class MotivosService {
 
     return this.http.get<IMotivo[]>(this.apiUrlMotivos + 'consultar')
 			.pipe(
-				tap(result => console.log(`motivosAll`)),
+			//	tap(result => console.log(`motivosAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class MotivosService {
 
     return this.http.get<IMotivo>(this.apiUrlMotivos + 'consultar/' + id)
 			.pipe(
-				tap(result => console.log(`motivoOne`)),
+			//	tap(result => console.log(`motivoOne`)),
 				catchError(this.handleError)
 			);
   }  

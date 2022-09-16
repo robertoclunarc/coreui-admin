@@ -45,7 +45,6 @@ import { TooltipModule } from 'ngx-bootstrap/tooltip';
 // navbars
 //--import { NavbarsComponent } from '../../../views/base/navbars/navbars.component';
 
-
 // Modal Component
 import { ModalModule } from 'ngx-bootstrap/modal';
 
@@ -58,8 +57,9 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 //--import { AlertsComponent } from '../../../views/notifications/alerts.component'; //'./alerts.component';
 import { AlertModule } from 'ngx-bootstrap/alert';
 
-import { PlanillaModule  } from '../planillas/planilla.module'
-//import { planillaConsultaComponent } from '../planillas/planilla_consulta.component';
+//import { PlanillaModule  } from '../planillas/planilla.module'
+import { planillaConsultaComponent } from '../planillas/planilla_consulta.component';
+import { NgxPrintModule } from 'ngx-print';
 
 @NgModule({
   imports: [
@@ -78,8 +78,8 @@ import { PlanillaModule  } from '../planillas/planilla.module'
     ChartsModule,
     TypeaheadModule.forRoot(),
     AlertModule.forRoot(),
-    //planillaConsultaComponent,
-    PlanillaModule
+    NgxPrintModule
+   // PlanillaModule
   ],
   declarations: [
     //--CardsComponent,
@@ -87,6 +87,7 @@ import { PlanillaModule  } from '../planillas/planilla.module'
     //--SwitchesComponent,
     //--TablesComponent,
     ConsultasComponent,
+    planillaConsultaComponent,
     //--CarouselsComponent,
     //-CollapsesComponent,
     //--PaginationsComponent,

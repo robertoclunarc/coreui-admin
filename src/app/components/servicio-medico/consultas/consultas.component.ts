@@ -51,7 +51,7 @@ import { IHistoria_medica, IHistoria_paciente } from '../../../models/servicio-m
   styleUrls: ["consultas.component.css"]             
 })
 export class ConsultasComponent  implements OnInit  {  
-
+  @ViewChild('myModalPlanilla') public myModalPlanilla: ModalDirective;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   @ViewChild('pdfTable', {static: false}) pdfTable: ElementRef;
 
@@ -62,7 +62,8 @@ export class ConsultasComponent  implements OnInit  {
   iconCollapse_1: string = 'icon-arrow-down';
 
   user: IUsuarios={};
-  tipoUser: string;  
+  tipoUser: string;
+  uidPaciente: string;  
   buscarConsulta: IFiltroConsulta;
   consultasTodas: IvConsulta[];
   consultasAnteriores: IvConsulta[];
@@ -204,7 +205,9 @@ export class ConsultasComponent  implements OnInit  {
     
 	}
   public downloadAsPDF(uid: number) {
-    this.router.navigate([`serviciomedico/atenciones/planillaconsulta/${uid}`]);
+    
+    //this.router.navigate([`serviciomedico/atenciones/planillaconsulta/${uid}`]);
+    this.uidPaciente=uid.toString();
   }
 
   private async limpiarFiltro(){
@@ -498,7 +501,7 @@ export class ConsultasComponent  implements OnInit  {
         Paramedico: searchValue,
         nombrePaciente: searchValue,
         cargo: searchValue,
-        fecha: searchValue,
+        fecha: fecha,
         condlogica: 'OR'       
       } 
       

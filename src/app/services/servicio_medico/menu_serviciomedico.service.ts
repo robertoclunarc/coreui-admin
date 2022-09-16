@@ -18,7 +18,7 @@ export class MenusService {
   menusAll() : Observable<INavData[]> {
     return this.http.get<INavData[]>(this.apiUrlmenu + 'consultar')
 			.pipe(
-				tap(result => console.log(`menusAll: (${result.length})`)),
+		//		tap(result => console.log(`menusAll: (${result.length})`)),
 				catchError(this.handleError)
 			);
   }
@@ -26,7 +26,7 @@ export class MenusService {
   menusUser(user: string) : Observable<INavData[]> {
     return this.http.get<INavData[]>(this.apiUrlmenu + 'consultar/' + user)
 			.pipe(
-				tap(result => console.log(`menuUser: (${result.length})`)),
+			//	tap(result => console.log(`menuUser: (${result.length})`)),
 				catchError(this.handleError)
 			);
   }  

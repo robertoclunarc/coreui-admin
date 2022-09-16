@@ -20,7 +20,7 @@ export class PatologiasService {
 
     return this.http.get<IPatologia[]>(this.apiUrlPatologias + 'consultar')
 			.pipe(
-				tap(result => console.log(`patologiasAll`)),
+				//tap(result => console.log(`patologiasAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class PatologiasService {
 
     return this.http.get<IPatologia[]>(this.apiUrlPatologias + 'antecedentes')
 			.pipe(
-				tap(result => console.log(`patologiasAntecedentesFamiliares`)),
+			//	tap(result => console.log(`patologiasAntecedentesFamiliares`)),
 				catchError(this.handleError)
 			);
   }
@@ -38,7 +38,7 @@ export class PatologiasService {
 
     return this.http.get<IPatologia>(this.apiUrlPatologias + 'consultar/' + id)
 			.pipe(
-				tap(result => console.log(`patologiaOne`)),
+			//	tap(result => console.log(`patologiaOne`)),
 				catchError(this.handleError)
 			);
   }
@@ -47,7 +47,7 @@ export class PatologiasService {
     let parametrosUrl = uid + '/' + descripcion + '/' + codigo;
     return this.http.get<IPatologia[]>(this.apiUrlPatologias + '/filtrar/' + parametrosUrl )
 			.pipe(
-				tap(result => console.log(`consultaFilter`)),
+			//	tap(result => console.log(`consultaFilter`)),
 				catchError(this.handleError)
 			);
   }

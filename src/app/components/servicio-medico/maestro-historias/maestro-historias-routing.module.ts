@@ -1,25 +1,24 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-import {  HistoriaMedicaComponent } from './historial.component'
+import { MaestroHistoriasComponent } from './maestro-historias.component'
 
 const routes: Routes = [
   {
     path: '',    
     data: {
-      title: 'Historia'
+      title: 'Historias'
     },
     children: [
       {
         path: '',
-        redirectTo: 'historia',
-        pathMatch: 'full',
+        redirectTo: 'historias'
       },
       {
-        path: 'historia',
-        component: HistoriaMedicaComponent,
+        path: 'historias',
+        component: MaestroHistoriasComponent,
         data: {
-          title: 'Historia'
+          title: 'Historias'
         }
       },      
     ]
@@ -30,4 +29,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes),  ], 
   exports: [RouterModule]
 })
-export class HistoriaMedicaRoutingModule {}
+export class MestroHistoriasRoutingModule {}

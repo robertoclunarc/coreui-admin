@@ -21,7 +21,7 @@ export class MedicosService {
 
     return this.http.get<IMedicos[]>(this.apiUrlMedicos + 'medicos/consultar')
 			.pipe(
-				tap(result => console.log(`medicosAll`)),
+			//	tap(result => console.log(`medicosAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -30,7 +30,7 @@ export class MedicosService {
 
     return this.http.get<IMedicos[]>(this.apiUrlMedicos + 'paramedicos/consultar')
 			.pipe(
-				tap(result => console.log(`paramedicosAll`)),
+				//tap(result => console.log(`paramedicosAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -44,7 +44,7 @@ export class MedicosService {
     
     return this.http.get<ItotalAtenciones[]>(this.apiUrlMedicos + 'paramedicos/medicos/atenciones')
 			.pipe(
-				tap(result => console.log(`contadorAtenciones`)),
+				//tap(result => console.log(`contadorAtenciones`)),
 				catchError(this.handleError)
 			);
   }
@@ -53,7 +53,7 @@ export class MedicosService {
     
     return this.http.get<number>(this.apiUrlMedicos + 'paramedicos/medicos/atenciones/total')
 			.pipe(
-				tap(result => console.log(`contadorTotalAtenciones:${result}`)),
+				//tap(result => console.log(`contadorTotalAtenciones:${result}`)),
 				catchError(this.handleError)
 			);
   }
@@ -62,7 +62,7 @@ export class MedicosService {
 
     return this.http.get<IMedicos>(this.apiUrlMedicos + 'medicos/consultar/' + id)
 			.pipe(
-				tap(result => console.log(`medicosOne`)),
+				//tap(result => console.log(`medicosOne`)),
 				catchError(this.handleError)
 			);
   } 
@@ -71,7 +71,7 @@ export class MedicosService {
 
     return this.http.get<IParamedicos>(this.apiUrlMedicos + 'paramedicos/consultar/' + id)
 			.pipe(
-				tap(result => console.log(`paramedicosOne`)),
+				//tap(result => console.log(`paramedicosOne`)),
 				catchError(this.handleError)
 			);
   }

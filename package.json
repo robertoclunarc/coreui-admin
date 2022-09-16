@@ -58,6 +58,7 @@
     "ngb-toast": "^0.0.6",
     "ngx-bootstrap": "^6.2.0",
     "ngx-perfect-scrollbar": "^10.1.0",
+    "ngx-print": "^1.2.1",
     "rxjs": "^6.6.6",
     "simple-line-icons": "^2.5.5",
     "sweetalert2": "^11.4.8",
