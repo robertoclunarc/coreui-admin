@@ -87,6 +87,7 @@ import { LoginServicioMedicoComponent } from './components/servicio-medico/login
 import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-balanza.component';
 
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
+//import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
 
 @NgModule({
   imports: [
@@ -115,7 +116,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     BsDropdownModule,    
     ButtonsModule.forRoot(),
     NgbToastModule, 
-   
+    //LazyLoadImageModule
   ],
   
   declarations: [
@@ -127,8 +128,9 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     LoginServicioMedicoComponent,
     LoginBalanzaComponent,
     
-  ],  
-  /*providers: [
+  ],
+  /* 
+  providers: [
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy
@@ -136,6 +138,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     IconSetService,
     
   ],*/
+  
   providers: [authInterceptorProviders],
   bootstrap: [ AppComponent ]
 })

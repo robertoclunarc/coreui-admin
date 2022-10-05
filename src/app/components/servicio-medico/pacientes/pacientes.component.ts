@@ -38,6 +38,8 @@ export class PacientesComponent implements OnChanges {
   @Output() outPaciente = new EventEmitter<IvPaciente>();
   @Input() ciPaciente: string = "-1";
 
+  fotoPaciente: any;
+  imageDesconocido: any='../../../../assets/img/avatars/desconocido.png';
   paciente: IvPaciente={};  
   private user: IUsuarios={};
   private tipoUser: string; 
@@ -96,6 +98,7 @@ export class PacientesComponent implements OnChanges {
       this.soloLectura=true;
     }
    
+    this.fotoPaciente = this.imageDesconocido;
     this.paciente.ci = this.route.snapshot.paramMap.get("ci")==undefined? this.ciPaciente: this.route.snapshot.paramMap.get("ci")
     this.buscarPaciente();
     this.llenarArrayDepartamento();
@@ -126,12 +129,41 @@ export class PacientesComponent implements OnChanges {
           }
           this.gerencia.nombre = this.paciente.gcia;
           this.outPaciente.emit(this.paciente);
+          this.getThumbnail();
         }
         else
           this.paciente={} 
         
       })
     }    
+  }
+
+  getThumbnail() : void {
+    this.srvVarios.searchHeroes(this.paciente.ci)
+      .subscribe(
+        (val) => { 
+          if (val.size>35)
+            this.createImageFromBlob(val);
+          else
+          this.fotoPaciente = this.imageDesconocido;
+        },
+        response => {
+          console.log("GET in error", response);
+          this.fotoPaciente = this.imageDesconocido;
+        },
+        () => {
+          console.log("GET observable is now completed.");
+          
+        });
+  }
+  createImageFromBlob(image: Blob) {
+    let reader = new FileReader();
+    reader.addEventListener("load", () => {
+      this.fotoPaciente = reader.result;
+    }, false);
+  if (image) {
+      reader.readAsDataURL(image);
+    }else this.fotoPaciente = this.imageDesconocido;
   }
 
   private llenarArrayNIvelesAcademicos(){

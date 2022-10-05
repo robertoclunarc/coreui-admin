@@ -3,13 +3,13 @@ import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TypeaheadMatch} from 'ngx-bootstrap/typeahead';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 //modelos
 import { IvPaciente, IPaciente } from '../../../models/servicio-medico/paciente.model';
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { Ipopover, INivelAcademico, IContratista } from '../../../models/servicio-medico/varios.model';
 import { IvDepartamentos, IGerencia } from '../../../models/servicio-medico/departamentos.model';
-
 
 //servicios
 import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
@@ -26,6 +26,7 @@ import { VarioService } from '../../../services/servicio_medico/varios.service';
 export class PacientesHistoriaComponent implements OnChanges {
 
   constructor( 
+    private readonly sanitizer:DomSanitizer,
     private route: ActivatedRoute,  
     private router: Router,
     private srvPacientes: PacientesService, 
@@ -33,11 +34,19 @@ export class PacientesHistoriaComponent implements OnChanges {
     private srvVarios: VarioService,   
     @Inject(LOCALE_ID) public locale: string,
     
-  ) { }
+  ) {
+    this.fotoPaciente = this.imageDesconocido;
+    this.llenarArrayDepartamento();
+    this.llenarArrayGerencias();
+    this.llenarArrayNIvelesAcademicos();
+    this.llenarArrayContratistas();
+   }
 
   @Output() outPaciente = new EventEmitter<IvPaciente>();
   @Input() ciPaciente: string = "-1";
-
+  
+  fotoPaciente: any;
+  imageDesconocido: any='../../../../assets/img/avatars/desconocido.png';
   paciente: IvPaciente={};  
   private user: IUsuarios={};
   private tipoUser: string; 
@@ -68,13 +77,14 @@ export class PacientesHistoriaComponent implements OnChanges {
     {label:'Casad@', value:'Casad@'},
     {label:'Divorciad@', value:'Divorciad@'},
     {label:'Concubin@', value:'Concubin@'},
-  ];
+  ];  
 
   arrayContratista: IContratista[]=[];
   ObjContratista: IContratista={};
   alertsDismiss: any = [];
 
   ngOnChanges(): void {
+    
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -95,13 +105,9 @@ export class PacientesHistoriaComponent implements OnChanges {
     else{
       this.soloLectura=true;
     }
-   
+    
     this.paciente.ci = this.route.snapshot.paramMap.get("ci")==undefined? this.ciPaciente: this.route.snapshot.paramMap.get("ci")
-    this.buscarPaciente();
-    this.llenarArrayDepartamento();
-    this.llenarArrayGerencias();
-    this.llenarArrayNIvelesAcademicos();
-    this.llenarArrayContratistas();
+    //this.buscarPaciente();    
   }
 
   async buscarPaciente(){
@@ -126,12 +132,41 @@ export class PacientesHistoriaComponent implements OnChanges {
           }
           this.gerencia.nombre = this.paciente.gcia;
           this.outPaciente.emit(this.paciente);
+          this.getThumbnail();
+          
         }
         else
           this.paciente={} 
         
       })
     }    
+  }
+
+  getThumbnail() : void {
+    this.srvVarios.searchHeroes(this.paciente.ci)
+      .subscribe(
+        (val) => {
+          if (val.size>35) 
+            this.createImageFromBlob(val);
+          else
+            this.fotoPaciente = this.imageDesconocido;  
+        },
+        response => {
+          console.log("GET in error", response);
+          this.fotoPaciente = this.imageDesconocido;
+        },
+        () => {
+          console.log("GET observable is now completed.");
+        });
+  }
+  createImageFromBlob(image: Blob) {
+    let reader = new FileReader();
+    reader.addEventListener("load", () => {
+      this.fotoPaciente = reader.result;
+    }, false);
+  if (image) {
+      reader.readAsDataURL(image);
+    }else this.fotoPaciente = this.imageDesconocido;
   }
 
   private llenarArrayNIvelesAcademicos(){
@@ -165,7 +200,7 @@ export class PacientesHistoriaComponent implements OnChanges {
     })
   }
 
-  private llenarArrayDepartamento(){
+  private llenarArrayDepartamento(){    
     this.srvDepartamentos.departamentosFilter('null', 'null', 'null', 'null')
     .toPromise()
     .then(result => {

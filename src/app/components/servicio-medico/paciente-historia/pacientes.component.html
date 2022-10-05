@@ -4,123 +4,122 @@
     </div>
     <div class="card-body">
       <form action="" method="post" class="form-horizontal">
-        <div class="row">
-            <div class="col-sm-3">              
-              <div class="input-group">                            
-                <span class="input-group-prepend">
-                 <button [disabled]="soloLectura" type="button"                                      
-                    (click)="buscarPaciente()"                      
-                    class="btn btn-primary btn-sm">
-                    <i class="fa fa-search"></i> 
-                    Paciente
-                  </button>
-                </span>
-                <input type="text" id="txtCi" name="txtCi" [(ngModel)]="paciente.ci" [disabled]="soloLectura" (keyup.enter)="buscarPaciente()" class="form-control form-control-sm" placeholder="Cedula Trabajador">
+        <table class="table table-sm table-borderless">          
+            <tr>
+              <td>                
+                  <div class="input-group">                            
+                    <span class="input-group-prepend">
+                    <button [disabled]="soloLectura" type="button"                                      
+                        (click)="buscarPaciente()"                      
+                        class="btn btn-primary btn-sm">
+                        <i class="fa fa-search"></i> 
+                        Paciente
+                      </button>
+                    </span>
+                    <input type="text" id="txtCi" name="txtCi" [(ngModel)]="paciente.ci" [disabled]="soloLectura" (keyup.enter)="buscarPaciente()" class="form-control form-control-sm" placeholder="Cedula Trabajador">                    
+                  </div>                
+              </td>
+              <td>
                 
-              </div>
-            </div>
-            <div class="col-sm-3">
-              <div class="form-group">
-                <span class="form-group has-float-label">                                                                    
-                  <input type="text" class="form-control form-control-sm" id="txtNombre" name="txtNombre" [(ngModel)]="paciente.nombre" placeholder="Nombre del Paciente">
-                  <label class="badge-light" for="txtNombre">Nombre</label>
-                </span>
-              </div>
-            </div>
-            <div class="col-sm-3">
+                  <div class="form-group">
+                    <span class="form-group has-float-label">                                                                    
+                      <input type="text" class="form-control form-control-sm" id="txtNombre" name="txtNombre" [(ngModel)]="paciente.nombre" placeholder="Nombre del Paciente">
+                      <label class="badge-light" for="txtNombre">Nombre</label>
+                    </span>
+                  </div>
+                
+              </td>
+              <td>
+                
+                  <div class="form-group">
+                    <span class="form-group has-float-label">                                                                    
+                      <input type="text" class="form-control form-control-sm" id="txtApellido" name="txtApellido" [(ngModel)]="paciente.apellido" placeholder="Apellido del Paciente">
+                      <label class="badge-light" for="txtApellido">Apellido</label>
+                    </span>
+                  </div>
+                
+              </td>
+              <td  rowspan="3">
+                <div class="col-sm text-center">                  
+                  <img width="150px" height="150px" [src]="fotoPaciente" alt="Prueba"  class="rounded-circle">
+                </div>               
+              </td>
+            </tr>
+            <tr>
+              <td>
+                
+                  <div class="form-group">
+                    <span class="form-group has-float-label">                                                                    
+                      <select  class="form-control form-control-sm" name="cboSexo" [(ngModel)]="paciente.sexo"  id="cboSexo">
+                        <option value="M"  >Masculino</option>
+                        <option value="F"  >Femenino</option>                               
+                      </select>
+                      <label for="cboMedicoGuardia">Sexo</label>
+                    </span>  
+                  </div>
+                
+              </td>
+              <td>
                 <div class="form-group">
-                  <span class="form-group has-float-label">                                                                    
-                    <input type="text" class="form-control form-control-sm" id="txtApellido" name="txtApellido" [(ngModel)]="paciente.apellido" placeholder="Apellido del Paciente">
-                    <label class="badge-light" for="txtApellido">Apellido</label>
+                  <span class="form-group has-float-label">                                
+                    <input type="date" class="form-control form-control-sm" [(ngModel)]="paciente.fechanac"  name="txtFechaNac"  id="txtFechaNac">
+                    <label for="txtFechaNac">Fecha Nacimiento</label>
                   </span>
                 </div>
-              </div>
-            <div class="col-sm-1">
+              </td>
+              <td>
+                <div class="form-group">
+                  <span class="form-group has-float-label">
+                    <select class="form-control form-control-sm"  name="cboEdoPaciente" id="cboEdoPaciente" [(ngModel)]="paciente.estado_paciente">
+                      <option value="APTO" >APTO</option>
+                      <option value="NO APTO" >NO APTO</option>                                                                  
+                    </select>
+                    <label for="cboEdoPaciente">Estado Paciente</label>
+                  </span> 
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="form-group">
+                  <span class="form-group has-float-label">
+                      <select  class="form-control form-control-sm"  name="cboDepartamento" [(ngModel)]="paciente.id_departamento" id="cboDepartamento" (change)="seleccionarGerencia($event.target.value)">
+                          <option *ngFor="let depto of arrayDepartamentos" [value]="depto.departamento.uid">{{depto.departamento.descripcion}}</option>
+                      </select>
+                      <label class="badge-light" for="cboDepartamento">Departamento</label>
+                  </span>
+                </div>
+              </td>
+              <td>
                 <div class="form-group">
                   <span class="form-group has-float-label">                                                                    
-                    <select  class="form-control form-control-sm" name="cboSexo" [(ngModel)]="paciente.sexo"  id="cboSexo">
-                      <option value="M"  >Masculino</option>
-                      <option value="F"  >Femenino</option>                               
-                    </select>
-                    <label for="cboMedicoGuardia">Sexo</label>
-                </span>  
+                      <select [disabled]="true" class="form-control form-control-sm" name="cboGerencia" id="cboGerencia" [(ngModel)]="gerencia.uid" >
+                          <option *ngFor="let gcia of arrayGerencias" [selected]="gcia.nombre == paciente.gcia" [value]="gcia.uid">{{gcia.nombre}}</option>
+                                                      
+                      </select>
+                      <label for="cboGerencia">Gerencia</label>
+                  </span>                      
                 </div>
-            </div>
-            <div class="form-group col-sm-2">
-                <span class="form-group has-float-label">                                
-                  <input type="date" class="form-control form-control-sm" [(ngModel)]="paciente.fechanac"  name="txtFechaNac"  id="txtFechaNac">
-                  <label for="txtFechaNac">Fecha Nacimiento</label>
-                </span>
-            </div>
-        </div><!--/.row 1-->
-        <div class="row">
-                <div class="col-sm-3">
+              </td>
+              <td>
                 <div class="form-group">
-                    <span class="form-group has-float-label">
-                        <select  class="form-control form-control-sm"  name="cboDepartamento" [(ngModel)]="paciente.id_departamento" id="cboDepartamento" (change)="seleccionarGerencia($event.target.value)">
-                            <option *ngFor="let depto of arrayDepartamentos" [value]="depto.departamento.uid">{{depto.departamento.descripcion}}</option>
-                        </select>
-                        <label class="badge-light" for="cboDepartamento">Departamento</label>
-                    </span>
+                  <span class="form-group has-float-label">                                    
+                      <input type="text"  class="form-control form-control-sm" name="txtCargo"  id="txtCargo" [(ngModel)]="paciente.cargo" placeholder="Puesto">                                     
+                      <label class="badge-light" for="txtCargo">Cargo</label>
+                  </span>
                 </div>
-                </div>
-                <div class="col-sm-3">
+              </td>
+            </tr>         
+            <tr>
+              <td>
                 <div class="form-group">
-                    <span class="form-group has-float-label">                                                                    
-                        <select [disabled]="true" class="form-control form-control-sm" name="cboGerencia" id="cboGerencia" [(ngModel)]="gerencia.uid" >
-                            <option *ngFor="let gcia of arrayGerencias" [selected]="gcia.nombre == paciente.gcia" [value]="gcia.uid">{{gcia.nombre}}</option>
-                                                        
-                        </select>
-                        <label for="cboGerencia">Gerencia</label>
-                    </span>                      
+                  <span class="form-group has-float-label">
+                    <input type="text"  class="form-control form-control-sm" name="txtTipoSangre" id="txtTipoSangre" [(ngModel)]="paciente.tipo_sangre" placeholder="Tipo de Sangre">
+                    <label class="badge-light" for="txtTipoSangre">Tipo de Sangre</label>
+                  </span>
                 </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="form-group">
-                        <span class="form-group has-float-label">                                    
-                            <input type="text"  class="form-control form-control-sm" name="txtCargo"  id="txtCargo" [(ngModel)]="paciente.cargo" placeholder="Puesto">                                     
-                            <label class="badge-light" for="txtCargo">Cargo</label>
-                        </span>
-                    </div>                          
-                </div>
-                <div class="col-sm-1">
-                    <label class="" ><strong>Contratista:</strong></label>
-                </div>
-                <div class="col-sm-1">
-                    <label class="switch switch-label switch-pill switch-warning" tooltip="Contratista">                    
-                        <input type="checkbox" name="chkContratista" id="chkContratista" [(ngModel)]="paciente.es_contratista" class="switch-input" >
-                        <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-                    </label>
-                </div>
-                <div class="col-sm-1">                    
-                    <div class="form-group">
-                        <span class="form-group has-float-label">                                    
-                          <input  [(ngModel)]="paciente.contratista" name="txtContratista" id="txtContratista"  
-                          [typeahead]="arrayContratista"
-                          typeaheadOptionField="nombre"
-                          [isAnimated]="true"
-                          [typeaheadScrollable]="true"
-                          [typeaheadOptionsInScrollableView]="10"
-                          [typeaheadSelectFirstItem]="true"
-                          [typeaheadIsFirstItemActive]="true"
-                          
-                          [typeaheadSingleWords]="false"
-                          (typeaheadOnSelect)="onSelect($event)"                                  
-                          class="form-control form-control-sm">
-                          <label class="badge-light" for="txtContratista">Contrata</label>
-
-                        </span>  
-                    </div>                          
-                </div>
-        </div><!--/.row 2-->
-        <div class="row">
-            <div class="form-group col-sm-3">
-                <span class="form-group has-float-label">
-                  <input type="text"  class="form-control form-control-sm" name="txtTipoSangre" id="txtTipoSangre" [(ngModel)]="paciente.tipo_sangre" placeholder="Tipo de Sangre">
-                  <label class="badge-light" for="txtTipoSangre">Tipo de Sangre</label>
-                </span>
-            </div>
-            <div class="col-sm-3">
+              </td>
+              <td>
                 <div class="form-group">
                   <span class="form-group has-float-label">                                                                       
                       <select class="form-control form-control-sm" name="cboManoDominate" [(ngModel)]="paciente.mano_dominante" id="cboManoDominante">
@@ -128,30 +127,30 @@
                         <option  value="Izquierd@" >Izquierd@</option>
                       </select>
                       <label class="badge-light" for="cboManoDominante">Mano Dominate</label>
-                   </span>
+                  </span>
                 </div>
-            </div>
-            <div class="form-group col-sm-3">
-                <span class="form-group has-float-label">
-                  <input type="text"  class="form-control form-control-sm" name="txtTurno" id="txtTurno" [(ngModel)]="paciente.turno" placeholder="Turno">
-                  <label class="badge-light" for="txtTurno">Turno</label>
-                </span>
-            </div>
-            <div class="col-sm-3">
+              </td>
+              <td>
+                <div class="form-group">
+                  <span class="form-group has-float-label">
+                    <input type="text"  class="form-control form-control-sm" name="txtTurno" id="txtTurno" [(ngModel)]="paciente.turno" placeholder="Turno">
+                    <label class="badge-light" for="txtTurno">Turno</label>
+                  </span>
+                </div>
+              </td>
+              <td>
                 <div class="form-group">
                   <span class="form-group has-float-label">                                                                       
                       <select class="form-control form-control-sm" name="cboFrecRotacion"  id="cboFrecRotacion" [(ngModel)]="paciente.frecuencia_rotacion">
-                        <option *ngFor="let frec of arrayFrecuenciaRotacion" [value]="frec.valor">{{frec.display}}</option>
-                        
+                        <option *ngFor="let frec of arrayFrecuenciaRotacion" [value]="frec.valor">{{frec.display}}</option>                        
                       </select>
-                      <label class="badge-light" for="cboFrecRotacion">Frecuencia Rotacion</label>
-                      
-                   </span>
+                      <label class="badge-light" for="cboFrecRotacion">Frecuencia Rotacion</label>                      
+                  </span>
                 </div>
-            </div>
-        </div><!--/.row 3-->
-          <div class="row">
-            <div class="col-sm-3">
+              </td>
+            </tr>
+            <tr>
+              <td >
                 <div class="form-group">
                   <span class="form-group has-float-label">                                                                       
                       <select class="form-control form-control-sm" name="cboNivelEduc" [(ngModel)]="paciente.nivel_educativo" id="cboNivelEduc">
@@ -159,87 +158,127 @@
                         
                       </select>
                       <label class="badge-light" for="cboNivelEduc">Nivel Educativo</label>
-                   </span>
+                  </span>
                 </div>
-            </div>
-            <div class="form-group col-sm-3">
-                <span class="form-group has-float-label">                                
-                  <input type="date" class="form-control form-control-sm" [(ngModel)]="paciente.fecha_ingreso" name="txtFechaIngreso"  id="txtFechaIngreso">
-                  <label for="txtFechaIngreso">fecha Ingreso</label>
-                </span>
-            </div>
-            <div class="form-group col-sm-3">
-                <span class="form-group has-float-label">                                
-                  <input type="date" class="form-control form-control-sm"  name="txtAntPuesto" [(ngModel)]="paciente.antiguedad_puesto"  id="txtAntPuesto">
-                  <label for="txtAntPuesto">Antiguedad en el Puesto</label>
-                </span>
-            </div>
-            <div class="form-group col-sm-3">
-                <span class="form-group has-float-label">
-                  <select class="form-control form-control-sm" [(ngModel)]="paciente.edo_civil"  name="cboEdoCivil" id="cboEdoCivil">
-                    <option *ngFor="let edo of arrayEdoCivil" [value]="edo.value">{{edo.label}}</option>                                                                 
-                  </select>
-                  <label for="cboEdoCivil">Edo. Civil</label>
-                </span> 
-              </div>
-          </div><!--/.row 4-->
-          <div class="row">
-            <div class="form-group col-sm-3">
-              <span class="form-group has-float-label">
-                <input type="text"  class="form-control form-control-sm" name="txtNacionalidad" id="txtNacionalidad" [(ngModel)]="paciente.nacionalidad" placeholder="Nacionalidad">
-                <label class="badge-light" for="txtNacionalidad">Nacionalidad</label>
-              </span>
-            </div>            
-            <div class="form-group col-sm-3">                                
-              <span class="form-group has-float-label">
-                <input type="text"  class="form-control form-control-sm" name="txtTelefono" [(ngModel)]="paciente.telefono" id="txtTelefono" placeholder="Telefono">
-                <label for="txtTelefono">Telefono</label>
-              </span>
-            </div>
-            <div class="form-group col-sm-3">
-              <span class="form-group has-float-label">
-                <input type="text"  class="form-control form-control-sm" name="txtDirHabitacion" id="txtDirHabitacion" [(ngModel)]="paciente.direccion_hab" placeholder="Direccion Habitacion">
-                <label for="txtDirHabitacion">Direccion Habitacion</label>
-              </span>  
-            </div>
-            <div class="form-group col-sm-3">
-              <span class="form-group has-float-label">
-                <input type="text"  class="form-control form-control-sm" name="txtLugarNac" id="txtLugarNac" [(ngModel)]="paciente.lugar_nac" placeholder="Lugar Nacimiento">
-                <label for="txtLugarNac">Lugar Nacimiento</label>
-              </span>
-            </div>
-          </div><!--/.row 5-->
-          <div class="row">
-            <div class="form-group col-sm-3">
-              <span class="form-group has-float-label">                                  
-                <input type="text"  class="form-control form-control-sm" name="txtAlergia"  id="txtAlergia" [(ngModel)]="paciente.alergia" placeholder="Alergia">
-                <label for="txtAlergia">Alergia</label>
-              </span>
-            </div>
-            <div class="form-group col-sm-3">
-                <span class="form-group has-float-label">
-                  <select class="form-control form-control-sm"  name="cboTipoDiscapacidad" id="cboTipoDiscapacidad" [(ngModel)]="paciente.tipo_discapacidad">
-                    <option *ngFor="let disc of arrayTipoDiscapacidad" [value]="disc.value">{{disc.label}}</option>
-                  </select>
-                  <label for="cboTipoDiscapacidad">Tipo Discapacidad</label>
-                </span> 
-            </div>
-            <div class="form-group col-sm-3">
-              <span class="form-group has-float-label">
-                <input type="text" class="form-control form-control-sm" name="txtDescDiscapacidad"  id="txtDescDiscapacidad" [(ngModel)]="paciente.desc_discapacidad" placeholder="Descrip. Discapacidad">
-                <label for="txtDescDiscapacidad">Descrip. Discapacidad</label>
-              </span>
-            </div>
-            <div class="form-group col-sm-3">
-                <span class="form-group has-float-label">
-                  <select class="form-control form-control-sm"  name="cboEdoPaciente" id="cboEdoPaciente" [(ngModel)]="paciente.estado_paciente">
-                    <option value="APTO" >APTO</option>
-                    <option value="NO APTO" >NO APTO</option>                                                                  
-                  </select>
-                  <label for="cboEdoPaciente">Estado Paciente</label>
-                </span> 
-            </div>
-          </div><!--/.row 6-->         
+              </td>
+              <td >
+                <div class="form-group">
+                  <span class="form-group has-float-label">                                
+                    <input type="date" class="form-control form-control-sm" [(ngModel)]="paciente.fecha_ingreso" name="txtFechaIngreso"  id="txtFechaIngreso">
+                    <label for="txtFechaIngreso">fecha Ingreso</label>
+                  </span>
+                </div>
+              </td>
+              <td >
+                <div class="form-group">
+                  <span class="form-group has-float-label">                                
+                    <input type="date" class="form-control form-control-sm"  name="txtAntPuesto" [(ngModel)]="paciente.antiguedad_puesto"  id="txtAntPuesto">
+                    <label for="txtAntPuesto">Antiguedad en el Puesto</label>
+                  </span>
+                </div>
+              </td>
+              <td >
+                <div class="form-group">
+                  <span class="form-group has-float-label">
+                    <select class="form-control form-control-sm" [(ngModel)]="paciente.edo_civil"  name="cboEdoCivil" id="cboEdoCivil">
+                      <option *ngFor="let edo of arrayEdoCivil" [value]="edo.value">{{edo.label}}</option>                                                                 
+                    </select>
+                    <label for="cboEdoCivil">Edo. Civil</label>
+                  </span> 
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td >
+                <div class="form-group">
+                  <span class="form-group has-float-label">
+                    <input type="text"  class="form-control form-control-sm" name="txtNacionalidad" id="txtNacionalidad" [(ngModel)]="paciente.nacionalidad" placeholder="Nacionalidad">
+                    <label class="badge-light" for="txtNacionalidad">Nacionalidad</label>
+                  </span>
+                </div>
+              </td>
+              <td >
+                <div class="form-group">                                
+                  <span class="form-group has-float-label">
+                    <input type="text"  class="form-control form-control-sm" name="txtTelefono" [(ngModel)]="paciente.telefono" id="txtTelefono" placeholder="Telefono">
+                    <label for="txtTelefono">Telefono</label>
+                  </span>
+                </div>
+              </td>
+              <td >
+                <div class="form-group">
+                  <span class="form-group has-float-label">
+                    <input type="text"  class="form-control form-control-sm" name="txtDirHabitacion" id="txtDirHabitacion" [(ngModel)]="paciente.direccion_hab" placeholder="Direccion Habitacion">
+                    <label for="txtDirHabitacion">Direccion Habitacion</label>
+                  </span>  
+                </div>
+              </td>
+              <td >
+                <div class="form-group">
+                  <span class="form-group has-float-label">
+                    <input type="text"  class="form-control form-control-sm" name="txtLugarNac" id="txtLugarNac" [(ngModel)]="paciente.lugar_nac" placeholder="Lugar Nacimiento">
+                    <label for="txtLugarNac">Lugar Nacimiento</label>
+                  </span>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td >
+                <div class="form-group">
+                  <span class="form-group has-float-label">                                  
+                    <input type="text"  class="form-control form-control-sm" name="txtAlergia"  id="txtAlergia" [(ngModel)]="paciente.alergia" placeholder="Alergia">
+                    <label for="txtAlergia">Alergia</label>
+                  </span>
+                </div>
+              </td>
+              <td >
+                <div class="form-group">
+                  <span class="form-group has-float-label">
+                    <select class="form-control form-control-sm"  name="cboTipoDiscapacidad" id="cboTipoDiscapacidad" [(ngModel)]="paciente.tipo_discapacidad">
+                      <option *ngFor="let disc of arrayTipoDiscapacidad" [value]="disc.value">{{disc.label}}</option>
+                    </select>
+                    <label for="cboTipoDiscapacidad">Tipo Discapacidad</label>
+                  </span> 
+                </div>
+              </td>
+              <td >
+                <div class="form-group">
+                  <span class="form-group has-float-label">
+                    <input type="text" class="form-control form-control-sm" name="txtDescDiscapacidad"  id="txtDescDiscapacidad" [(ngModel)]="paciente.desc_discapacidad" placeholder="Descrip. Discapacidad">
+                    <label for="txtDescDiscapacidad">Descrip. Discapacidad</label>
+                  </span>
+                </div>
+              </td>
+              <td >
+                <div class="form-row" >
+                  &nbsp;
+                  <label class="switch switch-label switch-pill switch-warning" tooltip="Contratista">                    
+                    <input type="checkbox" name="chkContratista" id="chkContratista" [(ngModel)]="paciente.es_contratista" class="switch-input" >
+                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                  </label>
+                  &nbsp;&nbsp; 
+                  <div class="form-group">
+                    <span class="form-group has-float-label" >                                    
+                      <input  [(ngModel)]="paciente.contratista" name="txtContratista" id="txtContratista"  
+                      [typeahead]="arrayContratista"
+                      typeaheadOptionField="nombre"
+                      [isAnimated]="true"
+                      [typeaheadScrollable]="true"
+                      [typeaheadOptionsInScrollableView]="10"
+                      [typeaheadSelectFirstItem]="true"
+                      [typeaheadIsFirstItemActive]="true"                          
+                      [typeaheadSingleWords]="false"
+                      (typeaheadOnSelect)="onSelect($event)"                                  
+                      class="form-control form-control-sm">
+                      <label class="badge-light" for="txtContratista">Contratista</label>
+                    </span>  
+                  </div>
+                </div>
+                
+              </td>
+            </tr>
+          
+        </table>
       </form>
     </div>
     <div class="card-footer">
