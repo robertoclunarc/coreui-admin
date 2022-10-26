@@ -205,6 +205,10 @@ export const routes: Routes = [
         loadChildren: () => import('./components/servicio-medico/maestro-historias/maestro-historias.module').then(m => m.MaestrHistoriasModule)
       },
       {
+        path: 'serviciomedico/protocolo-endocrino',
+        loadChildren: () => import('./components/servicio-medico/protocolo_endocrino/protocolo-endocrino.module').then(m => m.ProtocoloEndocrinoModule)
+      },
+      {
         path: 'principalBalanza',
         loadChildren: () => import('./components/balanza/principal-Balanza/principal-balanza.module').then(m => m.DashboardModule)
       },      

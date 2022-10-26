@@ -1,0 +1,68 @@
+<div class="animated fadeIn">
+    <div class="row">    
+      <div class="col-md-12 mb-4">        
+            <div class="col-lg-12">
+              <div class="card">
+                <div class="card-header">
+                   <strong>Protocolo Endrino</strong>                 
+                   <div class="card-header-actions">
+                    <button [disabled]="soloLectura" (click)="showModalRegistrar(); primaryModal.show();" title="Registrar una Nuevo Paciente" type="button" class="btn btn-pill btn-block btn-success" >+</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div *ngFor="let alert of alertsDismiss">
+                    <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+                  </div>
+  
+                  <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by ..." />
+                  
+                  <table class="{{ classTable }} table-hover table-sm" id="dataConsultas">
+                    <thead>
+                      <tr>
+                        <th>&nbsp;</th>                      
+                        <th scope="col" *ngFor="let t of titulos">
+                          
+                          <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
+                            <button type="button" (click)="sortTable(t.campo)" class="{{ classButton }}"><strong>{{t.titulo}}</strong></button>
+                          </div>
+                      </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let p of returnedArray">                      
+                        <td>
+                          <div class="btn-group" dropdown>
+                            <button [disabled]="soloLectura"  type="button" title="Ver Paciente" (click)="showModalActualizar(p); primaryModal.show();" class="btn btn-block btn-link"><i class="icon-eye"></i></button>                           
+                          </div>
+                        </td>
+                        <td>{{ p.paciente.ci}}</td>
+                        <td>{{ p.paciente.nombre_completo}}</td>
+                        <td>{{ p.paciente.sexo}}</td>
+                        <td>{{ p.protocolo.emision | date:'yyyy-MM-dd'}}</td>
+                        <td>{{ p.protocolo.vigencia | date:'yyyy-MM-dd'}}</td>
+                        <td>{{ p.paciente.cargo}}</td>
+                        <td>{{ p.medico.nombre}}</td>
+                      </tr>                    
+                      
+                    </tbody>
+                  </table>
+                  <ul class="pagination">
+                    <div class="col-xs-12 col-12 d-sm-down-none">
+                      <pagination [totalItems]="totalItems"  (pageChanged)="pageChanged($event)" [rotate]="true" [maxSize]="10"></pagination>
+                    </div>
+                  </ul>
+                </div>
+              </div>
+            </div>
+    </div>
+  </div>
+</div>
+<div bsModal #primaryModal="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" role="document" >
+      <div class="modal-content modal-primary" >        
+        <div class="modal-body">
+            <app-protocolo-endocrino-one ></app-protocolo-endocrino-one>
+        </div>
+      </div>
+    </div>
+</div>            

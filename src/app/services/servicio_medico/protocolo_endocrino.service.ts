@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { IEvaluaciones_endocrinas, IPosibles_resp_endocrinas, IProtocolosEndrocrinos, IRespuestas_pacientes_eval_endocrino , IvProtocoloEndrocrinos } from '../../models/servicio-medico/protocolo_endocrino.model';
+import { filtroProtoEndocrino, IEvaluaciones_PosibleResp, IEvaluaciones_endocrinas, IPosibles_resp_endocrinas, IProtocolosEndrocrinos, IRespuestas_pacientes_eval_endocrino , IvProtocoloEndrocrinos } from '../../models/servicio-medico/protocolo_endocrino.model';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -16,49 +16,46 @@ export class ProtocolosEndocrinosService {
 
   constructor(private http: HttpClient) { }
 
-  evaluacionesEndocrinasAll() : Observable<IEvaluaciones_endocrinas[]> { 
+  async evaluacionesEndocrinasAll() : Promise<IEvaluaciones_endocrinas[]> { 
 
-    return this.http.get<IEvaluaciones_endocrinas[]>(this.apiUrlProtocolo + 'consultar/evaluaciones/all')
-			.pipe(
-			//	tap(result => console.log(`AfeccionesAll`)),
-				catchError(this.handleError)
-			);
+    return await this.http.get<IEvaluaciones_endocrinas[]>(this.apiUrlProtocolo + 'consultar/evaluaciones/all').toPromise();
+			
   }
 
-  evaluacionesEndocrinasAllxTipo() : Observable<{tipoevaluacion: string, index: number, cantItem: number}[]> { 
+  async evaluacionesEndocrinasAllxTipo() : Promise<{tipoevaluacion: string, index: number, cantItem: number}[]> { 
 
-    return this.http.get<{tipoevaluacion: string, index: number, cantItem: number}[]>(this.apiUrlProtocolo + 'consultar/evaluaciones/all' )
-			.pipe(
-			//	tap(result => console.log(`afeccionOne`)),
-				catchError(this.handleError)
-			);
+    return await this.http.get<{tipoevaluacion: string, index: number, cantItem: number}[]>(this.apiUrlProtocolo + 'consultar/evaluaciones/tipos' ).toPromise();
+			
   }
 
-  posiblesRespEndocrinasAll() : Observable<IPosibles_resp_endocrinas[]> { 
+  async posiblesRespEndocrinasAll() : Promise<IPosibles_resp_endocrinas[]> { 
 
-    return this.http.get<IPosibles_resp_endocrinas[]>(this.apiUrlProtocolo + 'consultar/respuestas/all' )
-			.pipe(
-			//	tap(result => console.log(`afeccionOne`)),
-				catchError(this.handleError)
-			);
+    return await this.http.get<IPosibles_resp_endocrinas[]>(this.apiUrlProtocolo + 'consultar/respuestas/all' ).toPromise();
+			
+  }
+
+  async EvalPosiblesRespEndocrinasAll() : Promise<IEvaluaciones_PosibleResp[]> { 
+
+    return await this.http.get<IEvaluaciones_PosibleResp[]>(this.apiUrlProtocolo + 'consultar/evaluaciones/respuestas' ).toPromise();
+			
   }
 
   respuestasPacientesEvalEndocrino(fkPaciente: string, fkProtocolo: string) : Observable<IRespuestas_pacientes_eval_endocrino[]> { 
 
     return this.http.get<IRespuestas_pacientes_eval_endocrino[]>(this.apiUrlProtocolo + `consultar/respuestas/${fkPaciente}/${fkProtocolo}` )
 			.pipe(
-			//	tap(result => console.log(`afeccionOne`)),
+			//	tap(result => console.log(`respuestasPacientesEvalEndocrino`)),
 				catchError(this.handleError)
 			);
   }
   
-  consultaFilter(ciPaciente: string, idProtocolo: string, fechaIni: string, fechaFin: string, medico: string, uidPaciente: string, condlogica: string) : Observable<IvProtocoloEndrocrinos[]> { 
-    let parametrosUrl = `${ciPaciente}/${idProtocolo}/${fechaIni}/${fechaFin}/${medico}/${uidPaciente}/${condlogica}`
-    return this.http.get<IvProtocoloEndrocrinos[]>(this.apiUrlProtocolo + 'filtrar/' + parametrosUrl )
-			.pipe(
+  async consultaFilter(filtro: filtroProtoEndocrino) : Promise<IvProtocoloEndrocrinos[]> { 
+    let parametrosUrl = `${filtro.ciPaciente}/${filtro.idProtocolo}/${filtro.fechaIni}/${filtro.fechaFin}/${filtro.medico}/${filtro.uidPaciente}/${filtro.condlogica}`;
+    return this.http.get<IvProtocoloEndrocrinos[]>(this.apiUrlProtocolo + 'filtrar/' + parametrosUrl ).toPromise();
+			/*.pipe(
 			//	tap(result => console.log(`consultaFilter`)),
 				catchError(this.handleError)
-			);
+			);*/
   }
 
   createRecordProtocoloEndocrino(reg: IProtocolosEndrocrinos) {

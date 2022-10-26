@@ -1,4 +1,4 @@
-import { IPaciente } from './paciente.model';
+import { IvPaciente } from './paciente.model';
 import { IMedicos } from './medicos.model';
 
 export interface IProtocolosEndrocrinos{
@@ -32,6 +32,12 @@ export interface IPosibles_resp_endocrinas
     idposibleresp?: number;
     fkevaluacion?: number;
     posible_resp?: string;
+    index?: number;
+}
+
+export interface IEvaluaciones_PosibleResp{
+    evaluaciones?: IEvaluaciones_endocrinas,
+    posibles_resp?: IPosibles_resp_endocrinas[],
 }
 
 export interface IRespuestas_pacientes_eval_endocrino
@@ -45,6 +51,16 @@ export interface IRespuestas_pacientes_eval_endocrino
 
 export interface IvProtocoloEndrocrinos{
     protocolo?: IProtocolosEndrocrinos;
-    paciente?: IPaciente;
+    paciente?: IvPaciente;
     medico?: IMedicos;
+}
+
+export interface filtroProtoEndocrino {
+    ciPaciente?: string; 
+    idProtocolo?: string; 
+    fechaIni?: string;
+    fechaFin?: string;
+    medico?: string; 
+    uidPaciente?: string; 
+    condlogica?: string;
 }
