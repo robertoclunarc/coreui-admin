@@ -75,7 +75,7 @@ import { ChartsModule } from 'ng2-charts';
 import { LoginServicioMedicoComponent } from './components/servicio-medico/login-servicio-medico/login-servicio-medico.component';
 import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-balanza.component';
 
-//import { ButtonsModule } from 'ngx-bootstrap/buttons';
+import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 @NgModule({
   imports: [
@@ -101,9 +101,9 @@ import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-
     PopoverModule.forRoot(),
     AlertModule.forRoot(),
     ModalModule.forRoot(),
-   //BsDropdownModule,    
-   //ButtonsModule.forRoot(),
-    NgbToastModule,    
+    BsDropdownModule,    
+    ButtonsModule.forRoot(),
+    NgbToastModule, 
     
   ],
   declarations: [

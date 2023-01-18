@@ -34,7 +34,10 @@
             "scripts": [],
             "allowedCommonJsDependencies": [
               "chart.js",
-              "classnames"
+              "classnames",
+              "jspdf",
+               "canvg",
+               "raf"
             ]
           },
           "configurations": {

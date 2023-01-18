@@ -20,37 +20,24 @@ import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
   providers: [ PacientesService,   { provide: AlertConfig }],
   styleUrls: ["historial.component.css"]             
 })
-export class HistoriaMedicaComponent  implements OnInit  {  
-
-  @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  @ViewChild('pdfTable', {static: false}) pdfTable: ElementRef;
-
-  isCollapsed: boolean = false;
-  iconCollapse: string = 'icon-arrow-up';
-
-  isCollapsed_1: boolean = true;
-  iconCollapse_1: string = 'icon-arrow-down';
+export class HistoriaMedicaComponent  implements OnInit  {
+  
 
   private user: IUsuarios={};
   private tipoUser: string;    
   
-  private alertsDismiss: any = []; 
-   
+  private alertsDismiss: any = [];   
   
 
   constructor(
-    private router: Router,
-    //private sanitizer: DomSanitizer,       
+    private router: Router,    
     @Inject(LOCALE_ID) public locale: string,  
     ) {  }
 
   ngOnInit(): void {
-    
+    console.log('historia medica!!!!!!!!!!!!!!!!!!!!')
     
 	}
-  
-
- 
 
  
 }
