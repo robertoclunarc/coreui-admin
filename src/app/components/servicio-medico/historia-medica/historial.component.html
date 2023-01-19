@@ -1,3 +1,204 @@
-<div>hola mundo!<br>
-  POR DIOS
+<div class="animated fadeIn">
+  <div class="row">    
+    <div class="col-md-12 mb-4">
+      <div class="row" >
+        <div class="col-lg-12">
+            
+            <alert type="info" *ngIf="paciente.ci!=undefined">
+              <strong>{{paciente.nombre}} {{paciente.apellido}}: {{paciente.cargo}} </strong>
+            </alert>            
+          
+        </div>
+        
+      </div>
+      <!-- Nav tabs -->
+      <tabset> 
+        <tab>
+          <ng-template tabHeading><i class="icon-user"></i> Datos Generales &nbsp;</ng-template>          
+          <div class="col-lg-12">
+            <div class="card">              
+              <div class="card-body">                
+                     <app-paciente-historia (outPaciente)="buscarPaciente($event)"></app-paciente-historia>          
+              </div>
+            </div>
+          </div>
+          <!--/.col-->
+          
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-drop"></i> Accidentes Ocupacionales &nbsp;</ng-template>          
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <strong>Historia </strong>del Paciente
+              </div>              
+              <div class="card-body">                
+                <div class="row">
+                  <div class="col-sm">
+                    <span class="form-group has-float-label">                                  
+                      <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="historiaMedica.ha_sufrido_accidentes" name="cboSufrioAccidente" id="cboSufrioAccidente">
+                        <option  value="No">No</option>
+                        <option  value="Si">Si</option>
+                      </select>
+                      <label for="cboSufrioAccidente">¿Ha sufrido algun accidente?</label>
+                    </span>
+                  </div>
+        
+                  <div class="col-sm">                    
+                    <span class="form-group has-float-label">
+                      <input type="text" [disabled]="soloLectura" class="form-control form-control-sm" [(ngModel)]="historiaMedica.partes_cuerpo_lesionados" name="txtpartesLesionadas" id="txtpartesLesionadas" placeholder="Partes Lesionas">
+                      <label for="txtpartesLesionadas">¿Que parte(s) del cuerpo se lesiono?</label>
+                    </span>
+                  </div>
+                  <div class="col-sm">
+                    <span class="form-group has-float-label">
+                      <input type="date" [disabled]="soloLectura" class="form-control form-control-sm" [(ngModel)]="historiaMedica.fecha_accidente" name="txtFAccidente" id="txtFAccidente">
+                      <label for="txtFAccidente">Fecha Accidente</label>
+                    </span>
+                  </div>
+                  <div class="col-sm">
+                    <span class="form-group has-float-label">
+                      <input type="text" [disabled]="soloLectura" class="form-control form-control-sm" name="txtsecuelasAccidente" [(ngModel)]="historiaMedica.dejo_secuelas" id="txtsecuelasAccidente" placeholder="Partes Lesionas">
+                      <label for="txtsecuelasAccidente">Secuelas del Accidente</label>
+                    </span>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-sm">
+                    <span class="form-group has-float-label">                                  
+                      <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="historiaMedica.ha_padecido_enfermeda" name="cboHapadecidoEnfermedad" id="cboHapadecidoEnfermedad">
+                        <option  value="">--</option>
+                        <option  value="No">No</option>
+                        <option  value="Si">Si</option>
+                      </select>
+                      <label for="cboHapadecidoEnfermedad">¿Ha padecido alguna enfermedad ocupacional?</label>
+                    </span>
+                  </div>
+                  <div class="col-sm">
+                    <span class="form-group has-float-label">                                  
+                      <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="historiaMedica.fue_certif_inpsasel" name="cboCertificado" id="cboCertificado">
+                        <option  value="">--</option>
+                        <option  value="No">No</option>
+                        <option  value="Si">Si</option>
+                      </select>
+                      <label for="cboCertificado">¿Fue Certificada por el INPSASEL?</label>
+                    </span>
+                  </div>
+                  <div class="col-sm">
+                    <span class="form-group has-float-label">                                  
+                      <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="historiaMedica.cambia_trab_frecuente" name="cboCambiaTrabajo" id="cboCambiaTrabajo">
+                        <option  value="">--</option>
+                        <option  value="No">No</option>
+                        <option  value="Si">Si</option>
+                      </select>
+                      <label for="cboCambiaTrabajo">¿Cambia de Trabajo con Frecuencia?</label>
+                    </span>
+                  </div>
+                  <div class="col-sm">
+                   
+                  </div>
+                </div>                
+                
+              </div>
+              <div class="card-footer">
+                <div *ngFor="let alert of alertsDismiss">
+                  <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+                </div>
+                <button type="button" [disabled]="soloLectura" (click)="registrar()" class="btn btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar">Guardar</button>   
+              </div>
+            </div>
+          </div>
+          <!--/.col-->
+          
+        </tab>        
+        <tab>
+          <ng-template tabHeading><i class="icon-note"></i> Atenciones &nbsp;<span class="badge badge-pill badge-danger">{{itemsConsulta}}</span></ng-template>
+          
+          <div class="col-lg-12">
+            <div class="card">              
+              <div class="card-body">                
+                <app-historial_consulta [_uidPaciente]="uidPaciente" [_fechaIni]="fechaIni" [_fechaFin]="fechaFin" (itemsConsulta)="ouputEmiterItemsConsulta($event)"></app-historial_consulta>                
+              </div>
+            </div>
+          </div>
+          <!--/.col-->
+          
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-wrench"></i> Cargos Anteriores &nbsp;<span class="badge badge-pill badge-danger">{{itemCargos}}</span></ng-template>
+          <div class="card">            
+            <div class="card-body">
+                <app-cargos-anteriores [_uidPaciente]="uidPaciente" (itemsCargos)="outputEmiterItemsCargos($event)"></app-cargos-anteriores>
+            </div>
+          </div>
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-people"></i> Antecedentes Familiares &nbsp;<span class="badge badge-pill badge-danger">{{itemAntecedentes}}</span></ng-template>
+          <div class="card">            
+            <div class="card-body">
+              <app-antecedentefamiliar [_uidPaciente]="uidPaciente" (itemsAntecedentes)="outputEmiterItemsAntecedentes($event)"></app-antecedentefamiliar>
+            </div>
+          </div>
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-book-open"></i> Antecedentes Ocupacionales &nbsp;<span class="badge badge-pill badge-danger">{{itemOcupaciones}}</span></ng-template>
+          <div class="card">            
+            <div class="card-body">
+                <app-antecedenteocupacional [_uidPaciente]="uidPaciente" (itemOcupaciones)="outputEmiterItemsOcupaciones($event)"></app-antecedenteocupacional>
+            </div>
+          </div>
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-heart"></i> a. Examen Funcional &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFuncionalA}}</span></ng-template>
+          <div class="card">            
+            <div class="card-body">
+              <app-antecedentepatologico [_uidPaciente]="uidPaciente" (itemExamenFuncionalA)="outputEmiterItemsExamenFucional1($event)"></app-antecedentepatologico>
+            </div>
+          </div>
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-heart"></i> b. Examen Funcional &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFuncionalB}}</span></ng-template>
+          <div class="card">            
+            <div class="card-body">
+                <app-habitos [_uidPaciente]="uidPaciente" (itemExamenFuncionalB)="outputEmiterItemsExamenFuncional2($event)"></app-habitos>
+            </div>
+          </div>
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-emotsmile"></i> Anamnesis Psicológicos &nbsp;<span class="badge badge-pill badge-danger">{{itemAnamnesis}}</span></ng-template>
+          <div class="card">            
+            <div class="card-body">
+              <app-anamnesispsicologico [_uidPaciente]="uidPaciente" (itemAnamnesis)="outputEmiterItemsAnamnesis($event)"></app-anamnesispsicologico>
+            </div>
+          </div>
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-eyeglass"></i> 1. Examen Físico &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFisico1}}</span></ng-template>
+          <div class="card">            
+            <div class="card-body">
+              <app-signosvitales [_uidPaciente]="uidPaciente" (itemExamenFisico1)="outputEmiterItemsFisico1($event)"></app-signosvitales>
+            </div>
+          </div>
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-eyeglass"></i>  2. Examen Físico &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFisico2}}</span></ng-template>
+          <div class="card">            
+            <div class="card-body">
+              <app-antropometria [_uidPaciente]="uidPaciente" (itemExamenFisico2)="outputEmiterItemsFisico2($event)"></app-antropometria>
+            </div>
+          </div>
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-eyeglass"></i> 3. Examen Físico &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFisico3}}</span></ng-template>
+          <div class="card">            
+            <div class="card-body">
+              <app-examenfisico [_uidPaciente]="uidPaciente" (itemExamenFisico3)="outputEmiterItemsFisico3($event)"></app-examenfisico>
+            </div>
+          </div>
+        </tab>
+      </tabset>
+
+
+    </div><!--/.col-->
+  </div><!--/.row-->
 </div>

@@ -20,7 +20,7 @@ export class AfeccionesService {
 
     return this.http.get<IAfecciones[]>(this.apiUrlAfecciones + 'consultar')
 			.pipe(
-				tap(result => console.log(`AfeccionesAll`)),
+			//	tap(result => console.log(`AfeccionesAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class AfeccionesService {
 
     return this.http.get<IAfecciones>(this.apiUrlAfecciones + 'consultar/' + id)
 			.pipe(
-				tap(result => console.log(`afeccionOne`)),
+			//	tap(result => console.log(`afeccionOne`)),
 				catchError(this.handleError)
 			);
   }
@@ -38,7 +38,7 @@ export class AfeccionesService {
     let parametrosUrl = descripcion + '/' + codigo;
     return this.http.get<IAfecciones[]>(this.apiUrlAfecciones + '/filtrar/' + parametrosUrl )
 			.pipe(
-				tap(result => console.log(`consultaFilter`)),
+			//	tap(result => console.log(`consultaFilter`)),
 				catchError(this.handleError)
 			);
   }

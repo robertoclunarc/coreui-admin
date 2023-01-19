@@ -5,14 +5,19 @@
     <form action="" method="post" class="form-horizontal">
       <div class="card-body">                 
         <table class="table table-sm" id="dataReferencias"> 
-          <thead>                            
+          <thead *ngIf="returnedArray.length>0">                            
             <tr>                                
               <th *ngFor="let col of columnas | slice:sliceIndex; let i = index;" scope="col">{{ col }}</th>            
             </tr>
           </thead>
           <tr *ngFor="let mor of returnedArray; let i = index;">                                            
             <td *ngIf="sliceIndex==0">{{mor.ci}}</td>
-            <td *ngIf="sliceIndex==0">{{mor.nombre_completo}}</td>            
+            <td *ngIf="sliceIndex==0">{{mor.nombre_completo}}</td>
+            <td><button type="button" title="Ver Consulta: {{mor.uid}}"   
+              (click)="irConsulta(mor.uid); primaryModal.show();" 
+              class="btn btn-block btn-link">
+              <i class="icon-eye"></i>
+            </button></td>          
             <td>{{mor.cargo}}</td>
             <td>{{mor.nombres_jefe}}</td>
             <td>{{mor.area}}</td>            
@@ -31,11 +36,7 @@
             <td>{{mor.sexo}}</td>
             <td>{{mor.medico}}</td>                      
             <td>{{mor.paramedico}}</td>            
-            <td><button type="button" title="Ver Consulta: {{mor.uid}}"   
-              (click)="irConsulta(mor.uid); primaryModal.show();" 
-              class="btn btn-block btn-link">
-              <i class="icon-eye"></i>
-            </button></td> 
+             
           </tr>                              
         </table>            
         <ul class="pagination">

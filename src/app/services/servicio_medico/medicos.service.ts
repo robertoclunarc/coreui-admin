@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { IMedicos, IParamedicos, ItotalAtenciones } from '../../models/servicio-medico/medicos.model';
+import { IMedicos, IParamedicos, ItotalAtenciones, IMedicosParamedicos } from '../../models/servicio-medico/medicos.model';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -12,6 +12,7 @@ import { environment } from '../../../environments/environment';
 export class MedicosService {  
   public medico: IMedicos;
   public paraMedico: IParamedicos;
+  public mensaje: any;
   private apiUrlMedicos : string = environment.apiUrlServMedico + 'personal/';
   
   constructor(private http: HttpClient) { }
@@ -20,7 +21,7 @@ export class MedicosService {
 
     return this.http.get<IMedicos[]>(this.apiUrlMedicos + 'medicos/consultar')
 			.pipe(
-				tap(result => console.log(`medicosAll`)),
+			//	tap(result => console.log(`medicosAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,16 +30,21 @@ export class MedicosService {
 
     return this.http.get<IMedicos[]>(this.apiUrlMedicos + 'paramedicos/consultar')
 			.pipe(
-				tap(result => console.log(`paramedicosAll`)),
+				//tap(result => console.log(`paramedicosAll`)),
 				catchError(this.handleError)
 			);
+  }
+
+  async searchMedicosPromise(ciMedico: string, nombre: string, uid: string, tipo: string, condlogica: string) :  Promise<IMedicosParamedicos[]> { 
+    let parametrosUrl = `${ciMedico}/${nombre}/${uid}/${tipo}/${condlogica}`; 
+    return await this.http.get<IMedicosParamedicos[]>(this.apiUrlMedicos + 'filtrar/' + parametrosUrl ).toPromise();
   }
 
   contadorAtenciones() : Observable<ItotalAtenciones[]> { 
     
     return this.http.get<ItotalAtenciones[]>(this.apiUrlMedicos + 'paramedicos/medicos/atenciones')
 			.pipe(
-				tap(result => console.log(`contadorAtenciones`)),
+				//tap(result => console.log(`contadorAtenciones`)),
 				catchError(this.handleError)
 			);
   }
@@ -47,7 +53,7 @@ export class MedicosService {
     
     return this.http.get<number>(this.apiUrlMedicos + 'paramedicos/medicos/atenciones/total')
 			.pipe(
-				tap(result => console.log(`contadorTotalAtenciones:${result}`)),
+				//tap(result => console.log(`contadorTotalAtenciones:${result}`)),
 				catchError(this.handleError)
 			);
   }
@@ -56,7 +62,7 @@ export class MedicosService {
 
     return this.http.get<IMedicos>(this.apiUrlMedicos + 'medicos/consultar/' + id)
 			.pipe(
-				tap(result => console.log(`medicosOne`)),
+				//tap(result => console.log(`medicosOne`)),
 				catchError(this.handleError)
 			);
   } 
@@ -65,7 +71,7 @@ export class MedicosService {
 
     return this.http.get<IParamedicos>(this.apiUrlMedicos + 'paramedicos/consultar/' + id)
 			.pipe(
-				tap(result => console.log(`paramedicosOne`)),
+				//tap(result => console.log(`paramedicosOne`)),
 				catchError(this.handleError)
 			);
   }
@@ -85,20 +91,20 @@ export class MedicosService {
   }
 
   actualizarMedico(reg: IMedicos) {
-    const url = `${this.apiUrlMedicos}/medicos/update/${reg.uid}`;
+    const url = `${this.apiUrlMedicos}medicos/update/${reg.uid}`;
 
     return this.http.put(url, reg).pipe(
-        tap(result => {
+        tap(result => { this.mensaje=result; console.log(result)
         }),
         catchError(this.handleError)
     );
   }
 
   actualizarParaMedico(reg: IParamedicos) {
-    const url = `${this.apiUrlMedicos}/paramedicos/update/${reg.uid}`;
+    const url = `${this.apiUrlMedicos}paramedicos/update/${reg.uid}`;
 
     return this.http.put(url, reg).pipe(
-        tap(result => {
+        tap(result => { this.mensaje=result; console.log(result);
         }),
         catchError(this.handleError)
     );

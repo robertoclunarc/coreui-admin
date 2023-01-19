@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef, Output, EventEmitter} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -19,8 +19,10 @@ import { PacientesService } from '../../../services/servicio_medico/pacientes.se
     { provide: AlertConfig }],
 })
 
-export class AntropometriaComponent implements OnInit {
+export class AntropometriaComponent implements OnChanges {
 
+  @Output() itemExamenFisico2= new EventEmitter<number>();
+  @Input() _uidPaciente: string;
   @ViewChild('txtTalla') txtTalla!: ElementRef<HTMLInputElement>;
   @ViewChild('txtPeso') txtPeso!: ElementRef<HTMLInputElement>; 
   @ViewChild('txtImc') txtImc!: ElementRef<HTMLInputElement>;
@@ -50,7 +52,7 @@ export class AntropometriaComponent implements OnInit {
   
   alertsDismiss: any = [];
 
-  async ngOnInit() {
+  async ngOnChanges() {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -65,7 +67,13 @@ export class AntropometriaComponent implements OnInit {
       this.router.navigate(["login"]);
     }
    
-    this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+    if (this._uidPaciente!=undefined && !isNaN(Number(this._uidPaciente)))
+      this.uidPaciente = Number(this._uidPaciente);
+    if (this.route.snapshot.paramMap.get("idPaciente")!=undefined)
+      this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+    if (isNaN(Number(this._uidPaciente)))
+      this.uidPaciente = -1;
+    
     await this.buscarPaciente();    
     this.buscarExamenesFuncionales();    
   }
@@ -75,8 +83,8 @@ export class AntropometriaComponent implements OnInit {
       await this.srvPaciente.pacienteUid(this.uidPaciente)
       .toPromise()
       .then(result => {
-        if (result){          
-          this.cedula=result[0].ci;
+        if (result!=null && result.ci!=undefined){
+          this.cedula=result.ci;
         }        
       })
     }
@@ -87,15 +95,14 @@ export class AntropometriaComponent implements OnInit {
     if (this.cedula!= undefined && this.cedula!= null && this.cedula!=""){
       await this.srvAntropometria.antropometriaPaciente(this.cedula)
       .toPromise()
-      .then(async result => {
-        
+      .then(async result => {        
         if (result.length>0){          
-          this.examenes=result; 
-                    
+          this.examenes=result;                    
         }
         else{                   
           this.examenes=[];
-        }         
+        }
+        this.itemExamenFisico2.emit(result.length)         
       })
     }    
   }

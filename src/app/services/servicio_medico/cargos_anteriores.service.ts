@@ -19,7 +19,7 @@ export class CargosAnterioresService {
 
     return this.http.get<ICargoAnterior[]>(this.apiUrlCargosanteriores + 'consultar/'+ idPaciente)
 			.pipe(
-				tap(result => console.log(`cargosAnterioresAll`)),
+				//tap(result => console.log(`cargosAnterioresAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -28,7 +28,7 @@ export class CargosAnterioresService {
 
     return this.http.get<ICargoAnteriorOtra[]>(this.apiUrlCargosanteriores + 'consultar/otras/'+ idPaciente)
 			.pipe(
-				tap(result => console.log(`cargosAnterioresOtrasAll`)),
+				//tap(result => console.log(`cargosAnterioresOtrasAll`)),
 				catchError(this.handleError)
 			);
   }  

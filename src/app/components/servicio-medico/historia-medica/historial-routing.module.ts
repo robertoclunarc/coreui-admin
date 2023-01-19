@@ -5,21 +5,21 @@ import {  HistoriaMedicaComponent } from './historial.component'
 
 const routes: Routes = [
   {
-    path: 'serviciomedico/historia',
-    component: HistoriaMedicaComponent,
+    path: '',    
     data: {
       title: 'Historia'
     },
     children: [
-      /*{
-        path: '',
-        redirectTo: 'serviciomedico/Atenciones'
-      },*/
       {
-        path: 'serviciomedico/historia',
+        path: '',
+        redirectTo: 'historia',
+        pathMatch: 'full',
+      },
+      {
+        path: 'historia',
         component: HistoriaMedicaComponent,
         data: {
-          title: 'Historia Medica'
+          title: 'Historia'
         }
       },      
     ]

@@ -20,7 +20,7 @@ export class AnamnesisPsicologicoService {
 
     return this.http.get<IEstudioPsicologico[]>(this.apiUrlEstudiosPsicologicos + 'consultar')
 			.pipe(
-				tap(result => console.log(`estudiosPsicologicosAll`)),
+				//tap(result => console.log(`estudiosPsicologicosAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class AnamnesisPsicologicoService {
 
     return this.http.get<IAnamnesisPsicologico[]>(this.apiUrlEstudiosPsicologicos + 'pacientes/' + cedula)
 			.pipe(
-				tap(result => console.log(`estudiosPsicologicosPorCedula`)),
+			//	tap(result => console.log(`estudiosPsicologicosPorCedula`)),
 				catchError(this.handleError)
 			);
   }  

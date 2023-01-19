@@ -20,7 +20,7 @@ export class RemitidosService {
 
     return this.http.get<IRemitido[]>(this.apiUrlRemitidos + 'consultar')
 			.pipe(
-				tap(result => console.log(`remitidosAll`)),
+		//		tap(result => console.log(`remitidosAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class RemitidosService {
 
     return this.http.get<IRemitido>(this.apiUrlRemitidos + 'consultar/' + id)
 			.pipe(
-				tap(result => console.log(`remitidoOne`)),
+		//		tap(result => console.log(`remitidoOne`)),
 				catchError(this.handleError)
 			);
   }
@@ -38,7 +38,7 @@ export class RemitidosService {
 
     return this.http.get<IRemitido>(this.apiUrlRemitidos + 'filtrar/' + descripcion)
 			.pipe(
-				tap(result => console.log(`remitidofilter`)),
+			//	tap(result => console.log(`remitidofilter`)),
 				catchError(this.handleError)
 			);
   } 

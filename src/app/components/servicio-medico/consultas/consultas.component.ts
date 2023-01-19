@@ -21,7 +21,7 @@ import { RemitidosService } from '../../../services/servicio_medico/remitidos.se
 import { TiempoReposoService } from '../../../services/servicio_medico/tiemporeposos.service';
 import { AntropometriaService } from '../../../services/servicio_medico/antropometria.service';
 import { MedicamentosService } from '../../../services/servicio_medico/medicamentos.service';
-
+import { HistoriaService } from '../../../services/servicio_medico/historias.service';
 
 //modelos
 import { Ipopover } from '../../../models/servicio-medico/varios.model';
@@ -39,18 +39,19 @@ import { IRemitido } from '../../../models/servicio-medico/remitidos.model';
 import { ITiempoReposo } from '../../../models/servicio-medico/tiemporeposos.model';
 import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinasAplicadas } from '../../../models/servicio-medico/medicamentos.model';
 import { IindicacionMedica } from '../../../models/servicio-medico/recetamedica.models';
+import { IHistoria_medica, IHistoria_paciente } from '../../../models/servicio-medico/historias.model';
 
 @Component({
   selector: 'app-consultas',
   templateUrl: 'consultas.component.html',
   providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService, PatologiasService, 
               AfeccionesService, SignosVitalesService, RemitidosService, TiempoReposoService, AntropometriaService,
-              MedicosService,
+              MedicosService,HistoriaService,
               { provide: AlertConfig }],
   styleUrls: ["consultas.component.css"]             
 })
 export class ConsultasComponent  implements OnInit  {  
-
+  @ViewChild('myModalPlanilla') public myModalPlanilla: ModalDirective;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   @ViewChild('pdfTable', {static: false}) pdfTable: ElementRef;
 
@@ -61,7 +62,8 @@ export class ConsultasComponent  implements OnInit  {
   iconCollapse_1: string = 'icon-arrow-down';
 
   user: IUsuarios={};
-  tipoUser: string;  
+  tipoUser: string;
+  uidPaciente: string;  
   buscarConsulta: IFiltroConsulta;
   consultasTodas: IvConsulta[];
   consultasAnteriores: IvConsulta[];
@@ -108,6 +110,7 @@ export class ConsultasComponent  implements OnInit  {
   medicamentoIndicados: IindicacionMedica[]=[];
   medicamentoIndic: IindicacionMedica={};  
   turno: number;
+  historiaMedica: IHistoria_medica={};
   soloLectura: boolean;
   public classTable: string;
   public classButton: string;
@@ -160,7 +163,8 @@ export class ConsultasComponent  implements OnInit  {
     private srvRemitidos: RemitidosService,
     private srvTiempoReposo: TiempoReposoService,
     private srvAntropometria: AntropometriaService,
-    private srvMedicamentos: MedicamentosService,    
+    private srvMedicamentos: MedicamentosService,
+    private srvHistorias: HistoriaService,    
     @Inject(LOCALE_ID) public locale: string,  
   ) {  }
 
@@ -201,7 +205,9 @@ export class ConsultasComponent  implements OnInit  {
     
 	}
   public downloadAsPDF(uid: number) {
-    this.router.navigate([`serviciomedico/atenciones/planillaconsulta/${uid}`]);
+    
+    //this.router.navigate([`serviciomedico/atenciones/planillaconsulta/${uid}`]);
+    this.uidPaciente=uid.toString();
   }
 
   private async limpiarFiltro(){
@@ -216,7 +222,8 @@ export class ConsultasComponent  implements OnInit  {
       Paramedico: 'null',
       nombrePaciente: 'null',
       cargo: 'null',
-      fecha: 'null'
+      fecha: 'null',
+      condlogica: 'null'
     }
   }
 
@@ -385,12 +392,24 @@ export class ConsultasComponent  implements OnInit  {
       this.srvPacientes.pacienteOne(this.paciente.ci)
       .toPromise()
       .then(result => {
-        if (result[0]!= undefined)
+        if (result[0]!= undefined){
           this.paciente=result[0];
+          this.buscarHistoriaPaciente(this.paciente.uid_paciente);
+        }
         else
           this.paciente={} 
         
       })
+    }    
+  }
+
+  async buscarHistoriaPaciente(idpaciente: number){
+    if ( idpaciente!= undefined){
+      await this.srvHistorias.historiaMedicaOne('null', idpaciente.toString())
+      .toPromise()
+      .then((result) => {
+        this.historiaMedica=result;
+      })      
     }    
   }
 
@@ -482,7 +501,8 @@ export class ConsultasComponent  implements OnInit  {
         Paramedico: searchValue,
         nombrePaciente: searchValue,
         cargo: searchValue,
-        fecha: searchValue        
+        fecha: fecha,
+        condlogica: 'OR'       
       } 
       
       await this.srvConsultas.searchConsultaPromise(this.buscarConsulta)             
@@ -807,7 +827,7 @@ export class ConsultasComponent  implements OnInit  {
 
     this.buscarConsulta = { 
       uidConsulta: 'null',
-      ciPaciente: idPaciente.toString(),
+      ciPaciente:  this.paciente.ci,
       Motivo: 'null',
       fechaIni: fechaCons,
       fechaFin: fechaCons,
@@ -816,7 +836,8 @@ export class ConsultasComponent  implements OnInit  {
       nombrePaciente: 'null',
       cargo: 'null',
       uidMotivo: 'null',
-      fecha: 'null'
+      fecha: 'null',
+      condlogica: 'AND'
     }   
     
     for await  (let mot of motivosRepetidos){
@@ -881,16 +902,27 @@ export class ConsultasComponent  implements OnInit  {
       
       if ( this.popoverConsulta.alerta!=undefined){        
         this.alertaRegistrar = this.popoverConsulta.alerta;
-        this.titleRegistrar = this.popoverConsulta.titulo 
+        this.titleRegistrar = this.popoverConsulta.titulo
+        this.showSuccess(this.popoverConsulta.alerta, 'danger')
         return;
       }
 
+      let historia: IHistoria_paciente ={
+        fk_historia: this.historiaMedica.uid_historia,
+        fecha_historia: this.consultas.fecha,
+        indice: 0,
+        motivo_historia: this.motivos.find((m: any) => {return m.uid==this.consultas.id_motivo }).descripcion,
+        observacion: this.consultas.observaciones,
+        fk_medico: this.consultas.id_medico,      
+      }
       
-      
-			this.srvConsultas.nuevo(this.consultas)				
+			await this.srvConsultas.nuevo(this.consultas)				
 				.then(results => {
           this.consultas=results;
+          
           if (this.consultas.uid && typeof this.consultas.uid === 'number'){
+            
+            this.srvHistorias.nuevoHistoriaPaciente(historia);
             this.showSuccess('Atencion Medica Registrada Satisfactoriamente', 'success');
             this.buscarConsulta = { 
               uidConsulta: this.consultas.uid.toString(),
@@ -903,19 +935,20 @@ export class ConsultasComponent  implements OnInit  {
               Paramedico: 'null',
               nombrePaciente:'null',
               cargo: 'null',
-              fecha: 'null'
+              fecha: 'null',
+              condlogica: 'null'
             }            
             this.consultasFilter().then(
             async results => { 
-                consultaNew=results[0];
-                console.log(consultaNew);             
-                this.consultasTodas.push(consultaNew);
+                consultaNew=results[0];                
+                this.consultasTodas.unshift(consultaNew);
                 await this.guardarSignosVit(consultaNew.fecha, consultaNew.ci );
                 this.medicamentoAplicado.id_consulta=consultaNew.uid;
                 await this.guardarMedicametosAplicados();
                 this.sortOrder =  this.sortOrder * (-1);
                 this.sortTable('uid');                
             })
+
           }
           else{
             this.showSuccess('Error Registrando', 'danger');
@@ -1070,6 +1103,6 @@ export class ConsultasComponent  implements OnInit  {
 
   onSelect(event: TypeaheadMatch): void {
     this.selectedOptionPatolog = event.item;
-    console.log(this.selectedOptionPatolog);
+    
   }
 }

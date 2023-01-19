@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Input , Inject, LOCALE_ID, NgModule, ElementRef, Output, EventEmitter} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -19,8 +19,10 @@ import { PacientesService } from '../../../services/servicio_medico/pacientes.se
   providers: [ PacientesService,
     { provide: AlertConfig }],
 })
-export class AntecedenteOcupacionalComponent implements OnInit {
+export class AntecedenteOcupacionalComponent implements OnChanges {
 
+  @Output() itemOcupaciones= new EventEmitter<number>();
+  @Input() _uidPaciente: string;
   @ViewChild('cboRiesgos') cboRiesgos!: ElementRef<HTMLInputElement>;  
   @ViewChild('txtResp') txtResp!: ElementRef<HTMLInputElement>;
   @ViewChild('cboTiempoExposicion') cboTiempoExposicion!: ElementRef<HTMLInputElement>; 
@@ -58,7 +60,7 @@ export class AntecedenteOcupacionalComponent implements OnInit {
   
   alertsDismiss: any = [];
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -72,9 +74,16 @@ export class AntecedenteOcupacionalComponent implements OnInit {
     }else{
       this.router.navigate(["login"]);
     }
-   
-    this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
-    this.llenarArrayAgentes();
+
+    
+    if (this._uidPaciente!=undefined && !isNaN(Number(this._uidPaciente)))
+      this.uidPaciente = Number(this._uidPaciente);
+    if (this.route.snapshot.paramMap.get("idPaciente")!=undefined)   
+      this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+    if (isNaN(Number(this._uidPaciente)))
+      this.uidPaciente = -1;  
+    
+      this.llenarArrayAgentes();
     this.buscarAntecedentesOcupacionales();    
   }
 
@@ -83,8 +92,8 @@ export class AntecedenteOcupacionalComponent implements OnInit {
       await this.srvPaciente.pacienteUid(this.uidPaciente)
       .toPromise()
       .then(result => {
-        if (result){          
-          this.cedula=result[0].ci;
+        if (result!=null && result.ci!=undefined){
+          this.cedula=result.ci;
         }        
       })
     }
@@ -97,19 +106,17 @@ export class AntecedenteOcupacionalComponent implements OnInit {
       .toPromise()
       .then(async result => {
         
-        if (result.length>0){
-          
+        if (result.length>0){          
           this.antecedentesOcupacionales=result;          
           this.cedula=result[0].cedula; 
           this.tiempo="";
-          this.periodo="";
-          console.log(this.cedula);
-                
+          this.periodo="";                
         }
         else{
           await this.buscarPaciente();          
-          this.antecedentesOcupacionales=[];
-        }         
+          this.antecedentesOcupacionales=[];          
+        }
+        this.itemOcupaciones.emit(result.length);
       })
     }    
   }

@@ -20,7 +20,7 @@ export class HabitosService {
 
     return this.http.get<IHabito[]>(this.apiUrlHabito + 'consultar')
 			.pipe(
-				tap(result => console.log(`HabitosAll`)),
+			//	tap(result => console.log(`HabitosAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class HabitosService {
 
     return this.http.get<IvHabitos[]>(this.apiUrlHabito + 'pacientes/' + cedula)
 			.pipe(
-				tap(result => console.log(`habitosPorCedula`)),
+		//		tap(result => console.log(`habitosPorCedula`)),
 				catchError(this.handleError)
 			);
   }  

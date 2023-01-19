@@ -20,7 +20,7 @@ export class AnatomiasService {
 
     return this.http.get<IAnatomia[]>(this.apiUrlExamenesFuncionales + 'consultar')
 			.pipe(
-				tap(result => console.log(`anatomiasAll`)),
+				//tap(result => console.log(`anatomiasAll`)),
 				catchError(this.handleError)
 			);
   }
@@ -29,7 +29,7 @@ export class AnatomiasService {
 
     return this.http.get<{tipo: string}[]>(this.apiUrlExamenesFuncionales + 'tipos')
 			.pipe(
-				tap(result => console.log(`anatomiasTipos`)),
+				//tap(result => console.log(`anatomiasTipos`)),
 				catchError(this.handleError)
 			);
   }
@@ -38,7 +38,7 @@ export class AnatomiasService {
 
     return this.http.get<IAnatomia[]>(this.apiUrlExamenesFuncionales + 'consultar/tipos/' + tipo)
 			.pipe(
-				tap(result => console.log(`anatomiasTipos`)),
+				//tap(result => console.log(`anatomiasTipos`)),
 				catchError(this.handleError)
 			);
   }
@@ -47,7 +47,7 @@ export class AnatomiasService {
     
     return this.http.get<IExamenFuncional[]>(this.apiUrlExamenesFuncionales + 'examenes/' + cedula )
 			.pipe(
-				tap(result => console.log(`examenesFuncionales`)),
+				//tap(result => console.log(`examenesFuncionales`)),
 				catchError(this.handleError)
 			);
   }

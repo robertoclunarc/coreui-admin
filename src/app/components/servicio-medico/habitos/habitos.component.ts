@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Inject, LOCALE_ID, NgModule, ElementRef} from '@angular/core';
+import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef, Output, EventEmitter} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
@@ -19,7 +19,10 @@ import { PacientesService } from '../../../services/servicio_medico/pacientes.se
     { provide: AlertConfig }],
 })
 
-export class HabitosComponent implements OnInit {
+export class HabitosComponent implements OnChanges {
+
+  @Output() itemExamenFuncionalB= new EventEmitter<number>();
+  @Input() _uidPaciente: string;
   
   constructor( 
     
@@ -46,7 +49,7 @@ export class HabitosComponent implements OnInit {
   saved: boolean;
    alertsDismiss: any = [];
 
-  async ngOnInit() {
+  async ngOnChanges() {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -60,23 +63,29 @@ export class HabitosComponent implements OnInit {
     }else{
       this.router.navigate(["login"]);
     }
+
+    if (this._uidPaciente!=undefined && !isNaN(Number(this._uidPaciente)))
+      this.uidPaciente = Number(this._uidPaciente);
+    if (this.route.snapshot.paramMap.get("idPaciente")!=undefined)
+      this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
+    if (isNaN(Number(this._uidPaciente)))
+      this.uidPaciente = -1;  
    
-    this.uidPaciente = Number(this.route.snapshot.paramMap.get("idPaciente"));
     await this.buscarPaciente();
     await this.llenarArrayhabitos();
     await this.buscarHabitosPorPaciente();
   }
 
   private async buscarPaciente(){
-    if (this.uidPaciente!= undefined && this.uidPaciente!= null){
-      
+    if (this.uidPaciente!= undefined && this.uidPaciente!= null){      
       await this.srvPaciente.pacienteUid(this.uidPaciente)
       .toPromise()
-      .then(result => {
-        if (result){ 
-                  
-          this.cedula=result[0].ci;
-        }        
+      .then(result => { 
+        
+        if (result!=null && result.ci!=undefined){                   
+          this.cedula=result.ci;
+          
+        }         
       })
     }
   }
@@ -106,6 +115,7 @@ export class HabitosComponent implements OnInit {
               resp:  rsp
           };
           this.habitosPacientes.push(habitosP);
+          this.itemExamenFuncionalB.emit(result.length);
         }         
       })
     }    

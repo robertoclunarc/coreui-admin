@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit, Inject, LOCALE_ID,  ChangeDetectionStrategy} from '@angular/core';
+import { Component, ViewChild, OnChanges, Inject, LOCALE_ID, Input, Output, EventEmitter,  ChangeDetectionStrategy} from '@angular/core';
 import { AlertConfig } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ModalDirective} from 'ngx-bootstrap/modal';
@@ -18,10 +18,13 @@ import { ConsultasService } from '../../../services/servicio_medico/consultas.se
   providers: [ 
     { provide: AlertConfig }],
 })
-export class HistorialConsultasComponent implements OnInit {
+export class HistorialConsultasComponent implements OnChanges {
 
-  @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  //@Output() uidConsulta: number;
+  @Output() itemsConsulta = new EventEmitter<number>();
+  @ViewChild('primaryModal') public primaryModal: ModalDirective;  
+  @Input() _uidPaciente: string;
+  @Input() _fechaIni: string;
+  @Input() _fechaFin: string;
   
   constructor( 
     
@@ -34,15 +37,15 @@ export class HistorialConsultasComponent implements OnInit {
 
   idConsulta: string;
 
-  private uidPaciente: string;
-  private fechaIni: string;
-  private fechaFin: string
+  uidPaciente: string;
+  fechaIni: string;
+  fechaFin: string
   sliceIndex: number;  
   private morbilidad: IvMorbilidad[]=[];
   returnedArray: IvMorbilidad[]=[];
   private user: IUsuarios={};
   private tipoUser: string; 
-  columnas: string[]=['Cedula','Paciente', 'Cargo', 'Supervisor', 'Area', 'Fec.Cosulta','Motivo','Tipo Afeccion','Diagnostico', 'Condicion', 'Medicamento(s)', 'Talla','Peso','IMC', 'Edad', 'Direccion_Hab.','Mano Dominante', 'Sexo','Medico','Paramedico', 'Ver'];
+  columnas: string[]=['Cedula','Paciente','Ver', 'Cargo', 'Supervisor', 'Area', 'Fecha','Motivo','Tipo Afeccion','Diagnostico', 'Condicion', 'Medicamento(s)', 'Talla','Peso','IMC', 'Edad', 'Direccion_Hab.','Mano Dominante', 'Sexo','Medico','Paramedico'];
   startItem: number;
   endItem: number;
   alertsDismiss: any = [];
@@ -55,7 +58,7 @@ export class HistorialConsultasComponent implements OnInit {
   numPages: number = 10;//se activa cuando cambia el recuento total de páginas, $event:number es igual al recuento total de páginas
   //currentPager: number   = 5;  
 
-  ngOnInit(): void {
+  async ngOnChanges() {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -69,21 +72,23 @@ export class HistorialConsultasComponent implements OnInit {
     }else{
       this.router.navigate(["login"]);
     }   
-    this.uidPaciente = this.route.snapshot.paramMap.get("idPaciente")==undefined? "null": this.route.snapshot.paramMap.get("idPaciente");
-    this.fechaIni = this.route.snapshot.paramMap.get("fechaIni")==undefined? "null": this.route.snapshot.paramMap.get("fechaIni");
-    this.fechaFin = this.route.snapshot.paramMap.get("fechaFin")==undefined? "null": this.route.snapshot.paramMap.get("fechaFin");
+    this.uidPaciente = this.route.snapshot.paramMap.get("idPaciente")==undefined? this._uidPaciente: this.route.snapshot.paramMap.get("idPaciente");
+    this.fechaIni = this.route.snapshot.paramMap.get("fechaIni")==undefined? this._fechaIni: this.route.snapshot.paramMap.get("fechaIni");
+    this.fechaFin = this.route.snapshot.paramMap.get("fechaFin")==undefined? this._fechaFin: this.route.snapshot.paramMap.get("fechaFin");
+    
     if (this.uidPaciente=="null" || this.uidPaciente==undefined) 
       this.sliceIndex=0;
     else
       this.sliceIndex=2;
-
-    this.buscarConsultasPaciente();    
+    
+    await this.buscarConsultasPaciente();    
   }  
-
+  
   private async buscarConsultasPaciente(){
     
-    if (this.uidPaciente!= undefined && this.uidPaciente!= null){
-      await this.srvConsultas.morbilidadFilter('null',this.uidPaciente.toString(),'null',this.fechaIni,this.fechaFin,'null','null','null')
+    if (this.uidPaciente!= undefined && this.uidPaciente!= null){      
+      
+      await this.srvConsultas.morbilidadFilter('null', this.uidPaciente, 'null',this.fechaIni,this.fechaFin,'null','null','null')
       .toPromise()
       .then(async result => {
         
@@ -92,13 +97,13 @@ export class HistorialConsultasComponent implements OnInit {
           this.totalItems = this.morbilidad.length;
           this.maxSize = Math.ceil(this.totalItems/this.numPages);             
           this.returnedArray = this.morbilidad.slice(0, this.numPages);
-                      
+          this.itemsConsulta.emit(this.totalItems);                
         }
         else{                   
           this.morbilidad=[];
         }         
       })
-    }    
+    }   
   }
 
   private irConsulta(uid: string){    

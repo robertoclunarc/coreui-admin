@@ -1,0 +1,77 @@
+<div class="animated fadeIn">
+  <div class="row">    
+      <div class="col-md-12 mb-4">        
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                <strong>Rpt. Historias Medicas</strong>                   
+              </div>
+              <div class="card-body">
+                <div *ngFor="let alert of alertsDismiss">
+                  <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+                </div>
+
+                <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by ..." />
+                <div class="overflow-auto">
+                  <table class="{{ classTable }} table-hover table-sm" id="dataConsultas">
+                    <thead>
+                      <tr>
+                        <th>&nbsp;</th>                      
+                        <th scope="col" *ngFor="let t of titulos">
+                          
+                          <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
+                            <button type="button" (click)="sortTable(t.campo)" class="{{ classButton }}"><strong>{{t.titulo}}</strong></button>
+                          </div>
+                      </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let h of returnedArray">                      
+                        <td>
+                          <div class="btn-group" dropdown>
+                            <button [disabled]="soloLectura"  type="button" title="Ver Paciente" (click)="showModalActualizar(h);" class="btn btn-block btn-link"><i class="icon-eye"></i></button>                           
+                          </div>
+                        </td>                                           
+                        <td>{{ h.historia.uid_historia}}</td>
+                        <td>{{ h.historia.fecha_apertura  | date:'yyyy-MM-dd'}}</td>
+                        <td>{{ h.historia.fecha_ultima_actualizacion  | date:'yyyy-MM-dd'}}</td>
+                        <td>{{ h.paciente.ci}}</td>
+                        <td>{{ h.paciente.nombre}}</td>
+                        <td>{{ h.paciente.apellido}}</td>
+                        <td>{{ h.paciente.cargo}}</td>
+                        <td>{{ h.depto.descripcion}}</td>
+                        <td>{{ h.historia.ha_sufrido_accidentes}}</td>
+                        <td>{{ h.historia.partes_cuerpo_lesionados}}</td>
+                        <td>{{ h.historia.dejo_secuelas}}</td>
+                        <td>{{ h.paciente.alergia}}</td>
+                        <td>{{ h.paciente.tipo_discapacidad}}</td>
+                        <td><div class="overflow-y overflow-auto" style="height:60px">{{ h.examenfisico}}</div></td>
+                        <td><div class="overflow-y overflow-auto" style="height:60px">{{ h.habitos}}</div></td>
+                        <td><div class="overflow-y overflow-auto" style="height:60px">{{ h.riesgos}}</div></td>
+                        <td><div class="overflow-y overflow-auto" style="height:60px">{{ h.psicologicos}}</div></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <ul class="pagination">
+                  <div class="col-xs-12 col-12 d-sm-down-none">
+                    <pagination [totalItems]="totalItems"  (pageChanged)="pageChanged($event)" [rotate]="true" [maxSize]="10"></pagination>
+                  </div>
+                </ul>
+              </div>
+            </div>
+          </div>
+      </div>
+  </div>
+</div>
+<!--
+<div bsModal #primaryModal="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document" >
+      <div class="modal-content modal-primary" >        
+        <div class="modal-body">
+            <app-medicos [ciMedico]="ciMedico" (outMedico)="outMedicoEvent($event)"></app-medicos>
+        </div>
+      </div>
+    </div>
+</div>
+-->

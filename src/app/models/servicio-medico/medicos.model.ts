@@ -26,3 +26,16 @@ export interface ItotalAtenciones{
     totalconsulta?: number;
     ultima_atencion?: string;
 }
+
+export interface IMedicosParamedicos {
+    uid?: number;
+    nombre?: string;
+    activo?: boolean;
+    ci?: string;
+    id_ss?: string;
+    nro_colegiado?: string;
+    nombre_ssst?: string;
+    tipo_ssst?: string;
+    login?: string;
+    tipo_medico?: string;
+}

@@ -22,6 +22,7 @@ import { IRemitido } from '../../../models/servicio-medico/remitidos.model';
 import { ITiempoReposo } from '../../../models/servicio-medico/tiemporeposos.model';
 import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinasAplicadas } from '../../../models/servicio-medico/medicamentos.model';
 import { IindicacionMedica } from '../../../models/servicio-medico/recetamedica.models';
+import { IHistoria_medica, IHistoria_paciente } from '../../../models/servicio-medico/historias.model'
 
 //servicios
 import { ConsultasService } from '../../../services/servicio_medico/consultas.service';
@@ -36,6 +37,7 @@ import { RemitidosService } from '../../../services/servicio_medico/remitidos.se
 import { TiempoReposoService } from '../../../services/servicio_medico/tiemporeposos.service';
 import { AntropometriaService } from '../../../services/servicio_medico/antropometria.service';
 import { MedicamentosService } from '../../../services/servicio_medico/medicamentos.service';
+import { HistoriaService } from '../../../services/servicio_medico/historias.service';
 
 @Component({
   selector: 'app-consulta_one',
@@ -43,7 +45,7 @@ import { MedicamentosService } from '../../../services/servicio_medico/medicamen
   styleUrls: ['./consulta_one.component.css'],
   providers: [ ConsultasService, PacientesService, MedicosService, MotivosService, AreasService, PatologiasService, 
     AfeccionesService, SignosVitalesService, RemitidosService, TiempoReposoService, AntropometriaService,
-    MedicosService,
+    MedicosService, HistoriaService,
     { provide: AlertConfig }],
 })
 export class ConsultaOneComponent implements OnChanges { 
@@ -65,7 +67,8 @@ export class ConsultaOneComponent implements OnChanges {
     private srvRemitidos: RemitidosService,
     private srvTiempoReposo: TiempoReposoService,
     private srvAntropometria: AntropometriaService,
-    private srvMedicamentos: MedicamentosService,   
+    private srvMedicamentos: MedicamentosService,
+    private srvHistorias: HistoriaService,
     @Inject(LOCALE_ID) public locale: string,
     
   ) { }
@@ -120,7 +123,8 @@ export class ConsultaOneComponent implements OnChanges {
    medicamentoAplic: IMedicamentosAplicados={};
    arrayMedicamentosIndicados: IMedicamento[]=[];
    medicamentoIndicados: IindicacionMedica[]=[];
-   medicamentoIndic: IindicacionMedica={};  
+   medicamentoIndic: IindicacionMedica={};
+   historiaMedica: IHistoria_medica={};  
    turno: number;
    condiciones =[
     {valor:'N/A', display:'No Aplica'}, {valor: 'APTO', display:'APTO'},
@@ -167,7 +171,8 @@ export class ConsultaOneComponent implements OnChanges {
     Paramedico: 'null',
     nombrePaciente: 'null',
     cargo: 'null',
-    fecha: 'null'
+    fecha: 'null',
+    condlogica: 'OR'
   }
 }
 
@@ -293,12 +298,24 @@ export class ConsultaOneComponent implements OnChanges {
       this.srvPacientes.pacienteOne(this.paciente.ci)
       .toPromise()
       .then(result => {
-        if (result[0]!= undefined)
+        if (result[0]!= undefined){
           this.paciente=result[0];
+          this.buscarHistoriaPaciente(this.paciente.uid_paciente);
+        }
         else
           this.paciente={} 
         
       })
+    }    
+  }
+
+  async buscarHistoriaPaciente(idpaciente: number){
+    if ( idpaciente!= undefined){
+      await this.srvHistorias.historiaMedicaOne('null', idpaciente.toString())
+      .toPromise()
+      .then((result) => {
+        this.historiaMedica=result;
+      })      
     }    
   }
 
@@ -522,7 +539,7 @@ export class ConsultaOneComponent implements OnChanges {
       };
       await this.srvMedicamentos.registrarMedicamentosAplicados(medAplic).toPromise();
     }    
-  }
+  }  
 
   private async  validaEntradas(idPaciente: number, fechaCons: string){
     let consultasDia: any;
@@ -580,7 +597,8 @@ export class ConsultaOneComponent implements OnChanges {
       nombrePaciente: 'null',
       cargo: 'null',
       uidMotivo: 'null',
-      fecha: 'null'
+      fecha: 'null',
+      condlogica: 'AND'
     }   
     
     for await  (let mot of motivosRepetidos){
@@ -635,7 +653,7 @@ export class ConsultaOneComponent implements OnChanges {
         id_reposo: this.consultas.id_reposo,
         condicion: this.consultas.condicion,
         sintomas: this.consultas.sintomas,
-        observaciones: this.consultas.observacion_medicamentos,
+        observaciones: this.consultas.observaciones,
         resultado_eva: this.consultas.resultado_eva,
         observacion_medicamentos: this.consultas.observacion_medicamentos
         
@@ -649,12 +667,21 @@ export class ConsultaOneComponent implements OnChanges {
         return;
       }
 
-      
+      let historia: IHistoria_paciente ={
+        fk_historia: this.historiaMedica.uid_historia,
+        fecha_historia: this.consultas.fecha,
+        indice: 0,
+        motivo_historia: this.motivos.find((m: any) => {return m.uid==this.consultas.id_motivo }).descripcion,
+        observacion: this.consultas.observaciones,
+        fk_medico: this.consultas.id_medico,      
+      }
       
 			this.srvConsultas.nuevo(this.consultas)				
 				.then(results => {
           this.consultas=results;
           if (this.consultas.uid && typeof this.consultas.uid === 'number'){
+            historia.fk_consulta=this.consultas.uid;
+            this.srvHistorias.nuevoHistoriaPaciente(historia);
             this.showSuccess('Atencion Medica Registrada Satisfactoriamente', 'success');                     
           }
           else{
@@ -676,7 +703,8 @@ export class ConsultaOneComponent implements OnChanges {
 		this.consultas = {};
     this.paciente={};    
     this.arrayReferencias=[];
-		this.newConsulta = false;    
+		this.newConsulta = false;
+    this.historiaMedica={};  
   }
 
   addReferencia(){
@@ -804,5 +832,9 @@ export class ConsultaOneComponent implements OnChanges {
   onSelect(event: TypeaheadMatch): void {
     this.selectedOptionPatolog = event.item;
     console.log(this.selectedOptionPatolog);
+  }
+
+  onClosed(dismissedAlert: AlertComponent): void {
+    this.alertsDismiss = this.alertsDismiss.filter(alert => alert !== dismissedAlert);
   }
 }

@@ -20,7 +20,7 @@ export class AntecedentesOcupacionalesService {
 
     return this.http.get<IRiesgosHistorias[]>(this.apiUrlAntecedentesOcupacionales + 'consultar/pacientes/'+ idPaciente)
 			.pipe(
-				tap(result => console.log(`riesgosPaciente`)),
+			//	tap(result => console.log(`riesgosPaciente`)),
 				catchError(this.handleError)
 			);
   } 
@@ -29,7 +29,7 @@ export class AntecedentesOcupacionalesService {
 
     return this.http.get<IRiesgos[]>(this.apiUrlAntecedentesOcupacionales + 'consultar/riesgos/'+ agente)
 			.pipe(
-				tap(result => console.log(`riesgosAgente`)),
+			//	tap(result => console.log(`riesgosAgente`)),
 				catchError(this.handleError)
 			);
   }
@@ -38,7 +38,7 @@ export class AntecedentesOcupacionalesService {
 
     return this.http.get<[{agente: string}]>(this.apiUrlAntecedentesOcupacionales + 'consultar/agentes')
 			.pipe(
-				tap(result => console.log(`AgentesAll`)),
+			//	tap(result => console.log(`AgentesAll`)),
 				catchError(this.handleError)
 			);
   } 

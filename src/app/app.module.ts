@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, APP_INITIALIZER,  } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -16,6 +16,7 @@ import { PopoverModule } from 'ngx-bootstrap/popover';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { ModalModule } from 'ngx-bootstrap/modal';
+
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
 };
@@ -28,18 +29,19 @@ import { LayoutServicioMedicoComponent } from './containers/layout-serviciomedic
 import { LayoutBalanzaComponent } from './containers/layout-balanza';
 
 //eliminar despues de terminar historial medico:
-import { PacientesComponent } from './components/servicio-medico/pacientes/pacientes.component';
-import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
-import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
-import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
-import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
-import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
-import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
-import { HabitosComponent  } from './components/servicio-medico/habitos/habitos.component';
-import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anamnesis_psicologico/anamnesispsicologico.component';
-import { EstudiosFisicosComponent } from './components/servicio-medico/examen_fisico/examenfisico.component';
-import { SignosVitalesComponent } from './components/servicio-medico/signos_vitales/signosvitales.component';
-import { AntropometriaComponent } from './components/servicio-medico/antropometria/antropometria.component';
+
+//import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
+//import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
+//import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
+//import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
+//import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
+//import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
+//import { HabitosComponent  } from './components/servicio-medico/habitos/habitos.component';
+//import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anamnesis_psicologico/anamnesispsicologico.component';
+//import { EstudiosFisicosComponent } from './components/servicio-medico/examen_fisico/examenfisico.component';
+//import { SignosVitalesComponent } from './components/servicio-medico/signos_vitales/signosvitales.component';
+//import { AntropometriaComponent } from './components/servicio-medico/antropometria/antropometria.component';
+
 ///////////////////////////////////////////////
 
 import { P404Component } from './views/error/404.component';
@@ -48,10 +50,19 @@ import { P500Component } from './views/error/500.component';
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
-  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , PacientesComponent, 
-  CargosAnterioresComponent,  AntecedenteFamiliarComponent, AntecedenteOcupacionalComponent, HistorialConsultasComponent,
-  ConsultaOneComponent, AntecedentePatologicoComponent, HabitosComponent, AnamnesisPsicologicoComponent, EstudiosFisicosComponent,
-  SignosVitalesComponent, AntropometriaComponent
+  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , 
+  
+  //CargosAnterioresComponent,  
+  //AntecedenteFamiliarComponent, 
+  //AntecedenteOcupacionalComponent, 
+  //HistorialConsultasComponent,
+  //ConsultaOneComponent, 
+  //AntecedentePatologicoComponent, 
+  //HabitosComponent, 
+  //AnamnesisPsicologicoComponent, 
+  //EstudiosFisicosComponent,
+  //SignosVitalesComponent, 
+  //AntropometriaComponent
 ];
 
 import {
@@ -76,6 +87,7 @@ import { LoginServicioMedicoComponent } from './components/servicio-medico/login
 import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-balanza.component';
 
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
+//import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
 
 @NgModule({
   imports: [
@@ -104,8 +116,9 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     BsDropdownModule,    
     ButtonsModule.forRoot(),
     NgbToastModule, 
-    
+    //LazyLoadImageModule
   ],
+  
   declarations: [
     AppComponent,
     ...APP_CONTAINERS,
@@ -114,8 +127,10 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     RegisterComponent, 
     LoginServicioMedicoComponent,
     LoginBalanzaComponent,
+    
   ],
-  /*providers: [
+  /* 
+  providers: [
     {
       provide: LocationStrategy,
       useClass: HashLocationStrategy
@@ -123,6 +138,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     IconSetService,
     
   ],*/
+  
   providers: [authInterceptorProviders],
   bootstrap: [ AppComponent ]
 })

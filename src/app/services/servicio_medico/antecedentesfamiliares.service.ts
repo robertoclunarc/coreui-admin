@@ -19,7 +19,7 @@ export class AntecedentesFamiliaresService {
 
     return this.http.get<IAntecedentesFamiliares[]>(this.apiUrlAntecedentesFamiliares + 'consultar/'+ idPaciente)
 			.pipe(
-				tap(result => console.log(`AntecedentesFamiliaresOnePaciente`)),
+				//tap(result => console.log(`AntecedentesFamiliaresOnePaciente`)),
 				catchError(this.handleError)
 			);
   }  

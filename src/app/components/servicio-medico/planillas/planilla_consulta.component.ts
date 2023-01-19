@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
+import { Component, OnChanges, Input, Inject, LOCALE_ID, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
@@ -19,15 +19,16 @@ import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { ImedicamentosConsulta } from '../../../models/servicio-medico/medicamentos.model';
 
 @Component({
-  selector: 'planilla-root',
+  selector: 'planilla-consulta',
   templateUrl: './planilla_consulta.html',
   providers: [ConsultasService, SignosVitalesService, AntropometriaService, MedicamentosService],
-  //styleUrls: ['./app.component.scss']
+  styleUrls: ['./planilla_consulta.css']
 })
 
-export class planillaConsultaComponent implements OnInit {
+export class planillaConsultaComponent implements OnChanges {
   id: string;
-  
+  @ViewChild('htmltable', {static: false}) htmltable: ElementRef;
+  @Input() uidPaciente: string = "-1";
   vConsulta: IvConsulta={};
   vMorbilidad: IvMorbilidad={};
   signoVital: IsignosVitales={};
@@ -46,14 +47,16 @@ export class planillaConsultaComponent implements OnInit {
     @Inject(LOCALE_ID) public locale: string,
     ) { }
 
-  ngOnInit(): void {
+  ngOnChanges() {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
+      
       if (this.user) {
            
         this.tipoUser= sessionStorage.tipoUser;
-        this.id = this.route.snapshot.paramMap.get("uid");
+        this.id = this.route.snapshot.paramMap.get("uid")==undefined? this.uidPaciente: this.route.snapshot.paramMap.get("uid");
+       
       }
       else {
             this.router.navigate(["login"]);
@@ -61,9 +64,11 @@ export class planillaConsultaComponent implements OnInit {
     }else{
       this.router.navigate(["login"]);
     }
-    this.consultasFilter(this.id);
-    this.morbilidadFilter(this.id);
-    this.buscarMedicamentosAplicados(parseInt(this.id));
+    if (this.id!=undefined && this.id!="-1"){
+      this.consultasFilter(this.id);
+      this.morbilidadFilter(this.id);
+      this.buscarMedicamentosAplicados(parseInt(this.id));
+    }
   }
 
   private async consultasFilter(uid: string) {
@@ -75,6 +80,7 @@ export class planillaConsultaComponent implements OnInit {
 				
 				this.vConsulta = results[0];
         this.buscarSignosVitales(this.vConsulta.ci, this.vConsulta.fecha);
+        
 				
 			})			
 			.catch(err => { console.log(err) });
@@ -147,11 +153,11 @@ export class planillaConsultaComponent implements OnInit {
         
       });
     }    
-  }
+  }  
 
   public exportHtmlToPDF(){
     let data = document.getElementById('htmltable');
-      
+     
       html2canvas(data).then(canvas => {
           
           let docWidth = 208;
@@ -163,6 +169,7 @@ export class planillaConsultaComponent implements OnInit {
           doc.addImage(contentDataURL, 'PNG', 0, position, docWidth, docHeight)
           
           doc.save('consulta.pdf');
+          
       });
   }
 

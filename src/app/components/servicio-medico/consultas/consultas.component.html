@@ -18,7 +18,7 @@
                   <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
                 </div>
 
-                <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by name" />
+                <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by ..." />
                 
                 <table class="{{ classTable }} table-hover table-sm" id="dataConsultas">
                   <thead>
@@ -44,7 +44,7 @@
                           
                           <ul *dropdownMenu class="dropdown-menu" role="menu">
                             <li role="menuitem"><a class="dropdown-item" (click)="showModalActualizar(c); primaryModal.show();" href="javascript:void(0)">Detalles de Consulta</a></li>
-                            <li role="menuitem"><a class="dropdown-item" (click)="downloadAsPDF(c.uid);" href="javascript:void(0)">Descargar PDF</a></li>                            
+                            <li role="menuitem"><a class="dropdown-item" (click)="downloadAsPDF(c.uid); myModalPlanilla.show();" href="javascript:void(0)">Descargar PDF</a></li>                            
                           </ul>
                         </div>
                       </td>
@@ -110,8 +110,9 @@
                                     </button>
                                   </span>
                                   <input type="text" id="txtCi" name="txtCi" [(ngModel)]="paciente.ci" [disabled]="soloLectura" (keyup.enter)="buscarPaciente()"  class="form-control form-control-sm" placeholder="Cedula Paciente">
-                                  <span class="input-group-append">
-                                    <ng-template #popTemplate>                                      
+                                  <span  class="input-group-append">
+                                    <ng-template #popTemplate>
+                                      <div *ngIf="paciente.nombre_completo!=undefined">                                      
                                       <span class="badge badge-light">Sexo:
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -136,13 +137,15 @@
                                       </span>
                                       <span class="badge badge-dark">{{paciente.cargo}}</span>
                                       <br>
-                                      <span class="badge badge-light">Edad:
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        
-                                      </span>
-                                      <span class="badge badge-dark">{{paciente.edad.years}}</span>
-                                      <br>
+                                      
+                                        <span class="badge badge-light">Edad:
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                          
+                                        </span>
+                                        <span class="badge badge-dark">{{paciente.edad.years}}</span>
+                                        <br>
+                                      
                                       <span class="badge badge-light">Fecha Nac.:
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                                        
@@ -169,6 +172,7 @@
                                         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                       </span>
                                       <span class="badge badge-dark">{{paciente.mano_dominante}}</span>
+                                      </div>
                                     </ng-template>
                                     <button type="button"                                       
                                       [popover]="popTemplate"
@@ -565,3 +569,22 @@
     </div><!--/.col-->
   </div><!--/.row-->
 </div>
+
+<div bsModal #myModalPlanilla="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalPlanilla" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content modal-primary" >
+      <div class="modal-header">        
+        <button type="button" class="close" (click)="myModalPlanilla.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <planilla-consulta [uidPaciente]="uidPaciente" ></planilla-consulta>
+      </div>
+                
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="myModalPlanilla.hide()">Close</button>      
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
