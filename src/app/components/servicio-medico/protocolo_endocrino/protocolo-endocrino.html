@@ -59,10 +59,15 @@
 </div>
 <div bsModal #primaryModal="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document" >
-      <div class="modal-content modal-primary" >        
-        <div class="modal-body">
-            <app-protocolo-endocrino-one ></app-protocolo-endocrino-one>
+      <div class="modal-content modal-primary">
+        <div class="modal-header">        
+          <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">            
+            <app-protocolo-endocrino-one [inProtocolo]="vProtocolo" ></app-protocolo-endocrino-one>
         </div>
       </div>
     </div>
-</div>            
+</div> 

@@ -11,7 +11,10 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { protocoloEndocrinoOneComponent } from '../protocolo_endocrino_one/protocolo-endocrino-one.component';
+import { protocoloEndocrinoOneComponent } from '../protocolo_endocrino_one/protocolo-endocrino-one/protocolo-endocrino-one.component';
+import { RiesgoGeneralOneComponent } from '../protocolo_endocrino_one/riesgo-general-one/riesgo-general-one.component';
+
+
 
 @NgModule({
   imports: [
@@ -29,7 +32,8 @@ import { protocoloEndocrinoOneComponent } from '../protocolo_endocrino_one/proto
   declarations: [
     
     ProtocoloEndocrinoComponent,
-    protocoloEndocrinoOneComponent
+    protocoloEndocrinoOneComponent,
+    RiesgoGeneralOneComponent
   ]
 })
 export class ProtocoloEndocrinoModule { }

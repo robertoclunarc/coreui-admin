@@ -10,7 +10,7 @@ import { ProtocolosEndocrinosService } from '../../../services/servicio_medico/p
 //modelos
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { IPaciente } from '../../../models/servicio-medico/paciente.model';
-import { filtroProtoEndocrino, IEvaluaciones_endocrinas, IPosibles_resp_endocrinas, IProtocolosEndrocrinos, IRespuestas_pacientes_eval_endocrino , IvProtocoloEndrocrinos } from '../../../models/servicio-medico/protocolo_endocrino.model';
+import { filtroProtoEndocrino, IEvaluaciones_endocrinas, IPosibles_resp_endocrinas, IProtocolosEndrocrinos, IvProtocoloEndrocrinos } from '../../../models/servicio-medico/protocolo_endocrino.model';
 
 @Component({
   selector: 'app-protocolo-endocrino',
@@ -59,6 +59,7 @@ export class ProtocoloEndocrinoComponent  implements OnInit  {
   ];
 
   arrayProtocolo: IvProtocoloEndrocrinos[]=[];
+  vProtocolo: string;
   returnedArray: IvProtocoloEndrocrinos[]=[];
   returnedSearch: IvProtocoloEndrocrinos[]=[];
   ciPaciente: string;
@@ -122,6 +123,7 @@ export class ProtocoloEndocrinoComponent  implements OnInit  {
 
   async  showModalActualizar(item: IvProtocoloEndrocrinos){
     
+    this.vProtocolo=JSON.stringify(item);
     this.ciPaciente=item.paciente.ci;
   }
 

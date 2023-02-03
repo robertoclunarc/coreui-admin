@@ -73,7 +73,7 @@ export class ProtocolosEndocrinosService {
   }
 
   updateRecordRespProtEndocrino(reg: IRespuestas_pacientes_eval_endocrino) {
-    const url = `${this.apiUrlProtocolo}update/respuesta/${reg.idresp}`;
+    const url = `${this.apiUrlProtocolo}update/respuesta/${reg.fkprotocolo}`;
 
     return this.http.put(url, reg).pipe(
         tap(result => {
@@ -83,8 +83,8 @@ export class ProtocolosEndocrinosService {
   }
 
   updateRecordProtocoloEndocrino(reg: IProtocolosEndrocrinos) {
+    
     const url = `${this.apiUrlProtocolo}update/${reg.idprotocolo}`;
-
     return this.http.put(url, reg).pipe(
         tap(result => {
         }),

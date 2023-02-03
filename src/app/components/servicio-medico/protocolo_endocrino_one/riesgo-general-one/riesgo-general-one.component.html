@@ -1,0 +1,43 @@
+<div class="card">
+    <div class="card-body">
+
+      <div *ngFor="let eva of arrayEvaluaciones; let i=index">
+        
+          <div  class="input-group mb-3">
+            
+            <span class="input-group-text" style="width : 600px" >{{eva.evaluaciones.descripcion_evaluacion}}</span>&nbsp;
+
+            <label class="switch switch-label switch-pill switch-warning">                    
+              <input [disabled]="soloLectura" type="checkbox" [name]="'chkResp_' + eva.evaluaciones.indice"  class="switch-input" >
+              <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
+            </label>
+            &nbsp;
+            <div class="form-group">
+              <span class="form-group has-float-label">                                                                    
+                <input type="text" class="form-control form-control-sm" [name]="'obs_' + eva.evaluaciones.indice" placeholder="Observacion">
+                <label class="badge-light" for="'obs_' + eva.evaluaciones.indice">Observacion</label>
+              </span>
+            </div>
+            <!--&#x2713; &#x2715;
+            <div *ngFor="let pos of eva.posibles_resp; let j=index">
+              
+              <div class="input-group-prepend">
+                <span class="input-group-text" style="width : 300px" >{{pos.posible_resp}}</span>
+              </div>
+              <input type="text" placeholder="Respuesta" maxlength="15" [name]="'resp_' + pos.index"  [(ngModel)]="habitosPacientes[i].resp"  class="form-control">                               
+          
+            </div>
+            -->
+          </div>
+        </div>                  
+
+    </div>
+    <div *ngFor="let alert of alertsDismiss">
+        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+    </div>
+    <div class="card-footer">      
+        <button type="button" [disabled]="soloLectura" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
+        <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-dot-circle-o"></i> Reset</button>
+        
+    </div>
+</div>

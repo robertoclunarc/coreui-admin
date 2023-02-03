@@ -5,46 +5,44 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { TypeaheadMatch} from 'ngx-bootstrap/typeahead';
 
 //modelos
-
-import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
-import { Ipopover } from '../../../models/servicio-medico/varios.model';
-import { IvProtocoloEndrocrinos, IProtocolosEndrocrinos, IEvaluaciones_PosibleResp, IPosibles_resp_endocrinas, IEvaluaciones_endocrinas } from '../../../models/servicio-medico/protocolo_endocrino.model';
-import { IMedicos } from '../../../models/servicio-medico/medicos.model'
+import { IUsuarios } from '../../../../models/servicio-medico/usuarios.model';
+import { Ipopover } from '../../../../models/servicio-medico/varios.model';
+import { IProtocolosEndrocrinos, IEvaluaciones_PosibleResp, IEvaluaciones_endocrinas, IRespuestas_pacientes_eval_endocrino } from '../../../../models/servicio-medico/protocolo_endocrino.model';
 
 //servicios
-import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
-import { ProtocolosEndocrinosService } from '../../../services/servicio_medico/protocolo_endocrino.service'
-import { MedicosService } from '../../../services/servicio_medico/medicos.service';
+
+import { ProtocolosEndocrinosService } from '../../../../services/servicio_medico/protocolo_endocrino.service'
+
 
 @Component({
-  selector: 'app-protocolo-endocrino-one',
-  templateUrl: './protocolo-endocrino-one.component.html',
-  styleUrls: ['./protocolo-endocrino-one.component.css'],
-  providers: [ PacientesService, MedicosService, ProtocolosEndocrinosService, 
+  selector: 'app-riesgo-general-one',
+  templateUrl: './riesgo-general-one.component.html',
+  styleUrls: ['./riesgo-general-one.component.css'],
+  providers: [  ProtocolosEndocrinosService, 
     { provide: AlertConfig }],
 })
-export class protocoloEndocrinoOneComponent implements OnChanges {
+export class RiesgoGeneralOneComponent implements OnChanges {
 
   constructor( 
     private route: ActivatedRoute,  
-    private router: Router,
-    private srvPacientes: PacientesService, 
-    private srvProtocolo: ProtocolosEndocrinosService,
-    private srvMedicos: MedicosService,   
+    private router: Router,    
+    private srvProtocolo: ProtocolosEndocrinosService,    
     @Inject(LOCALE_ID) public locale: string,
     
   ) { 
-    this.llenarArrayMedico();
+    
     this.llenarArrayEvaluacionesAll()
   }
 
   //@Output() outProtocolo = new EventEmitter<IvProtocoloEndrocrinos>();
+  @Input() inProtocolo :string;
   //@Input() idProtocolo: number = 0;  
   
-  protocoloObj: IvProtocoloEndrocrinos={ paciente: {}, medico: {}, protocolo:{} }; 
+  protocoloObj: IProtocolosEndrocrinos={}; 
   arrayEvaluaciones: IEvaluaciones_PosibleResp[]=[ { evaluaciones: {}, posibles_resp: []} ];
   arrayTiposEvaluciones: {tipoevaluacion: string, index: number, cantItem: number}[]=[];
-  selectMedicos: IMedicos[]=[];
+  arrayRespuestas: IRespuestas_pacientes_eval_endocrino[]=[];
+  
   private user: IUsuarios={};
   private tipoUser: string; 
   alertaRegistrar: string=""; 
@@ -85,36 +83,19 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
       this.soloLectura=true;
     }   
     
-    //this.protocoloObj.protocolo.idprotocolo =  this.idProtocolo;
-    
-  }
-
-  async buscarPaciente(){    
-    
-      await this.srvPacientes.pacienteOne(this.protocoloObj.paciente.ci)
-      .toPromise()
-      .then(async result => {
-        if (result[0]!= undefined){
-          this.protocoloObj.paciente=result[0];
-          this.protocoloObj.protocolo.lugar="PUERTO ORDAZ"
-          
-          this.protocoloObj.protocolo.emision= formatDate(Date.now(), 'yyyy-MM-dd', this.locale)
-          
-         // this.outProtocolo.emit(protocoloObj);
-          
-        }
-        else
-          this.protocoloObj.paciente={} 
-        
-      })       
-  } 
+    if (this.inProtocolo){
+      this.protocoloObj=JSON.parse(this.inProtocolo);
+      
+    }
+    console.log(this.protocoloObj);
+  }  
   
   async llenarArrayEvaluaciones(){    
     
     await this.srvProtocolo.evaluacionesEndocrinasAllxTipo()    
     .then(async result => {
       if (result[0]!= undefined){
-        this.arrayTiposEvaluciones=result;         
+        this.arrayTiposEvaluciones=result;  
       }
       else
         this.arrayTiposEvaluciones=[];      
@@ -126,35 +107,50 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     await this.srvProtocolo.EvalPosiblesRespEndocrinasAll()
     .then(async result => {
       if (result.length>0){
-        this.arrayEvaluaciones=result;       
-        
+        this.arrayEvaluaciones = result.filter((e)=>{return e.evaluaciones.tipoindice==1})      
+        console.log(this.arrayEvaluaciones);
+        for (let eva of this.arrayEvaluaciones){
+            for (const [i, value] of eva.posibles_resp.entries()) {
+                this.arrayRespuestas[i].fkposible_resp=value.idposibleresp;
+                this.arrayRespuestas[i].fkpaciente=this.protocoloObj.fkpaciente;                
+            }            
+        }
+        console.log(this.arrayRespuestas); 
       }
       else
         this.arrayEvaluaciones=[];
-      
+        
     })       
   }
 
-  /*private async nuevoContratistas(){
-    await this.srvVarios.registrarContratista(this.ObjContratista)
-    .toPromise()
-    .then( result  => {
-      if (result){
-        this.ObjContratista=result;
-        this.arrayContratista.push(this.ObjContratista);
+  private async nuevoProtocolo(idProtocolo: number){ 
+    /*let evaluacion: IRespuestas_pacientes_eval_endocrino={};
+    await this.srvProtocolo.deleteRecordRespProtEndocrino(idProtocolo).toPromise();
+    for await (let eva of this.arrayEvaluaciones){
+      if (eva.evaluaciones.descripcion_evaluacion!=undefined && eva.evaluaciones.descripcion_evaluacion!="") { 
+        evaluacion={
+            
+            fkprotocolo: eva.posibles_resp
+            fkpaciente: number;
+            fkposible_resp: number;
+            respuesta: string;
+        }
+      
+        await this.srvHabitos.registrar(this.habitoPaciente)
+        .toPromise()
+        .then( result  => {
+          if (result){
+            this.saved=true;
+            
+          }else{
+            this.saved=false;
+            this.showSuccess('Error en el registro del habito del paciente: ' + hab.resp, 'danger'); 
+            return;
+          }      
+        })
       }
-    })
-  }*/
-
-  private llenarArrayMedico(){
-    this.srvMedicos.medicosAll()
-    .toPromise()
-    .then(result => {
-      if (result){ 
-        this.selectMedicos=result;
-      }
-    })
-  }  
+    }  */
+  }
 
   async guardar(){    
     let objProtocolo: IProtocolosEndrocrinos={};
@@ -166,29 +162,15 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
       this.alertaRegistrar = this.popover.alerta;
       this.titleRegistrar = this.popover.titulo 
       return;
-    }
-
-    objProtocolo={      
-      fkpaciente:this.protocoloObj.paciente.uid_paciente,
-      emision:formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd HH:mm:ss', this.locale),
-      referecia: this.protocoloObj.protocolo.referecia,
-      charla: this.protocoloObj.protocolo.charla,
-      boletin: this.protocoloObj.protocolo.boletin,
-      folleto: this.protocoloObj.protocolo.folleto,
-      otro: this.protocoloObj.protocolo.otro,
-      indicaciones: this.protocoloObj.protocolo.indicaciones,
-      fkmedico: this.protocoloObj.medico.uid,
-      diagnostico: this.protocoloObj.protocolo.diagnostico,
-      lugar: this.protocoloObj.protocolo.lugar,
-      
-    };
+    }    
     
+    /*
     if (this.protocoloObj.protocolo.vigencia!=undefined)
       this.protocoloObj.protocolo.vigencia=formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd HH:mm:ss', this.locale);
     
-    if (this.protocoloObj.protocolo.proxima_cita!=undefined)
-      this.protocoloObj.protocolo.proxima_cita=formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd HH:mm:ss', this.locale);    
+    */   
     
+    /*
     if (this.protocoloObj.protocolo.idprotocolo!=undefined){
       await this.srvProtocolo.updateRecordProtocoloEndocrino(objProtocolo).toPromise();
       this.showSuccess('Registros actualizados satisfactoriamente', 'success');
@@ -202,6 +184,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
       else
         this.showSuccess('Error en el registro del paciente', 'danger'); 
     }
+    */
     
   }
 
@@ -210,15 +193,11 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     //this.outProtocolo.emit(this.protocoloObj);
     
   }
-/*
-  seleccionarGerencia(uidDepartamento: number){
-    this.gerencia.uid = this.arrayDepartamentos.find( g => (g.departamento.uid==uidDepartamento)).gerencia.uid;
-    this.gerencia.nombre = this.arrayDepartamentos.find( g => (g.departamento.uid==uidDepartamento)).gerencia.nombre;
-  }
-*/
+
   private async  validaEntradas(){
     let popOver: Ipopover={};
     console.log()
+    /*
     if (this.protocoloObj.paciente.ci == undefined){
       popOver= {
         titulo:"Error en el Registro",
@@ -250,6 +229,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
       };      
       return  popOver;
     }
+    */
 
     return  popOver;
   }
