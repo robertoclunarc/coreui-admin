@@ -8,13 +8,13 @@
             <span class="input-group-text" style="width : 600px" >{{eva.evaluaciones.descripcion_evaluacion}}</span>&nbsp;
 
             <label class="switch switch-label switch-pill switch-warning">                    
-              <input [disabled]="soloLectura" type="checkbox" [name]="'chkResp_' + eva.evaluaciones.indice"  class="switch-input" >
+              <input [disabled]="soloLectura" type="checkbox" [name]="'chkResp_' + eva.evaluaciones.indice" [(ngModel)]="arrayEvaluaciones[i].resp"  class="switch-input" >
               <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
             </label>
             &nbsp;
             <div class="form-group">
               <span class="form-group has-float-label">                                                                    
-                <input type="text" class="form-control form-control-sm" [name]="'obs_' + eva.evaluaciones.indice" placeholder="Observacion">
+                <input type="text" class="form-control form-control-sm" [name]="'obs_' + eva.evaluaciones.indice" [(ngModel)]="arrayEvaluaciones[i].resp" placeholder="Observacion">
                 <label class="badge-light" for="'obs_' + eva.evaluaciones.indice">Observacion</label>
               </span>
             </div>
