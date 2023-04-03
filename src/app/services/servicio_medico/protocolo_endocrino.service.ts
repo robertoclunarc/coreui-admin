@@ -40,13 +40,9 @@ export class ProtocolosEndocrinosService {
 			
   }
 
-  respuestasPacientesEvalEndocrino(fkPaciente: string, fkProtocolo: string) : Observable<IRespuestas_pacientes_eval_endocrino[]> { 
+  async respuestasPacientesEvalEndocrino(fkPaciente: string, fkProtocolo: string) : Promise<IRespuestas_pacientes_eval_endocrino[]> { 
 
-    return this.http.get<IRespuestas_pacientes_eval_endocrino[]>(this.apiUrlProtocolo + `consultar/respuestas/${fkPaciente}/${fkProtocolo}` )
-			.pipe(
-			//	tap(result => console.log(`respuestasPacientesEvalEndocrino`)),
-				catchError(this.handleError)
-			);
+    return await this.http.get<IRespuestas_pacientes_eval_endocrino[]>(this.apiUrlProtocolo + `consultar/respuestas/${fkPaciente}/${fkProtocolo}`).toPromise();
   }
   
   async consultaFilter(filtro: filtroProtoEndocrino) : Promise<IvProtocoloEndrocrinos[]> { 
@@ -58,6 +54,11 @@ export class ProtocolosEndocrinosService {
 			);*/
   }
 
+  async ultimaEvaluacion(idPaciente: string) : Promise<{ultimoprotocolo: number}> { 
+    let parametrosUrl = `${this.apiUrlProtocolo}ultima-evaluacion/${idPaciente}`;
+    return await this.http.get<{ultimoprotocolo: number}>(parametrosUrl).toPromise();
+  }
+
   createRecordProtocoloEndocrino(reg: IProtocolosEndrocrinos) {
     return this.http.post<IProtocolosEndrocrinos>(this.apiUrlProtocolo + 'insertar', reg).pipe(
         tap(result => { this.protocolo = result; console.log(`Protocolo insertado`) }),
@@ -66,7 +67,7 @@ export class ProtocolosEndocrinosService {
   }
 
   createRecordRespProtEndocrino(reg: IRespuestas_pacientes_eval_endocrino) {
-    return this.http.post<IRespuestas_pacientes_eval_endocrino>(this.apiUrlProtocolo + 'insertar', reg).pipe(
+    return this.http.post<IRespuestas_pacientes_eval_endocrino>(this.apiUrlProtocolo + 'insertar/respuesta', reg).pipe(
         tap(result => { this.protocolo = result; console.log(`Protocolo insertado`) }),
         catchError(this.handleError)
     );

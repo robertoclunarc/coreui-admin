@@ -7,7 +7,7 @@ import { TypeaheadMatch} from 'ngx-bootstrap/typeahead';
 //modelos
 import { IUsuarios } from '../../../../models/servicio-medico/usuarios.model';
 import { Ipopover } from '../../../../models/servicio-medico/varios.model';
-import { IProtocolosEndrocrinos, IEvaluaciones_PosibleResp, IEvaluaciones_endocrinas, IRespuestas_pacientes_eval_endocrino } from '../../../../models/servicio-medico/protocolo_endocrino.model';
+import { IProtocolosEndrocrinos, IEvaluaciones_PosibleResp, IEvaluaciones_endocrinas, IRespuestas_pacientes_eval_endocrino, IPosibles_resp_endocrinas } from '../../../../models/servicio-medico/protocolo_endocrino.model';
 
 //servicios
 
@@ -30,22 +30,32 @@ export class RiesgoGeneralOneComponent implements OnChanges {
     @Inject(LOCALE_ID) public locale: string,
     
   ) { 
+    this.llenarArrayEvaluacionesAll();
+    this.llenarArrayPosiblesRespEndocrinasAll();
     
-    this.llenarArrayEvaluacionesAll()
   }
 
   //@Output() outProtocolo = new EventEmitter<IvProtocoloEndrocrinos>();
-  @Input() inProtocolo :string;
-  //@Input() idProtocolo: number = 0;  
-  
-  protocoloObj: IProtocolosEndrocrinos={}; 
+  @Input() inIDPaciente :string;
+  @Input() inIDProtocolo :string;
+  tipoIndice: number=1;
+  bloqueaGuardar: boolean=true;
   arrayEvaluaciones: IEvaluaciones_PosibleResp[]=[ { evaluaciones: {}, posibles_resp: []} ];
+  arrayEvaluacionesConRespuestas:  { evaluaciones?: IEvaluaciones_endocrinas, posibles_resp?: {
+      idposibleresp?: number,
+      fkevaluacion?: number,
+      posible_resp?: boolean,
+      observacion?: string,
+      index?: number,
+      } 
+    }[] = [];
   arrayTiposEvaluciones: {tipoevaluacion: string, index: number, cantItem: number}[]=[];
   arrayRespuestas: IRespuestas_pacientes_eval_endocrino[]=[];
+  arrayPosiblesRespEndocrinas: IPosibles_resp_endocrinas[]=[];
   
   private user: IUsuarios={};
-  private tipoUser: string; 
-  alertaRegistrar: string=""; 
+  private tipoUser: string;
+  alertaRegistrar: string="";
   titleRegistrar: string="";
   popover: Ipopover={} ;
   soloLectura: boolean;
@@ -61,7 +71,7 @@ export class RiesgoGeneralOneComponent implements OnChanges {
   
   alertsDismiss: any = [];
 
-  ngOnChanges(): void {
+  async ngOnChanges() {
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -81,14 +91,24 @@ export class RiesgoGeneralOneComponent implements OnChanges {
     }
     else{
       this.soloLectura=true;
-    }   
-    
-    if (this.inProtocolo){
-      this.protocoloObj=JSON.parse(this.inProtocolo);
-      
     }
-    console.log(this.protocoloObj);
-  }  
+    if (this.inIDPaciente!=undefined)    
+      await this.llenarArrayRespuestas();
+
+    this.bloqueaGuardar = this.BloquearGuardar();
+       
+  }
+  
+  BloquearGuardar(){
+    let bloquear: boolean = false;
+    if (this.inIDPaciente == undefined || this.inIDPaciente == ""){
+      bloquear=true;
+    }
+    if (this.inIDProtocolo == undefined || this.inIDProtocolo==""){
+      bloquear=true;
+    } 
+    return bloquear;
+  }
   
   async llenarArrayEvaluaciones(){    
     
@@ -102,134 +122,201 @@ export class RiesgoGeneralOneComponent implements OnChanges {
     })       
   }
 
-  async llenarArrayEvaluacionesAll(){    
+  async llenarArrayPosiblesRespEndocrinasAll(){    
     
-    await this.srvProtocolo.EvalPosiblesRespEndocrinasAll()
+    await this.srvProtocolo.posiblesRespEndocrinasAll()    
     .then(async result => {
-      if (result.length>0){
-        this.arrayEvaluaciones = result.filter((e)=>{return e.evaluaciones.tipoindice==1})      
-        console.log(this.arrayEvaluaciones);
-        for (let eva of this.arrayEvaluaciones){
-            for (const [i, value] of eva.posibles_resp.entries()) {
-                this.arrayRespuestas[i].fkposible_resp=value.idposibleresp;
-                this.arrayRespuestas[i].fkpaciente=this.protocoloObj.fkpaciente;                
-            }            
-        }
-        console.log(this.arrayRespuestas); 
+      if (result[0]!= undefined){
+        this.arrayPosiblesRespEndocrinas=result;  
       }
       else
-        this.arrayEvaluaciones=[];
-        
+        this.arrayPosiblesRespEndocrinas=[];      
     })       
   }
 
-  private async nuevoProtocolo(idProtocolo: number){ 
-    /*let evaluacion: IRespuestas_pacientes_eval_endocrino={};
-    await this.srvProtocolo.deleteRecordRespProtEndocrino(idProtocolo).toPromise();
-    for await (let eva of this.arrayEvaluaciones){
-      if (eva.evaluaciones.descripcion_evaluacion!=undefined && eva.evaluaciones.descripcion_evaluacion!="") { 
-        evaluacion={
-            
-            fkprotocolo: eva.posibles_resp
-            fkpaciente: number;
-            fkposible_resp: number;
-            respuesta: string;
-        }
-      
-        await this.srvHabitos.registrar(this.habitoPaciente)
-        .toPromise()
-        .then( result  => {
-          if (result){
-            this.saved=true;
-            
-          }else{
-            this.saved=false;
-            this.showSuccess('Error en el registro del habito del paciente: ' + hab.resp, 'danger'); 
-            return;
-          }      
-        })
+  async PosiblesRespEndocrinasID(idposibleResp: number){    
+    for await (let pos of this.arrayPosiblesRespEndocrinas){
+      if (pos.idposibleresp==idposibleResp)
+        return pos;
+    }     
+  }
+
+  async arrayPosiblesRespuestas(idevaluacion: number){    
+    for await (let ev of this.arrayEvaluaciones){      
+      if (ev.evaluaciones.idevaluacion==idevaluacion)
+        return ev.posibles_resp
+    }     
+  }
+
+  async buscarIDrespuesta(posibleResp: string, arrayPosiblesResp: IPosibles_resp_endocrinas[]){
+    let idPosibleResp: number = null;
+    for await (let p of arrayPosiblesResp){
+      if (p.posible_resp===posibleResp){
+         idPosibleResp=p.idposibleresp
       }
-    }  */
+    }
+    return idPosibleResp;
+  }
+
+  async getIdRespuesta(e: any, IdposiblesResp: number , i: number){    
+    let posibleResp: IPosibles_resp_endocrinas[];
+    const logica: string = e.target.checked ? 'SI' : 'NO';     
+    posibleResp = await this.arrayPosiblesRespuestas(IdposiblesResp);
+    this.arrayEvaluacionesConRespuestas[i].posibles_resp.idposibleresp = await this.buscarIDrespuesta(logica, posibleResp);
+    this.bloqueaGuardar = this.BloquearGuardar();
+    if (this.bloqueaGuardar){
+      this.showSuccess('Debe Crear una Nueva Evaluacion (Pestaña: Datos Generales)', 'danger');
+    }
+  }
+
+  async buscarRespuestasPaciente(idProtocolo: string){
+    return await this.srvProtocolo.respuestasPacientesEvalEndocrino(this.inIDPaciente, idProtocolo);
+  }
+
+  async buscarUltimoProtocolo(){
+    return await this.srvProtocolo.ultimaEvaluacion(this.inIDPaciente);
+  }
+
+  async llenarArrayRespuestas(){    
+    this.arrayRespuestas=[];
+    this.arrayEvaluacionesConRespuestas=[];
+    let respuesta: {
+      idposibleresp?: number,
+      fkevaluacion?: number,
+      posible_resp?: boolean,
+      observacion?: string,
+      index?: number,
+    };
+
+    let maxProtocolo = await this.srvProtocolo.ultimaEvaluacion(this.inIDPaciente);
+    
+    if (maxProtocolo.ultimoprotocolo>0){
+      this.arrayRespuestas = await this.buscarRespuestasPaciente(maxProtocolo.ultimoprotocolo.toString());      
+    }  
+    else{
+      this.arrayRespuestas = await this.buscarRespuestasPaciente(undefined);    
+    }
+    if (this.arrayRespuestas.length>0){         
+      let idResp:number;
+      let posibleResp: IPosibles_resp_endocrinas[];
+      for await (let eva of this.arrayEvaluaciones){
+        posibleResp = await this.arrayPosiblesRespuestas(eva.evaluaciones.idevaluacion);
+        idResp = await this.buscarIDrespuesta('NO', posibleResp);
+        respuesta= {
+          idposibleresp: idResp,
+          fkevaluacion: null,
+          posible_resp: false,
+          observacion: '',
+          index: null
+        };
+        for await (let pos of eva.posibles_resp) {
+          for await (let resp of this.arrayRespuestas){
+            if (resp.fkposible_resp==pos.idposibleresp){
+              respuesta={
+                idposibleresp: resp.fkposible_resp,
+                fkevaluacion: eva.evaluaciones.idevaluacion,                
+                observacion:  resp.respuesta == undefined || resp.respuesta == null ? '' : resp.respuesta,
+                posible_resp: (await this.PosiblesRespEndocrinasID(resp.fkposible_resp)).posible_resp == 'SI' ? true : false ,
+                index: eva.evaluaciones.indice,
+              }                  
+            }
+          }                                
+        }
+        this.arrayEvaluacionesConRespuestas.push({evaluaciones:eva.evaluaciones, posibles_resp: respuesta });
+      }
+      
+    }
+    else{
+      this.arrayRespuestas=[];
+      for await (let eva of this.arrayEvaluaciones) {
+        this.arrayEvaluacionesConRespuestas.push({evaluaciones:eva.evaluaciones, posibles_resp: {} });
+      }
+    }   
+    console.log(this.arrayEvaluacionesConRespuestas)
+  }
+
+  async llenarArrayEvaluacionesAll(){       
+    await this.srvProtocolo.EvalPosiblesRespEndocrinasAll()
+    .then(result => {
+      if (result.length>0){
+        this.arrayEvaluaciones = result.filter((e)=>{return e.evaluaciones.tipoindice==this.tipoIndice})         
+      }
+      else{
+        this.arrayEvaluaciones=[];
+      }        
+    })       
   }
 
   async guardar(){    
-    let objProtocolo: IProtocolosEndrocrinos={};
-    this.popover={};    
-
+    let respuestasPaciente: IRespuestas_pacientes_eval_endocrino={};
+    
+    this.popover={};
     this.popover = await this.validaEntradas();
 
     if ( this.popover.alerta!=undefined){        
       this.alertaRegistrar = this.popover.alerta;
       this.titleRegistrar = this.popover.titulo 
       return;
-    }    
-    
-    /*
-    if (this.protocoloObj.protocolo.vigencia!=undefined)
-      this.protocoloObj.protocolo.vigencia=formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd HH:mm:ss', this.locale);
-    
-    */   
-    
-    /*
-    if (this.protocoloObj.protocolo.idprotocolo!=undefined){
-      await this.srvProtocolo.updateRecordProtocoloEndocrino(objProtocolo).toPromise();
-      this.showSuccess('Registros actualizados satisfactoriamente', 'success');
-    }else{      
-      
-      await this.srvProtocolo.createRecordProtocoloEndocrino(objProtocolo).toPromise()
-      objProtocolo.idprotocolo= this.srvProtocolo.protocolo.idprotocolo;
-      this.protocoloObj.protocolo.idprotocolo=objProtocolo.idprotocolo
-      if (objProtocolo.idprotocolo)
-        this.showSuccess('Datos registrados satisfactoriamente', 'success');
-      else
-        this.showSuccess('Error en el registro del paciente', 'danger'); 
     }
-    */
     
+    if (this.arrayRespuestas.length>0){
+      await this.srvProtocolo.deleteRecordRespProtEndocrino(Number(this.inIDProtocolo)).toPromise();
+    }
+
+    let errorRegistro: boolean[] = [];
+
+    for await (const eva of this.arrayEvaluacionesConRespuestas){
+      respuestasPaciente={        
+        fkprotocolo: Number(this.inIDProtocolo),
+        fkpaciente: Number(this.inIDPaciente),
+        fkposible_resp: eva.posibles_resp.idposibleresp,
+        respuesta: eva.posibles_resp.observacion
+      };
+      
+      await this.srvProtocolo.createRecordRespProtEndocrino(respuestasPaciente)
+      .toPromise()
+      .then(result =>{        
+        if (result.idresp == undefined || typeof(result.idresp)!='number')
+          errorRegistro.push(false);          
+      })
+      .catch(error =>{
+        this.showSuccess(error, 'danger');
+      });      
+    }
+    
+    if (errorRegistro.indexOf(false)<0)
+      this.showSuccess('Registrados satisfactoriamente', 'success');
+    else   
+      this.showSuccess('Error en el registros de las respuestas', 'danger');
   }
 
   reset(){
-    this.protocoloObj={};
-    //this.outProtocolo.emit(this.protocoloObj);
-    
+    //this.inIDProtocolo="";
+    //this.inIDPaciente ="";
+    this.llenarArrayRespuestas();
   }
 
   private async  validaEntradas(){
     let popOver: Ipopover={};
-    console.log()
-    /*
-    if (this.protocoloObj.paciente.ci == undefined){
+    console.log();
+    
+    if (this.inIDProtocolo == undefined || this.inIDProtocolo ==''){
       popOver= {
         titulo:"Error en el Registro",
-        alerta: "Debe especificar la cedula de identidad del paciente"
-      };      
+        alerta: "Debe Crear una Nueva Evaluacion (Pestaña: Datos Generales)"
+      };
+      this.bloqueaGuardar=true;      
       return  popOver;
     }
 
-    if (this.protocoloObj.paciente.nombre_completo == undefined){
+    if (this.inIDPaciente == undefined || this.inIDPaciente ==''){
       popOver= {
         titulo:"Error en el Registro",
-        alerta: "Debe especificar el nombre del paciente"
-      };      
+        alerta: "Debe Seleccionar un Paciente (Pestaña: Datos Generales)"
+      };
+      this.bloqueaGuardar=true;      
       return  popOver;
     }    
-
-    if (this.protocoloObj.medico.uid == undefined){
-      popOver= {
-        titulo:"Error en el Registro",
-        alerta: "Debe especificar el medico evaluador"
-      };      
-      return  popOver;
-    }
-
-    if (this.protocoloObj.protocolo.emision == undefined){
-      popOver= {
-        titulo:"Error en el Registro",
-        alerta: "debe especifica la fecha de emision"
-      };      
-      return  popOver;
-    }
-    */
 
     return  popOver;
   }

@@ -82,7 +82,14 @@ export class PrincipalServicioMedicoComponent implements OnInit {
 		return await this.srvConsultas.consultasPorMotivos()
 			.toPromise()
       .then(result => 
-        {this.arrayMotivos= result}
+        {
+          this.arrayMotivos= result;
+          if (result.length<4){
+            for(let i = result.length; i<4; i++){
+              this.arrayMotivos.push({descripcion: null, id_motivo: null, totalmotivos: 0})
+            }
+          }
+        }
       )			
 			.catch(err => { console.log(err) });
 	}
@@ -118,9 +125,9 @@ export class PrincipalServicioMedicoComponent implements OnInit {
 
           await this.generarSerie(this.inicioMainGraf, this.finMainGraf, '1 day', 'DY', 'dd-mm-YYYY');
           afeccionesAll = await this.afeccionesAll('30 day');
-          afecciones.push(afeccionesAll[0].fkafeccion);
-          afecciones.push(afeccionesAll[1].fkafeccion);
-          afecciones.push(afeccionesAll[2].fkafeccion);
+          for (let i = 0; i < afeccionesAll.length; i++){
+            afecciones.push(afeccionesAll[i].fkafeccion);            
+          }
           /*afecciones= result.map(item => item.fkafeccion)
           .filter((value, index, self) => self.indexOf(value) === index)*/// esto hace lo mismo que un select disctinct pero con un array
           
@@ -423,10 +430,10 @@ export class PrincipalServicioMedicoComponent implements OnInit {
     this.lineChart3Data=[];
     this.barChart1Data=[];
     
-    this.totallineChart1Data= this.arrayMotivos[0].totalmotivos;
-    this.totallineChart2Data= this.arrayMotivos[1].totalmotivos;
-    this.totallineChart3Data=this.arrayMotivos[2].totalmotivos;
-    this.totalbarChart1Data= this.arrayMotivos[3].totalmotivos;
+    this.totallineChart1Data= this.arrayMotivos[0].totalmotivos == undefined ? 0 : this.arrayMotivos[0].totalmotivos;
+    this.totallineChart2Data= this.arrayMotivos[1].totalmotivos == undefined ? 0 : this.arrayMotivos[1].totalmotivos;    
+    this.totallineChart3Data= this.arrayMotivos[2].totalmotivos == undefined ? 0 : this.arrayMotivos[2].totalmotivos;
+    this.totalbarChart1Data= this.arrayMotivos[3].totalmotivos == undefined ? 0 : this.arrayMotivos[3].totalmotivos;
     
     this.desclineChart1Data= this.arrayMotivos[0].descripcion;
     this.desclineChart2Data= this.arrayMotivos[1].descripcion;

@@ -119,6 +119,7 @@ export class ProtocoloEndocrinoComponent  implements OnInit  {
   
   async showModalRegistrar(){
     this.ciPaciente="-1";    
+    this.vProtocolo="";
   }
 
   async  showModalActualizar(item: IvProtocoloEndrocrinos){

@@ -82,12 +82,15 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     else{
       this.soloLectura=true;
     }   
-    
-    if (this.inProtocolo){
+    console.log(this.inProtocolo)
+    if (this.inProtocolo!="" && this.inProtocolo!=undefined){
       this.protocoloObj=JSON.parse(this.inProtocolo);
       this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd', this.locale);
       this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd', this.locale);
       this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd', this.locale)
+    }
+    else{
+      this.protocoloObj={ paciente: {}, medico: {}, protocolo:{ emision: formatDate(Date.now(), 'yyyy-MM-dd', this.locale)} };
     }
     
   }
