@@ -331,12 +331,11 @@
                 <tr>                                
                   <th scope="col"><input type="text" [disabled]="soloLectura" class="form-control form-control-sm" [(ngModel)]="referencia.especialidad"  name="txtEspecialidad" id="txtEspecialidad" placeholder="Referenciado a..."></th>
                   <th scope="col"><input type="text" [disabled]="soloLectura" class="form-control form-control-sm" [(ngModel)]="referencia.informe" name="txtInforme" id="txtInforme" placeholder="Descripcion de Referencia"></th>
-                  <th scope="col">                                  
-                  <button type="button" [disabled]="soloLectura" (click)="addReferencia(); pop.show() " #pop="bs-popover" class="btn btn-block btn-link"
-                        [popover]="alertaReferencia" [popoverTitle]="titleReferencia">
-                        <i class="fa fa-paperclip"></i>
-                  </button>
-                  
+                  <th scope="col">
+                    <button type="button" [disabled]="soloLectura" (click)="addReferencia(); pop.show() " #pop="bs-popover" class="btn btn-block btn-link"
+                          [popover]="alertaReferencia" [popoverTitle]="titleReferencia">
+                          <i class="fa fa-paperclip"></i>
+                    </button>
                   </th>
                 </tr>                              
                 <tr *ngFor="let ref of arrayReferencias; let i=index">                                

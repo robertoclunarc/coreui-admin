@@ -1,6 +1,5 @@
 //componentes
-import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID, ElementRef } from '@angular/core';
-import { formatDate } from '@angular/common';
+import { Component, OnInit, Inject, ViewChild, LOCALE_ID } from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router } from '@angular/router';
 
@@ -10,7 +9,8 @@ import { ProtocolosEndocrinosService } from '../../../services/servicio_medico/p
 //modelos
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { IPaciente } from '../../../models/servicio-medico/paciente.model';
-import { filtroProtoEndocrino, IEvaluaciones_endocrinas, IPosibles_resp_endocrinas, IProtocolosEndrocrinos, IvProtocoloEndrocrinos } from '../../../models/servicio-medico/protocolo_endocrino.model';
+import { filtroProtoEndocrino, IProtocolosEndrocrinos, IvProtocoloEndrocrinos } from '../../../models/servicio-medico/protocolo_endocrino.model';
+import { protocoloEndocrinoOneComponent } from '../protocolo_endocrino_one/protocolo-endocrino-one/protocolo-endocrino-one.component';
 
 @Component({
   selector: 'app-protocolo-endocrino',
@@ -18,8 +18,9 @@ import { filtroProtoEndocrino, IEvaluaciones_endocrinas, IPosibles_resp_endocrin
   providers: [ { provide: AlertConfig }, ProtocolosEndocrinosService],
   styleUrls: ["protocolo-endocrino.css"]             
 })
-export class ProtocoloEndocrinoComponent  implements OnInit  {  
-
+export class ProtocoloEndocrinoComponent  implements OnInit { 
+  
+  @ViewChild(protocoloEndocrinoOneComponent) hijo: protocoloEndocrinoOneComponent;
   private user: IUsuarios={};
   private tipoUser: string;  
   private nuevo: boolean = false;
@@ -30,7 +31,7 @@ export class ProtocoloEndocrinoComponent  implements OnInit  {
   classTable: string;
   classButton: string;
   estiloOscuro: string;
-  filtro: filtroProtoEndocrino={} 
+  filtro: filtroProtoEndocrino={ ciPaciente: 'null', idProtocolo: 'null', fechaIni: 'null',  fechaFin: 'null',  medico: 'null',  uidPaciente: 'null', condlogica: 'OR' }
   show = false;
   autohide = true;
 
@@ -59,51 +60,63 @@ export class ProtocoloEndocrinoComponent  implements OnInit  {
   ];
 
   arrayProtocolo: IvProtocoloEndrocrinos[]=[];
-  vProtocolo: string;
+  vProtocolo: string="";
   returnedArray: IvProtocoloEndrocrinos[]=[];
   returnedSearch: IvProtocoloEndrocrinos[]=[];
+  protocolo: IvProtocoloEndrocrinos={};
   ciPaciente: string;
+  newProtocol: boolean=false;
   constructor(
     private router: Router, 
     private srvProtocoloEndocrino: ProtocolosEndocrinosService,   
     @Inject(LOCALE_ID) public locale: string,  
-    ) {  }
+    ) {  }  
 
-  ngOnInit(): void {
-
-    if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
-        this.classTable = "table table-striped";
-        this.classButton ="btn btn-block btn-ghost-dark";
-        this.estiloOscuro="";
-      }
-      else {
-        this.classTable = sessionStorage.classTable;
-        this.classButton ="btn btn-block btn-ghost-dark active";      
-      }
-      
-      if (sessionStorage.currentUser){
-          this.user=JSON.parse(sessionStorage.currentUser);
-          if (this.user) {             
-            this.tipoUser= sessionStorage.tipoUser;
-          }
-          else {
-            this.router.navigate(["login"]);
-          }
-      }else{
-        this.router.navigate(["login"]);
-      }
-      
-      if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
-        this.soloLectura=false;
-      }
-      else{
-        this.soloLectura=true;
-      }     
-      this.filtro={ ciPaciente: 'null', idProtocolo: 'null', fechaIni: 'null',  fechaFin: 'null',  medico: 'null',  uidPaciente: 'null', condlogica: 'OR' }
-      this.llenarArrayProtocolos();
+  ngOnInit(){
+      this.init();
   }
 
-  private async llenarArrayProtocolos() {
+  receiveProtocolo($event) {
+    this.protocolo = $event;
+    if (this.protocolo.protocolo.idprotocolo!=undefined){
+      this.llenarArrayProtocolos();
+    }
+  }
+
+  async init(){
+    if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
+      this.classTable = "table table-striped";
+      this.classButton ="btn btn-block btn-ghost-dark";
+      this.estiloOscuro="";
+    }
+    else {
+      this.classTable = sessionStorage.classTable;
+      this.classButton ="btn btn-block btn-ghost-dark active";      
+    }
+    
+    if (sessionStorage.currentUser){
+        this.user=JSON.parse(sessionStorage.currentUser);
+        if (this.user) {             
+          this.tipoUser= sessionStorage.tipoUser;
+        }
+        else {
+          this.router.navigate(["login"]);
+        }
+    }else{
+      this.router.navigate(["login"]);
+    }
+    
+    if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+      this.soloLectura=false;
+    }
+    else{
+      this.soloLectura=true;
+    }     
+    
+    await this.llenarArrayProtocolos();    
+  }
+
+  async llenarArrayProtocolos() {
     await this.srvProtocoloEndocrino.consultaFilter(this.filtro)
 		//this.srvPacientes.searchPacientesPromise(ciPaciente, nombre, supervisor, cargo, dpto,condlogica)			
 			.then(results => {				
@@ -114,18 +127,21 @@ export class ProtocoloEndocrinoComponent  implements OnInit  {
         this.returnedArray = this.arrayProtocolo.slice(0, this.numPages);
 			})
 			.catch(err => { console.log(err) });
-	} 
-
+	}
   
   async showModalRegistrar(){
     this.ciPaciente="-1";    
     this.vProtocolo="";
+    this.hijo.reset();
   }
 
-  async  showModalActualizar(item: IvProtocoloEndrocrinos){
+  async showModalActualizar(item: IvProtocoloEndrocrinos){
     
     this.vProtocolo=JSON.stringify(item);
     this.ciPaciente=item.paciente.ci;
+    this.newProtocol=true; 
+    this.hijo.soloLectura=this.newProtocol;
+    
   }
 
   showSuccess(mensaje: any, clase: string): void {
@@ -138,7 +154,7 @@ export class ProtocoloEndocrinoComponent  implements OnInit  {
   }
 
   onClosed(dismissedAlert: AlertComponent): void {
-    this.alertsDismiss = this.alertsDismiss.filter(alert => alert !== dismissedAlert);
+    this.alertsDismiss = this.alertsDismiss.filter(alert => alert !== dismissedAlert);    
   }
 
   async Search(){

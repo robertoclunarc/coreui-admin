@@ -1,6 +1,6 @@
-import { Component, OnChanges, Inject, LOCALE_ID, Output, Input, EventEmitter, NgModule} from '@angular/core';
+import { Component, OnChanges, Inject, LOCALE_ID, Input } from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
-import { formatDate } from '@angular/common';
+//import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TypeaheadMatch} from 'ngx-bootstrap/typeahead';
 
@@ -10,9 +10,7 @@ import { Ipopover } from '../../../../models/servicio-medico/varios.model';
 import { IProtocolosEndrocrinos, IEvaluaciones_PosibleResp, IEvaluaciones_endocrinas, IRespuestas_pacientes_eval_endocrino, IPosibles_resp_endocrinas } from '../../../../models/servicio-medico/protocolo_endocrino.model';
 
 //servicios
-
 import { ProtocolosEndocrinosService } from '../../../../services/servicio_medico/protocolo_endocrino.service'
-
 
 @Component({
   selector: 'app-riesgo-general-one',
@@ -34,10 +32,9 @@ export class RiesgoGeneralOneComponent implements OnChanges {
     this.llenarArrayPosiblesRespEndocrinasAll();
     
   }
-
-  //@Output() outProtocolo = new EventEmitter<IvProtocoloEndrocrinos>();
   @Input() inIDPaciente :string;
   @Input() inIDProtocolo :string;
+  @Input() nuevo :boolean;
   tipoIndice: number=1;
   bloqueaGuardar: boolean=true;
   arrayEvaluaciones: IEvaluaciones_PosibleResp[]=[ { evaluaciones: {}, posibles_resp: []} ];
@@ -92,10 +89,17 @@ export class RiesgoGeneralOneComponent implements OnChanges {
     else{
       this.soloLectura=true;
     }
-    if (this.inIDPaciente!=undefined)    
+    if (this.inIDPaciente!=undefined && this.inIDPaciente!="") {  
+      console.log(`idPaciente: ${this.inIDPaciente}, idProtocolo: ${this.inIDProtocolo}`) 
       await this.llenarArrayRespuestas();
+    }
+    else{
+      this.arrayEvaluacionesConRespuestas=[];
+    }
 
     this.bloqueaGuardar = this.BloquearGuardar();
+
+    //console.log(`idPaciente: ${this.inIDPaciente}, idProtocolo: ${this.inIDProtocolo}`)
        
   }
   
@@ -187,18 +191,23 @@ export class RiesgoGeneralOneComponent implements OnChanges {
       observacion?: string,
       index?: number,
     };
-
-    let maxProtocolo = await this.srvProtocolo.ultimaEvaluacion(this.inIDPaciente);
     
-    if (maxProtocolo.ultimoprotocolo>0){
-      this.arrayRespuestas = await this.buscarRespuestasPaciente(maxProtocolo.ultimoprotocolo.toString());      
-    }  
-    else{
-      this.arrayRespuestas = await this.buscarRespuestasPaciente(undefined);    
+    let iDProtocolo: string='undefined';
+    if (this.nuevo){
+      iDProtocolo=this.inIDProtocolo;
+    }else{
+      let maxProtocolo = await this.srvProtocolo.ultimaEvaluacion(this.inIDPaciente);      
+      if (maxProtocolo.ultimoprotocolo>0)
+        iDProtocolo = maxProtocolo.ultimoprotocolo.toString();
     }
+    
+    this.arrayRespuestas = await this.buscarRespuestasPaciente(iDProtocolo);
+    
+    let idResp:number;
+    let posibleResp: IPosibles_resp_endocrinas[];
+
     if (this.arrayRespuestas.length>0){         
-      let idResp:number;
-      let posibleResp: IPosibles_resp_endocrinas[];
+      
       for await (let eva of this.arrayEvaluaciones){
         posibleResp = await this.arrayPosiblesRespuestas(eva.evaluaciones.idevaluacion);
         idResp = await this.buscarIDrespuesta('NO', posibleResp);
@@ -228,11 +237,21 @@ export class RiesgoGeneralOneComponent implements OnChanges {
     }
     else{
       this.arrayRespuestas=[];
-      for await (let eva of this.arrayEvaluaciones) {
-        this.arrayEvaluacionesConRespuestas.push({evaluaciones:eva.evaluaciones, posibles_resp: {} });
+      for await (let eva of this.arrayEvaluaciones){
+        posibleResp = await this.arrayPosiblesRespuestas(eva.evaluaciones.idevaluacion);
+        idResp = await this.buscarIDrespuesta('NO', posibleResp);
+        respuesta= {
+          idposibleresp: idResp,
+          fkevaluacion: eva.evaluaciones.idevaluacion,
+          posible_resp: false,
+          observacion: '',
+          index: null
+        };
+        this.arrayEvaluacionesConRespuestas.push({evaluaciones:eva.evaluaciones, posibles_resp: respuesta });
       }
+      
     }   
-    console.log(this.arrayEvaluacionesConRespuestas)
+    
   }
 
   async llenarArrayEvaluacionesAll(){       

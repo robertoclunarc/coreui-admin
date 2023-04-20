@@ -1,14 +1,13 @@
-import { Component, OnChanges, Inject, LOCALE_ID, Output, Input, EventEmitter, NgModule} from '@angular/core';
+import { Component, OnChanges, Inject, LOCALE_ID, Input, Output, EventEmitter } from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { formatDate } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
-import { TypeaheadMatch} from 'ngx-bootstrap/typeahead';
+import { Router } from '@angular/router';
 
 //modelos
 
 import { IUsuarios } from '../../../../models/servicio-medico/usuarios.model';
 import { Ipopover } from '../../../../models/servicio-medico/varios.model';
-import { IvProtocoloEndrocrinos, IProtocolosEndrocrinos, IPosibles_resp_endocrinas, } from '../../../../models/servicio-medico/protocolo_endocrino.model';
+import { IvProtocoloEndrocrinos, IProtocolosEndrocrinos } from '../../../../models/servicio-medico/protocolo_endocrino.model';
 import { IMedicos } from '../../../../models/servicio-medico/medicos.model'
 
 //servicios
@@ -26,21 +25,21 @@ import { MedicosService } from '../../../../services/servicio_medico/medicos.ser
 export class protocoloEndocrinoOneComponent implements OnChanges {
 
   constructor( 
-    private route: ActivatedRoute,  
+      
     private router: Router,
     private srvPacientes: PacientesService, 
     private srvProtocolo: ProtocolosEndocrinosService,
     private srvMedicos: MedicosService,   
     @Inject(LOCALE_ID) public locale: string,
     
-  ) { 
-    this.llenarArrayMedico();   
+  ) {    
+    this.llenarArrayMedico();
+    
   }
 
-  //@Output() outProtocolo = new EventEmitter<IvProtocoloEndrocrinos>();
-  @Input() inProtocolo :string;
-  //@Input() idProtocolo: number = 0;  
-  
+  @Input() vProtocolo :string="";
+  @Input() newProtocol:boolean=false; 
+  @Output() outProtocolo = new EventEmitter<IvProtocoloEndrocrinos>();
   protocoloObj: IvProtocoloEndrocrinos={ paciente: {}, medico: {}, protocolo:{} };   
   selectMedicos: IMedicos[]=[];
   private user: IUsuarios={};
@@ -49,6 +48,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
   titleRegistrar: string="";
   popover: Ipopover={} ;
   soloLectura: boolean;
+  nuevo: boolean=false;
   
   arrayFrecuenciaRotacion= [
     {valor: 'Indeterminada', display: 'Indeterminada'},
@@ -61,7 +61,13 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
   
   alertsDismiss: any = [];
 
-  ngOnChanges(): void {
+  ngOnChanges() {    
+      
+    this.init();
+    
+  }
+
+  init(){
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);
@@ -82,37 +88,45 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     else{
       this.soloLectura=true;
     }   
-    console.log(this.inProtocolo)
-    if (this.inProtocolo!="" && this.inProtocolo!=undefined){
-      this.protocoloObj=JSON.parse(this.inProtocolo);
+    
+    if (this.vProtocolo!="" && this.vProtocolo!=undefined){
+      this.nuevo=true;
+      this.protocoloObj=JSON.parse(this.vProtocolo);
       this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd', this.locale);
       this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd', this.locale);
       this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd', this.locale)
     }
     else{
-      this.protocoloObj={ paciente: {}, medico: {}, protocolo:{ emision: formatDate(Date.now(), 'yyyy-MM-dd', this.locale)} };
+      
+      this.protocoloObj={ 
+        paciente: {}, 
+        medico: {}, 
+        protocolo:{ 
+          emision: formatDate(Date.now(), 'yyyy-MM-dd', this.locale),
+          vigencia: formatDate(Date.now(), 'yyyy-MM-dd', this.locale)
+        }
+      };
     }
-    
+    this.vProtocolo=JSON.stringify(this.protocoloObj);
   }
 
   async buscarPaciente(){    
-    
-      await this.srvPacientes.pacienteOne(this.protocoloObj.paciente.ci)
-      .toPromise()
-      .then(async result => {
-        if (result[0]!= undefined){
-          this.protocoloObj.paciente=result[0];
-          this.protocoloObj.protocolo.lugar="PUERTO ORDAZ"
-          
-          this.protocoloObj.protocolo.emision= formatDate(Date.now(), 'yyyy-MM-dd', this.locale)
-          
-         // this.outProtocolo.emit(protocoloObj);
-          
-        }
-        else
-          this.protocoloObj.paciente={} 
-        
-      })       
+    await this.srvPacientes.pacienteOne(this.protocoloObj.paciente.ci)
+    .toPromise()
+    .then(async result => {
+      if (result[0]!= undefined){
+        this.reset();
+        this.protocoloObj.paciente=result[0];
+        this.protocoloObj.protocolo.lugar="PUERTO ORDAZ";          
+        this.protocoloObj.protocolo.emision= formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
+        this.protocoloObj.protocolo.vigencia= formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
+        this.vProtocolo=JSON.stringify(this.protocoloObj);
+        this.nuevo=false;
+      }
+      else
+        this.protocoloObj.paciente={};
+      this.vProtocolo="";
+    })
   }
 
   private llenarArrayMedico(){
@@ -139,7 +153,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
 
     objProtocolo={      
       fkpaciente:this.protocoloObj.paciente.uid_paciente,
-      emision:formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd HH:mm:ss', this.locale),
+      emision:formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd HH:mm:ss', this.locale),      
       referecia: this.protocoloObj.protocolo.referecia,
       charla: this.protocoloObj.protocolo.charla,
       boletin: this.protocoloObj.protocolo.boletin,
@@ -159,7 +173,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
       this.protocoloObj.protocolo.proxima_cita=formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd HH:mm:ss', this.locale);    
     
     if (this.protocoloObj.protocolo.idprotocolo!=undefined){
-      console.log(this.protocoloObj);
+      
       objProtocolo.idprotocolo=this.protocoloObj.protocolo.idprotocolo;
       await this.srvProtocolo.updateRecordProtocoloEndocrino(objProtocolo).toPromise();
       this.showSuccess('Registros actualizados satisfactoriamente', 'success');
@@ -168,23 +182,32 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
       await this.srvProtocolo.createRecordProtocoloEndocrino(objProtocolo).toPromise()
       objProtocolo.idprotocolo= this.srvProtocolo.protocolo.idprotocolo;
       this.protocoloObj.protocolo.idprotocolo=objProtocolo.idprotocolo
-      if (objProtocolo.idprotocolo)
+      if (objProtocolo.idprotocolo){
         this.showSuccess('Datos registrados satisfactoriamente', 'success');
-      else
-        this.showSuccess('Error en el registro del paciente', 'danger'); 
+        
+        this.outProtocolo.emit(this.protocoloObj);
+        this.nuevo=false;
+        this.newProtocol=true;
+      }
+      else{
+        this.showSuccess('Error en el registro del paciente', 'danger');
+      } 
     }
     
   }
 
   reset(){
-    this.protocoloObj={};
-    //this.outProtocolo.emit(this.protocoloObj);
-    
+    this.protocoloObj={ paciente: {}, medico: {}, protocolo:{ emision: formatDate(Date.now(), 'yyyy-MM-dd', this.locale)} };
+    this.nuevo=false;
+    this.newProtocol = false;
+    if (this.soloLectura)
+      this.newProtocol=true;
+    this.soloLectura= (this.soloLectura && this.newProtocol);
   }
 
   private async  validaEntradas(){
     let popOver: Ipopover={};
-    console.log()
+    
     if (this.protocoloObj.paciente.ci == undefined){
       popOver= {
         titulo:"Error en el Registro",
@@ -221,6 +244,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
   }
 
   onClosed(dismissedAlert: AlertComponent): void {
+    this.vProtocolo="";
     this.alertsDismiss = this.alertsDismiss.filter(alert => alert !== dismissedAlert);
   }
 
