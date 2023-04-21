@@ -103,8 +103,8 @@ export class ProtocolosEndocrinosService {
     );
   }
 
-  deleteRecordRespProtEndocrino(id: number) {
-    const url = `${this.apiUrlProtocolo}delete/respuesta/${id}`;
+  deleteRecordRespProtEndocrino(id: number, tipoindice: number) {
+    const url = `${this.apiUrlProtocolo}delete/respuesta/${id}/${tipoindice}`;
 
     return this.http.delete(url).pipe(
         tap(result => {

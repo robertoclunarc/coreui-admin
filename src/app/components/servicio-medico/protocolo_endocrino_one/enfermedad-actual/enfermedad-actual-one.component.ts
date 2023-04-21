@@ -1,7 +1,7 @@
 import { Component, OnChanges, Inject, LOCALE_ID, Input } from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 //import { formatDate } from '@angular/common';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 
 //modelos
 import { IUsuarios } from '../../../../models/servicio-medico/usuarios.model';
@@ -12,16 +12,15 @@ import {  IEvaluaciones_PosibleResp, IEvaluaciones_endocrinas, IRespuestas_pacie
 import { ProtocolosEndocrinosService } from '../../../../services/servicio_medico/protocolo_endocrino.service'
 
 @Component({
-  selector: 'app-riesgo-general-one',
-  templateUrl: './riesgo-general-one.component.html',
-  styleUrls: ['./riesgo-general-one.component.css'],
+  selector: 'app-enfermedad-actual-one',
+  templateUrl: './enfermedad-actual-one.component.html',
+  styleUrls: ['./enfermedad-actual-one.component.css'],
   providers: [  ProtocolosEndocrinosService, 
     { provide: AlertConfig }],
 })
-export class RiesgoGeneralOneComponent implements OnChanges {
+export class EnfermedadActualOneComponent implements OnChanges {
 
-  constructor( 
-    private route: ActivatedRoute,  
+  constructor(     
     private router: Router,    
     private srvProtocolo: ProtocolosEndocrinosService,    
     @Inject(LOCALE_ID) public locale: string,
@@ -29,12 +28,11 @@ export class RiesgoGeneralOneComponent implements OnChanges {
   ) { 
     this.llenarArrayEvaluacionesAll();
     this.llenarArrayPosiblesRespEndocrinasAll();
-    
   }
   @Input() inIDPaciente :string;
   @Input() inIDProtocolo :string;
   @Input() nuevo :boolean;
-  tipoIndice: number=1;
+  tipoIndice: number=3;
   bloqueaGuardar: boolean=true;
   arrayEvaluaciones: IEvaluaciones_PosibleResp[]=[ { evaluaciones: {}, posibles_resp: []} ];
   arrayEvaluacionesConRespuestas:  { evaluaciones?: IEvaluaciones_endocrinas, posibles_resp?: {
@@ -55,15 +53,6 @@ export class RiesgoGeneralOneComponent implements OnChanges {
   titleRegistrar: string="";
   popover: Ipopover={} ;
   soloLectura: boolean;
-  
-  arrayFrecuenciaRotacion= [
-    {valor: 'Indeterminada', display: 'Indeterminada'},
-    {valor: 'Diaria', display: 'Diaria'},
-    {valor: 'Semanal', display: 'Semanal'},
-    {valor: 'Mensual', display: 'Mensual'},
-    {valor: 'Trimestral', display: 'Semestral'},
-    {valor: 'Anual', display: 'Anual'}    
-  ];
   
   alertsDismiss: any = [];
 
@@ -89,17 +78,14 @@ export class RiesgoGeneralOneComponent implements OnChanges {
       this.soloLectura=true;
     }
     if (this.inIDPaciente!=undefined && this.inIDPaciente!="") {  
-      //console.log(`idPaciente: ${this.inIDPaciente}, idProtocolo: ${this.inIDProtocolo}`) 
+      //console.log(`idPaciente: ${this.inIDPaciente}, idProtocolo: ${this.inIDProtocolo}`);
       await this.llenarArrayRespuestas();
     }
     else{
       this.arrayEvaluacionesConRespuestas=[];
     }
 
-    this.bloqueaGuardar = this.BloquearGuardar();
-
-    //console.log(`idPaciente: ${this.inIDPaciente}, idProtocolo: ${this.inIDProtocolo}`)
-       
+    this.bloqueaGuardar = this.BloquearGuardar();       
   }
   
   BloquearGuardar(){
@@ -112,16 +98,16 @@ export class RiesgoGeneralOneComponent implements OnChanges {
     } 
     return bloquear;
   }
-  
-  async llenarArrayEvaluaciones(){    
-    
-    await this.srvProtocolo.evaluacionesEndocrinasAllxTipo()    
-    .then(async result => {
-      if (result[0]!= undefined){
-        this.arrayTiposEvaluciones=result;  
+
+  async llenarArrayEvaluacionesAll(){       
+    await this.srvProtocolo.EvalPosiblesRespEndocrinasAll()
+    .then(result => {
+      if (result.length>0){
+        this.arrayEvaluaciones = result.filter((e)=>{return e.evaluaciones.tipoindice==this.tipoIndice})         
       }
-      else
-        this.arrayTiposEvaluciones=[];      
+      else{
+        this.arrayEvaluaciones=[];
+      }        
     })       
   }
 
@@ -137,28 +123,11 @@ export class RiesgoGeneralOneComponent implements OnChanges {
     })       
   }
 
-  async PosiblesRespEndocrinasID(idposibleResp: number){    
-    for await (let pos of this.arrayPosiblesRespEndocrinas){
-      if (pos.idposibleresp==idposibleResp)
-        return pos;
-    }     
-  }
-
   async arrayPosiblesRespuestas(idevaluacion: number){    
     for await (let ev of this.arrayEvaluaciones){      
       if (ev.evaluaciones.idevaluacion==idevaluacion)
         return ev.posibles_resp
     }     
-  }
-
-  async buscarIDrespuesta(posibleResp: string, arrayPosiblesResp: IPosibles_resp_endocrinas[]){
-    let idPosibleResp: number = null;
-    for await (let p of arrayPosiblesResp){
-      if (p.posible_resp===posibleResp){
-         idPosibleResp=p.idposibleresp
-      }
-    }
-    return idPosibleResp;
   }
 
   async getIdRespuesta(e: any, IdposiblesResp: number , i: number){    
@@ -172,9 +141,26 @@ export class RiesgoGeneralOneComponent implements OnChanges {
     }
   }
 
+  async buscarIDrespuesta(posibleResp: string, arrayPosiblesResp: IPosibles_resp_endocrinas[]){
+    let idPosibleResp: number = null;
+    for await (let p of arrayPosiblesResp){
+      if (p.posible_resp===posibleResp){
+         idPosibleResp=p.idposibleresp
+      }
+    }
+    return idPosibleResp;
+  }
+
+  async PosiblesRespEndocrinasID(idposibleResp: number){    
+    for await (let pos of this.arrayPosiblesRespEndocrinas){
+      if (pos.idposibleresp==idposibleResp)
+        return pos;
+    }     
+  }
+
   async buscarRespuestasPaciente(idProtocolo: string){
     return await this.srvProtocolo.respuestasPacientesEvalEndocrino(this.inIDPaciente, idProtocolo);
-  }
+  } 
 
   async llenarArrayRespuestas(){    
     this.arrayRespuestas=[];
@@ -247,18 +233,6 @@ export class RiesgoGeneralOneComponent implements OnChanges {
       
     }   
     
-  }
-
-  async llenarArrayEvaluacionesAll(){       
-    await this.srvProtocolo.EvalPosiblesRespEndocrinasAll()
-    .then(result => {
-      if (result.length>0){
-        this.arrayEvaluaciones = result.filter((e)=>{return e.evaluaciones.tipoindice==this.tipoIndice})         
-      }
-      else{
-        this.arrayEvaluaciones=[];
-      }        
-    })       
   }
 
   async guardar(){    
@@ -347,5 +321,4 @@ export class RiesgoGeneralOneComponent implements OnChanges {
       timeout: 5000
     });
   }
-
-}
+} 

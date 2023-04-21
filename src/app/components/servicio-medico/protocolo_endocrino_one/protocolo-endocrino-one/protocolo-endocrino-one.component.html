@@ -159,20 +159,41 @@
           </tab>
 
           <tab>
-            <ng-template tabHeading><i class="icon-note"></i> Riesgo General &nbsp;</ng-template>          
+            <ng-template tabHeading><i class="fa fa-medkit"></i> Riesgo General</ng-template>          
             <div class="col-lg-12">
-              <app-riesgo-general-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-riesgo-general-one> 
-              
+              <app-riesgo-general-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-riesgo-general-one>               
             </div>
           </tab>
-          <tab>
-            <ng-template tabHeading><i class="icon-note"></i> Riesgo Metabolico &nbsp;</ng-template>          
-            <div class="col-lg-12">
-              
+          <tab><!--<i class="icon-note"></i>-->
+            <ng-template tabHeading><i class="fa fa-plus-square"></i> Riesgo Metabolico</ng-template>          
+            <div class="col-lg-12">              
               <app-riesgos-metabolicos-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-riesgos-metabolicos-one>
             </div>
           </tab>
-
+          <tab>
+            <ng-template tabHeading><i class="fa fa-thermometer"></i> Enfermedad Actual</ng-template>          
+            <div class="col-lg-12">              
+              <app-enfermedad-actual-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-enfermedad-actual-one>
+            </div>
+          </tab>
+          <tab>
+            <ng-template tabHeading><i class="fa fa-stethoscope"></i> Examen Fisico</ng-template>          
+            <div class="col-lg-12">              
+              prueba
+            </div>
+          </tab>
+          <tab>
+            <ng-template tabHeading><i class="fa fa-heartbeat"></i> Auscultacion</ng-template>          
+            <div class="col-lg-12">              
+              prueba
+            </div>
+          </tab>
+          <tab>
+            <ng-template tabHeading><i class="icon-note"></i> Est. Laboratorio</ng-template>          
+            <div class="col-lg-12">              
+              prueba
+            </div>
+          </tab>
         </tabset>  
       </form>
     </div>

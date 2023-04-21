@@ -81,11 +81,13 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     }   
     
     if (this.vProtocolo!="" && this.vProtocolo!=undefined){
-      this.nuevo=true;
+      this.nuevo=true;      
       this.protocoloObj=JSON.parse(this.vProtocolo);
+      
       this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd', this.locale);
-      this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd', this.locale);
-      this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd', this.locale)
+      this.protocoloObj.protocolo.vigencia= formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd', this.locale);
+      if (this.protocoloObj.protocolo.proxima_cita!=undefined)
+        this.protocoloObj.protocolo.proxima_cita= formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd', this.locale);
     }
     else{
       
@@ -161,8 +163,11 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     /*if (this.protocoloObj.protocolo.vigencia!=undefined)
       this.protocoloObj.protocolo.vigencia=formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd HH:mm:ss', this.locale);
     */
-    if (this.protocoloObj.protocolo.proxima_cita!=undefined || this.protocoloObj.protocolo.proxima_cita=="")
-      this.protocoloObj.protocolo.proxima_cita=formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd HH:mm:ss', this.locale);    
+    
+    if (this.protocoloObj.protocolo.proxima_cita!=undefined){
+      objProtocolo.proxima_cita=formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd HH:mm:ss', this.locale);
+      
+    }    
     
     if (this.protocoloObj.protocolo.idprotocolo!=undefined){
       
@@ -173,7 +178,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
       
       await this.srvProtocolo.createRecordProtocoloEndocrino(objProtocolo).toPromise()
       objProtocolo.idprotocolo= this.srvProtocolo.protocolo.idprotocolo;
-      this.protocoloObj.protocolo.idprotocolo=objProtocolo.idprotocolo
+      this.protocoloObj.protocolo.idprotocolo=objProtocolo.idprotocolo;
       if (objProtocolo.idprotocolo){
         this.showSuccess('Datos registrados satisfactoriamente', 'success');
         

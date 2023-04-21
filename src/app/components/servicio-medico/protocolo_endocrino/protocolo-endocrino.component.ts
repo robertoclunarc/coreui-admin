@@ -136,8 +136,9 @@ export class ProtocoloEndocrinoComponent  implements OnInit {
   }
 
   async showModalActualizar(item: IvProtocoloEndrocrinos){
-    
-    this.vProtocolo=JSON.stringify(item);
+    if (item.protocolo.proxima_cita==null)
+      item.protocolo.proxima_cita=undefined;
+    this.vProtocolo=JSON.stringify(item);    
     this.ciPaciente=item.paciente.ci;
     this.newProtocol=true; 
     this.hijo.soloLectura=this.newProtocol;

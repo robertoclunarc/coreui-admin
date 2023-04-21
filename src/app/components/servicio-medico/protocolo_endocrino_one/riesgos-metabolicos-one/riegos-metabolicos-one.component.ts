@@ -78,7 +78,7 @@ export class RiesgosMetabolicosOneComponent implements OnChanges {
       this.soloLectura=true;
     }
     if (this.inIDPaciente!=undefined && this.inIDPaciente!="") {  
-      console.log(`idPaciente: ${this.inIDPaciente}, idProtocolo: ${this.inIDProtocolo}`);
+      //console.log(`idPaciente: ${this.inIDPaciente}, idProtocolo: ${this.inIDProtocolo}`);
       await this.llenarArrayRespuestas();
     }
     else{
@@ -248,7 +248,7 @@ export class RiesgosMetabolicosOneComponent implements OnChanges {
     }
     
     if (this.arrayRespuestas.length>0){
-      await this.srvProtocolo.deleteRecordRespProtEndocrino(Number(this.inIDProtocolo)).toPromise();
+      await this.srvProtocolo.deleteRecordRespProtEndocrino(Number(this.inIDProtocolo),this.tipoIndice).toPromise();
     }
 
     let errorRegistro: boolean[] = [];
