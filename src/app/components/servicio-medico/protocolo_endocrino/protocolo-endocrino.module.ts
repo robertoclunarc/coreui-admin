@@ -15,6 +15,7 @@ import { protocoloEndocrinoOneComponent } from '../protocolo_endocrino_one/proto
 import { RiesgoGeneralOneComponent } from '../protocolo_endocrino_one/riesgo-general-one/riesgo-general-one.component';
 import { RiesgosMetabolicosOneComponent } from '../protocolo_endocrino_one/riesgos-metabolicos-one/riegos-metabolicos-one.component';
 import { EnfermedadActualOneComponent } from '../protocolo_endocrino_one/enfermedad-actual/enfermedad-actual-one.component';
+import { UltimoChequeoOneComponent } from '../protocolo_endocrino_one/ultimo-chequeo-one/ultimo-chequeo-one.component';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { EnfermedadActualOneComponent } from '../protocolo_endocrino_one/enferme
     protocoloEndocrinoOneComponent,
     RiesgoGeneralOneComponent,
     RiesgosMetabolicosOneComponent,
-    EnfermedadActualOneComponent
+    EnfermedadActualOneComponent,
+    UltimoChequeoOneComponent,
   ]
 })
 export class ProtocoloEndocrinoModule { }

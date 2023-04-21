@@ -177,6 +177,12 @@
             </div>
           </tab>
           <tab>
+            <ng-template tabHeading><i class="fa fa-hospital-o"></i> Ultimo Chequeo</ng-template>          
+            <div class="col-lg-12">              
+              <app-ultimo-chequeo-one  [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-ultimo-chequeo-one>
+            </div>
+          </tab>
+          <tab>
             <ng-template tabHeading><i class="fa fa-stethoscope"></i> Examen Fisico</ng-template>          
             <div class="col-lg-12">              
               prueba
