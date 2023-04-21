@@ -54,8 +54,8 @@ export class ProtocolosEndocrinosService {
 			);*/
   }
 
-  async ultimaEvaluacion(idPaciente: string) : Promise<{ultimoprotocolo: number}> { 
-    let parametrosUrl = `${this.apiUrlProtocolo}ultima-evaluacion/${idPaciente}`;
+  async ultimaEvaluacion(idPaciente: string,  tipoIndice: number) : Promise<{ultimoprotocolo: number}> { 
+    let parametrosUrl = `${this.apiUrlProtocolo}ultima-evaluacion/${idPaciente}/${tipoIndice}`;
     return await this.http.get<{ultimoprotocolo: number}>(parametrosUrl).toPromise();
   }
 

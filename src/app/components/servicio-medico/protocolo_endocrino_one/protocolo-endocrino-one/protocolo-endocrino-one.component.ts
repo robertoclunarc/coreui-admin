@@ -50,15 +50,6 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
   soloLectura: boolean;
   nuevo: boolean=false;
   
-  arrayFrecuenciaRotacion= [
-    {valor: 'Indeterminada', display: 'Indeterminada'},
-    {valor: 'Diaria', display: 'Diaria'},
-    {valor: 'Semanal', display: 'Semanal'},
-    {valor: 'Mensual', display: 'Mensual'},
-    {valor: 'Trimestral', display: 'Semestral'},
-    {valor: 'Anual', display: 'Anual'}    
-  ];
-  
   alertsDismiss: any = [];
 
   ngOnChanges() {    
@@ -153,7 +144,8 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
 
     objProtocolo={      
       fkpaciente:this.protocoloObj.paciente.uid_paciente,
-      emision:formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd HH:mm:ss', this.locale),      
+      emision:formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd HH:mm:ss', this.locale),
+      vigencia:formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd HH:mm:ss', this.locale),      
       referecia: this.protocoloObj.protocolo.referecia,
       charla: this.protocoloObj.protocolo.charla,
       boletin: this.protocoloObj.protocolo.boletin,
@@ -166,10 +158,10 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
       
     };
     
-    if (this.protocoloObj.protocolo.vigencia!=undefined)
+    /*if (this.protocoloObj.protocolo.vigencia!=undefined)
       this.protocoloObj.protocolo.vigencia=formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd HH:mm:ss', this.locale);
-    
-    if (this.protocoloObj.protocolo.proxima_cita!=undefined)
+    */
+    if (this.protocoloObj.protocolo.proxima_cita!=undefined || this.protocoloObj.protocolo.proxima_cita=="")
       this.protocoloObj.protocolo.proxima_cita=formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd HH:mm:ss', this.locale);    
     
     if (this.protocoloObj.protocolo.idprotocolo!=undefined){
