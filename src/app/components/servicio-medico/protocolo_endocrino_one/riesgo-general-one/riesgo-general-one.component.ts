@@ -173,7 +173,7 @@ export class RiesgoGeneralOneComponent implements OnChanges {
   }
 
   async buscarRespuestasPaciente(idProtocolo: string){
-    return await this.srvProtocolo.respuestasPacientesEvalEndocrino(this.inIDPaciente, idProtocolo);
+    return await this.srvProtocolo.respuestasPacientesEvalEndocrino(this.inIDPaciente, idProtocolo, this.tipoIndice);
   }
 
   async llenarArrayRespuestas(){    

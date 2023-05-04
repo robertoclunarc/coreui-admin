@@ -40,9 +40,9 @@ export class ProtocolosEndocrinosService {
 			
   }
 
-  async respuestasPacientesEvalEndocrino(fkPaciente: string, fkProtocolo: string) : Promise<IRespuestas_pacientes_eval_endocrino[]> { 
+  async respuestasPacientesEvalEndocrino(fkPaciente: string, fkProtocolo: string, tipoindice: number) : Promise<IRespuestas_pacientes_eval_endocrino[]> { 
 
-    return await this.http.get<IRespuestas_pacientes_eval_endocrino[]>(this.apiUrlProtocolo + `consultar/respuestas/${fkPaciente}/${fkProtocolo}`).toPromise();
+    return await this.http.get<IRespuestas_pacientes_eval_endocrino[]>(this.apiUrlProtocolo + `consultar/respuestas/${fkPaciente}/${fkProtocolo}/${tipoindice}`).toPromise();
   }
   
   async consultaFilter(filtro: filtroProtoEndocrino) : Promise<IvProtocoloEndrocrinos[]> { 

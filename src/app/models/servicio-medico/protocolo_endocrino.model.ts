@@ -64,3 +64,11 @@ export interface filtroProtoEndocrino {
     uidPaciente?: string; 
     condlogica?: string;
 }
+
+export interface Irespuesta {
+    idposibleresp?: number,
+    fkevaluacion?: number,
+    descripcion?: string,
+    posible_resp?: boolean,      
+    index?: number
+}

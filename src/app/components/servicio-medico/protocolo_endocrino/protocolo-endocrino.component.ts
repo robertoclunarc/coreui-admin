@@ -9,7 +9,7 @@ import { ProtocolosEndocrinosService } from '../../../services/servicio_medico/p
 //modelos
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { IPaciente } from '../../../models/servicio-medico/paciente.model';
-import { filtroProtoEndocrino, IProtocolosEndrocrinos, IvProtocoloEndrocrinos } from '../../../models/servicio-medico/protocolo_endocrino.model';
+import { filtroProtoEndocrino, IvProtocoloEndrocrinos } from '../../../models/servicio-medico/protocolo_endocrino.model';
 import { protocoloEndocrinoOneComponent } from '../protocolo_endocrino_one/protocolo-endocrino-one/protocolo-endocrino-one.component';
 
 @Component({

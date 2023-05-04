@@ -6,23 +6,25 @@ import { Router } from '@angular/router';
 //modelos
 import { IUsuarios } from '../../../../models/servicio-medico/usuarios.model';
 import { Ipopover } from '../../../../models/servicio-medico/varios.model';
-import {  IEvaluaciones_PosibleResp, IEvaluaciones_endocrinas, IRespuestas_pacientes_eval_endocrino, IPosibles_resp_endocrinas } from '../../../../models/servicio-medico/protocolo_endocrino.model';
+import {  IEvaluaciones_PosibleResp, IEvaluaciones_endocrinas, IRespuestas_pacientes_eval_endocrino, IPosibles_resp_endocrinas, Irespuesta } from '../../../../models/servicio-medico/protocolo_endocrino.model';
 
 //servicios
-import { ProtocolosEndocrinosService } from '../../../../services/servicio_medico/protocolo_endocrino.service'
+import { ProtocolosEndocrinosService } from '../../../../services/servicio_medico/protocolo_endocrino.service';
+import { AntropometriaService } from '../../../../services/servicio_medico/antropometria.service';
 
 @Component({
-  selector: 'app-enfermedad-actual-one',
-  templateUrl: './enfermedad-actual-one.component.html',
-  styleUrls: ['./enfermedad-actual-one.component.css'],
+  selector: 'app-examen-fisico-one',
+  templateUrl: './examen-fisico-one.component.html',
+  styleUrls: ['./examen-fisico-one.component.css'],
   providers: [  ProtocolosEndocrinosService, 
     { provide: AlertConfig }],
 })
-export class EnfermedadActualOneComponent implements OnChanges {
+export class ExamenFisicoOneComponent implements OnChanges {
 
   constructor(     
     private router: Router,    
-    private srvProtocolo: ProtocolosEndocrinosService,    
+    private srvProtocolo: ProtocolosEndocrinosService,
+    private srvAntropometria: AntropometriaService,
     @Inject(LOCALE_ID) public locale: string,
     
   ) { 
@@ -32,17 +34,18 @@ export class EnfermedadActualOneComponent implements OnChanges {
   @Input() inIDPaciente :string;
   @Input() inIDProtocolo :string;
   @Input() nuevo :boolean;
-  tipoIndice: number=3;
+  tipoIndice: number=5;
   bloqueaGuardar: boolean=true;
   arrayEvaluaciones: IEvaluaciones_PosibleResp[]=[ { evaluaciones: {}, posibles_resp: []} ];
   arrayEvaluacionesConRespuestas:  { evaluaciones?: IEvaluaciones_endocrinas, posibles_resp?: {
       idposibleresp?: number,
       fkevaluacion?: number,
-      posible_resp?: boolean,
-      observacion?: string,
+      descripcion?: string,
+      posible_resp?: string,      
       index?: number,
-      } 
+      }[]
     }[] = [];
+  respuestas: { marcada: Irespuesta[]} []=[];  
   arrayTiposEvaluciones: {tipoevaluacion: string, index: number, cantItem: number}[]=[];
   arrayRespuestas: IRespuestas_pacientes_eval_endocrino[]=[];
   arrayPosiblesRespEndocrinas: IPosibles_resp_endocrinas[]=[];
@@ -84,7 +87,7 @@ export class EnfermedadActualOneComponent implements OnChanges {
     else{
       this.arrayEvaluacionesConRespuestas=[];
     }
-
+    
     this.bloqueaGuardar = this.BloquearGuardar();       
   }
   
@@ -116,10 +119,13 @@ export class EnfermedadActualOneComponent implements OnChanges {
     await this.srvProtocolo.posiblesRespEndocrinasAll()    
     .then(async result => {
       if (result[0]!= undefined){
-        this.arrayPosiblesRespEndocrinas=result;  
+        this.arrayPosiblesRespEndocrinas=result;
+        
       }
-      else
-        this.arrayPosiblesRespEndocrinas=[];      
+      else{
+        this.arrayPosiblesRespEndocrinas=[];
+      }
+      
     })       
   }
 
@@ -130,11 +136,56 @@ export class EnfermedadActualOneComponent implements OnChanges {
     }     
   }
 
-  async getIdRespuesta(e: any, IdposiblesResp: number , i: number){    
-    let posibleResp: IPosibles_resp_endocrinas[];
-    const logica: string = e.target.checked ? 'SI' : 'NO';     
-    posibleResp = await this.arrayPosiblesRespuestas(IdposiblesResp);
-    this.arrayEvaluacionesConRespuestas[i].posibles_resp.idposibleresp = await this.buscarIDrespuesta(logica, posibleResp);
+  async getIdRespuesta(e: any, resp: Irespuesta[] , i: number, j: number){    
+    const logica: string = e.target.checked ? 'SI' : 'NO';
+    const posNo = resp.map(p => p.descripcion).indexOf('NO');
+    const posSi = resp.map(p => p.descripcion).indexOf('SI');
+    let posDef: number;
+    console.log(`No: ${posNo}; Si: ${posSi};`);
+    console.log(`i: ${i}; j: ${j}; e: ${e.target.checked}`);
+    console.log(resp);
+
+    console.log(this.arrayEvaluacionesConRespuestas[i]);
+    if (logica == 'SI'){
+        this.respuestas[i].marcada[posSi].posible_resp=true;
+        this.respuestas[i].marcada[posNo].posible_resp=false;
+        posDef=posSi;
+        this.arrayEvaluacionesConRespuestas[i].posibles_resp[posSi]= {
+            posible_resp: logica,
+            fkevaluacion: resp[posSi].fkevaluacion,
+            descripcion: resp[posSi].descripcion,
+            idposibleresp: resp[posSi].idposibleresp,
+            index: resp[posSi].index,
+        };
+        this.arrayEvaluacionesConRespuestas[i].posibles_resp[posNo]= {
+            posible_resp: '',
+            fkevaluacion: resp[posNo].fkevaluacion,
+            descripcion: resp[posNo].descripcion,
+            idposibleresp: resp[posNo].idposibleresp,
+            index: resp[posNo].index,
+        };
+    }else{
+        this.respuestas[i].marcada[posSi].posible_resp=false;
+        this.respuestas[i].marcada[posNo].posible_resp=true;
+        posDef=posNo;
+        this.arrayEvaluacionesConRespuestas[i].posibles_resp[posSi]= {
+            posible_resp: '',
+            fkevaluacion: resp[posSi].fkevaluacion,
+            descripcion: resp[posSi].descripcion,
+            idposibleresp: resp[posSi].idposibleresp,
+            index: resp[posSi].index,
+        };
+        this.arrayEvaluacionesConRespuestas[i].posibles_resp[posNo]= {
+            posible_resp: logica,
+            fkevaluacion: resp[posNo].fkevaluacion,
+            descripcion: resp[posNo].descripcion,
+            idposibleresp: resp[posNo].idposibleresp,
+            index: resp[posNo].index,
+        };
+    }
+    
+    console.log(this.respuestas[i]);
+    console.log(this.arrayEvaluacionesConRespuestas[i]);
     this.bloqueaGuardar = this.BloquearGuardar();
     if (this.bloqueaGuardar){
       this.showSuccess('Debe Crear una Nueva Evaluacion (Pestaña: Datos Generales)', 'danger');
@@ -160,7 +211,17 @@ export class EnfermedadActualOneComponent implements OnChanges {
 
   async buscarRespuestasPaciente(idProtocolo: string){
     return await this.srvProtocolo.respuestasPacientesEvalEndocrino(this.inIDPaciente, idProtocolo, this.tipoIndice);
-  } 
+  }
+  
+  calc_imc(i: number, j: number, resp: any[]){    
+    const indTalla = resp.map(p => p.descripcion).indexOf('Talla');
+    const indPeso = resp.map(p => p.descripcion).indexOf('Peso');
+    const indImc = resp.map(p => p.descripcion).indexOf('IMC');
+    const talla = Number(this.arrayEvaluacionesConRespuestas[i].posibles_resp[indTalla].posible_resp);
+    const peso = Number(this.arrayEvaluacionesConRespuestas[i].posibles_resp[indPeso].posible_resp);    
+    const imc =  this.srvAntropometria.calculoImc(talla, peso);    
+    this.arrayEvaluacionesConRespuestas[i].posibles_resp[indImc].posible_resp = imc;
+  }
 
   async llenarArrayRespuestas(){    
     this.arrayRespuestas=[];
@@ -168,10 +229,10 @@ export class EnfermedadActualOneComponent implements OnChanges {
     let respuesta: {
       idposibleresp?: number,
       fkevaluacion?: number,
-      posible_resp?: boolean,
-      observacion?: string,
+      descripcion?: string,
+      posible_resp?: string,      
       index?: number,
-    };
+    }[];
     
     let iDProtocolo: string='undefined';
     if (this.nuevo){
@@ -183,60 +244,80 @@ export class EnfermedadActualOneComponent implements OnChanges {
     }
     
     this.arrayRespuestas = await this.buscarRespuestasPaciente(iDProtocolo);
-    
+    console.log(this.arrayRespuestas);
     let idResp:number;
+    let marcada: Irespuesta[]=[];
     let posibleResp: IPosibles_resp_endocrinas[];
-
+    let res: any;
     if (this.arrayRespuestas.length>0){         
       
-      for await (let eva of this.arrayEvaluaciones){
-        posibleResp = await this.arrayPosiblesRespuestas(eva.evaluaciones.idevaluacion);
-        idResp = await this.buscarIDrespuesta('NO', posibleResp);
-        respuesta= {
-          idposibleresp: idResp,
-          fkevaluacion: null,
-          posible_resp: false,
-          observacion: '',
-          index: null
-        };
+      for await (let eva of this.arrayEvaluaciones){        
+        
+        respuesta=[];
+        marcada=[];
         for await (let pos of eva.posibles_resp) {
           for await (let resp of this.arrayRespuestas){
             if (resp.fkposible_resp==pos.idposibleresp){
-              respuesta={
+              res =  (await this.PosiblesRespEndocrinasID(resp.fkposible_resp)).posible_resp;
+              respuesta.push({
                 idposibleresp: resp.fkposible_resp,
-                fkevaluacion: eva.evaluaciones.idevaluacion,                
-                observacion:  resp.respuesta == undefined || resp.respuesta == null ? '' : resp.respuesta,
-                posible_resp: (await this.PosiblesRespEndocrinasID(resp.fkposible_resp)).posible_resp == 'SI' ? true : false ,
+                fkevaluacion: eva.evaluaciones.idevaluacion,
+                posible_resp: resp.respuesta,
+                descripcion: res,
                 index: eva.evaluaciones.indice,
-              }                  
+              });
+              marcada.push({
+                idposibleresp: resp.fkposible_resp,
+                fkevaluacion: eva.evaluaciones.idevaluacion,
+                descripcion: res,
+                posible_resp: resp.respuesta == res ? true : ( resp.respuesta != '' ? true : false ),
+                index: eva.evaluaciones.indice,
+              });
             }
-          }                                
+          }
         }
+        eva.evaluaciones.descripcion_evaluacion=eva.evaluaciones.descripcion_evaluacion.trim();
         this.arrayEvaluacionesConRespuestas.push({evaluaciones:eva.evaluaciones, posibles_resp: respuesta });
+        this.respuestas.push({marcada: marcada });
       }
       
     }
     else{
       this.arrayRespuestas=[];
+      this.respuestas = [];      
       for await (let eva of this.arrayEvaluaciones){
-        posibleResp = await this.arrayPosiblesRespuestas(eva.evaluaciones.idevaluacion);
-        idResp = await this.buscarIDrespuesta('NO', posibleResp);
-        respuesta= {
-          idposibleresp: idResp,
-          fkevaluacion: eva.evaluaciones.idevaluacion,
-          posible_resp: false,
-          observacion: '',
-          index: null
-        };
+        console.log(eva);        
+        respuesta=[];
+        marcada=[];
+        for await (let r of eva.posibles_resp){
+            respuesta?.push({
+                idposibleresp: r.idposibleresp,
+                fkevaluacion: eva.evaluaciones.idevaluacion,
+                descripcion: r.posible_resp,
+                posible_resp: '',
+                index: r.index
+            });
+
+            marcada.push({
+                idposibleresp: r.idposibleresp,
+                fkevaluacion: eva.evaluaciones.idevaluacion,
+                descripcion: r.posible_resp,
+                posible_resp: false,
+                index: r.index
+            });
+        }
+        eva.evaluaciones.descripcion_evaluacion=eva.evaluaciones.descripcion_evaluacion.trim();
         this.arrayEvaluacionesConRespuestas.push({evaluaciones:eva.evaluaciones, posibles_resp: respuesta });
+
+        this.respuestas.push({marcada: marcada });
       }
       
     }   
-    
+    console.log(this.arrayEvaluacionesConRespuestas)
   }
 
   async guardar(){    
-    let respuestasPaciente: IRespuestas_pacientes_eval_endocrino={};
+    let respuestasPaciente: IRespuestas_pacientes_eval_endocrino;
     
     this.popover={};
     this.popover = await this.validaEntradas();
@@ -246,32 +327,36 @@ export class EnfermedadActualOneComponent implements OnChanges {
       this.titleRegistrar = this.popover.titulo 
       return;
     }
-    
+    this.bloqueaGuardar = true;
     if (this.arrayRespuestas.length>0){
-      await this.srvProtocolo.deleteRecordRespProtEndocrino(Number(this.inIDProtocolo), this.tipoIndice).toPromise();
+      await this.srvProtocolo.deleteRecordRespProtEndocrino(Number(this.inIDProtocolo),this.tipoIndice).toPromise();
     }
 
     let errorRegistro: boolean[] = [];
 
     for await (const eva of this.arrayEvaluacionesConRespuestas){
-      respuestasPaciente={        
-        fkprotocolo: Number(this.inIDProtocolo),
-        fkpaciente: Number(this.inIDPaciente),
-        fkposible_resp: eva.posibles_resp.idposibleresp,
-        respuesta: eva.posibles_resp.observacion
-      };
-      
-      await this.srvProtocolo.createRecordRespProtEndocrino(respuestasPaciente)
-      .toPromise()
-      .then(result =>{        
-        if (result.idresp == undefined || typeof(result.idresp)!='number')
-          errorRegistro.push(false);          
-      })
-      .catch(error =>{
-        this.showSuccess(error, 'danger');
-      });      
+        respuestasPaciente={};
+        for await (const res of eva.posibles_resp){
+            
+            respuestasPaciente={
+                fkprotocolo: Number(this.inIDProtocolo),
+                fkpaciente: Number(this.inIDPaciente),
+                fkposible_resp: res.idposibleresp,
+                respuesta: res.posible_resp
+            };
+        
+            await this.srvProtocolo.createRecordRespProtEndocrino(respuestasPaciente)
+            .toPromise()
+            .then(result =>{
+                if (result.idresp == undefined || typeof(result.idresp)!='number')
+                errorRegistro.push(false);
+            })
+            .catch(error =>{
+                this.showSuccess(error, 'danger');
+            });
+        }
     }
-    
+    this.bloqueaGuardar = false;
     if (errorRegistro.indexOf(false)<0)
       this.showSuccess('Registrados satisfactoriamente', 'success');
     else   
