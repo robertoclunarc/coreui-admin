@@ -7,7 +7,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Tensión Arterial'" class="form-row">                
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index" class="form-group col-md-2">
                     <span *ngIf="res.descripcion!='Observacion'" class="form-group has-float-label">                                                                    
@@ -23,7 +23,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Frecuencia Cardiaca'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index" class="form-group col-md-4">
                     <span class="form-group has-float-label">                                                                    
@@ -35,7 +35,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Pulsos'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index" class="form-group col-md-1">
                     <span *ngIf="res.descripcion!='Observacion'" class="form-group has-float-label">                                                                    
@@ -51,7 +51,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Carotideo'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index" class="form-group col-md-1">
                     <span *ngIf="res.descripcion!='Observacion'" class="form-group has-float-label">                                                                    
@@ -67,7 +67,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Radial'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index" class="form-group col-md-1">
                     <span *ngIf="res.descripcion!='Observacion'" class="form-group has-float-label">                                                                    
@@ -83,7 +83,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Otro'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index" class="form-group col-md-4">
                     <span class="form-group has-float-label">                                                                    
@@ -95,7 +95,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Antropometria'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index" class="form-group col-md-1">
                     <span *ngIf="res.descripcion!='Observacion' && res.descripcion!='IMC'" class="form-group has-float-label">                                                                    
@@ -115,7 +115,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Perímetro abdominal'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index" class="form-group col-md-8">                    
                     <span *ngIf="res.descripcion=='Observacion'" class="form-group has-float-label">                                                                    
@@ -127,7 +127,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Agudeza visual fondo de ojo'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index">
                     <div *ngIf="eva.posibles_resp[j].descripcion=='SI' || eva.posibles_resp[j].descripcion=='Observacion'" class="form-group col-md-2">
@@ -145,7 +145,7 @@
             
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Examen odontológico'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index">
                     <div *ngIf="eva.posibles_resp[j].descripcion=='SI' || eva.posibles_resp[j].descripcion=='Observacion'" class="form-group col-md-2">
@@ -163,7 +163,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Pulsos periféricos'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index">
                     <div *ngIf="eva.posibles_resp[j].descripcion=='SI' || eva.posibles_resp[j].descripcion=='Observacion'" class="form-group col-md-2">
@@ -181,7 +181,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Inspección y sensibilidad de los pies'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index">
                     <div *ngIf="eva.posibles_resp[j].descripcion=='SI' || eva.posibles_resp[j].descripcion=='Observacion'" class="form-group col-md-2">
@@ -199,7 +199,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='sensibilidad vibratoria, y táctil-dolorosa'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index">
                     <div *ngIf="eva.posibles_resp[j].descripcion=='SI' || eva.posibles_resp[j].descripcion=='Observacion'" class="form-group col-md-2">
@@ -217,7 +217,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Reflejos Aquileano y patelar'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index">
                     <div *ngIf="eva.posibles_resp[j].descripcion=='SI' || eva.posibles_resp[j].descripcion=='Observacion'" class="form-group col-md-2">
@@ -235,7 +235,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Cardio pulmonar'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index">
                     <div *ngIf="eva.posibles_resp[j].descripcion=='SI' || eva.posibles_resp[j].descripcion=='Observacion'" class="form-group col-md-2">
@@ -253,7 +253,7 @@
 
             <div *ngIf="eva.evaluaciones.descripcion_evaluacion=='Pie y anexos'" class="form-row">
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
-                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}</strong>
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
                 <div *ngFor="let res of eva.posibles_resp; let j=index">
                     <div *ngIf="eva.posibles_resp[j].descripcion=='SI' || eva.posibles_resp[j].descripcion=='Observacion'" class="form-group col-md-2">

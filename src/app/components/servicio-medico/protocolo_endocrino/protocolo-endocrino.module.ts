@@ -17,6 +17,7 @@ import { RiesgosMetabolicosOneComponent } from '../protocolo_endocrino_one/riesg
 import { EnfermedadActualOneComponent } from '../protocolo_endocrino_one/enfermedad-actual/enfermedad-actual-one.component';
 import { UltimoChequeoOneComponent } from '../protocolo_endocrino_one/ultimo-chequeo-one/ultimo-chequeo-one.component';
 import { ExamenFisicoOneComponent } from '../protocolo_endocrino_one/examen-fisico-one/examen-fisico-one.component';
+import { auscultacionOneComponent } from '../protocolo_endocrino_one/auscultacion-one/auscultacion-one.component';
 
 @NgModule({
   imports: [
@@ -40,6 +41,7 @@ import { ExamenFisicoOneComponent } from '../protocolo_endocrino_one/examen-fisi
     EnfermedadActualOneComponent,
     UltimoChequeoOneComponent,
     ExamenFisicoOneComponent,
+    auscultacionOneComponent,
   ]
 })
 export class ProtocoloEndocrinoModule { }

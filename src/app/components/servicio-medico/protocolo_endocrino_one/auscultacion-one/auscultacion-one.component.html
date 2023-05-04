@@ -1,0 +1,26 @@
+<div class="card">
+    <div class="card-body">
+        <form>
+            <div *ngFor="let eva of arrayEvaluacionesConRespuestas; let i=index" class="form-row">
+                <div class="alert alert-secondary col-md-6" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
+                <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
+                </div>
+                &nbsp;
+                <div class="form-group">
+                <span class="form-group has-float-label">                                                                    
+                    <input type="text" class="form-control form-control" style="width: 400px;" [name]="'obs_' + eva.evaluaciones.indice" [(ngModel)]="eva.posibles_resp.observacion" >
+                    <label class="badge-light" for="'obs_' + eva.evaluaciones.indice">Observacion</label>
+                </span>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div *ngFor="let alert of alertsDismiss">
+        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+    </div>
+    <div class="card-footer">      
+        <button type="button" [disabled]="soloLectura || bloqueaGuardar" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
+        <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-dot-circle-o"></i> Reset</button>
+        
+    </div>
+</div>
