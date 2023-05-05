@@ -1,4 +1,5 @@
 <div class="card">
+  <form action="">
     <div class="card-body">
 
       <div *ngFor="let eva of arrayEvaluacionesConRespuestas; let i=index" class="form-row">
@@ -30,4 +31,5 @@
         <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-dot-circle-o"></i> Reset</button>
         
     </div>
+  </form>  
 </div>

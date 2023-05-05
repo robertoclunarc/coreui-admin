@@ -195,7 +195,13 @@
             </div>
           </tab>
           <tab>
-            <ng-template tabHeading><i class="icon-note"></i> Est. Laboratorio</ng-template>          
+            <ng-template tabHeading><i class="icon-chemistry icons "></i> Est. Laboratorio</ng-template>          
+            <div class="col-lg-12">              
+              <app-estudios-laboratorio-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-estudios-laboratorio-one>
+            </div>
+          </tab>
+          <tab>
+            <ng-template tabHeading><i class="icon-note"></i> Compromisos</ng-template>          
             <div class="col-lg-12">              
               en construccion
             </div>

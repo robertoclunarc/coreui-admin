@@ -1,4 +1,5 @@
 <div class="card">
+  <form>
     <div class="card-body">
 
       <div *ngFor="let eva of arrayEvaluacionesConRespuestas; let i=index" class="form-row">
@@ -17,7 +18,7 @@
                 <label class="badge-light" for="'obs_' + eva.evaluaciones.indice">Observacion</label>
               </span>
             </div>          
-        </div>                  
+      </div>                  
 
     </div>
     <div *ngFor="let alert of alertsDismiss">
@@ -28,4 +29,5 @@
         <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-dot-circle-o"></i> Reset</button>
         
     </div>
+  </form>  
 </div>
