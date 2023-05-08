@@ -1,0 +1,45 @@
+<div class="card">
+    <form>
+      <div class="card-body">
+          
+        <div *ngFor="let eva of arrayEvaluacionesConRespuestas; let i=index" class="form-row">
+            
+                <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
+                    <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
+                </div>
+                <div *ngFor="let res of eva.posibles_resp; let j=index">
+                    <div *ngIf="eva.posibles_resp[j].descripcion!='NO'" class="form-group col-md-3">
+                        <div *ngIf="eva.posibles_resp[j].descripcion=='SI'" >
+                            <label class="switch switch-label switch-pill switch-warning">
+                                <input [disabled]="soloLectura" type="checkbox" (change)="getIdRespuesta($event, respuestas[i].marcada, i, j)" [name]="'chkResp_' + eva.evaluaciones.indice" [(ngModel)]="respuestas[i].marcada[j].posible_resp" class="switch-input" >
+                                <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
+                            </label>
+                        </div>                      
+                        <div *ngIf="eva.posibles_resp[j].descripcion=='Valor'">
+                            <span class="form-group has-float-label">
+                                <input type="text" class="form-control form-control" style="width: 100px;" [name]="res.descripcion + '_' + res.index" [(ngModel)]="arrayEvaluacionesConRespuestas[i].posibles_resp[j].posible_resp" >
+                                <label class="badge-light" for="{{res.descripcion + '_' + res.index}}">{{ res.descripcion }}</label>
+                            </span>
+                        </div>
+                        <div *ngIf="eva.posibles_resp[j].descripcion=='Observacion'" >
+                            <span class="form-group has-float-label">
+                                <input type="text" class="form-control form-control" style="width: 350px;" [name]="res.descripcion + '_' + res.index" [(ngModel)]="arrayEvaluacionesConRespuestas[i].posibles_resp[j].posible_resp" >
+                                <label class="badge-light" for="{{res.descripcion + '_' + res.index}}">{{ res.descripcion }}</label>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            
+        </div>                  
+      
+      </div>
+      <div *ngFor="let alert of alertsDismiss">
+          <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+      </div>
+      <div class="card-footer">      
+          <button type="button" [disabled]="soloLectura || bloqueaGuardar" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
+          <button [disabled]="soloLectura  || bloqueaGuardar" type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-dot-circle-o"></i> Reset</button>
+          
+      </div>
+    </form>  
+  </div>

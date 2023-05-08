@@ -259,7 +259,7 @@
                         <label *ngIf="eva.posibles_resp[j].descripcion=='SI'" class="switch switch-label switch-pill switch-warning">                    
                             <input [disabled]="soloLectura" type="checkbox" (change)="getIdRespuesta($event, respuestas[i].marcada, i, j)" [name]="'chkResp_' + eva.evaluaciones.indice" [(ngModel)]="respuestas[i].marcada[j].posible_resp" class="switch-input" >
                             <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
-                        </label>                    
+                        </label>
                         <span *ngIf="res.descripcion=='Observacion'" class="form-group has-float-label">                                                                    
                             <input type="text" class="form-control form-control" style="width: 530px;" [name]="res.descripcion + '_' + res.index" [(ngModel)]="arrayEvaluacionesConRespuestas[i].posibles_resp[j].posible_resp" >
                             <label class="badge-light" for="{{res.descripcion + '_' + res.index}}">{{ res.descripcion }}</label>
