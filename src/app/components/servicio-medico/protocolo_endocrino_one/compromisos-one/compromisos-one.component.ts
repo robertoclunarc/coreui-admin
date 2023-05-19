@@ -10,7 +10,6 @@ import {  IEvaluaciones_PosibleResp, IEvaluaciones_endocrinas, IRespuestas_pacie
 
 //servicios
 import { ProtocolosEndocrinosService } from '../../../../services/servicio_medico/protocolo_endocrino.service';
-import { AntropometriaService } from '../../../../services/servicio_medico/antropometria.service';
 
 @Component({
   selector: 'app-compromisos-one',
@@ -24,7 +23,6 @@ export class CompromisosOneComponent implements OnChanges {
   constructor(     
     private router: Router,    
     private srvProtocolo: ProtocolosEndocrinosService,
-    private srvAntropometria: AntropometriaService,
     @Inject(LOCALE_ID) public locale: string,
     
   ) { 
@@ -209,15 +207,16 @@ export class CompromisosOneComponent implements OnChanges {
   async buscarRespuestasPaciente(idProtocolo: string){
     return await this.srvProtocolo.respuestasPacientesEvalEndocrino(this.inIDPaciente, idProtocolo, this.tipoIndice);
   }
-  
-  calc_imc(i: number, j: number, resp: any[]){    
-    const indTalla = resp.map(p => p.descripcion).indexOf('Talla');
-    const indPeso = resp.map(p => p.descripcion).indexOf('Peso');
-    const indImc = resp.map(p => p.descripcion).indexOf('IMC');
-    const talla = Number(this.arrayEvaluacionesConRespuestas[i].posibles_resp[indTalla].posible_resp);
-    const peso = Number(this.arrayEvaluacionesConRespuestas[i].posibles_resp[indPeso].posible_resp);    
-    const imc =  this.srvAntropometria.calculoImc(talla, peso);    
-    this.arrayEvaluacionesConRespuestas[i].posibles_resp[indImc].posible_resp = imc;
+
+  async respuestasDelPaciente(idposibleResp: number){ 
+    let respuesta: IRespuestas_pacientes_eval_endocrino={};   
+    for await (let res of this.arrayRespuestas){
+      if (res.fkposible_resp==idposibleResp){
+        respuesta = res;
+        break;
+      }
+    }
+    return respuesta;    
   }
 
   async llenarArrayRespuestas(){    
@@ -241,33 +240,69 @@ export class CompromisosOneComponent implements OnChanges {
     }
     
     this.arrayRespuestas = await this.buscarRespuestasPaciente(iDProtocolo);
-    console.log(this.arrayRespuestas);
-    let idResp:number;
-    let marcada: Irespuesta[]=[];
-    let posibleResp: IPosibles_resp_endocrinas[];
+    let marcada: Irespuesta[]=[];    
     let res: any;
+    let sino: any;
+    let idsino: any;
     if (this.arrayRespuestas.length>0){         
-      
+      console.log(this.arrayRespuestas);
       for await (let eva of this.arrayEvaluaciones){        
         
         respuesta=[];
         marcada=[];
-        for await (let pos of eva.posibles_resp) {
-          for await (let resp of this.arrayRespuestas){
+        for await (let pos of eva.posibles_resp) {          
+          for await (let resp of this.arrayRespuestas){                        
             if (resp.fkposible_resp==pos.idposibleresp){
-              res =  (await this.PosiblesRespEndocrinasID(resp.fkposible_resp)).posible_resp;
               respuesta.push({
                 idposibleresp: resp.fkposible_resp,
                 fkevaluacion: eva.evaluaciones.idevaluacion,
                 posible_resp: resp.respuesta,
-                descripcion: res,
+                descripcion: pos.posible_resp,
                 index: eva.evaluaciones.indice,
               });
               marcada.push({
                 idposibleresp: resp.fkposible_resp,
                 fkevaluacion: eva.evaluaciones.idevaluacion,
-                descripcion: res,
-                posible_resp: resp.respuesta == res ? true : ( resp.respuesta != '' ? true : false ),
+                descripcion:pos.posible_resp,
+                posible_resp: resp.respuesta == pos.posible_resp ? true : ( resp.respuesta != '' ? true : false ),
+                index: eva.evaluaciones.indice,
+              });
+              if (resp.respuesta=='NO' || resp.respuesta=='SI'){
+                sino = resp.respuesta=='NO' ? 'SI' : 'NO';
+                idsino = await this.buscarIDrespuesta(sino, eva.posibles_resp);
+                respuesta.push({
+                  idposibleresp: idsino,
+                  fkevaluacion: eva.evaluaciones.idevaluacion,
+                  posible_resp: '',
+                  descripcion: sino,
+                  index: eva.evaluaciones.indice,
+                });
+                marcada.push({
+                  idposibleresp:  idsino,
+                  fkevaluacion: eva.evaluaciones.idevaluacion,
+                  descripcion:pos.posible_resp,
+                  posible_resp: false,
+                  index: eva.evaluaciones.indice,
+                });
+              }
+            }            
+          }
+          res={};
+          if (pos.posible_resp == "Observacion"){
+            res = await  this.respuestasDelPaciente(pos.idposibleresp);
+            if (res.respuesta==undefined){
+              respuesta.push({
+                idposibleresp: pos.idposibleresp,
+                fkevaluacion: eva.evaluaciones.idevaluacion,
+                posible_resp: '',
+                descripcion: pos.posible_resp,
+                index: eva.evaluaciones.indice,
+              });
+              marcada.push({
+                idposibleresp: pos.idposibleresp,
+                fkevaluacion: eva.evaluaciones.idevaluacion,
+                descripcion: pos.posible_resp,
+                posible_resp: false,
                 index: eva.evaluaciones.indice,
               });
             }
@@ -282,8 +317,7 @@ export class CompromisosOneComponent implements OnChanges {
     else{
       this.arrayRespuestas=[];
       this.respuestas = [];      
-      for await (let eva of this.arrayEvaluaciones){
-        console.log(eva);        
+      for await (let eva of this.arrayEvaluaciones){        
         respuesta=[];
         marcada=[];
         for await (let r of eva.posibles_resp){
@@ -291,7 +325,7 @@ export class CompromisosOneComponent implements OnChanges {
                 idposibleresp: r.idposibleresp,
                 fkevaluacion: eva.evaluaciones.idevaluacion,
                 descripcion: r.posible_resp,
-                posible_resp: '',
+                posible_resp: r.posible_resp=='NO' ? 'NO' : '',
                 index: r.index
             });
 
@@ -334,7 +368,7 @@ export class CompromisosOneComponent implements OnChanges {
     for await (const eva of this.arrayEvaluacionesConRespuestas){
         respuestasPaciente={};
         for await (const res of eva.posibles_resp){
-            
+          if (res.posible_resp!=''){  
             respuestasPaciente={
                 fkprotocolo: Number(this.inIDProtocolo),
                 fkpaciente: Number(this.inIDPaciente),
@@ -351,6 +385,7 @@ export class CompromisosOneComponent implements OnChanges {
             .catch(error =>{
                 this.showSuccess(error, 'danger');
             });
+          }  
         }
     }
     this.bloqueaGuardar = false;
@@ -386,7 +421,23 @@ export class CompromisosOneComponent implements OnChanges {
       };
       this.bloqueaGuardar=true;      
       return  popOver;
-    }    
+    }
+    
+    let eva: any;
+    let res: any;    
+    for (let i=0; i<this.arrayEvaluacionesConRespuestas.length; i++){
+      eva=this.arrayEvaluacionesConRespuestas[i];
+      if (eva?.posibles_resp!=undefined){
+        for (let j=0; j<eva.posibles_resp.length; j++){
+          res=eva.posibles_resp[j];
+          if (res.descripcion!='Observacion' && res.posible_resp==''){
+            if (res.descripcion!='SI' && res.descripcion!='NO'){
+              this.arrayEvaluacionesConRespuestas[i].posibles_resp[j].posible_resp='-';            
+            }
+          }  
+        }
+      }  
+    }
 
     return  popOver;
   }

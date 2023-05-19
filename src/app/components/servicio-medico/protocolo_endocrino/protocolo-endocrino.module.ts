@@ -20,6 +20,7 @@ import { ExamenFisicoOneComponent } from '../protocolo_endocrino_one/examen-fisi
 import { auscultacionOneComponent } from '../protocolo_endocrino_one/auscultacion-one/auscultacion-one.component';
 import { EstudiosLaboratorioOneComponent } from '../protocolo_endocrino_one/estudios-laboratorio-one/estudios-laboratorio-one.component';
 import { CompromisosOneComponent } from '../protocolo_endocrino_one/compromisos-one/compromisos-one.component';
+import { planillaProtocoloEndocrinoComponent } from '../planillas/planilla-protocolo-endrocrino.component';
 
 @NgModule({
   imports: [
@@ -46,6 +47,7 @@ import { CompromisosOneComponent } from '../protocolo_endocrino_one/compromisos-
     auscultacionOneComponent,
     EstudiosLaboratorioOneComponent,
     CompromisosOneComponent,
+    planillaProtocoloEndocrinoComponent
   ]
 })
 export class ProtocoloEndocrinoModule { }

@@ -160,7 +160,18 @@ export class auscultacionOneComponent implements OnChanges {
 
   async buscarRespuestasPaciente(idProtocolo: string){
     return await this.srvProtocolo.respuestasPacientesEvalEndocrino(this.inIDPaciente, idProtocolo, this.tipoIndice);
-  } 
+  }
+  
+  async respuestasDelPaciente(idposibleResp: number){ 
+    let respuesta: IRespuestas_pacientes_eval_endocrino={};   
+    for await (let res of this.arrayRespuestas){
+      if (res.fkposible_resp==idposibleResp){
+        respuesta = res;
+        break;
+      }
+    }
+    return respuesta;    
+  }
 
   async llenarArrayRespuestas(){    
     this.arrayRespuestas=[];
@@ -186,7 +197,7 @@ export class auscultacionOneComponent implements OnChanges {
     
     let idResp:number;
     let posibleResp: IPosibles_resp_endocrinas[];
-
+    let res: any;
     if (this.arrayRespuestas.length>0){         
       
       for await (let eva of this.arrayEvaluaciones){
@@ -210,8 +221,22 @@ export class auscultacionOneComponent implements OnChanges {
                 index: eva.evaluaciones.indice,
               }                  
             }
-          }                                
+          }
+          if (pos.posible_resp == "Observacion"){
+            res = await  this.respuestasDelPaciente(pos.idposibleresp);
+            if (res.respuesta==undefined || res.respuesta==""){
+              respuesta={
+                idposibleresp: pos.idposibleresp,
+                fkevaluacion: eva.evaluaciones.idevaluacion,
+                posible_resp: '',
+                observacion: pos.posible_resp,
+                index: eva.evaluaciones.indice,
+              };
+              
+            }
+          }                               
         }
+        
         this.arrayEvaluacionesConRespuestas.push({evaluaciones:eva.evaluaciones, posibles_resp: respuesta });
       }
       
@@ -259,16 +284,17 @@ export class auscultacionOneComponent implements OnChanges {
         fkposible_resp: eva.posibles_resp.idposibleresp,
         respuesta: eva.posibles_resp.observacion
       };
-      
-      await this.srvProtocolo.createRecordRespProtEndocrino(respuestasPaciente)
-      .toPromise()
-      .then(result =>{        
-        if (result.idresp == undefined || typeof(result.idresp)!='number')
-          errorRegistro.push(false);          
-      })
-      .catch(error =>{
-        this.showSuccess(error, 'danger');
-      });      
+      if (respuestasPaciente.respuesta!=''){
+        await this.srvProtocolo.createRecordRespProtEndocrino(respuestasPaciente)
+        .toPromise()
+        .then(result =>{        
+          if (result.idresp == undefined || typeof(result.idresp)!='number')
+            errorRegistro.push(false);          
+        })
+        .catch(error =>{
+          this.showSuccess(error, 'danger');
+        });
+      }  
     }
     
     if (errorRegistro.indexOf(false)<0)
@@ -303,7 +329,23 @@ export class auscultacionOneComponent implements OnChanges {
       };
       this.bloqueaGuardar=true;      
       return  popOver;
-    }    
+    }
+    
+    let eva: any;
+    let res: any;    
+    for (let i=0; i<this.arrayEvaluacionesConRespuestas.length; i++){
+      eva=this.arrayEvaluacionesConRespuestas[i];
+      if (eva?.posibles_resp!=undefined){
+        for (let j=0; j<eva.posibles_resp.length; j++){
+          res=eva.posibles_resp[j];
+          if (res.descripcion!='Observacion' && res.posible_resp==''){
+            if (res.descripcion!='SI' && res.descripcion!='NO'){
+              this.arrayEvaluacionesConRespuestas[i].posibles_resp[j].posible_resp='-';            
+            }
+          }  
+        }
+      }  
+    }
 
     return  popOver;
   }

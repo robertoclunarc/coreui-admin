@@ -24,9 +24,9 @@
                 <div class="alert alert-secondary col-md-4" style="height: 34px; margin-bottom: 1px; padding:0px 10px; line-height:34px;" role="alert">
                     <strong> {{eva.evaluaciones.descripcion_evaluacion}}:</strong>
                 </div>
-                <div *ngFor="let res of eva.posibles_resp; let j=index" class="form-group col-md-4">
+                <div *ngFor="let res of eva.posibles_resp; let j=index" class="form-group col-md-2">
                     <span class="form-group has-float-label">                                                                    
-                        <input type="text" class="form-control form-control" [name]="res.descripcion + '_' + res.index" [(ngModel)]="arrayEvaluacionesConRespuestas[i].posibles_resp[j].posible_resp" >
+                        <input type="number" class="form-control form-control" [name]="res.descripcion + '_' + res.index" [(ngModel)]="arrayEvaluacionesConRespuestas[i].posibles_resp[j].posible_resp" >
                         <label class="badge-light" for="{{res.descripcion + '_' + res.index}}">{{ res.descripcion }}</label>
                     </span>
                 </div>

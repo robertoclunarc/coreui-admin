@@ -15,7 +15,7 @@
                                 <span class="switch-slider" data-checked="SI" data-unchecked="NO"></span>
                             </label>
                         </div>                      
-                        <div *ngIf="eva.posibles_resp[j].descripcion=='Valor'">
+                        <div *ngIf="eva.posibles_resp[j].descripcion!='Observacion' && eva.posibles_resp[j].descripcion!='SI' && eva.posibles_resp[j].descripcion!='NO'">
                             <span class="form-group has-float-label">
                                 <input type="text" class="form-control form-control" style="width: 100px;" [name]="res.descripcion + '_' + res.index" [(ngModel)]="arrayEvaluacionesConRespuestas[i].posibles_resp[j].posible_resp" >
                                 <label class="badge-light" for="{{res.descripcion + '_' + res.index}}">{{ res.descripcion }}</label>

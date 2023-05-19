@@ -261,15 +261,16 @@ export class EnfermedadActualOneComponent implements OnChanges {
         respuesta: eva.posibles_resp.observacion
       };
       
-      await this.srvProtocolo.createRecordRespProtEndocrino(respuestasPaciente)
-      .toPromise()
-      .then(result =>{        
-        if (result.idresp == undefined || typeof(result.idresp)!='number')
-          errorRegistro.push(false);          
-      })
-      .catch(error =>{
-        this.showSuccess(error, 'danger');
-      });      
+        await this.srvProtocolo.createRecordRespProtEndocrino(respuestasPaciente)
+        .toPromise()
+        .then(result =>{        
+          if (result.idresp == undefined || typeof(result.idresp)!='number')
+            errorRegistro.push(false);          
+        })
+        .catch(error =>{
+          this.showSuccess(error, 'danger');
+        });
+       
     }
     
     if (errorRegistro.indexOf(false)<0)
@@ -304,7 +305,23 @@ export class EnfermedadActualOneComponent implements OnChanges {
       };
       this.bloqueaGuardar=true;      
       return  popOver;
-    }    
+    }
+
+    let eva: any;
+    let res: any;    
+    for (let i=0; i<this.arrayEvaluacionesConRespuestas.length; i++){
+      eva=this.arrayEvaluacionesConRespuestas[i];
+      if (eva?.posibles_resp!=undefined){
+        for (let j=0; j<eva.posibles_resp.length; j++){
+          res=eva.posibles_resp[j];
+          if (res.descripcion!='Observacion' && res.posible_resp==''){
+            if (res.descripcion!='SI' && res.descripcion!='NO'){
+              this.arrayEvaluacionesConRespuestas[i].posibles_resp[j].posible_resp='-';            
+            }
+          }  
+        }
+      }  
+    }
 
     return  popOver;
   }

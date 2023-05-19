@@ -206,6 +206,17 @@ export class ExamenFisicoOneComponent implements OnChanges {
     }     
   }
 
+  async respuestasDelPaciente(idposibleResp: number){ 
+    let respuesta: IRespuestas_pacientes_eval_endocrino={};   
+    for await (let res of this.arrayRespuestas){
+      if (res.fkposible_resp==idposibleResp){
+        respuesta = res;
+        break;
+      }
+    }
+    return respuesta;    
+  }
+
   async buscarRespuestasPaciente(idProtocolo: string){
     return await this.srvProtocolo.respuestasPacientesEvalEndocrino(this.inIDPaciente, idProtocolo, this.tipoIndice);
   }
@@ -241,33 +252,67 @@ export class ExamenFisicoOneComponent implements OnChanges {
     }
     
     this.arrayRespuestas = await this.buscarRespuestasPaciente(iDProtocolo);
-    console.log(this.arrayRespuestas);
-    let idResp:number;
-    let marcada: Irespuesta[]=[];
-    let posibleResp: IPosibles_resp_endocrinas[];
+    let marcada: Irespuesta[]=[];    
     let res: any;
-    if (this.arrayRespuestas.length>0){         
-      
+    let sino: any;
+    let idsino: any; 
+    if (this.arrayRespuestas.length>0){      
       for await (let eva of this.arrayEvaluaciones){        
-        
         respuesta=[];
         marcada=[];
-        for await (let pos of eva.posibles_resp) {
-          for await (let resp of this.arrayRespuestas){
+        for await (let pos of eva.posibles_resp) {          
+          for await (let resp of this.arrayRespuestas){                        
             if (resp.fkposible_resp==pos.idposibleresp){
-              res =  (await this.PosiblesRespEndocrinasID(resp.fkposible_resp)).posible_resp;
               respuesta.push({
                 idposibleresp: resp.fkposible_resp,
                 fkevaluacion: eva.evaluaciones.idevaluacion,
                 posible_resp: resp.respuesta,
-                descripcion: res,
+                descripcion: pos.posible_resp,
                 index: eva.evaluaciones.indice,
               });
               marcada.push({
                 idposibleresp: resp.fkposible_resp,
                 fkevaluacion: eva.evaluaciones.idevaluacion,
-                descripcion: res,
-                posible_resp: resp.respuesta == res ? true : ( resp.respuesta != '' ? true : false ),
+                descripcion:pos.posible_resp,
+                posible_resp: resp.respuesta == pos.posible_resp ? true : ( resp.respuesta != '' ? true : false ),
+                index: eva.evaluaciones.indice,
+              });
+              if (resp.respuesta=='NO' || resp.respuesta=='SI'){
+                sino = resp.respuesta=='NO' ? 'SI' : 'NO';
+                idsino = await this.buscarIDrespuesta(sino, eva.posibles_resp);
+                respuesta.push({
+                  idposibleresp: idsino,
+                  fkevaluacion: eva.evaluaciones.idevaluacion,
+                  posible_resp: '',
+                  descripcion: sino,
+                  index: eva.evaluaciones.indice,
+                });
+                marcada.push({
+                  idposibleresp:  idsino,
+                  fkevaluacion: eva.evaluaciones.idevaluacion,
+                  descripcion:pos.posible_resp,
+                  posible_resp: false,
+                  index: eva.evaluaciones.indice,
+                });
+              }
+            }            
+          }
+          res={};
+          if (pos.posible_resp == "Observacion"){
+            res = await  this.respuestasDelPaciente(pos.idposibleresp);
+            if (res.respuesta==undefined){
+              respuesta.push({
+                idposibleresp: pos.idposibleresp,
+                fkevaluacion: eva.evaluaciones.idevaluacion,
+                posible_resp: '',
+                descripcion: pos.posible_resp,
+                index: eva.evaluaciones.indice,
+              });
+              marcada.push({
+                idposibleresp: pos.idposibleresp,
+                fkevaluacion: eva.evaluaciones.idevaluacion,
+                descripcion: pos.posible_resp,
+                posible_resp: false,
                 index: eva.evaluaciones.indice,
               });
             }
@@ -291,7 +336,7 @@ export class ExamenFisicoOneComponent implements OnChanges {
                 idposibleresp: r.idposibleresp,
                 fkevaluacion: eva.evaluaciones.idevaluacion,
                 descripcion: r.posible_resp,
-                posible_resp: '',
+                posible_resp: r.posible_resp=='NO' ? 'NO' : '',
                 index: r.index
             });
 
@@ -330,11 +375,12 @@ export class ExamenFisicoOneComponent implements OnChanges {
     }
 
     let errorRegistro: boolean[] = [];
-
+    
     for await (const eva of this.arrayEvaluacionesConRespuestas){
-        respuestasPaciente={};
+        respuestasPaciente={};        
         for await (const res of eva.posibles_resp){
-            
+          console.log(res);
+          if (res.posible_resp!=''){
             respuestasPaciente={
                 fkprotocolo: Number(this.inIDProtocolo),
                 fkpaciente: Number(this.inIDPaciente),
@@ -351,6 +397,7 @@ export class ExamenFisicoOneComponent implements OnChanges {
             .catch(error =>{
                 this.showSuccess(error, 'danger');
             });
+          }  
         }
     }
     this.bloqueaGuardar = false;
@@ -386,7 +433,23 @@ export class ExamenFisicoOneComponent implements OnChanges {
       };
       this.bloqueaGuardar=true;      
       return  popOver;
-    }    
+    }
+
+    let eva: any;
+    let res: any;    
+    for (let i=0; i<this.arrayEvaluacionesConRespuestas.length; i++){
+      eva=this.arrayEvaluacionesConRespuestas[i];
+      if (eva?.posibles_resp!=undefined){
+        for (let j=0; j<eva.posibles_resp.length; j++){
+          res=eva.posibles_resp[j];
+          if (res.descripcion!='Observacion' && res.posible_resp==''){
+            if (res.descripcion!='SI' && res.descripcion!='NO'){
+              this.arrayEvaluacionesConRespuestas[i].posibles_resp[j].posible_resp='-';            
+            }
+          }  
+        }
+      }  
+    }
 
     return  popOver;
   }

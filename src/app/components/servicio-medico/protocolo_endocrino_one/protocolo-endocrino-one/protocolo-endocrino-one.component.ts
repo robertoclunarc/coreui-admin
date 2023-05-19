@@ -1,7 +1,8 @@
-import { Component, OnChanges, Inject, LOCALE_ID, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnChanges, Inject, LOCALE_ID, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { formatDate } from '@angular/common';
 import { Router } from '@angular/router';
+import { ModalDirective} from 'ngx-bootstrap/modal';
 
 //modelos
 
@@ -36,7 +37,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     this.llenarArrayMedico();
     
   }
-
+  @ViewChild('myModalPlanilla') public myModalPlanilla: ModalDirective;
   @Input() vProtocolo :string="";
   @Input() newProtocol:boolean=false; 
   @Output() outProtocolo = new EventEmitter<IvProtocoloEndrocrinos>();
