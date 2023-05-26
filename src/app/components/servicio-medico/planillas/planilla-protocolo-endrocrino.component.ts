@@ -1,7 +1,6 @@
 import { Component, OnChanges, Input, Inject, LOCALE_ID, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from "@angular/router";
 import { jsPDF } from "jspdf";
-import html2canvas from 'html2canvas';
 import { Router } from '@angular/router';
 import { formatDate } from '@angular/common';
 
@@ -28,6 +27,7 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
   @ViewChild('htmlPage2', {static: false}) htmlPage2: ElementRef;
   @ViewChild('htmlPage3', {static: false}) htmlPage3: ElementRef;
   @Input() inIDProtocolo: string = "-1";
+  @Input() inCiPaciente: string = "-1";  
   arrayTiposEvaluciones: {tipoevaluacion: string, index: number, cantItem: number}[]=[];
   arrayTiposEvalucionesPage1: {tipoevaluacion: string, index: number, cantItem: number}[]=[];
   arrayTiposEvalucionesPage2: {tipoevaluacion: string, index: number, cantItem: number}[]=[];
@@ -45,7 +45,8 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
         index?: number,
     }[],    
   }[] = [];
-  element: HTMLElement;
+  encabezados: HTMLElement[]=[];
+  totalpages: number = 3;
   arrayProtocolo: IvProtocoloEndrocrinos[]=[];
   protocolo: IvProtocoloEndrocrinos={};
   private user: IUsuarios={};
@@ -77,44 +78,28 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
     }else{
       this.router.navigate(["login"]);
     }
-    console.log(`Paciente: ${this.inIDProtocolo}`);
-    this.llenarArrayRespuestas();
-    //this.buscarPaciente();
+    console.log(`Protocolo: ${this.inIDProtocolo}`);
+    this.llenarArrayRespuestas();    
     this.llenarArrayProtocolos();
-  }
-
-  async buscarPaciente(){    
-    await this.srvPacientes.pacienteOne('16395343')
-    .toPromise()
-    .then(async result => {
-      if (result[0]!= undefined){
-        
-        this.protocoloObj.paciente=result[0];        
-        this.protocoloObj.protocolo.lugar="PUERTO ORDAZ";          
-        this.protocoloObj.protocolo.emision= formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
-        this.protocoloObj.protocolo.vigencia= formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
-        
-      }
-      else
-        this.protocoloObj.paciente={};      
-    })
-  }
-
-  async llenarArrayProtocolos() {
-    const htmlString: string = await this.pageHeadHtml(1);
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(htmlString, 'text/html');
     
-    await this.srvProtocolo.consultaFilter({ ciPaciente: '16395343', idProtocolo: 'null', fechaIni: 'null',  fechaFin: 'null',  medico: 'null',  uidPaciente: 'null', condlogica: 'OR' })		
-        .then(results => {				
-            this.arrayProtocolo = results;        
-            this.revisiones = results.length;
-            //console.log(this.arrayProtocolo);
-            this.protocoloObj = this.arrayProtocolo.find(p=>p.protocolo.idprotocolo==63);
-            this.element = doc.body.firstChild as HTMLElement;
-        })
-        .catch(err => { console.log(err) });
   }
+
+  async llenarArrayProtocolos() {    
+    
+    await this.srvProtocolo.consultaFilter({ ciPaciente: this.inCiPaciente, idProtocolo: 'null', fechaIni: 'null',  fechaFin: 'null',  medico: 'null',  uidPaciente: 'null', condlogica: 'OR' })		
+      .then(async results => {				
+        this.arrayProtocolo = results;        
+        this.revisiones = results.length;
+        //console.log(this.arrayProtocolo);
+        this.protocoloObj = this.arrayProtocolo.find(p=>p.protocolo.idprotocolo.toString()==this.inIDProtocolo);            
+        this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd', this.locale);
+        this.protocoloObj.protocolo.vigencia= formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd', this.locale);
+        this.protocoloObj.protocolo.proxima_cita= formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd', this.locale);
+        
+        await this.generar_encabezados();
+      })
+      .catch(err => { console.log(err) });
+  }  
 
   async llenarArrayEvaluacionesAll(){       
     await this.srvProtocolo.EvalPosiblesRespEndocrinasAll()
@@ -125,7 +110,7 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
       else{
         this.arrayEvaluaciones=[];
       } 
-       //console.log(this.arrayEvaluaciones)      
+       console.log(this.arrayEvaluaciones)      
     })       
   }
 
@@ -153,6 +138,9 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
         this.arrayTiposEvalucionesPage1 = this.arrayTiposEvaluciones.filter(t => (t.index==1 || t.index==2 || t.index==3));
         this.arrayTiposEvalucionesPage2 = this.arrayTiposEvaluciones.filter(t => (t.index==4 || t.index==5));
         this.arrayTiposEvalucionesPage3 = this.arrayTiposEvaluciones.filter(t => (t.index==6 || t.index==7 || t.index==8));
+        /*console.log(this.arrayTiposEvaluciones);
+        console.log(this.arrayTiposEvalucionesPage1);
+        console.log(this.arrayTiposEvalucionesPage2);*/
       }
       else{
         this.arrayTiposEvaluciones=[]; 
@@ -184,7 +172,7 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
     await this.llenarArrayEvaluacionesAll();
     await this.llenarArrayPosiblesRespEndocrinasAll();
     
-    this.arrayRespuestas = await this.srvProtocolo.respuestasPacientesEvalEndocrino('undefined', '63', undefined);
+    this.arrayRespuestas = await this.srvProtocolo.respuestasPacientesEvalEndocrino('undefined', this.inIDProtocolo, undefined);
         
     let res: any;
     if (this.arrayRespuestas.length>0){         
@@ -217,9 +205,7 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
     //console.log(this.arrayEvaluacionesConRespuestas)
   }
 
-  public async exportHtmlToPDF(){
-    const data = document.getElementById('htmlhead_1');
-    //console.log(data);
+  public async exportHtmlToPDF(){    
     const chart1 = document.getElementById('htmlpage1');
     const chart2 = document.getElementById('htmlpage2');
     const chart3 = document.getElementById('htmlpage3');    
@@ -227,44 +213,44 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
     const docWidth: number = 190;
     const doc = new jsPDF('p', 'mm', 'letter');
     
-    let headerText: HTMLElement = await this.HeadHtml(1);
-    
-    console.log(headerText);
-    console.log(data);
+    /*
+    let headerText: any;    
+    headerText = await this.HeadHtml(1);    
     const contentDataURL = await html2canvas(headerText).then(canvas => canvas.toDataURL('image/png'));
     const addHeader = () => {
             doc.setFontSize(12);                
-            doc.addImage(contentDataURL, 'PNG', 8, 5, docWidth + 8, docHeight);
-          };           
+            doc.addImage(headerText, 'PNG', 8, 5, docWidth + 8, docHeight);
+          };
+    */         
             
     doc.html(chart1, {
       callback: function () {
-        addHeader();
-        doc.addPage();
+       // addHeader();
+        doc.addPage();        
         doc.html(chart2, {
         callback: function () {
-          addHeader();
+          //addHeader();
           doc.addPage();
           doc.html(chart3, {
           callback: function () {
-            addHeader();            
+            //addHeader();            
             // Guardar el archivo PDF            
             doc.save('protEndocrino.pdf');
           },
           x: 12,
-          y: 604,
+          y: 564,
           width: docWidth, //target width in the PDF document
           windowWidth: 850 //window width in CSS pixels
           });
         },
         x: 12,
-        y: 323,
+        y: 283,
         width: docWidth,
         windowWidth: 850
         });
       },
       x: 12,
-      y: 45,
+      y: 5,
       width: docWidth,
       windowWidth: 850
     });  
@@ -276,65 +262,72 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
     const emision: string = this.protocoloObj.protocolo.emision;
     const vigencia: string = this.protocoloObj.protocolo.vigencia;
     const cedula: string = this.protocoloObj.paciente.ci;
-    const nombre: string = this.protocoloObj.paciente.nombre_completo;
+    let nombre: string =  this.protocoloObj.paciente.nombre_completo;    
+    nombre = nombre.replace(/ /g, "&nbsp;  &nbsp; ");    
     const edad: string = this.protocoloObj.paciente.edad?.years;
     const sx: string = this.protocoloObj.paciente.sexo;
-    let data = `<table class="tg">
+    let data: string = `<table style="table-layout: fixed; width: 100%; font-size: 10px;" width="100%">
     <colgroup>
-        <col>
-        <col>
-        <col>
+        <col style="width: 20%">
+        <col style="width: 50%">
+        <col style="width: 30%">
     </colgroup>
     <thead>
       <tr>
-        <td class="tg-c3ow"><img width="130px" height="80px" src="../../../../assets/logo.jpg"></td>
-        <td class="tg-c3ow"><span>DEPTO. DE HIGIENE Y SEGURIDAD INDUSTRIAL</span><br>
-                            <span>EVALUACION FISICA</span><br>
-                            <span>DEL PROTOCOLO ENDOCRINO</span>
-                            <span>METABOLICO / CARDIOVASCULAR</span>                                   
+        <td><img width="130px" height="80px" src="../../../../assets/logo.jpg"></td>
+        <td>
+          <span style="font-weight:bold;font-style:italic; text-align: center; font-size: 10px;">DEPTO. &nbsp; DE &nbsp;  HIGIENE &nbsp;  Y &nbsp;  SEGURIDAD &nbsp;  INDUSTRIAL</span><br>
+          <span style="font-weight:bold;font-style:italic; text-align: center;">EVALUACION &nbsp;  FISICA</span><br>
+          <span style="font-weight:bold;font-style:italic; text-align: center;">DEL &nbsp; PROTOCOLO &nbsp; ENDOCRINO</span><br>
+          <span style="font-weight:bold;font-style:italic; text-align: center;">METABOLICO &nbsp; / &nbsp; CARDIOVASCULAR</span>                                   
         </td>
-        <td class="tg-c3ow">
-            <span>CODIGO: 63</span><br>
-            <span>PAGINA: 1 de 3 REV. N°:1</span><br>
-            <span>EMISION: 2023-05-11T04:00:00.000Z</span><br>
-            <span>VIGENCIA: 2023-05-11T04:00:00.000Z</span>
+        <td>
+          <span>CODIGO : ${codigo}</span><br>
+          <span>PAG. : ${page} de ${this.totalpages}. REV.&nbsp; N°:${revision}</span><br>
+          <span>EMISION : ${emision}</span><br>
+          <span>VIGENCIA: ${vigencia}</span>
         </td>
       </tr>
       <tr>
-        <td class="tg-c3ow"></td>
-        <td class="tg-c3ow"></td>
-        <td class="tg-c3ow"></td>
+        <td></td>
+        <td></td>
+        <td></td>
       </tr>
-
       <tr bgcolor="#F0ECEC">
-        <td class="tg-c3ow">CEDULA: 
-            <span>16395343</span>
+        <td>CEDULA&nbsp; :&nbsp;  <span>${cedula}</span>
         </td>
-        <td class="tg-c3ow">
-            NOMBRE:
-            <span>ROBERTO CARLOS LUNAR.G</span>
+        <td>
+            NOMBRE&nbsp; :&nbsp; <span>${nombre}</span>
         </td>
-        <td class="tg-c3ow">
-            EDAD: <span>41</span>
-            SEXO: <span>M</span>
+        <td>
+            EDAD&nbsp; :&nbsp; <span>${edad}</span>
+            SEXO&nbsp; :&nbsp; <span>${sx}</span>
         </td>
-      </tr>
-       
+      </tr>       
     </thead>
-    <tbody><tr>
-        <th colspan="3" width="110%"><span>Información a Evaluar</span></th>
-    </tr>
-</tbody></table>`;
+    </table>`;
+    const html: string = `<div id="htmlhead">${data}</div>`;
     
-    return data;
+    return html;
+  }
+  
+  async generar_encabezados(){
+    let htmlString: string="";
+    let element: HTMLElement;    
+    for (let i=1; i<=this.totalpages; i++){      
+      htmlString = await this.pageHeadHtml(i);      
+      element = await this.HeadHtml(htmlString);
+      this.encabezados.push(element);
+    }
   }
 
-  async HeadHtml(page: number) {
-    const parser = new DOMParser();    
-    let data = await this.pageHeadHtml(page);
-    data =  '<div _ngcontent-jtf-c121 id="htmlhead_1" class="container-fluid">' + data + '</div>';
-    let head = parser.parseFromString(data, 'text/html');
-    return head.body.firstChild as HTMLElement;
+  async HeadHtml(html: string) {
+    const parser = new DOMParser();
+    let element: HTMLElement;
+    let doc: Document;
+    doc = parser.parseFromString(html, 'text/html');
+    element = doc.body.firstChild as HTMLElement;
+    return element;
   }
     
 }

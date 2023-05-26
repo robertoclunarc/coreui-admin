@@ -152,7 +152,7 @@
       
                   <button type="button" [disabled]="soloLectura" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
                   <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-eraser"></i> Reset</button>
-                  <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-success" (click)="myModalPlanilla.show();"><i class="fa fa-file-pdf-o"></i> Imprimir</button>
+                  <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-success" (click)="imprimir(); myModalPlanilla.show();"><i class="fa fa-file-pdf-o"></i> Imprimir</button>
                 </div>
               </div>
             </div>
@@ -213,14 +213,14 @@
   </div>
   <div bsModal #myModalPlanilla="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalPlanilla" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
-      <div class="modal-content modal-primary" >
+      <div class="modal-content modal-secondary" >
         <div class="modal-header">        
           <button type="button" class="close" (click)="myModalPlanilla.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
-        <div class="modal-body">
-          <planilla-protocolo-endocrino [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" ></planilla-protocolo-endocrino>
+        <div *ngIf="impIDProtocolo!='-1' && impIDProtocolo!=undefined" class="modal-body">
+          <planilla-protocolo-endocrino [inCiPaciente]="impCiPaciente" [inIDProtocolo]="impIDProtocolo" ></planilla-protocolo-endocrino>
         </div>
                   
         <div class="modal-footer">

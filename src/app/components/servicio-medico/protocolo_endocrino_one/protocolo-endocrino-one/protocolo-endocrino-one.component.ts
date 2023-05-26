@@ -43,6 +43,8 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
   @Output() outProtocolo = new EventEmitter<IvProtocoloEndrocrinos>();
   protocoloObj: IvProtocoloEndrocrinos={ paciente: {}, medico: {}, protocolo:{} };   
   selectMedicos: IMedicos[]=[];
+  impIDProtocolo: string = "-1";
+  impCiPaciente: string = "-1";
   private user: IUsuarios={};
   private tipoUser: string; 
   alertaRegistrar: string=""; 
@@ -56,7 +58,8 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
   ngOnChanges() {    
       
     this.init();
-    
+    this.impIDProtocolo = '-1';
+    this.impCiPaciente = '-1';
   }
 
   init(){
@@ -239,6 +242,11 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     }
 
     return  popOver;
+  }
+
+  imprimir(){
+    this.impIDProtocolo = this.protocoloObj.protocolo.idprotocolo.toString();
+    this.impCiPaciente = this.protocoloObj.paciente.ci;    
   }
 
   onClosed(dismissedAlert: AlertComponent): void {

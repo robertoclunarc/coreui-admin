@@ -10,60 +10,13 @@
             <button printSectionId="htmltable" class="btn btn-primary btn-block" ngxPrint>Imprimir PDF</button>
           
         </div>
-    </div>    
-    <ng-container *ngIf="element">            
-        <div id="htmlhead_1" #htmlhead_1 class="container-fluid" [innerHTML]="element.outerHTML"></div>
-    </ng-container>
-        <!--
-        <table class="tg" style="table-layout: fixed; width: 100%; font-size: 10px;">
-            <colgroup>
-                <col style="width: 20%">
-                <col style="width: 50%">
-                <col style="width: 30%">
-            </colgroup>
-            <thead>
-              <tr>
-                <td class="tg-c3ow"><img width="130px" height="80px" src="../../../../assets/logo.jpg"></td>
-                <td class="tg-c3ow"><span style="font-weight:bold;font-style:italic; text-align: center;">DEPTO. DE HIGIENE Y SEGURIDAD INDUSTRIAL</span><br>
-                                    <span style="font-weight:bold;font-style:italic; text-align: center;">EVALUACION FISICA</span><br>
-                                    <span style="font-weight:bold;font-style:italic; text-align: center;">DEL PROTOCOLO ENDOCRINO</span>
-                                    <span style="font-weight:bold;font-style:italic; text-align: center;">METABOLICO / CARDIOVASCULAR</span>                                   
-                </td>
-                <td class="tg-c3ow">
-                    <span style="font-weight:bold;font-style:italic; text-align: center;">CODIGO: {{protocoloObj.protocolo.idprotocolo}}</span><br>
-                    <span style="font-weight:bold;font-style:italic; text-align: center;">PAGINA: 1 de 3 REV. N°:{{revisiones}}</span><br>
-                    <span style="font-weight:bold;font-style:italic; text-align: center;">EMISION: {{protocoloObj.protocolo.emision | date:'yyyy-MM-dd'}}</span><br>
-                    <span style="font-weight:bold;font-style:italic; text-align: center;">VIGENCIA: {{protocoloObj.protocolo.vigencia | date:'yyyy-MM-dd'}}</span>
-                </td>
-              </tr>
-              <tr>
-                <td class="tg-c3ow"></td>
-                <td class="tg-c3ow"></td>
-                <td class="tg-c3ow"></td>
-              </tr>
-        
-              <tr bgcolor="#F0ECEC">
-                <td class="tg-c3ow">CEDULA: 
-                    <span style="font-weight:bold;font-style:italic; text-align: center;">{{protocoloObj.paciente.ci}}</span>
-                </td>
-                <td class="tg-c3ow">
-                    NOMBRE:
-                    <span style="font-weight:bold;font-style:italic; text-align: center;">{{protocoloObj.paciente.nombre_completo}}</span>
-                </td>
-                <td class="tg-c3ow">
-                    EDAD: <span style="font-weight:bold;font-style:italic; text-align: center;">{{protocoloObj.paciente.edad?.years }}</span>
-                    SEXO: <span style="font-weight:bold;font-style:italic; text-align: center;">{{protocoloObj.paciente.sexo}}</span>
-                </td>
-              </tr>
-               
-            </thead>
-            <tr>
-                <th colspan="3" width="110%"><span style="font-weight:bold;font-style:italic; text-align: center;">Información a Evaluar</span></th>
-            </tr>
-        </table>
--->
+    </div>
     
     <div class="container-fluid" id="htmlpage1" #htmlpage1>
+        <ng-container *ngIf="encabezados[0]">
+            <div id="htmlhead_1" style="font-weight:bold;font-style:italic; text-align: left;font-size:10px; font-weight:bold;" #htmlhead_1 [innerHTML]="encabezados[0].outerHTML"></div>           
+        </ng-container>
+        <div style="font-weight:bold;font-style:italic; text-align: center;font-size:12px; font-weight:bold;">Información  a  Evaluar</div>
         <table *ngFor="let eva of arrayTiposEvalucionesPage1; let i=index" class="table table-bordered table-sm" style="font-size: 11px;" width="95%" >
             <tr bgcolor="#F0ECEC">
                 <th width="33%">{{eva.tipoevaluacion}}</th>
@@ -91,10 +44,14 @@
                         <div *ngIf="(pos.descripcion=='SI' || pos.descripcion=='NO') && (pos.posible_resp!='') && (pos.posible_resp!='NO' && pos.posible_resp!='SI')">{{pos.posible_resp}}</div>
                     </span>
                 </td>
-            </tr>                      
+            </tr>
         </table>
     </div>
     <div class="container-fluid" id="htmlpage2" #htmlpage2>
+        <ng-container *ngIf="encabezados[1]">            
+            <div id="htmlhead_2" #htmlhead_2 style="font-weight:bold;font-style:italic; text-align: left;font-size:10px; font-weight:bold;" [innerHTML]="encabezados[1].outerHTML"></div>           
+        </ng-container>
+        <div style="font-weight:bold;font-style:italic; text-align: center;font-size:12px; font-weight:bold;">Información  a  Evaluar</div>
         <table *ngFor="let eva of arrayTiposEvalucionesPage2; let i=index" class="table table-bordered table-sm" style="font-size: 11px;" width="95%" >
             <tr bgcolor="#F0ECEC">
                 <th width="33%">{{eva.tipoevaluacion}}</th>
@@ -126,6 +83,10 @@
         </table>
     </div>
     <div class="container-fluid" id="htmlpage3" #htmlpage3>
+        <ng-container *ngIf="encabezados[2]">            
+            <div id="htmlhead_3" #htmlhead_3 style="font-weight:bold;font-style:italic; text-align: left;font-size:10px; font-weight:bold;" [innerHTML]="encabezados[2].outerHTML"></div>
+        </ng-container>
+        <div style="font-weight:bold;font-style:italic; text-align: center;font-size:12px; font-weight:bold;">Información  a  Evaluar</div>
         <table *ngFor="let eva of arrayTiposEvalucionesPage3; let i=index" class="table table-bordered table-sm" style="font-size: 11px;" width="95%" >
             <tr bgcolor="#F0ECEC">
                 <th width="33%">{{eva.tipoevaluacion}}</th>
@@ -162,12 +123,12 @@
                     <strong>Proxima Cita:</strong>
                 </div>                          
                 <div  class="col">
-                    <strong>{{protocoloObj.protocolo.proxima_cita | date:'yyyy-MM-dd'}}</strong>
+                    <strong>{{protocoloObj?.protocolo?.proxima_cita | date:'yyyy-MM-dd'}}</strong>
                 </div>
             </div>
             <div class="row align-items-start">
                 <div  class="col">
-                    <strong>MÉDICO EVALUADOR:</strong>
+                    <strong>MÉDICO EVALUADOR&nbsp; :</strong>
                 </div>                          
                 <div  class="col">
                     <strong>{{protocoloObj.medico.nombre}}</strong>
@@ -175,10 +136,10 @@
             </div>
             <div class="row align-items-start">
                 <div  class="col">
-                    <strong>LUGAR Y FECHA:</strong>
+                    <strong>LUGAR Y FECHA&nbsp; :</strong>
                 </div>                          
-                <div  class="col">
-                    <strong>{{protocoloObj.protocolo.lugar}} {{protocoloObj.protocolo.emision | date:'yyyy-MM-dd'}}</strong>
+                <div *ngIf="protocoloObj?.protocolo?.lugar!=undefined && protocoloObj?.protocolo?.emision!=undefined"  class="col">
+                    <strong>{{protocoloObj?.protocolo?.lugar}} {{protocoloObj?.protocolo?.emision | date:'yyyy-MM-dd'}}</strong>
                 </div>
             </div>
             <div class="row align-items-start">
