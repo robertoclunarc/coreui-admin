@@ -235,5 +235,9 @@ export class ProtocoloEndocrinoComponent  implements OnInit {
       return a[prop] - b[prop]
     }
   }
+
+  exportExcel(){
+    
+  }
  
 }

@@ -4,9 +4,10 @@
             <div class="col-lg-12">
               <div class="card">
                 <div class="card-header">
-                   <strong>Protocolo Endrino</strong>                 
-                   <div class="card-header-actions">
-                    <button [disabled]="soloLectura" (click)="showModalRegistrar(); primaryModal.show();" title="Registrar Nueva Evaluacion" type="button" class="btn btn-pill btn-block btn-success" >+</button>
+                  <i class="fa fa-edit"></i><strong>Protocolo Endrino</strong>
+                  <div class="card-header-actions">                    
+                    <button type="button" class="btn btn-sm btn-pill btn-success" title="Registrar Nueva Evaluacion" [disabled]="soloLectura" (click)="showModalRegistrar(); primaryModal.show();"><i class="fa fa-plus"></i>&nbsp;Nuevo</button>
+                    <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="soloLectura" (click)="exportExcel();" title="Explortar a Excel"><i class="fa fa-file-excel-o"></i>&nbsp;Exportar</button>
                   </div>
                 </div>
                 <div class="card-body">
