@@ -21,21 +21,21 @@ import { IvProtocoloEndrocrinos } from '../../../models/servicio-medico/protocol
 })
 
 export class planillaProtocoloEndocrinoComponent implements OnChanges {
-  
-  @ViewChild('htmlhead', {static: false}) htmlhead: ElementRef;
-  @ViewChild('htmlpage1', {static: false}) htmlPage1: ElementRef;
-  @ViewChild('htmlPage2', {static: false}) htmlPage2: ElementRef;
-  @ViewChild('htmlPage3', {static: false}) htmlPage3: ElementRef;
+  @ViewChild('htmltable', {static: false}) htmltable: ElementRef; // hmtl del div que va a imprimir
+  @ViewChild('htmlhead', {static: false}) htmlhead: ElementRef; // hmtl del encabezado para cada pagina
+  @ViewChild('htmlpage1', {static: false}) htmlPage1: ElementRef;// hmtl de la pagina 1
+  @ViewChild('htmlPage2', {static: false}) htmlPage2: ElementRef;// hmtl de la pagina 2
+  @ViewChild('htmlPage3', {static: false}) htmlPage3: ElementRef;// hmtl de la pagina 3
   @Input() inIDProtocolo: string = "-1";
   @Input() inCiPaciente: string = "-1";  
   arrayTiposEvaluciones: {tipoevaluacion: string, index: number, cantItem: number}[]=[];
-  arrayTiposEvalucionesPage1: {tipoevaluacion: string, index: number, cantItem: number}[]=[];
-  arrayTiposEvalucionesPage2: {tipoevaluacion: string, index: number, cantItem: number}[]=[];
-  arrayTiposEvalucionesPage3: {tipoevaluacion: string, index: number, cantItem: number}[]=[];
+  arrayTiposEvalucionesPage1: {tipoevaluacion: string, index: number, cantItem: number}[]=[];// tipos evaluaciones que estaran en la pagina 1
+  arrayTiposEvalucionesPage2: {tipoevaluacion: string, index: number, cantItem: number}[]=[];// tipos evaluaciones que estaran en la pagina 2
+  arrayTiposEvalucionesPage3: {tipoevaluacion: string, index: number, cantItem: number}[]=[];// tipos evaluaciones que estaran en la pagina 3
   arrayEvaluaciones: IEvaluaciones_PosibleResp[]=[ { evaluaciones: {}, posibles_resp: []} ];
   arrayPosiblesRespEndocrinas: IPosibles_resp_endocrinas[]=[];
   arrayRespuestas: IRespuestas_pacientes_eval_endocrino[]=[];
-  arrayEvaluacionesConRespuestas:  { 
+  arrayEvaluacionesConRespuestas:  { // todas las evaluaciones
     evaluaciones?: IEvaluaciones_endocrinas, 
     posibles_resp?: {
         idposibleresp?: number,
@@ -45,12 +45,47 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
         index?: number,
     }[],    
   }[] = [];
+  arrayEvaluacionesConRespuestasPage1:  { // evaluaciones que estaran el la pagina 1
+    evaluaciones?: IEvaluaciones_endocrinas, 
+    posibles_resp?: {
+        idposibleresp?: number,
+        fkevaluacion?: number,
+        descripcion?: string,
+        posible_resp?: string,      
+        index?: number,
+    }[],    
+  }[] = [];
+  arrayEvaluacionesConRespuestasPage2:  { // evaluaciones que estaran el la pagina 2
+    evaluaciones?: IEvaluaciones_endocrinas, 
+    posibles_resp?: {
+        idposibleresp?: number,
+        fkevaluacion?: number,
+        descripcion?: string,
+        posible_resp?: string,      
+        index?: number,
+    }[],    
+  }[] = [];
+  arrayEvaluacionesConRespuestasPage3:  { // evaluaciones que estaran el la pagina 3
+    evaluaciones?: IEvaluaciones_endocrinas, 
+    posibles_resp?: {
+        idposibleresp?: number,
+        fkevaluacion?: number,
+        descripcion?: string,
+        posible_resp?: string,      
+        index?: number,
+    }[],    
+  }[] = [];
+  titleButtonImp: string = "Imprimir PDF";
+  disableButtonImp: boolean = false;
   encabezados: HTMLElement[]=[];
-  totalpages: number = 3;
+  totalpages: number = 3;//cantidad de paginas del documento pdf
+  pagina1: number[] = [1,2,3]; // tipos indices que estaran el la pagina 1
+  pagina2: number[] = [4,5];// tipos indices que estaran el la pagina 2
+  pagina3: number[] = [6,7,8];// tipos indices que estaran el la pagina 3
   arrayProtocolo: IvProtocoloEndrocrinos[]=[];
   protocolo: IvProtocoloEndrocrinos={};
   private user: IUsuarios={};
-  private tipoUser: string;
+  private tipoUser: string;  
   revisiones: number = 0;
   protocoloObj: IvProtocoloEndrocrinos={ paciente: {}, medico: {}, protocolo:{} };
   constructor(
@@ -73,7 +108,7 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
        
       }
       else {
-            this.router.navigate(["login"]);
+        this.router.navigate(["login"]);
       }
     }else{
       this.router.navigate(["login"]);
@@ -95,6 +130,7 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
         this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd', this.locale);
         this.protocoloObj.protocolo.vigencia= formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd', this.locale);
         this.protocoloObj.protocolo.proxima_cita= formatDate(this.protocoloObj.protocolo.proxima_cita, 'yyyy-MM-dd', this.locale);
+        this.protocoloObj.protocolo.lugar = this.protocoloObj.protocolo.lugar.replace(/ /g, '   ')
         
         await this.generar_encabezados();
       })
@@ -135,9 +171,9 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
     .then(async result => {
       if (result.length>0){
         this.arrayTiposEvaluciones=result;
-        this.arrayTiposEvalucionesPage1 = this.arrayTiposEvaluciones.filter(t => (t.index==1 || t.index==2 || t.index==3));
-        this.arrayTiposEvalucionesPage2 = this.arrayTiposEvaluciones.filter(t => (t.index==4 || t.index==5));
-        this.arrayTiposEvalucionesPage3 = this.arrayTiposEvaluciones.filter(t => (t.index==6 || t.index==7 || t.index==8));
+        this.arrayTiposEvalucionesPage1 = this.arrayTiposEvaluciones.filter(t => this.pagina1.includes(t.index));
+        this.arrayTiposEvalucionesPage2 = this.arrayTiposEvaluciones.filter(t => this.pagina2.includes(t.index));
+        this.arrayTiposEvalucionesPage3 = this.arrayTiposEvaluciones.filter(t => this.pagina3.includes(t.index));
         /*console.log(this.arrayTiposEvaluciones);
         console.log(this.arrayTiposEvalucionesPage1);
         console.log(this.arrayTiposEvalucionesPage2);*/
@@ -159,7 +195,10 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
 
   async llenarArrayRespuestas(){    
     this.arrayRespuestas=[];
-    this.arrayEvaluacionesConRespuestas=[];    
+    this.arrayEvaluacionesConRespuestas=[];
+    this.arrayEvaluacionesConRespuestasPage1=[];
+    this.arrayEvaluacionesConRespuestasPage2=[];
+    this.arrayEvaluacionesConRespuestasPage3=[];
     let respuesta: {
         idposibleresp?: number,
         fkevaluacion?: number,
@@ -198,14 +237,19 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
         }
         eva.evaluaciones.descripcion_evaluacion=eva.evaluaciones.descripcion_evaluacion.trim();
         this.arrayEvaluacionesConRespuestas.push({evaluaciones:eva.evaluaciones, posibles_resp: respuesta });
-        
+        this.arrayEvaluacionesConRespuestas[0].evaluaciones.tipoevaluacion
       }
-      
-    }    
-    //console.log(this.arrayEvaluacionesConRespuestas)
+      this.arrayEvaluacionesConRespuestasPage1 = this.arrayEvaluacionesConRespuestas.filter(t => this.pagina1.includes(t.evaluaciones.tipoindice));
+      this.arrayEvaluacionesConRespuestasPage2 = this.arrayEvaluacionesConRespuestas.filter(t => this.pagina2.includes(t.evaluaciones.tipoindice));
+      this.arrayEvaluacionesConRespuestasPage3 = this.arrayEvaluacionesConRespuestas.filter(t => this.pagina3.includes(t.evaluaciones.tipoindice));
+    }
+    
+    //console.log(this.arrayEvaluacionesConRespuestasPage3);
   }
 
-  public async exportHtmlToPDF(){    
+  public async exportHtmlToPDF(){
+    this.titleButtonImp = "Loading...";
+    this.disableButtonImp = true;
     const chart1 = document.getElementById('htmlpage1');
     const chart2 = document.getElementById('htmlpage2');
     const chart3 = document.getElementById('htmlpage3');    
@@ -234,7 +278,9 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
           doc.html(chart3, {
           callback: function () {
             //addHeader();            
-            // Guardar el archivo PDF            
+            // Guardar el archivo PDF
+            this.disableButtonImp = false;
+            this.titleButtonImp = "Imprimir PDF";            
             doc.save('protEndocrino.pdf');
           },
           x: 12,
@@ -253,7 +299,7 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
       y: 5,
       width: docWidth,
       windowWidth: 850
-    });  
+    });        
   }
 
   async pageHeadHtml(page: number) {

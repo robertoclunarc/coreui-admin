@@ -21,6 +21,7 @@ import { auscultacionOneComponent } from '../protocolo_endocrino_one/auscultacio
 import { EstudiosLaboratorioOneComponent } from '../protocolo_endocrino_one/estudios-laboratorio-one/estudios-laboratorio-one.component';
 import { CompromisosOneComponent } from '../protocolo_endocrino_one/compromisos-one/compromisos-one.component';
 import { planillaProtocoloEndocrinoComponent } from '../planillas/planilla-protocolo-endrocrino.component';
+import { NgxPrintModule } from 'ngx-print';
 
 @NgModule({
   imports: [
@@ -32,7 +33,7 @@ import { planillaProtocoloEndocrinoComponent } from '../planillas/planilla-proto
     ModalModule.forRoot(),    
     TypeaheadModule.forRoot(),
     AlertModule.forRoot(),
-    
+    NgxPrintModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   declarations: [

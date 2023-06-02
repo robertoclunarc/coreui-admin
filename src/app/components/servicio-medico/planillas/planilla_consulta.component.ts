@@ -38,6 +38,8 @@ export class planillaConsultaComponent implements OnChanges {
   countMedicamentos: number=0
   private user: IUsuarios={};
   private tipoUser: string;
+  titleButtonImp: string = "Imprimir PDF";
+  disableButtonImp: boolean = false;
 
   constructor(private route: ActivatedRoute,private router: Router,
     private srvConsultas: ConsultasService,    
@@ -156,6 +158,8 @@ export class planillaConsultaComponent implements OnChanges {
   }  
 
   public exportHtmlToPDF(){
+    this.titleButtonImp = "Loading...";
+    this.disableButtonImp = true;
     let data = document.getElementById('htmltable');
      
       html2canvas(data).then(canvas => {
@@ -169,7 +173,8 @@ export class planillaConsultaComponent implements OnChanges {
           doc.addImage(contentDataURL, 'PNG', 0, position, docWidth, docHeight)
           
           doc.save('consulta.pdf');
-          
+          this.titleButtonImp = "Imprimir PDF";
+          this.disableButtonImp = false;
       });
   }
 

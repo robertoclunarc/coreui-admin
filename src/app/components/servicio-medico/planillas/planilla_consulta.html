@@ -1,17 +1,12 @@
 <div class="container">
     <div class="row" >
-        <div class="col-lg-6">
-            
-            <button class="btn btn-primary btn-block" (click)="exportHtmlToPDF()">Descargar PDF</button>            
-          
+        <div class="container-fluid">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <button type="button" [disabled]="disableButtonImp" class="btn btn-outline-dark" (click)="exportHtmlToPDF()">{{titleButtonImp}}</button>
+                <button printSectionId="htmltable" class="btn btn-outline-dark" ngxPrint>Vista Prelim.</button>      
+            </div>    
         </div>
-        <div class="col-lg-6">
-            
-            <button printSectionId="htmltable" class="btn btn-primary btn-block" ngxPrint>Imprimir PDF</button>
-          
-        </div>
-    </div>
-   
+    </div>    
     
     <div class="container-fluid" id="htmltable" #htmltable>
         <table class="tg" style="table-layout: fixed; width: 100%">
