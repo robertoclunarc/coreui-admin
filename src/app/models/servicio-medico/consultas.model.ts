@@ -115,7 +115,7 @@ export interface IFiltroConsulta{
     Medico?: string,
     Paramedico?: string,
     Motivo?: string,
-    uidMotivo: string
+    uidMotivo?: string
     nombrePaciente?: string,
     cargo?: string,
     fecha?: string,
@@ -136,6 +136,7 @@ export interface IvMorbilidad{
     fkafeccion?: string;
     descripcion_afeccion?: string;
     motivo_consulta?: string;
+    fktipoconsulta?: number;
     cargo?: string;
     sexo?: string;
     direccion_hab?: string;
@@ -143,9 +144,15 @@ export interface IvMorbilidad{
     talla?: string;
     peso?: string;
     imc?: string;
+    fresp?: string;
+	temper?: string;
+	fcard?: string;
+    pulso?: string;
+    tart?: string;
     edad?: string;
     departamento?: string;
     diagnostico?: string;
+    descripciondiagnostico?: string;
     medicamentos?: string;
     ci_paramedico?: string;
     uid_paciente?: string;

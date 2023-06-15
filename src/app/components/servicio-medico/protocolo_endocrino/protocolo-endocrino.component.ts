@@ -2,6 +2,8 @@
 import { Component, OnInit, Inject, ViewChild, LOCALE_ID } from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router } from '@angular/router';
+import { formatDate } from '@angular/common';
+import * as XLSX from 'xlsx';
 
 //servicios
 import { ProtocolosEndocrinosService } from '../../../services/servicio_medico/protocolo_endocrino.service';
@@ -9,8 +11,9 @@ import { ProtocolosEndocrinosService } from '../../../services/servicio_medico/p
 //modelos
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { IPaciente } from '../../../models/servicio-medico/paciente.model';
-import { filtroProtoEndocrino, IvProtocoloEndrocrinos } from '../../../models/servicio-medico/protocolo_endocrino.model';
+import { filtroProtoEndocrino, IEvaluaciones_endocrinas, IPosibles_resp_endocrinas, IProtocolosEndrocrinos, IRespuestas_pacientes_eval_endocrino, IvProtocoloEndrocrinos } from '../../../models/servicio-medico/protocolo_endocrino.model';
 import { protocoloEndocrinoOneComponent } from '../protocolo_endocrino_one/protocolo-endocrino-one/protocolo-endocrino-one.component';
+import { IMedicos } from '../../../models/servicio-medico/medicos.model';
 
 @Component({
   selector: 'app-protocolo-endocrino',
@@ -236,8 +239,52 @@ export class ProtocoloEndocrinoComponent  implements OnInit {
     }
   }
 
-  exportExcel(){
-    
-  }
- 
+  async exportExcel(){
+    let vProtocolos: {
+      protocolosEndrocrinos?: IProtocolosEndrocrinos,
+      paciente?: IPaciente,
+      medico?: IMedicos,
+      evaluaciones_endocrinas?: IEvaluaciones_endocrinas,
+      posibles_resp_endocrinas?: IPosibles_resp_endocrinas,
+      respuestas_pacientes_eval_endocrino?: IRespuestas_pacientes_eval_endocrino
+    }[]=[];
+    let data: any[]=[];
+    //this.filtro={ ciPaciente: 'null', idProtocolo: 'null', fechaIni: 'null',  fechaFin: 'null',  medico: 'null',  uidPaciente: 'null', condlogica: 'OR' }
+    console.log(this.filtro)
+    await this.srvProtocoloEndocrino.vistaProtocolosEndrocrinos(this.filtro)
+    .then(async (res) => {          
+      vProtocolos= res;      
+      for (let p of vProtocolos){        
+        data.push({
+          IdProt: p.protocolosEndrocrinos.idprotocolo,
+          Cedula: p.paciente.ci,
+          Nombres: p.paciente.nombre,
+          Sexo: p.paciente.sexo,
+          FechaNac:  formatDate(p.paciente.fechanac, 'dd-MM-yyyy', this.locale),
+          Cargo: p.paciente.cargo,
+          Emision: formatDate(p.protocolosEndrocrinos.emision, 'dd-MM-yyyy', this.locale),
+          Vigencia: formatDate(p.protocolosEndrocrinos.vigencia, 'dd-MM-yyyy', this.locale),
+          Diagnostico: p.protocolosEndrocrinos.diagnostico,
+          Indicaciones: p.protocolosEndrocrinos.indicaciones,
+          Boletin: p.protocolosEndrocrinos.boletin ? 'Si' : 'No',
+          Charla: p.protocolosEndrocrinos.charla ? 'Si' : 'No',
+          Folleto: p.protocolosEndrocrinos.folleto ? 'Si' : 'No',
+          Otro: p.protocolosEndrocrinos.otro,
+          Lugar: p.protocolosEndrocrinos.lugar,
+          ProxCita: p.protocolosEndrocrinos.proxima_cita ? formatDate(p.protocolosEndrocrinos.proxima_cita, 'dd-MM-yyyy', this.locale) : '' ,
+          Referencia: p.protocolosEndrocrinos.referecia,
+          Medico: p.medico.nombre,
+          CiMedico: p.medico.ci,
+          TipoEvaluacion: p.evaluaciones_endocrinas.tipoevaluacion,
+          Descripcion: p.evaluaciones_endocrinas.descripcion_evaluacion,
+          'Dato(s)': p.posibles_resp_endocrinas.posible_resp,
+          'Observacion(es)': p.respuestas_pacientes_eval_endocrino.respuesta 
+        })
+      }
+    });
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');    
+    XLSX.writeFile(workbook, 'Protocolos.xlsx');
+  } 
 }

@@ -9,7 +9,7 @@ import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { Ipopover } from '../../../models/servicio-medico/varios.model';
 
 //servicios
-import { EstudiosFisicosService } from '../../../services/servicio_medico/estudiofisico.servive';
+import { EstudiosFisicosService } from '../../../services/servicio_medico/estudiofisico.service';
 import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
 
 @Component({

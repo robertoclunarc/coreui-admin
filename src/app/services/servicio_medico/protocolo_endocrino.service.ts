@@ -51,6 +51,15 @@ export class ProtocolosEndocrinosService {
 			/*.pipe(
 			//	tap(result => console.log(`consultaFilter`)),
 				catchError(this.handleError)
+		
+        );*/
+  }
+  async vistaProtocolosEndrocrinos(filtro: filtroProtoEndocrino) : Promise<IvProtocoloEndrocrinos[]> { 
+    let parametrosUrl = `${filtro.ciPaciente}/${filtro.idProtocolo}/${filtro.fechaIni}/${filtro.fechaFin}/${filtro.medico}/${filtro.uidPaciente}/${filtro.condlogica}`;
+    return this.http.get<IvProtocoloEndrocrinos[]>(this.apiUrlProtocolo + 'filtrar/vista/' + parametrosUrl ).toPromise();
+			/*.pipe(
+			//	tap(result => console.log(`consultaFilter`)),
+				catchError(this.handleError)
 			);*/
   }
 

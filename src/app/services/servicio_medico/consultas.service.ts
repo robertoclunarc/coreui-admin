@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
-import { IConsultas, IConsultasConstraint, IFiltroConsulta, IvConsulta, IvMorbilidad } from '../../models/servicio-medico/consultas.model';
+import { IConsultas, IFiltroConsulta, IvConsulta, IvMorbilidad } from '../../models/servicio-medico/consultas.model';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -48,8 +48,8 @@ export class ConsultasService {
 			);
   }
 
-  morbilidadFilter(ciPaciente: string ,  uidPaciente: string , uidConsulta: string, fechaIni: string, fechaFin: string, motivo: string, uidArea: string, turno: string) : Observable<IvMorbilidad[]> { 
-    let parametrosUrl = ciPaciente + '/' + uidPaciente + '/' + uidConsulta + '/' + fechaIni + '/' + fechaFin + '/' + motivo + '/' + uidArea  + '/' + turno; 
+  morbilidadFilter(atencion: IFiltroConsulta) : Observable<IvMorbilidad[]> { 
+    let parametrosUrl = `${atencion.ciPaciente}/${atencion.uidConsulta}/${atencion.fechaIni}/${atencion.fechaFin}/${atencion.Medico}/${atencion.Paramedico}/${atencion.Motivo}/${atencion.uidMotivo}/${atencion.nombrePaciente}/${atencion.cargo}/${atencion.fecha}/${atencion.condlogica}`; 
     return this.http.get<IvMorbilidad[]>(this.apiUrlConsultas + 'morbilidad/' + parametrosUrl )
 			.pipe(
 				//tap(result => console.log(`morbilidadFilter`)),

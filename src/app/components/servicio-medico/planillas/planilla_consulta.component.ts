@@ -79,11 +79,8 @@ export class planillaConsultaComponent implements OnChanges {
 		return await this.srvConsultas.consultaFilter(this.buscarConsulta)
 			.toPromise()
       .then(results => {				
-				
 				this.vConsulta = results[0];
-        this.buscarSignosVitales(this.vConsulta.ci, this.vConsulta.fecha);
-        
-				
+        this.buscarSignosVitales(this.vConsulta.ci, this.vConsulta.fecha);				
 			})			
 			.catch(err => { console.log(err) });
 	}
@@ -91,12 +88,10 @@ export class planillaConsultaComponent implements OnChanges {
   private async morbilidadFilter(uid: string) {
     this.limpiarFiltro();
     this.buscarConsulta.uidConsulta=uid;
-		return await this.srvConsultas.morbilidadFilter('null','null',uid,'null','null','null','null','null')
+		return await this.srvConsultas.morbilidadFilter(this.buscarConsulta)
 			.toPromise()
       .then(results => {				
-				
-				this.vMorbilidad = results[0];
-				
+				this.vMorbilidad = results[0];				
 			})			
 			.catch(err => { console.log(err) });
 	}
@@ -124,11 +119,10 @@ export class planillaConsultaComponent implements OnChanges {
       .then(result => {
         if (result!= undefined){           
            this.medicamentoAplicado=result;
-           this.countMedicamentos= this.medicamentoAplicado.medicamentos==undefined ? 0 : this.medicamentoAplicado.medicamentos.length ;           
+           this.countMedicamentos= this.medicamentoAplicado.medicamentos==undefined ? 0 : this.medicamentoAplicado.medicamentos.length;
         }
         else
-        this.medicamentoAplicado={}
-        
+          this.medicamentoAplicado={}
       })
     }    
   }

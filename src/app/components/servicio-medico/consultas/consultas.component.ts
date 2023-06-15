@@ -1,11 +1,12 @@
 //componentes
 import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID, ElementRef, NgModule } from '@angular/core';
 import { ModalDirective} from 'ngx-bootstrap/modal';
-import { FormsModule } from '@angular/forms';
+//import { FormsModule } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router } from '@angular/router';
+import * as XLSX from 'xlsx';
 
 //servicios
 
@@ -13,7 +14,7 @@ import { ConsultasService } from '../../../services/servicio_medico/consultas.se
 import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
 import { MedicosService } from '../../../services/servicio_medico/medicos.service';
 import { MotivosService } from '../../../services/servicio_medico/motivos.service';
-import { AreasService } from '../../../services/servicio_medico/areas.sevice';
+import { AreasService } from '../../../services/servicio_medico/areas.service';
 import { PatologiasService } from '../../../services/servicio_medico/patologias.service';
 import { AfeccionesService } from '../../../services/servicio_medico/afecciones.service';
 import { SignosVitalesService } from '../../../services/servicio_medico/signosvitales.service';
@@ -22,11 +23,12 @@ import { TiempoReposoService } from '../../../services/servicio_medico/tiemporep
 import { AntropometriaService } from '../../../services/servicio_medico/antropometria.service';
 import { MedicamentosService } from '../../../services/servicio_medico/medicamentos.service';
 import { HistoriaService } from '../../../services/servicio_medico/historias.service';
+import { CorreoService } from "../../../services/servicio_medico/correo.service";
 
 //modelos
 import { Ipopover } from '../../../models/servicio-medico/varios.model';
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
-import { IConsultas, IConsultasConstraint, IvConsulta, IFiltroConsulta, Ireferencia } from '../../../models/servicio-medico/consultas.model';
+import { IConsultas, IvConsulta, IFiltroConsulta, Ireferencia, IvMorbilidad } from '../../../models/servicio-medico/consultas.model';
 import { IsignosVitales } from '../../../models/servicio-medico/signos_vitales.model';
 import { Iantropometria  } from '../../../models/servicio-medico/antropometria.model';
 import { IvPaciente } from '../../../models/servicio-medico/paciente.model';
@@ -40,6 +42,7 @@ import { ITiempoReposo } from '../../../models/servicio-medico/tiemporeposos.mod
 import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinasAplicadas } from '../../../models/servicio-medico/medicamentos.model';
 import { IindicacionMedica } from '../../../models/servicio-medico/recetamedica.models';
 import { IHistoria_medica, IHistoria_paciente } from '../../../models/servicio-medico/historias.model';
+import { ImailOptions } from "../../../models/servicio-medico/correo.model";
 
 @Component({
   selector: 'app-consultas',
@@ -115,6 +118,8 @@ export class ConsultasComponent  implements OnInit  {
   public classTable: string;
   public classButton: string;
   public estiloOscuro: string;
+  public titleButtonSend: string = 'Enviar';
+  public titleButtonExport: string = 'Exportar';
    
   show = false;
   autohide = true;
@@ -164,7 +169,8 @@ export class ConsultasComponent  implements OnInit  {
     private srvTiempoReposo: TiempoReposoService,
     private srvAntropometria: AntropometriaService,
     private srvMedicamentos: MedicamentosService,
-    private srvHistorias: HistoriaService,    
+    private srvHistorias: HistoriaService,
+    private srvCorreo: CorreoService,    
     @Inject(LOCALE_ID) public locale: string,  
   ) {  }
 
@@ -511,7 +517,7 @@ export class ConsultasComponent  implements OnInit  {
             this.totalItems = this.returnedSearch.length;            
             this.returnedArray = this.returnedSearch.slice(0, this.numPages);            
             this.maxSize = Math.ceil(this.totalItems/this.numPages);
-          });               
+          });
     }
     else { 
       this.totalItems = this.consultasTodas.length;
@@ -1104,5 +1110,131 @@ export class ConsultasComponent  implements OnInit  {
   onSelect(event: TypeaheadMatch): void {
     this.selectedOptionPatolog = event.item;
     
+  }
+
+  async morbilidad(filtro: IFiltroConsulta){
+    let data: any[]=[];
+    let morbilidad: IvMorbilidad[]=[];
+    let edad: any;
+    console.log(filtro);
+    await this.srvConsultas.morbilidadFilter(filtro)
+      .toPromise()            
+      .then(async (res) => {
+        morbilidad = res;        
+        for await (let p of morbilidad){          
+          edad = JSON.parse(JSON.stringify(p.edad));          
+          data.push({
+            Id: p.uid,
+            FechaConsulta: formatDate(p.fecha, 'dd-MM-yyyy HH:mm:ss', this.locale),
+            turno: p.turno,
+            Cedula: p.ci,
+            Nombres: p.nombre_completo,
+            Sexo: p.sexo,
+            edad: edad?.years,           
+            Cargo: p.cargo,
+            Departamento: p.departamento,
+            Supervisor: p.nombres_jefe,
+            ManoDominante: p.mano_dominante,
+            AreaIncidente: p.area,
+            TipoDiagnostico: p.descripciondiagnostico,
+            Motivo: p.motivo,
+            'P/S': p.fktipoconsulta==1 ? 'P' : 'S',
+            'Tipo Afeccion por Sist.': p.resultado_eva,
+            Diagnostico: p.descripcion_afeccion,
+            'Condicion / Observ.': p.motivo_consulta,
+            Patologias: p.patologia,            
+            FResp: p.fresp,
+            Pulso: p.pulso,
+            Temp: p.temper,
+            TArt: p.tart,
+            Talla: p.talla,
+            Peso: p.peso,
+            IMC: p.imc,
+            FCard: p.fcard,
+            Reposo: p.reposo,            
+            Medicamentos: p.aplicacion!=null && p.aplicacion!=undefined ? p.aplicacion.toString() : '',            
+            Medico: p.medico,
+            CiMedico: p.ci_medico,
+            Paramedico: p.paramedico,
+            DirHabitacion: p.direccion_hab
+          })
+        }
+      })
+    return data;
+  }
+
+  async exportExcel(){
+    this.titleButtonExport='Descargando...';
+    this.buscarConsulta.Medico = this.user.nivel != 1 ? this.user.login : 'null';
+    const data: any[] = await this.morbilidad(this.buscarConsulta);
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
+    await XLSX.writeFile(workbook, 'atencion.xlsx');
+    this.titleButtonExport = 'Exportar';
+    this.showSuccess(`Archivo Descargado. Revise su carpeta local de descargas`, 'primary');
+  }
+
+  obtenerArchivo(): Promise<Blob> {
+    return new Promise(async (resolve, reject)  => {
+      this.buscarConsulta.Medico = this.user.nivel != 1 ? this.user.login : 'null';
+      const data: any[] = await this.morbilidad(this.buscarConsulta);
+      console.log(data);
+      const worksheet = XLSX.utils.json_to_sheet(data);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
+      const excelBuffer = XLSX.write(workbook, { type: 'array', bookType: 'xlsx' });
+      const archivo = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      resolve(archivo);
+    });
+  }
+
+  async enviarMorbilidad(actividad: string){   
+    this.titleButtonSend='Enviando...'; 
+    const remitentes: string[] = await this.getRemitentes(actividad);    
+    if (remitentes.length>0){
+      const correos: string = remitentes.toString();
+      const mailOptions: ImailOptions = {
+        to: correos,
+        subject: `${actividad}: ${this.user.nombres}  ${formatDate(Date.now(), 'dd-MM-yyyy HH:mm', this.locale)}`,
+        text: `Reporte de ${actividad} desde el usuario:  ${this.user.login}  (ver archivo adjunto).`,
+      };
+      await this.enviarCorreo(mailOptions)
+      .then((result) => {        
+        if (result.info)
+          this.showSuccess(`${actividad} Enviada a: ${correos}`, 'warning');
+        else
+          this.showSuccess(`Error: ${result?.error}`, 'danger');
+        this.titleButtonSend = 'Enviar';
+      })
+    }
+  }
+
+  async enviarCorreo(mailOptions: ImailOptions) {    
+    let respuesta: any;      
+    await this.obtenerArchivo().then(async (archivo: Blob) => {
+      const formData = new FormData();
+      formData.append('attachments', archivo, 'atencion.xlsx');
+      formData.append('to', mailOptions.to);
+      formData.append('subject', mailOptions.subject);
+      formData.append('text', mailOptions.text);      
+      respuesta = await this.srvCorreo.enviarAchivo(formData);
+      if (respuesta.error==undefined){
+        console.log(`Info: ${respuesta?.info}`);
+      }else{
+        console.log(`Error: ${respuesta.error}`);
+      }
+    });    
+    return respuesta;  
+  }
+
+  async getRemitentes(actividad: string){
+    let data: string[]=[];
+    await this.srvCorreo.remitentes(actividad)
+      .toPromise()
+      .then(async (res) => {
+        data = res;
+      })
+    return data;
   }
 }

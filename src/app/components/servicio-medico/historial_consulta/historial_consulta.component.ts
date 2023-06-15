@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ModalDirective} from 'ngx-bootstrap/modal';
 //modelos
 
-import { IvMorbilidad } from '../../../models/servicio-medico/consultas.model'
+import { IFiltroConsulta, IvMorbilidad } from '../../../models/servicio-medico/consultas.model'
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 
 //servicios
@@ -81,14 +81,14 @@ export class HistorialConsultasComponent implements OnChanges {
     else
       this.sliceIndex=2;
     
-    await this.buscarConsultasPaciente();    
+    await this.buscarConsultasPaciente();
   }  
   
   private async buscarConsultasPaciente(){
     
-    if (this.uidPaciente!= undefined && this.uidPaciente!= null){      
-      
-      await this.srvConsultas.morbilidadFilter('null', this.uidPaciente, 'null',this.fechaIni,this.fechaFin,'null','null','null')
+    if (this.uidPaciente!= undefined && this.uidPaciente!= null){
+      let filtro: IFiltroConsulta = {fechaIni: this.fechaIni, fechaFin: this.fechaFin}
+      await this.srvConsultas.morbilidadFilter(filtro)
       .toPromise()
       .then(async result => {
         
@@ -99,17 +99,15 @@ export class HistorialConsultasComponent implements OnChanges {
           this.returnedArray = this.morbilidad.slice(0, this.numPages);
           this.itemsConsulta.emit(this.totalItems);                
         }
-        else{                   
+        else{
           this.morbilidad=[];
-        }         
+        }
       })
     }   
   }
 
-  private irConsulta(uid: string){    
-    
+  private irConsulta(uid: string){
     this.idConsulta=uid;
-    
   }
 
   /*private close(){    

@@ -29,7 +29,7 @@ import { ConsultasService } from '../../../services/servicio_medico/consultas.se
 import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
 import { MedicosService } from '../../../services/servicio_medico/medicos.service';
 import { MotivosService } from '../../../services/servicio_medico/motivos.service';
-import { AreasService } from '../../../services/servicio_medico/areas.sevice';
+import { AreasService } from '../../../services/servicio_medico/areas.service';
 import { PatologiasService } from '../../../services/servicio_medico/patologias.service';
 import { AfeccionesService } from '../../../services/servicio_medico/afecciones.service';
 import { SignosVitalesService } from '../../../services/servicio_medico/signosvitales.service';

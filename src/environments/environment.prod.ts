@@ -4,4 +4,6 @@ export const environment = {
   apiUrlBalanza: 'http://localhost:4000/Balanza/',
   urlImagenFotoTrabajador: 'http://10.50.188.48/getimagen.php',
   extensionFotoTrabajador: '.bmp',
+  fromEmail: 'brismd@briqven.com.ve',
+  nameSistema: 'Sistema Gestion de Salud Laboral',
 };
