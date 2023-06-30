@@ -1,0 +1,309 @@
+<div class="container">
+    <div class="container-fluid">
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <button type="button" [disabled]="disableButtonImp" class="btn btn-outline-dark" (click)="exportHtmlToPDF()">{{titleButtonImp}}</button>
+        <!--    <button printSectionId="htmltable" class="btn btn-outline-dark" ngxPrint>Imprimir</button> -->       
+        </div>    
+    </div>
+    <div class="container-fluid" id="htmltable" #htmltable>
+        <div class="container-fluid" id="htmlpage1" #htmlpage1 style="page-break-before: always;">
+            <ng-container *ngIf="encabezados[0]">
+                <div id="htmlhead_1" style="font-weight:bold;font-style:italic; text-align: left;font-size:10px; font-weight:bold;" #htmlhead_1 [innerHTML]="encabezados[0].outerHTML"></div>           
+            </ng-container>
+            
+            <table style="font-size: 14px;" width="100%" >
+                <tr bgcolor="#F0ECEC">
+                    <th width="15%">Empresa:</th>
+                    <th width="40%">BRIQVEN</th>
+                    <th width="25%">Rif.:</th>
+                    <th width="20%">G-200113111</th>
+                </tr>
+                <tr>
+                    <th width="15%">Direccion: </th>
+                    <th width="40%">Zona Ind. Matanza, Sector Punta Cuchillo. Pto. Ordaz, Edo. Bolívar.</th>
+                    <th width="25%">Actividad Economica: </th>
+                    <th width="20%">Siderúrgica</th>
+                </tr>
+            </table>          
+            <table style="font-size: 12px;" width="100%">
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="4" width="100%">Datos de la Historia</th>
+                </tr>
+                <tr>
+                    <th width="20%">Fecha:</th>
+                    <th width="35%">{{historiaMedica.fecha_apertura}}</th>
+                    <th width="30%">Número:</th>
+                    <th width="15%">{{historiaMedica.uid_historia}}</th>
+                </tr>
+                <tr>
+                    <td height="30px">Nombre del médico que pertura la historia:</td>
+                    <td>{{medico.nombre}}</td>
+                    <td>Cédula: </td>
+                    <td>{{medico.ci}}</td>
+                </tr>
+                <tr>
+                    <td height="30px">Número del colegio de médico:</td>
+                    <td>{{medico.nro_colegiado}}</td>
+                    <td>M.P.P.S.:</td>
+                    <td>{{medico.nombre_ssst}}</td>
+                </tr>
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="4" width="100%">Datos del Trabajador</th>
+                </tr>
+                <tr>
+                    <th height="30px">Nombre y Apellido:</th>
+                    <th>{{paciente.nombre_completo}}</th>
+                    <th>Cédula:</th>
+                    <th>{{paciente.ci}}</th>
+                </tr>
+                <tr>
+                    <td height="30px">Fecha de Nacimiento:</td>
+                    <td>{{paciente.fechanac}}</td>
+                    <td>Edad:</td>
+                    <td>{{paciente.edad?.year}}</td>
+                </tr>
+                <tr>
+                    <td height="30px">Sexo:</td>
+                    <td>{{paciente.sexo}}</td>
+                    <td>Estado Civil:</td>
+                    <td>{{paciente.edo_civil}}</td>
+                </tr><tr>
+                    <td height="30px">Lugar de Nacimiento:</td>
+                    <td>{{paciente.lugar_nac}}</td>
+                    <td>Nacionalidad:</td>
+                    <td>{{paciente.nacionalidad}}</td>
+                </tr>
+                <tr>
+                    <td height="30px">Dirección Habitación:</td>
+                    <td>{{paciente.direccion_hab}}</td>
+                    <td>Teléfono::</td>
+                    <td>{{paciente.telefono}}></td>
+                </tr>
+                <tr>
+                    <td height="30px">Nivel Educativo:</td>
+                    <td>{{paciente.nivel_educativo}} </td>
+                    <td>Mano Dominante:</td>
+                    <td>{{paciente.mano_dominante}}</td>
+                </tr>
+                <tr>
+                    <td height="30px">Fecha Ingreso:</td>
+                    <td>{{paciente.fecha_ingreso}}</td>
+                    <td>Turno de Trabajo:</td>
+                    <td>{{paciente.turno}}</td>
+                </tr>
+                <tr>
+                    <td height="30px">Frecuencia de Rotacion:</td>
+                    <td>{{paciente.frecuencia_rotacion}}</td>
+                    <td>Antiguedad en el Puesto:</td>
+                    <td>{{paciente.antiguedad_puesto}}</td>
+                </tr>
+                <tr>
+                    <td height="30px">Cargo y Puesto de Trabajo Actual:</td>
+                    <td>{{paciente.cargo}}</td>
+                    <td>Tipo de Vivienda que Habita:</td>
+                    <td>{{paciente.tipo_vivienda}}</td>
+                </tr>
+                <tr>
+                    <td height="30px">Vivienda es Propia?:</td>
+                    <td>{{paciente.vivienda_propia}}</td>
+                    <td>Medio de Transporte que Utiliza para Ir al Trabajo:</td>
+                    <td>{{paciente.medio_transp_trabajo}}</td>
+                </tr>
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="4" width="100%">Cargos Anteriores en la Misma Empresa</th>
+                </tr>
+                <tr>
+                    <th>Cargo:</th>
+                    <th>Actividad laboral y/o área donde la desempeñaba</th>
+                    <th>Desde - Hasta</th>                    
+                    <th>Riesgos o procesos peligrosos expuestos</th>
+                </tr>
+                <tr *ngFor="let c of cargosAnteriores; let i=index">
+                    <td>{{c.cargo}}</td>
+                    <td>{{c.actividad_laboral}}</td>
+                    <td>{{c.desde | date:'dd/MM/yyyy'}}  -  {{c.hasta | date:'dd/MM/yyyy'}}</td>
+                    <td>{{c.riesgos}}</td>
+                </tr>
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="4" width="100%">Trabajos Anteriores</th>
+                </tr>
+                <tr>
+                    <th height="30px">Empresa:</th>
+                    <th>Actividad laboral y/o área donde la desempeñaba</th>
+                    <th>Desde - Hasta</th>                    
+                    <th>Riesgos o procesos peligrosos expuestos</th>
+                </tr>
+                <tr  *ngFor="let c of cargosAnterioresOtras; let i=index">
+                    <td>{{c.empresa}}</td>
+                    <td>{{c.actividad_laboral}}</td>
+                    <td>{{c.desde | date:'dd/MM/yyyy'}}  -  {{c.hasta | date:'dd/MM/yyyy'}}</td>
+                    <td>{{c.riesgos}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="container-fluid" id="htmlpage2" #htmlpage2  style="page-break-before: always;">
+            <ng-container *ngIf="encabezados[1]">            
+                <div id="htmlhead_2" #htmlhead_2 style="font-weight:bold;font-style:italic; text-align: left;font-size:10px; font-weight:bold;" [innerHTML]="encabezados[1].outerHTML"></div>           
+            </ng-container>
+            <table style="font-size: 12px;" width="100%" >
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="4" width="100%">Antecedentes Familiares del Trabajador</th>
+                </tr>
+                <tr>
+                    <th width="50%" colspan="2">Enfermedad</th>
+                    <th width="50%" colspan="2">Familiar que la padece</th>
+                </tr>
+                <tr *ngFor="let ant of antecedentesFamiliares; let i=index">
+                    <td colspan="2">{{ant.patologia.descripcion}}</td>
+                    <td colspan="2">{{ant.paterentezco}}</td>
+                </tr>
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="4" width="100%">Antecedentes Ocupacionales</th>
+                </tr>
+                <tr>
+                    <th width="20%">Agentes</th>
+                    <th width="35%">Tipo</th>
+                    <th width="35%">Descripcion</th>
+                    <th width="10%">Tiempo de exposición</th>
+                </tr>
+                <tr *ngFor="let ant of antecedentesOcupacionales; let i=index">
+                    <td width="20%">{{ant.riesgo.agente}}</td>
+                    <td width="35%">{{ant.riesgo.descripcion}}</td>
+                    <td width="35%">{{ant.resp}}</td>
+                    <td width="10%">{{ant.tiempo_exposicion}}</td>
+                </tr>
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="4" width="100%">Accidentes Ocupacionales</th>
+                </tr>
+                <tr>
+                    <td width="40%">¿Ha Sufrido Accidentes te de Trabajo?:</td>
+                    <td width="10%">{{historiaMedica.ha_sufrido_accidentes}}</td>
+                    <td width="40%">¿Que Parte del Cuerpo se Lesionó?:</td>
+                    <td width="10%">{{historiaMedica.partes_cuerpo_lesionados}}</td>
+                </tr>
+                <tr>
+                    <td width="40%">Fecha del Accidente:</td>
+                    <td width="10%">{{historiaMedica.fecha_accidente | date:'dd/MM/yyyy'}}</td>
+                    <td width="40%">¿Dejó Alguna Secuela?:</td>
+                    <td width="10%">{{historiaMedica.dejo_secuelas}}</td>
+                </tr>
+                <tr>
+                    <td width="40%">¿Fue Certificada por el INPSASEL?:</td>
+                    <td width="10%">{{historiaMedica.fue_certif_inpsasel}}</td>
+                    <td width="40%">¿Cambia de Trabajo con Frecuencia?:</td>
+                    <td width="10%">{{historiaMedica.cambia_trab_frecuente}}</td>
+                </tr>
+                <tr>
+                    <td width="40%">¿Ha padecido de alguna enfermada de Ocupacional?</td>
+                    <td width="10%">{{historiaMedica.ha_padecido_enfermeda}}</td>
+                    <td width="40%"></td>
+                    <td width="10%"></td>
+                </tr>
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="4" width="100%">Exámen Funcional</th>
+                </tr>
+                <tr>
+                    <th width="30%">Zona Corporal</th>
+                    <th width="30%">Enfermedad</th>
+                    <th width="40%" colspan="2">Observación</th>
+                </tr>
+                <tr *ngFor="let ex of examenes; let i=index">
+                    <td width="30%">{{ex.anatomia.tipo}}</td>
+                    <td width="30%">{{ex.anatomia.descripcion}}</td>
+                    <td width="40%" colspan="2">{{ex.observacion}}</td>
+                </tr>
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="4" width="100%">Hábitos</th>
+                </tr>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Resp.</th>
+                    <th colspan="2">Observación</th>
+                </tr>
+                <tr *ngFor="let ex of habitosPacientes; let i=index">
+                    <td>{{ex.habito.descripcion}}</td>
+                    <td>{{ex.resp}}</td>
+                    <td colspan="2">{{ex.observacion}}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="container-fluid" id="htmlpage3" #htmlpage2  style="page-break-before: always;">
+            <ng-container *ngIf="encabezados[1]">            
+                <div id="htmlhead_3" #htmlhead_3 style="font-weight:bold;font-style:italic; text-align: left;font-size:10px; font-weight:bold;" [innerHTML]="encabezados[2].outerHTML"></div>           
+            </ng-container>
+            
+            <table style="font-size: 12px;" width="100%" >
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="3" width="100%">Anamnesis Psicólogico: Aspecto del Trabajo</th>
+                </tr>
+                <tr>
+                    <th width="30%">Descripción</th>
+                    <th width="50%">Resp./Observacion</th>
+                    <th width="20%">Fecha</th>
+                </tr>
+                <tr *ngFor="let es of estudiosPacientes; let i=index">
+                    <td>{{es.estudio.descripcion}}</td>
+                    <td>{{es.observacion}}</td>
+                    <td>{{es.fecha_estudio}}</td>
+                </tr>
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" colspan="3" width="100%">Exámen Físico</th>
+                </tr>
+                <tr>
+                    <td>Descripción</td>
+                    <td>Resp./Observacion</td>
+                    <td>Fecha</td>
+                </tr>
+                <tr>
+                    <td>xxxxxxxxxxxxxx</td>
+                    <td>xxxxxxxxxxxxxxxxx</td>
+                    <td>xx/xx/xxxx</td>
+                </tr>
+            </table>
+            <table style="font-size: 12px;" width="100%">                   
+                <tr bgcolor="#F0ECEC">
+                    <th style="text-align: center;" width="50%" colspan="4">Datos Antopometrícos</th>
+                    <th style="text-align: center;" width="50%" colspan="5">Signos Vitales</th>                    
+                </tr>
+                <tr>
+                    <td colspan="4">
+                        <table>
+                            <tr>
+                                <td width="10%">Talla</td>
+                                <td width="10%">Peso</td>
+                                <td width="10%">IMC</td>
+                                <td width="10%">Fecha</td>
+                                <td width="10%"></td>
+                            </tr>
+                            <tr>
+                                <td>00.00</td>
+                                <td>00.00</td>
+                                <td>00.00</td>
+                                <td>xx/xx/xxxx</td>  
+                                <td></td>                                
+                            </tr>
+                        </table>
+                    </td>
+                    <td colspan="5">
+                        <table>
+                            <tr>
+                                <td width="10%">F.Resp.</td>
+                                <td width="10%">Pulso</td>
+                                <td width="10%">Temp.</td>
+                                <td width="10%">T.Art.</td>
+                                <td width="10%">Fecha</td>
+                            </tr>
+                            <tr>
+                                <td>00.00</td>
+                                <td>00.00</td>
+                                <td>00.00</td>
+                                <td>00.00</td> 
+                                <td>xx/xx/xxxx</td>                               
+                            </tr>
+                        </table>
+                    </td>                    
+                </tr>
+            </table>
+        </div>
+    </div>    
+  </div>

@@ -26,6 +26,7 @@ export class HistoriaMedicaComponent  implements OnInit  {
   private tipoUser: string;    
   itemsConsulta: number;
   itemCargos: number;
+  itemCargosOtras: number;
   itemAntecedentes: number;
   itemOcupaciones: number;
   itemExamenFuncionalA: number;
@@ -129,6 +130,10 @@ export class HistoriaMedicaComponent  implements OnInit  {
 
   outputEmiterItemsCargos(total:number){
     this.itemCargos=total;
+  }
+
+  outputEmiterItemsCargosOtras(total:number){
+    this.itemCargosOtras=total;
   }
 
   outputEmiterItemsAntecedentes(total:number){

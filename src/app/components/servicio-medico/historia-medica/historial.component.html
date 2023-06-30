@@ -1,29 +1,19 @@
 <div class="animated fadeIn">
-  <div class="row">    
+  <div class="row">
     <div class="col-md-12 mb-4">
       <div class="row" >
         <div class="col-lg-12">
-            
-            <alert type="info" *ngIf="paciente.ci!=undefined">
-              <strong>{{paciente.nombre}} {{paciente.apellido}}: {{paciente.cargo}} </strong>
-            </alert>            
-          
+          <alert type="info" *ngIf="paciente.ci!=undefined">
+            <strong>{{paciente.nombre}} {{paciente.apellido}}: {{paciente.cargo}} </strong>
+            <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-success" (click)="myModalPlanilla.show();" title="Imprimir Historia Medica"><i class="fa fa-file-pdf-o"></i>&nbsp;Imprimir</button>
+          </alert>
         </div>
-        
       </div>
       <!-- Nav tabs -->
-      <tabset> 
+      <tabset>
         <tab>
-          <ng-template tabHeading><i class="icon-user"></i> Datos Generales &nbsp;</ng-template>          
-          <div class="col-lg-12">
-            <div class="card">              
-              <div class="card-body">                
-                     <app-paciente-historia (outPaciente)="buscarPaciente($event)"></app-paciente-historia>          
-              </div>
-            </div>
-          </div>
-          <!--/.col-->
-          
+          <ng-template tabHeading><i class="icon-user"></i> Datos Generales &nbsp;</ng-template>
+          <app-paciente-historia (outPaciente)="buscarPaciente($event)"></app-paciente-historia>
         </tab>
         <tab>
           <ng-template tabHeading><i class="icon-drop"></i> Accidentes Ocupacionales &nbsp;</ng-template>          
@@ -117,7 +107,7 @@
           <div class="col-lg-12">
             <div class="card">              
               <div class="card-body">                
-                <app-historial_consulta [_uidPaciente]="uidPaciente" [_fechaIni]="fechaIni" [_fechaFin]="fechaFin" (itemsConsulta)="ouputEmiterItemsConsulta($event)"></app-historial_consulta>                
+                <app-historial_consulta [_uidPaciente]="uidPaciente" [_ci]="paciente.ci" [_fechaIni]="fechaIni" [_fechaFin]="fechaFin" (itemsConsulta)="ouputEmiterItemsConsulta($event)"></app-historial_consulta>                
               </div>
             </div>
           </div>
@@ -129,6 +119,14 @@
           <div class="card">            
             <div class="card-body">
                 <app-cargos-anteriores [_uidPaciente]="uidPaciente" (itemsCargos)="outputEmiterItemsCargos($event)"></app-cargos-anteriores>
+            </div>
+          </div>
+        </tab>
+        <tab>
+          <ng-template tabHeading><i class="icon-wrench"></i> Cargos Otras Empresas &nbsp;<span class="badge badge-pill badge-danger">{{itemCargosOtras}}</span></ng-template>
+          <div class="card">            
+            <div class="card-body">
+                <app-cargos-otras-empresas [_uidPaciente]="uidPaciente" (itemsCargosOtras)="outputEmiterItemsCargosOtras($event)"></app-cargos-otras-empresas>
             </div>
           </div>
         </tab>
@@ -197,8 +195,24 @@
           </div>
         </tab>
       </tabset>
-
-
     </div><!--/.col-->
   </div><!--/.row-->
 </div>
+
+<div bsModal #myModalPlanilla="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalPlanilla" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content modal-secondary" >
+      <div class="modal-header"><strong>Vista Preliminar</strong>
+        <button type="button" class="close" (click)="myModalPlanilla.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div *ngIf="paciente.ci!=undefined" class="modal-body">
+        <planilla-historia [inCiPaciente]="paciente.ci" ></planilla-historia>
+      </div>                
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="myModalPlanilla.hide()">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

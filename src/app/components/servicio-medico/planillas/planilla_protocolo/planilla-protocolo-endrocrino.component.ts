@@ -5,19 +5,19 @@ import { Router } from '@angular/router';
 import { formatDate } from '@angular/common';
 
 //servicios
-import { ProtocolosEndocrinosService } from '../../../services/servicio_medico/protocolo_endocrino.service';
-import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
+import { ProtocolosEndocrinosService } from '../../../../services/servicio_medico/protocolo_endocrino.service';
+import { PacientesService } from '../../../../services/servicio_medico/pacientes.service';
 
 //modelos
-import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
-import { IEvaluaciones_PosibleResp, IPosibles_resp_endocrinas, IRespuestas_pacientes_eval_endocrino, IEvaluaciones_endocrinas } from '../../../models/servicio-medico/protocolo_endocrino.model';
-import { IvProtocoloEndrocrinos } from '../../../models/servicio-medico/protocolo_endocrino.model';
+import { IUsuarios } from '../../../../models/servicio-medico/usuarios.model';
+import { IEvaluaciones_PosibleResp, IPosibles_resp_endocrinas, IRespuestas_pacientes_eval_endocrino, IEvaluaciones_endocrinas } from '../../../../models/servicio-medico/protocolo_endocrino.model';
+import { IvProtocoloEndrocrinos } from '../../../../models/servicio-medico/protocolo_endocrino.model';
 
 @Component({
   selector: 'planilla-protocolo-endocrino',
   templateUrl: './planilla-protocolo-endocrino.component.html',
   providers: [ProtocolosEndocrinosService],
-  styleUrls: ['./planilla_consulta.css']
+  styleUrls: ['../planilla_style.css']
 })
 
 export class planillaProtocoloEndocrinoComponent implements OnChanges {

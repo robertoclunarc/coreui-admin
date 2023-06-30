@@ -23,20 +23,18 @@ export class HistorialConsultasComponent implements OnChanges {
   @Output() itemsConsulta = new EventEmitter<number>();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;  
   @Input() _uidPaciente: string;
+  @Input() _ci: string;
   @Input() _fechaIni: string;
   @Input() _fechaFin: string;
   
-  constructor( 
-    
+  constructor(    
     private route: ActivatedRoute,  
     private router: Router,
     private srvConsultas: ConsultasService,     
-    @Inject(LOCALE_ID) public locale: string,
-    
+    @Inject(LOCALE_ID) public locale: string,    
   ) { }
 
   idConsulta: string;
-
   uidPaciente: string;
   fechaIni: string;
   fechaFin: string
@@ -71,7 +69,8 @@ export class HistorialConsultasComponent implements OnChanges {
       }
     }else{
       this.router.navigate(["login"]);
-    }   
+    }
+    
     this.uidPaciente = this.route.snapshot.paramMap.get("idPaciente")==undefined? this._uidPaciente: this.route.snapshot.paramMap.get("idPaciente");
     this.fechaIni = this.route.snapshot.paramMap.get("fechaIni")==undefined? this._fechaIni: this.route.snapshot.paramMap.get("fechaIni");
     this.fechaFin = this.route.snapshot.paramMap.get("fechaFin")==undefined? this._fechaFin: this.route.snapshot.paramMap.get("fechaFin");
@@ -87,7 +86,7 @@ export class HistorialConsultasComponent implements OnChanges {
   private async buscarConsultasPaciente(){
     
     if (this.uidPaciente!= undefined && this.uidPaciente!= null){
-      let filtro: IFiltroConsulta = {fechaIni: this.fechaIni, fechaFin: this.fechaFin}
+      let filtro: IFiltroConsulta = {fechaIni: this.fechaIni, fechaFin: this.fechaFin, ciPaciente: this._ci}
       await this.srvConsultas.morbilidadFilter(filtro)
       .toPromise()
       .then(async result => {

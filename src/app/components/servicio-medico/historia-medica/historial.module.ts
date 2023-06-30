@@ -25,6 +25,8 @@ import { SignosVitalesComponent } from '../signos_vitales/signosvitales.componen
 import { AntropometriaComponent } from '../antropometria/antropometria.component';
 import { EstudiosFisicosComponent } from '../examen_fisico/examenfisico.component';
 import { PacientesHistoriaComponent } from '../paciente-historia/pacientes.component';
+import { planillaHistoriaComponent } from '../planillas/planilla_historia/planilla-historia.component';
+import { CargosOtrasEmpresasComponent } from '../cargos_otras_empresas/cargos_otras_empresas.component';
 
 @NgModule({
   imports: [
@@ -46,7 +48,8 @@ import { PacientesHistoriaComponent } from '../paciente-historia/pacientes.compo
     HistoriaMedicaComponent,
     HistorialConsultasComponent,
     ConsultaOneComponent, 
-    CargosAnterioresComponent, 
+    CargosAnterioresComponent,
+    CargosOtrasEmpresasComponent, 
     AntecedenteFamiliarComponent,
     AntecedenteOcupacionalComponent,
     AntecedentePatologicoComponent,
@@ -55,7 +58,8 @@ import { PacientesHistoriaComponent } from '../paciente-historia/pacientes.compo
     SignosVitalesComponent,
     AntropometriaComponent,
     EstudiosFisicosComponent, 
-    PacientesHistoriaComponent   
+    PacientesHistoriaComponent,
+    planillaHistoriaComponent,  
   ]
 })
 export class HistorialModule { }

@@ -58,7 +58,7 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { AlertModule } from 'ngx-bootstrap/alert';
 
 //import { PlanillaModule  } from '../planillas/planilla.module'
-import { planillaConsultaComponent } from '../planillas/planilla_consulta.component';
+import { planillaConsultaComponent } from '../planillas//planilla_consulta/planilla_consulta.component';
 import { NgxPrintModule } from 'ngx-print';
 
 @NgModule({
