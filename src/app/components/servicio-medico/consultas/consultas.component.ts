@@ -1,15 +1,15 @@
 //componentes
-import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID, ElementRef, NgModule } from '@angular/core';
+import { Component, ViewChild, OnInit, ChangeDetectorRef,Inject,  LOCALE_ID, ElementRef, NgModule } from '@angular/core';
 import { ModalDirective} from 'ngx-bootstrap/modal';
 //import { FormsModule } from '@angular/forms';
-import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
+import { TypeaheadMatch, TypeaheadDirective } from 'ngx-bootstrap/typeahead';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router } from '@angular/router';
 import * as XLSX from 'xlsx';
 
 //servicios
-
+import { VarioService } from '../../../services/servicio_medico/varios.service';
 import { ConsultasService } from '../../../services/servicio_medico/consultas.service';
 import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
 import { MedicosService } from '../../../services/servicio_medico/medicos.service';
@@ -24,6 +24,7 @@ import { AntropometriaService } from '../../../services/servicio_medico/antropom
 import { MedicamentosService } from '../../../services/servicio_medico/medicamentos.service';
 import { HistoriaService } from '../../../services/servicio_medico/historias.service';
 import { CorreoService } from "../../../services/servicio_medico/correo.service";
+import { DiagnosticosService } from "../../../services/servicio_medico/tipoDiagnostico.service";
 
 //modelos
 import { Ipopover } from '../../../models/servicio-medico/varios.model';
@@ -43,20 +44,26 @@ import { IMedicamento, IMedicamentosAplicados, ImedicamentosConsulta, IMedicinas
 import { IindicacionMedica } from '../../../models/servicio-medico/recetamedica.models';
 import { IHistoria_medica, IHistoria_paciente } from '../../../models/servicio-medico/historias.model';
 import { ImailOptions } from "../../../models/servicio-medico/correo.model";
+import { ItipoDiagnostico } from "../../../models/servicio-medico/tipoDiagnostico.model";
 
 @Component({
   selector: 'app-consultas',
   templateUrl: 'consultas.component.html',
   providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService, PatologiasService, 
               AfeccionesService, SignosVitalesService, RemitidosService, TiempoReposoService, AntropometriaService,
-              MedicosService,HistoriaService,
+              MedicosService,HistoriaService, DiagnosticosService,
               { provide: AlertConfig }],
-  styleUrls: ["consultas.component.css"]             
+  styleUrls: ["consultas.component.css"],
+             
 })
 export class ConsultasComponent  implements OnInit  {  
   @ViewChild('myModalPlanilla') public myModalPlanilla: ModalDirective;
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
   @ViewChild('pdfTable', {static: false}) pdfTable: ElementRef;
+  //@ViewChild('txtPatologia', { static: false }) txtPatologia: ElementRef<HTMLInputElement>;
+  //@ViewChild(TypeaheadDirective, { static: false }) typeaheadInstance: TypeaheadDirective;
+  //@ViewChild('typeaheadInstance', { static: false }) typeaheadInstance: ElementRef<HTMLInputElement>;
+  @ViewChild('typeaheadInstance') typeaheadInstance;
 
   isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
@@ -72,7 +79,8 @@ export class ConsultasComponent  implements OnInit  {
   consultasAnteriores: IvConsulta[];
   returnedArray: IvConsulta[];
   returnedSearch: IvConsulta[];
-  
+  typeaheadWaitMilliseconds: number = 500;
+  showSuggestions = true;
   consultas: IConsultas={};
   vConsultas: IvConsulta={};
   signoVital: IsignosVitales={};
@@ -84,10 +92,12 @@ export class ConsultasComponent  implements OnInit  {
   paramedicos: IParamedicos[]=[];
   selectMedicos: IMedicos[]=[];
   selectParamedicos: IParamedicos[]=[];
-  motivos: IMotivo[]=[];
+  private motivos: IMotivo[]=[];
+  arrayMotivos: IMotivo[]=[];
   areas: IAreas[]=[];
-  selectedPatolog: string;
+  selectedPatolog: string = ' ';
   patologias: IPatologia[] = [];
+  _patologias: IPatologia[] = [];
   afecciones: IAfecciones[]=[];
   selectedOptionPatolog: any;  
   searchText = ""; 
@@ -114,6 +124,10 @@ export class ConsultasComponent  implements OnInit  {
   medicamentoIndic: IindicacionMedica={};  
   turno: number;
   historiaMedica: IHistoria_medica={};
+  arrayTiposDiagnoticos: ItipoDiagnostico[]=[];
+  loadingPatologia: boolean = false;
+  queryPatologia: string[]=[];
+
   soloLectura: boolean;
   public classTable: string;
   public classButton: string;
@@ -155,8 +169,7 @@ export class ConsultasComponent  implements OnInit  {
   polarAreaChartType = 'polarArea';  
 
   constructor(
-    private router: Router,
-    //private sanitizer: DomSanitizer,
+    private router: Router,    
     private srvConsultas: ConsultasService,
     private srvPacientes: PacientesService,
     private srvMedicos: MedicosService,
@@ -170,7 +183,9 @@ export class ConsultasComponent  implements OnInit  {
     private srvAntropometria: AntropometriaService,
     private srvMedicamentos: MedicamentosService,
     private srvHistorias: HistoriaService,
-    private srvCorreo: CorreoService,    
+    private srvCorreo: CorreoService,
+    private srvTipoDiagnosticos: DiagnosticosService,
+    private srvVarios: VarioService,
     @Inject(LOCALE_ID) public locale: string,  
   ) {  }
 
@@ -198,12 +213,19 @@ export class ConsultasComponent  implements OnInit  {
       this.router.navigate(["login"]);
     }
     
+    this.llenarArrayTiposDiagnosticos();
     this.llenarArrayConsultasMotivos();
 		this.llenarArrayConsultas();    
-    //this.llenarArrayMedicos();
     this.llenarArrayMotivos();
     this.llenarArrayAreas();
-    this.llenarArrayPatologias();
+
+    if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
+      this.llenarArrayPatologias(undefined,undefined,undefined,true, 'ICD', 1);
+    }
+    else{
+      this.llenarArrayPatologias(undefined,undefined,undefined,true, 'DOMINIO', 2);
+    }
+
     this.llenarArrayAfecciones();
     this.llenarArrayRemitidos();
     this.llenarArrayTiempoReposo();
@@ -286,12 +308,34 @@ export class ConsultasComponent  implements OnInit  {
     console.log(e);
   }
 
-  private llenarArrayPatologias(){
-    this.srvPatologia.patologiasAll()
+  private async llenarArrayPatologias(uid: number, descripcion: string, codigo: string, estatus: boolean, tipo: string, view: number){
+    await this.srvPatologia.consultaFilter(uid,descripcion,codigo,estatus, tipo, view)
+      .toPromise()
+      .then(async result => {
+        this.patologias = await Promise.all(result.map((res) => ({
+          descripcion: res.codigo_etica + ': ' + res.descripcion,
+          tipo: res.tipo,
+          codigo_etica: res.codigo_etica,
+          url: res.url,
+          estatus: true,
+          view: res.view,
+        })));        
+      });
+    this.srvPatologia.consultaFilter(undefined,'SIN ESPECIFICACION',undefined,true, 'NINGUNA', undefined)
+    .toPromise()
+    .then(result => {      
+      this.patologias.push(result[0])
+      this.selectedPatolog = result[0].descripcion;
+      this.selectedOptionPatolog = result[0];
+    });
+    //console.log(this.patologias);
+  }
+
+  private llenarArrayTiposDiagnosticos(){
+    this.srvTipoDiagnosticos.tiposDiagnosticosAll()
       .toPromise()
       .then(result => {
-        this.patologias=result;
-        this.selectedOptionPatolog= this.patologias.find(p => p.descripcion=='SIN ESPECIFICACION')
+        this.arrayTiposDiagnoticos=result;        
       });      
   }
 
@@ -598,6 +642,13 @@ export class ConsultasComponent  implements OnInit  {
     }
   }
 
+  listarMotivos(idDiagnostico: number){
+    console.log(idDiagnostico);
+    console.log(this.motivos);
+    this.arrayMotivos = this.motivos.filter( m => m.fkdiagnostico == idDiagnostico);
+    console.log(this.arrayMotivos);
+  }
+
   private convReferenciaInArray(referencia: string){
     if (referencia!=undefined){
       let array = referencia.split('>>');
@@ -694,6 +745,7 @@ export class ConsultasComponent  implements OnInit  {
       autorizacion: item.autorizacion,
       turno: item.turno,
     }
+    this.vConsultas = item;
 
     for await (let i of this.selectParamedicos){      
       if (i.ci==item.ci_paramedico){
@@ -1108,8 +1160,110 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   onSelect(event: TypeaheadMatch): void {
-    this.selectedOptionPatolog = event.item;
+    this.selectedOptionPatolog = event.item;    
+  }
+
+  onSelectOption(_pat: IPatologia){
+    console.log(_pat)
+    this.selectedOptionPatolog = _pat;
+    this.onInputChange();
     
+    this.selectedPatolog = this.selectedOptionPatolog.descripcion;
+  }
+
+  private yaFueBuscadaAntes(){
+    const posicion = this.queryPatologia.indexOf(this.selectedPatolog.toUpperCase());
+    if (posicion > -1){
+      return true;
+    }
+    else{
+      this.queryPatologia.push(this.selectedPatolog.toUpperCase());
+      return false
+    }
+  }
+
+  async searchPatologiasInArray(){
+    let encontrado: boolean =  false;
+    if (this.selectedOptionPatolog.codigo_etica!=null && this.selectedOptionPatolog.codigo_etica!=undefined){
+      let posicion: number = await this.srvVarios.searchArrayObject(this.patologias, this.selectedOptionPatolog.codigo_etica, 'codigo_etica')
+      encontrado =  posicion >= 0 ? true : false;
+    }
+    return encontrado
+  }
+
+  async validarEntradaBusquedaPatologia(){    
+    if (this.tipoUser!='SISTEMA' && this.tipoUser!='MEDICO' ){
+      console.log(1);
+      return false;
+    }
+    if (this.selectedPatolog=='' || this.selectedPatolog=='SIN ESPECIFICACION'){
+      console.log(2);
+      return false;
+    }
+    if (this.selectedOptionPatolog.descripcion.trim() == this.selectedPatolog.trim()){
+      console.log(3);
+      return false;
+    }
+    if (this.yaFueBuscadaAntes()){
+      console.log(4);
+      return false;
+    }
+    if(await this.searchPatologiasInArray()){
+      console.log(5);
+      return false;
+    }
+    return true;
+  }
+
+  async onSearchEnter() {
+    if (await this.validarEntradaBusquedaPatologia()){
+      
+      this.loadingPatologia= true;
+      this._patologias=[];
+      console.log(this.selectedPatolog);
+      
+      const result = await this.srvPatologia.filterICD({ query: this.selectedPatolog }).toPromise();
+      if (result){
+        this._patologias = await Promise.all(result.map((res) => ({
+          descripcion: res.release.code + ': ' + this.srvVarios.getContentFromEm(res.entity.title),
+          tipo: this.tipoUser == 'SISTEMA' || this.tipoUser=='MEDICO' ? 'ICD' : 'NANDA',
+          codigo_etica: res.release.code,
+          url: res.entity.entity,
+          estatus: true,
+          view: this.tipoUser == 'SISTEMA' || this.tipoUser=='MEDICO' ? 1 : 2,
+        })));
+        this._patologias = this._patologias.filter( (p: IPatologia) => {p.codigo_etica != '' })
+        console.log(this._patologias.length);
+        this.patologias = this.patologias.concat(this._patologias);
+        this._patologias.forEach(async (res) => {
+          await this.insertarPatologia(res);
+        });
+        this.showSuggestions = true;
+      }else{
+        this.onInputChange();
+      }
+      
+      console.log(this.patologias.length);      
+      this.loadingPatologia= false;
+      
+    }
+  }
+
+  async insertarPatologia(_pat: IPatologia){
+    let codigoEtica: string = _pat.codigo_etica==undefined || _pat.codigo_etica=='' ? 'null' : _pat.codigo_etica;
+    const patologia= await this.srvPatologia.consultaFilter(undefined, undefined, codigoEtica, true, undefined, undefined).toPromise();    
+    if (patologia.length==0){
+      let pat: IPatologia = _pat;
+      let arrpat: string[] = pat.descripcion.split(": ");
+      pat.descripcion = arrpat[1].trim();
+      console.log(pat);
+      this.srvPatologia.registrar(pat).toPromise();
+    }
+  }
+
+  onInputChange() {
+    // Establecer la bandera en false para ocultar las sugerencias.
+    this.showSuggestions = false;
   }
 
   async morbilidad(filtro: IFiltroConsulta){

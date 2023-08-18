@@ -97,11 +97,9 @@
                         </div>
                       </div>           
                       
-                        <div class="card-body" (collapsed)="collapsed($event)" (expanded)="expanded($event)" [collapse]="isCollapsed" >                    
-                          
+                        <div class="card-body" (collapsed)="collapsed($event)" (expanded)="expanded($event)" [collapse]="isCollapsed">                          
                             <div class="row">
-                              <div class="col-sm-6">
-                                
+                              <div class="col-sm-6">                                
                                 <div class="input-group">                            
                                   <span class="input-group-prepend">
                                     <button [disabled]="soloLectura" type="button"                                      
@@ -224,18 +222,19 @@
                             <div class="row">
                               <div class="col-sm-6">
                                 <div class="form-group">
-                                    <span class="form-group has-float-label">                                    
-                                      <select class="form-control form-control-sm" id="cboMotivo" [disabled]="soloLectura" name="cboMotivo" (change)="chequeaAutorizacionMotivo($event.target.value)" [(ngModel)]="consultas.id_motivo">
-                                        <option *ngFor="let mov of motivos" [value]="mov.uid">{{mov.descripcion}}</option>
-                                      </select>                                      
-                                      <label class="badge-light" for="cboMotivo">Motivo</label>
+                                    <span class="form-group has-float-label">
+                                      <select class="form-control form-control-sm" id="cboTipoDiagnostico" [disabled]="soloLectura" name="cboTipoDiagnostico" (change)="listarMotivos($event.target.value)" [(ngModel)]="vConsultas.fkdiagnostico">
+                                        <option *ngFor="let diag of arrayTiposDiagnoticos" [value]="diag.uid">{{diag.descripcion}}</option>
+                                      </select>
+                                      <label class="badge-light" for="cboTipoDiagnostico">Tipo Diagnóstico</label>
                                     </span>
                                 </div>                          
                               </div>
         
                               <div class="col-sm-6">
+                                
                                 <div class="form-group">
-                                  <span class="form-group has-float-label">                                    
+                                  <span class="form-group has-float-label">
                                     <select class="form-control form-control-sm" [disabled]="soloLectura" id="cboAreaIncidente" name="cboAreaIncidente" [(ngModel)]="consultas.id_area">
                                       <option *ngFor="let are of areas" [value]="are.uid">{{are.descripcion}}</option>
                                     </select>
@@ -243,30 +242,72 @@
 
                                   </span>                             
                                 </div>
+                               
                               </div>
                             </div><!--/.row 3-->
                             <div class="row">
                               <div class="col-sm-6">
                                 <div class="form-group">
                                     <span class="form-group has-float-label">                                    
-                                      <input  [(ngModel)]="selectedPatolog" name="txtPatologia" id="txtPatologia" [disabled]="soloLectura" 
+                                      <select class="form-control form-control-sm" id="cboMotivo" [disabled]="soloLectura" name="cboMotivo" (change)="chequeaAutorizacionMotivo($event.target.value)" [(ngModel)]="consultas.id_motivo">
+                                        <option *ngFor="let mov of arrayMotivos" [value]="mov.uid" [selected]="mov.fkdiagnostico == vConsultas.fkdiagnostico">{{mov.descripcion}}</option>
+                                      </select>
+                                      <label class="badge-light" for="cboMotivo">Motivo</label>
+                                    </span>
+                                </div>
+                              </div>
+        
+                              <div class="col-sm-6">
+                                <div class="input-group">                            
+                                  <span class="input-group-prepend">
+                                    <button [disabled]="soloLectura" type="button"                                      
+                                      (click)="onSearchEnter()" 
+                                      class="btn btn-primary btn-sm">
+                                      <i class="fa fa-search"></i> 
+                                      Patología
+                                    </button>
+                                  </span>
+                                  <input #typeaheadInstance [(ngModel)]="selectedPatolog" name="txtPatologia" id="txtPatologia"
+                                      [disabled]="soloLectura"
                                       [typeahead]="patologias"
                                       typeaheadOptionField="descripcion"
                                       [isAnimated]="true"
                                       [typeaheadScrollable]="true"
-                                      [typeaheadOptionsInScrollableView]="10"
-                                      [typeaheadSelectFirstItem]="true"
-                                      [typeaheadIsFirstItemActive]="true"
-                                      typeaheadGroupField="codigo_etica" 
+                                      [typeaheadOptionsInScrollableView]="10"                                      
+                                      typeaheadGroupField="tipo"
                                       [typeaheadSingleWords]="false"
-                                      (typeaheadOnSelect)="onSelect($event)"                                  
-                                      class="form-control form-control-sm">
-                                      <label class="badge-light" for="txtPatologia">Patolog&iacute;a</label>
-
-                                    </span>  
+                                      (typeaheadOnSelect)="onSelect($event)"                                       
+                                      (keydown.enter)="onSearchEnter()"
+                                      (ngModelChange)="onInputChange()"                                      
+                                      class="form-control form-control-sm"
+                                  >
+                                  <span  class="input-group-append">                                    
+                                    <button type="button"                                       
+                                      [popover]="popTemplate"
+                                      triggers="focus"
+                                      popoverTitle="{{paciente.nombre_completo}}"
+                                      placement="right"
+                                      class="btn btn-primary btn-sm">
+                                      <i *ngIf="!loadingPatologia" class="fa fa-eye fa-sm"></i>
+                                      <img *ngIf="loadingPatologia" width="16px" height="16px" src="../../../../assets/img/loading.gif">
+                                    </button>
+                                  </span>
+                                  <!-- Mostrar las sugerencias si la bandera showSuggestions es true -->
+                                  <div class="custom-list-container" *ngIf="showSuggestions && _patologias.length > 0">                                      
+                                    <ul class="custom-list-group">
+                                      <li class="custom-list-group-item"
+                                          *ngFor="let patologia of _patologias"
+                                          (click)="onSelectOption(patologia)">
+                                        <!-- Utiliza directamente las clases found y nonwbe en el mismo elemento li -->
+                                        <div class="found">{{ patologia.codigo_etica }}</div>
+                                        <div class="nonwbe" [innerHTML]="patologia.descripcion"></div>
+                                      </li>
+                                    </ul>
+                                  </div>
                                 </div>
                               </div>
-        
+                            </div><!--/.row 3-->
+                            <div class="row">        
                               <div class="col-sm-6">
                                 <div class="form-group">
                                   <span class="form-group has-float-label">                                                                       
@@ -385,7 +426,7 @@
                               <div class="col-md-6">
                                 <span class="form-group has-float-label">
                                   <textarea id="diagnostico" name="diagnostico" [disabled]="soloLectura" rows="2" [(ngModel)]="consultas.resultado_eva" class="form-control form-control-sm" placeholder="Diagnostico..."></textarea>
-                                  <label for="diagnostico">Diagn&oacute;stico</label>
+                                  <label for="diagnostico">Descripcion Diagn&oacute;stico</label>
                                 </span>
                               </div>
                             

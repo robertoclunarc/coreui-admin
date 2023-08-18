@@ -105,6 +105,8 @@ export interface IvConsulta {
     desc_discapacidad?: string;
     estado_paciente?: string;
     login_atendio?: string;
+    fkdiagnostico?: number;
+    descripciondiagnostico?: string;
 }
 
 export interface IFiltroConsulta{
