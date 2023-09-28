@@ -575,13 +575,14 @@
                   <div *ngFor="let alert of alertsDismiss">
                     <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
                   </div>
-                  <label class="switch switch-label switch-pill switch-warning" tooltip="Requiere de Autorizaci&oacute;n">                    
-                    <input [disabled]="soloLectura" type="checkbox" name="chkAutorizacion" id="chkAutorizacion" class="switch-input" [(ngModel)]="autorizacion">
-                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-                  </label>
-
+                  <div *ngIf="preEmpleo">
+                    <label class="switch switch-label switch-pill switch-warning" tooltip="Requiere de Autorizaci&oacute;n">                    
+                      <input [disabled]="soloLectura" type="checkbox" name="chkAutorizacion" id="chkAutorizacion" class="switch-input" [(ngModel)]="autorizacion">
+                      <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                    </label>
+                  </div>
                   <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
-                  <button type="button" [disabled]="soloLectura" (click)="registrar()" class="btn btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar">Guardar</button>
+                  <button type="button" [disabled]="blockRegister" (click)="registrar()" class="btn btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar">Guardar</button>
                 </div>
               </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->

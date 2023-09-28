@@ -442,11 +442,11 @@
 
           <div class="container">
             <div class="row justify-content-md-center">
-              <div class="col-md-auto">
+              <div *ngIf="preEmpleo" class="col-md-auto">
                 <strong>Requiere de Autorizaci&oacute;n</strong>
               </div>
               <div class="col-md-auto">
-                <label class="switch switch-label switch-pill switch-warning" tooltip="Requiere de Autorizaci&oacute;n">                    
+                <label *ngIf="preEmpleo" class="switch switch-label switch-pill switch-warning" tooltip="Requiere de Autorizaci&oacute;n">                    
                   <input [disabled]="soloLectura" type="checkbox" name="chkAutorizacion" id="chkAutorizacion" class="switch-input" [(ngModel)]="autorizacion">
                   <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
                 </label>

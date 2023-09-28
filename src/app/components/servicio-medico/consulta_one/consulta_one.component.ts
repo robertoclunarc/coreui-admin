@@ -126,6 +126,7 @@ export class ConsultaOneComponent implements OnChanges {
    medicamentoIndic: IindicacionMedica={};
    historiaMedica: IHistoria_medica={};  
    turno: number;
+   preEmpleo: boolean=false;
    condiciones =[
     {valor:'N/A', display:'No Aplica'}, {valor: 'APTO', display:'APTO'},
     {valor:'NO APTO', display:'NO APTO'}, {valor:'APTO RESTR', display:'APTO CON RESTRICCIONES'}
@@ -374,9 +375,11 @@ export class ConsultaOneComponent implements OnChanges {
   }
 
   chequeaAutorizacionMotivo(idMotivo: number){
-    if (idMotivo==1){
+    if (idMotivo==9){
+      this.preEmpleo=true;
       this.autorizacion=true;
     }else{
+      this.preEmpleo=false;
       this.autorizacion=false
     }
   }
@@ -420,7 +423,7 @@ export class ConsultaOneComponent implements OnChanges {
 
   private async  showRegistro(item: IvConsulta){
     this.soloLectura=true;
-    if (this.tipoUser=='SISTEMA'){
+    if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
       this. soloLectura=false;
     }
     this.signoVital = {};
@@ -450,6 +453,8 @@ export class ConsultaOneComponent implements OnChanges {
       turno: item.turno,
     }
 
+    this.chequeaAutorizacionMotivo(this.consultas.id_motivo);
+
     for await (let i of this.selectParamedicos){      
       if (i.ci==item.ci_paramedico){
         this.consultas.id_paramedico = i.uid;        
@@ -465,7 +470,7 @@ export class ConsultaOneComponent implements OnChanges {
     }
 
     for await (let r of this.remitidos){
-      if (r.descripcion==item.reposo){
+      if (r.descripcion==item.remitido){
         this.consultas.id_remitido = r.uid;        
         break;
       }
@@ -620,9 +625,9 @@ export class ConsultaOneComponent implements OnChanges {
 
   async registrar(){
     this.popoverConsulta={};
-    let msjAviso: string;
+    const fechaConsulta: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
     if (this.newConsulta) {
-      let consultaNew: IvConsulta={};
+      
       let referenciaMedica: string="";
       for (let i=0; i< this.arrayReferencias.length; i++){
         referenciaMedica = referenciaMedica + ">>" + this.arrayReferencias[i].especialidad.toUpperCase().trim() + ":" + "\n" + this.arrayReferencias[i].informe.trim() + "\n";
@@ -637,9 +642,9 @@ export class ConsultaOneComponent implements OnChanges {
       this.consultas={
         uid: undefined,
         id_paciente: this.paciente.uid_paciente,
-        fecha: formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale),        
+        fecha: fechaConsulta,        
         id_patologia: this.selectedOptionPatolog.uid,        
-        fecha_registro: formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale),
+        fecha_registro: fechaConsulta,
         turno: this.turno,
         indicaciones_comp: indicaciones,
         referencia_medica: referenciaMedica,                 

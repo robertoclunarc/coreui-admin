@@ -27,6 +27,7 @@ import { EstudiosFisicosComponent } from '../examen_fisico/examenfisico.componen
 import { PacientesHistoriaComponent } from '../paciente-historia/pacientes.component';
 import { planillaHistoriaComponent } from '../planillas/planilla_historia/planilla-historia.component';
 import { CargosOtrasEmpresasComponent } from '../cargos_otras_empresas/cargos_otras_empresas.component';
+import { planillaAutorizacion } from '../planillas/planilla_autorizacion/planilla_autorizacion.component';
 
 @NgModule({
   imports: [
@@ -59,7 +60,8 @@ import { CargosOtrasEmpresasComponent } from '../cargos_otras_empresas/cargos_ot
     AntropometriaComponent,
     EstudiosFisicosComponent, 
     PacientesHistoriaComponent,
-    planillaHistoriaComponent,  
+    planillaHistoriaComponent,
+    planillaAutorizacion
   ]
 })
 export class HistorialModule { }

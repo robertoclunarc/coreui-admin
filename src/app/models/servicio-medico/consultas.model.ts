@@ -81,6 +81,7 @@ export interface IvConsulta {
     medico?: string;
     id_ss?: string;
     ci_medico?: string;
+    firma_dr?: string;
     area?: string;
     patologia?: string;
     reposo?: string;
@@ -172,3 +173,21 @@ export interface IvMorbilidad{
     reposo?: string;
     resultado_eva?: string;
  }
+
+ export interface INotaExamen{
+    desc_mot?: string;
+	motivo?: number;
+	nombre_completo?: string;
+	mor_sex?: string;
+	mor_ci?: string;
+	nom_paramedico?: string;
+	nom_medico?: string;
+	mor_cond?: string;
+	mor_fecha?: string;
+	mor_depar?: string;
+	mor_cargo?: string;
+	mor_nomjefe?: string;
+	mor_reposo?: string;
+	resultado_eva?: string;
+    firma_dr?: string;
+}

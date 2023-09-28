@@ -2,10 +2,22 @@
   <div class="row">
     <div class="col-md-12 mb-4">
       <div class="row" >
-        <div class="col-lg-12">
+        <div class="col-lg-4">
           <alert type="info" *ngIf="paciente.ci!=undefined">
-            <strong>{{paciente.nombre}} {{paciente.apellido}}: {{paciente.cargo}} </strong>
-            <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-success" (click)="myModalPlanilla.show();" title="Imprimir Historia Medica"><i class="fa fa-file-pdf-o"></i>&nbsp;Imprimir</button>
+            <strong>{{paciente.nombre}} {{paciente.apellido}} </strong>
+            
+          </alert>
+        </div>
+        <div class="col-lg-4">
+          <alert type="info" *ngIf="paciente.ci!=undefined">
+            <strong>{{paciente.cargo}} </strong>
+            
+          </alert>
+        </div>
+        <div class="col-lg-4">
+          <alert type="info" *ngIf="paciente.ci!=undefined">
+            <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-success" (click)="modal='historia'; myModalPlanilla.show();" title="Imprimir Historia Medica"><i class="fa fa-file-pdf-o"></i>&nbsp;Historia</button>
+            <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-success" (click)="modal='autorizacion'; myModalPlanilla.show();" title="Imprimir Autorizacion"><i class="fa fa-file-pdf-o"></i>&nbsp;Autorizacion</button>
           </alert>
         </div>
       </div>
@@ -199,7 +211,7 @@
   </div><!--/.row-->
 </div>
 
-<div bsModal #myModalPlanilla="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalPlanilla" aria-hidden="true">
+<div bsModal #myModalPlanilla="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalPlanilla" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content modal-secondary" >
       <div class="modal-header"><strong>Vista Preliminar</strong>
@@ -208,7 +220,13 @@
         </button>
       </div>
       <div *ngIf="paciente.ci!=undefined" class="modal-body">
-        <planilla-historia [inCiPaciente]="paciente.ci" ></planilla-historia>
+        <div *ngIf="modal=='historia'">
+          <planilla-historia [inCiPaciente]="paciente.ci" ></planilla-historia>
+        </div>
+        <div *ngIf="modal=='autorizacion'">
+          <planilla-autorizacion [inCiPaciente]="paciente.ci" ></planilla-autorizacion>
+        </div>
+        
       </div>                
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" (click)="myModalPlanilla.hide()">Close</button>

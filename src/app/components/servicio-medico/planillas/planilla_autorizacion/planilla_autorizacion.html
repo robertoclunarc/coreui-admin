@@ -1,0 +1,66 @@
+<div class="container">
+    <div class="row" >
+        <div class="container-fluid">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <button type="button" [disabled]="disableButtonImp" class="btn btn-outline-dark" (click)="exportHtmlToPDF()">{{titleButtonImp}}</button>
+                <!--<button printSectionId="htmltable" class="btn btn-outline-dark" ngxPrint>Vista Prelim.</button> -->     
+            </div>    
+        </div>
+    </div>    
+    
+    <div class="container-fluid" id="htmltable" #htmltable>
+        <table class="tg" style="table-layout: fixed; width: 100%">
+            <colgroup>
+                <col style="width: 20%">
+                <col style="width: 60%">
+                <col style="width: 20%">
+            </colgroup>
+            <thead>
+              <tr>
+                <td class="tg-c3ow"><img width="130px" height="80px" src="../../../assets/logo.jpg"></td>
+                <th class="tg-c3ow"><span style="font-weight:bold;font-style:italic; text-align: center;">GERENCIA DE TALENTO HUMANO</span><br>
+                                    <span style="font-weight:bold;font-style:italic; text-align: center;">Depto. de Higiene y Seguridad Industrial</span><br>
+                                    <span style="font-weight:bold;font-style:italic; text-align: center;">Servicio Medico Ocupacional</span>
+                </th>
+                <th class="tg-c3ow"><span style="font-weight:bold;font-style:italic; text-align: center;">Puerto Ordaz, {{fecha}}</span>                    
+                </th>
+              </tr>
+            </thead>
+        </table>
+        
+        <div style="padding-top: 30px; text-align:justify;" class="container">
+            <span style="text-align:justify;">&nbsp;&nbsp;&nbsp;&nbsp;Quien suscribe, <u>{{paciente?.nombre}} {{paciente?.apellido}}</u>, venezolano (a), mayor de edad, civilmente h&aacute;bil, titular de la C&eacute;dula de Identidad N&#176; <u>{{paciente?.ci}}</u>, adscrito (a) a la Gerencia y/o Departamento de <u>{{paciente?.departamento}}</u>, desempe&ntilde;ando actualmente el Cargo de <u>{{paciente?.cargo}}</u>, y trabajador (a) de la Sociedad Mercantil MATESI, MATERIALES SIDER&Uacute;RGICOS, S.A., mediante el presente documento declaro que, de conformidad con lo previsto en el primer aparte del art&iacute;culo 27 del Reglamento Parcial de la Ley Org&aacute;nica de Prevenci&oacute;n, Condiciones y Medio Ambiente de Trabajo, <u><b>AUTORIZO DE MANERA VOLUNTARIA Y SUFICIENTE</b></u> al Departamento de Higiene, Seguridad y Salud Laboral, para que de forma excepcional tenga acceso a la informaci&oacute;n que reposa en m&iacute; expediente m&eacute;dico, as&iacute; como a los diagn&oacute;sticos y/o patolog&iacute;as que se deriven de las consultas o informes m&eacute;dicos realizados por ante el Servicio M&eacute;dico de la empresa, todo ello con el prop&oacute;sito de que la referida informaci&oacute;n sea utilizada exclusivamente y de manera restringida para fines administrativos internos de la empresa.</span>
+        </div>
+        <div style="padding-top: 10px; text-align:justify;" class="container">
+            <span style="text-align:justify;">&nbsp;&nbsp;&nbsp;&nbsp;Asimismo, dejo expresa constancia de que previamente fui debidamente notificado (a) por parte del Departamento de Higiene, Seguridad Industrial y Salud Laboral, sobre el alcance de la presente autorizaci&oacute;n y del uso reservado y restringido que se le dar&aacute; a la informaci&oacute;n contenida en m&iacute; expediente m&eacute;dico.</span>
+        </div>
+        <div style="padding-top: 10px;" class="container">
+            <span style="text-align:justify;">&nbsp;&nbsp;&nbsp;&nbsp;Sin otro particular al cual hacer referencia, se despide de Usted;</span>
+        </div>         
+        <div style="padding-top: 20px;" class="container">
+            <span style="text-align:justify;">&nbsp;&nbsp;&nbsp;&nbsp;Atentamente,</span>
+        </div>
+        <div style="padding-top: 30px;" class="container">
+            <span style="text-align:justify;">__________________________________</span>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm">
+                    <span style="text-align:justify;">Firma del Trabajador(a)</span>
+        
+                </div>
+                <div class="col-sm">
+                    <span style="text-align:justify;">Huella dactilar</span>
+        
+                </div>
+            </div> 
+        </div>       
+        <div style="padding-top: 30px;" class="container">
+            <span style="text-align:justify;">Apellidos y Nombres: _________________</span>
+        </div>
+        <div class="container">
+            <span style="text-align:justify;">C.I. _________________</span>
+        </div>
+    </div>
+  
+</div>
