@@ -35,7 +35,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let c of returnedArray">                      
+                    <tr *ngFor="let c of returnedArray">
                       <td>
                         <div class="btn-group" dropdown>
                           <button type="button" class="btn btn-danger">Accion</button>
@@ -46,7 +46,7 @@
                           
                           <ul *dropdownMenu class="dropdown-menu" role="menu">
                             <li role="menuitem"><a class="dropdown-item" (click)="showModalActualizar(c); primaryModal.show();" href="javascript:void(0)">Detalles de Consulta</a></li>
-                            <li role="menuitem"><a class="dropdown-item" (click)="downloadAsPDF(c.uid); myModalPlanilla.show();" href="javascript:void(0)">Descargar PDF</a></li>                            
+                            <li role="menuitem"><a class="dropdown-item" (click)="planilla='consulta'; downloadAsPDF(c.uid); myModalPlanilla.show();" href="javascript:void(0)">Descargar PDF</a></li>                            
                           </ul>
                         </div>
                       </td>
@@ -361,7 +361,7 @@
                               </div>
                               <div class="form-group col-sm-3">
                                 <span class="form-group has-float-label">
-                                  <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtImc" [(ngModel)]="antropometria.imc" id="txtImc" placeholder="Indice Masa Corporal">
+                                  <input type="number" readonly [disabled]="soloLectura" class="form-control form-control-sm" name="txtImc" [(ngModel)]="antropometria.imc" id="txtImc" placeholder="Indice Masa Corporal">
                                   <label for="txtImc">IMC</label>
                                 </span>
                               </div>
@@ -452,8 +452,12 @@
                         <div class="card-body" (collapsed)="collapsed($event)" (expanded)="expanded($event)" [collapse]="isCollapsed_1" >
                           <div *ngIf="tipoUser!='PARAMEDICO' || soloLectura" class="card">
                             <div class="card-header">
-                              <strong>Referencias</strong>                              
-                            </div>                            
+                              <strong>Referencias</strong>
+                              <div class="card-header-actions">                            
+                                <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="titleButtonExport!='Exportar'" title="Imprimir Referencia"><i class="fa fa-print"></i>&nbsp;{{titleButtonExport}}</button>                              
+                              </div>
+                            </div>
+                                                        
                             <table class="table table-condensed" id="dataReferencias">
                               
                                 <tr>                                
@@ -485,7 +489,7 @@
                           </div>
                           <div class="card">                            
                             <div class="card-header">
-                              <strong>Medicamentos Aplicados</strong>                              
+                              <strong>Medicamentos Aplicados</strong>                                                            
                             </div>
                             <table class="table table-condensed" id="dataMedicamentosAplicados">                              
                                 <tr>                                
@@ -531,7 +535,10 @@
                           </div>
                           <div *ngIf="tipoUser!='PARAMEDICO' || soloLectura" class="card">                            
                             <div class="card-header">
-                              <strong>Recetario</strong>                              
+                              <strong>Recetario</strong>
+                              <div class="card-header-actions">                            
+                                <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="medicamentoIndicados.length==0" (click)="planilla='recipe'; myModalPlanilla.show();" title="Imprimir Recetario"><i class="fa fa-print"></i>&nbsp;Imprimir</button>                              
+                              </div>                              
                             </div>
                             <table class="table table-condensed" id="dataMedicamentosIndicados">
                               
@@ -623,7 +630,12 @@
         </button>
       </div>
       <div class="modal-body">
-        <planilla-consulta [uidPaciente]="uidPaciente" ></planilla-consulta>
+        <div *ngIf="planilla=='consulta'">
+          <planilla-consulta [uidPaciente]="uidPaciente" ></planilla-consulta>
+        </div>
+        <div *ngIf="planilla=='recipe'">
+          <planilla-recipe [inIdConsulta]="consultas.uid" ></planilla-recipe>
+        </div>
       </div>
                 
       <div class="modal-footer">

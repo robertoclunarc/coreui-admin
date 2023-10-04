@@ -136,6 +136,7 @@ export class ConsultasComponent  implements OnInit  {
   public titleButtonExport: string = 'Exportar';
   public preEmpleo: boolean = false;
   show = false;
+  planilla: string;
   autohide = true;
 
   totalItems: number;//total number of items in all pages
@@ -938,9 +939,8 @@ export class ConsultasComponent  implements OnInit  {
       for (let j=0; j< this.medicamentoIndicados.length; j++){
         indicaciones = indicaciones + decodeURI(this.medicamentoIndicados[j].medicamento)  + ": " + this.medicamentoIndicados[j].indicacion + "\n";
 
-        //console.log(`medic:${this.medicamentoIndicados[j].medicamento}; decode: ${decodeURI(this.medicamentoIndicados[j].medicamento)}; indica: ${this.medicamentoIndicados[j].indicacion}; `)
       }      
-      
+      console.log(indicaciones);
       this.consultas={
         uid: undefined,
         id_paciente: this.paciente.uid_paciente,
@@ -1276,6 +1276,10 @@ export class ConsultasComponent  implements OnInit  {
   onInputChange() {
     // Establecer la bandera en false para ocultar las sugerencias.
     this.showSuggestions = false;
+  }
+
+  abrirPlanilla(){
+    this.planilla='recipe';
   }
 
   async morbilidad(filtro: IFiltroConsulta){

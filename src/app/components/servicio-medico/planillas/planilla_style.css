@@ -13,6 +13,7 @@
   padding:3px 3px;
   word-break:normal;
   text-align: center;
+  color: black;
 }
 .tg th{
   border-color:black;
@@ -25,6 +26,7 @@
   padding:3px 3px;
   word-break:normal;
   text-align: center;
+  white-space: nowrap;
 }
 .tg .tg-ce4a{
   border-color:#ffffff;

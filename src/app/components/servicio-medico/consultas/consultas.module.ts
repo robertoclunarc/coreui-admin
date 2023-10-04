@@ -60,6 +60,7 @@ import { AlertModule } from 'ngx-bootstrap/alert';
 //import { PlanillaModule  } from '../planillas/planilla.module'
 import { planillaConsultaComponent } from '../planillas//planilla_consulta/planilla_consulta.component';
 import { NgxPrintModule } from 'ngx-print';
+import { planillaRecipeComponent } from '../planillas/planilla_recipe/planilla-recipe.component';
 
 @NgModule({
   imports: [
@@ -88,6 +89,7 @@ import { NgxPrintModule } from 'ngx-print';
     //--TablesComponent,
     ConsultasComponent,
     planillaConsultaComponent,
+    planillaRecipeComponent,
     //--CarouselsComponent,
     //-CollapsesComponent,
     //--PaginationsComponent,
