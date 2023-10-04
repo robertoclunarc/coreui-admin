@@ -1278,10 +1278,6 @@ export class ConsultasComponent  implements OnInit  {
     this.showSuggestions = false;
   }
 
-  abrirPlanilla(){
-    this.planilla='recipe';
-  }
-
   async morbilidad(filtro: IFiltroConsulta){
     let data: any[]=[];
     let morbilidad: IvMorbilidad[]=[];

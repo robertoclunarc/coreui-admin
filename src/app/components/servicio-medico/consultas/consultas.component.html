@@ -38,7 +38,7 @@
                     <tr *ngFor="let c of returnedArray">
                       <td>
                         <div class="btn-group" dropdown>
-                          <button type="button" class="btn btn-danger">Accion</button>
+                          <button type="button" class="btn btn-danger">Ver</button>
                           <button type="button" dropdownToggle class="btn btn-danger dropdown-toggle dropdown-toggle-split">
                             <span class="caret"></span>
                             <span class="sr-only">Estirar buton!</span>
@@ -46,7 +46,7 @@
                           
                           <ul *dropdownMenu class="dropdown-menu" role="menu">
                             <li role="menuitem"><a class="dropdown-item" (click)="showModalActualizar(c); primaryModal.show();" href="javascript:void(0)">Detalles de Consulta</a></li>
-                            <li role="menuitem"><a class="dropdown-item" (click)="planilla='consulta'; downloadAsPDF(c.uid); myModalPlanilla.show();" href="javascript:void(0)">Descargar PDF</a></li>                            
+                            <li role="menuitem"><a class="dropdown-item" (click)="planilla='consulta'; downloadAsPDF(c.uid); myModalPlanilla.show();" href="javascript:void(0)">Archivo en PDF</a></li>                            
                           </ul>
                         </div>
                       </td>
@@ -454,7 +454,7 @@
                             <div class="card-header">
                               <strong>Referencias</strong>
                               <div class="card-header-actions">                            
-                                <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="titleButtonExport!='Exportar'" title="Imprimir Referencia"><i class="fa fa-print"></i>&nbsp;{{titleButtonExport}}</button>                              
+                                <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="arrayReferencias.length==0" (click)="planilla='referencia'; myModalPlanilla.show();" title="Imprimir Referencia"><i class="fa fa-print"></i></button>                              
                               </div>
                             </div>
                                                         
@@ -537,7 +537,7 @@
                             <div class="card-header">
                               <strong>Recetario</strong>
                               <div class="card-header-actions">                            
-                                <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="medicamentoIndicados.length==0" (click)="planilla='recipe'; myModalPlanilla.show();" title="Imprimir Recetario"><i class="fa fa-print"></i>&nbsp;Imprimir</button>                              
+                                <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="medicamentoIndicados.length==0" (click)="planilla='recipe'; myModalPlanilla.show();" title="Imprimir Recetario"><i class="fa fa-print"></i></button>                              
                               </div>                              
                             </div>
                             <table class="table table-condensed" id="dataMedicamentosIndicados">
@@ -635,6 +635,9 @@
         </div>
         <div *ngIf="planilla=='recipe'">
           <planilla-recipe [inIdConsulta]="consultas.uid" ></planilla-recipe>
+        </div>
+        <div *ngIf="planilla=='referencia'">
+          <planilla-referencia [inIdConsulta]="consultas.uid" ></planilla-referencia>
         </div>
       </div>
                 

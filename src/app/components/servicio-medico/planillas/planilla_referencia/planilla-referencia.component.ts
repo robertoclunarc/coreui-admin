@@ -10,18 +10,16 @@ import { ConsultasService, } from '../../../../services/servicio_medico/consulta
 
 //modelos
 import { IUsuarios } from '../../../../models/servicio-medico/usuarios.model';
-import { IvConsulta, IFiltroConsulta } from '../../../../models/servicio-medico/consultas.model';
-
-import { IindicacionMedica } from '../../../../models/servicio-medico/recetamedica.models';
+import { IvConsulta, IFiltroConsulta, Ireferencia } from '../../../../models/servicio-medico/consultas.model';
 
 @Component({
-  selector: 'planilla-recipe',
-  templateUrl: './planilla-recipe.html',
+  selector: 'planilla-referencia',
+  templateUrl: './planilla-referencia.html',
   providers: [ConsultasService, ],
   styleUrls: ['../planilla_style.css']
 })
 
-export class planillaRecipeComponent implements OnChanges {
+export class planillaReferenciaComponent implements OnChanges {
   idConsulta: string;
   @ViewChild('htmltable', {static: false}) htmltable: ElementRef;
   @Input() inIdConsulta: string = "-1";
@@ -32,7 +30,7 @@ export class planillaRecipeComponent implements OnChanges {
   disableButtonImp: boolean = false;
   
   consulta: IvConsulta = {};
-  medicamentoIndicados: IindicacionMedica[]=[];
+  arrayReferencias: Ireferencia[]=[];
   constructor(private route: ActivatedRoute,private router: Router,
     
     private srvConsultas: ConsultasService,
@@ -54,8 +52,8 @@ export class planillaRecipeComponent implements OnChanges {
         }else{
             this.router.navigate(["login"]);
         }
-        if (this.idConsulta!=undefined && this.idConsulta!="-1"){
-            this.medicamentoIndicados=[];
+        if (this.idConsulta!=undefined && this.idConsulta!="-1"){ 
+            this.arrayReferencias=[];     
             this.buscarConsulta();            
         }
     }
@@ -68,27 +66,28 @@ export class planillaRecipeComponent implements OnChanges {
         if (result[0]!= undefined){
             this.consulta=result[0];
             this.consulta.fecha= formatDate(this.consulta.fecha, 'dd-MM-yyyy', 'en');            
-            this.convIndicacionesInArray(this.consulta.indicaciones_comp);            
+            this.convReferenciaInArray(this.consulta.referencia_medica);            
         }
         else
             this.consulta={}
         })        
     }
 
-    private convIndicacionesInArray(indicaciones: string){
-        if (indicaciones!=undefined){
-          let array = indicaciones.split('\n');
-          let indica: string[];      
-          let indicacion: IindicacionMedica;
-          array.pop();//elimina el ultimo elemento  ya que esta siempre vacio
+    private convReferenciaInArray(referencia: string){
+        if (referencia!=undefined){
+          let array = referencia.split('>>');
+          let rfcia: string[];
+          let Irefcia: Ireferencia;      
+          array.shift();//elimina el 1er elemento ya que esta siempre vacio
           for (let i = 0; i<array.length; i++) {
-            indica = array[i].split(':');        
-            indicacion={
-              medicamento: indica[0].trim(),
-              indicacion: indica[1].trim(),
-            }                
-            this.medicamentoIndicados.push(indicacion);
-                        
+            rfcia=[];        
+            rfcia = array[i].split(':');
+            Irefcia={
+              especialidad: rfcia[0].trim(),
+              informe: rfcia[1].trim().replace(/\n/g, ''),
+            }        
+            this.arrayReferencias.push(Irefcia);
+            //console.log(this.arrayReferencias)
           }
         }    
     }
@@ -100,18 +99,18 @@ export class planillaRecipeComponent implements OnChanges {
      
         html2canvas(data).then(canvas => {
             
-            let doc = new jsPDF('l', 'mm', 'letter');
+            let doc = new jsPDF('p', 'mm', 'letter');
 
             doc.html(data, {
                 callback: () => {
                     // Utiliza una función de flecha para mantener el contexto
                     this.disableButtonImp = false;
                     this.titleButtonImp = "Imprimir PDF";         
-                    doc.save(`recipe-${this.consulta.nombre_completo}.pdf`);
+                    doc.save(`referencia-${this.consulta.nombre_completo}.pdf`);
                 },
                 x: 5,
                 y: 5,
-                width: 270, 
+                width: 190, 
                 windowWidth: 850,
             });
         });
