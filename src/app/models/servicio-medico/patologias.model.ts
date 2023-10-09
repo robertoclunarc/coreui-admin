@@ -7,5 +7,6 @@ export interface IPatologia{
     padre?: number;
     hijo?: number;
     estatus?: boolean;
-    view?: number;    
+    view?: number;
+    definicion?: string;
 }

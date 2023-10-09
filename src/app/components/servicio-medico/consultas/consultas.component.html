@@ -281,16 +281,24 @@
                                       (ngModelChange)="onInputChange()"                                      
                                       class="form-control form-control-sm"
                                   >
-                                  <span  class="input-group-append">                                    
+                                  <span class="input-group-append"> 
+                                    <ng-template #popTemplatePatog>                                      
+                                      {{selectedOptionPatolog?.definicion}}
+                                      <br>
+                                      <a href="{{urlICD}}{{selectedOptionPatolog?.url}}" target="_blank">
+                                        <small className="text-muted">{{selectedOptionPatolog?.url}}</small>
+                                      </a>                                                                            
+                                    </ng-template>
                                     <button type="button"                                       
-                                      [popover]="popTemplate"
-                                      triggers="focus"
-                                      popoverTitle="{{paciente.nombre_completo}}"
+                                      [popover]="popTemplatePatog"
+                                      
+                                      popoverTitle="{{selectedOptionPatolog?.descripcion}}"
                                       placement="right"
                                       class="btn btn-primary btn-sm">
                                       <i *ngIf="!loadingPatologia" class="fa fa-eye fa-sm"></i>
                                       <img *ngIf="loadingPatologia" width="16px" height="16px" src="../../../../assets/img/loading.gif">
                                     </button>
+                                    
                                   </span>
                                   <!-- Mostrar las sugerencias si la bandera showSuggestions es true -->
                                   <div class="custom-list-container" *ngIf="showSuggestions && _patologias.length > 0">                                      

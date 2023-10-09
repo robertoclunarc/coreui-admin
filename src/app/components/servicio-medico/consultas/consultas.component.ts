@@ -97,6 +97,7 @@ export class ConsultasComponent  implements OnInit  {
   areas: IAreas[]=[];
   selectedPatolog: string = ' ';
   patologias: IPatologia[] = [];
+  patologiasAll: IPatologia[] = [];
   _patologias: IPatologia[] = [];
   afecciones: IAfecciones[]=[];
   selectedOptionPatolog: any;  
@@ -129,6 +130,7 @@ export class ConsultasComponent  implements OnInit  {
   queryPatologia: string[]=[];
   blockRegister: boolean = false;
   soloLectura: boolean;
+  urlICD: string = "https://icd.who.int/browse11/l-m/es#/";
   public classTable: string;
   public classButton: string;
   public estiloOscuro: string;
@@ -190,7 +192,7 @@ export class ConsultasComponent  implements OnInit  {
     @Inject(LOCALE_ID) public locale: string,  
   ) {  }
 
-  ngOnInit(): void { 
+  async ngOnInit() { 
     
     if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
       this.classTable = "table table-striped";
@@ -219,13 +221,8 @@ export class ConsultasComponent  implements OnInit  {
 		this.llenarArrayConsultas();    
     this.llenarArrayMotivos();
     this.llenarArrayAreas();
-
-    if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
-      this.llenarArrayPatologias(undefined,undefined,undefined,true, 'ICD', 1);
-    }
-    else{
-      this.llenarArrayPatologias(undefined,undefined,undefined,true, 'DOMINIO', 2);
-    }
+    
+    this.patologiasAll = await  this.llenarArrayPatologias(undefined,undefined,undefined,undefined, undefined, undefined)
 
     this.llenarArrayAfecciones();
     this.llenarArrayRemitidos();
@@ -310,26 +307,30 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   private async llenarArrayPatologias(uid: number, descripcion: string, codigo: string, estatus: boolean, tipo: string, view: number){
+    let _pat: IPatologia[]=[];
     await this.srvPatologia.consultaFilter(uid,descripcion,codigo,estatus, tipo, view)
       .toPromise()
       .then(async result => {
-        this.patologias = await Promise.all(result.map((res) => ({
-          descripcion: res.codigo_etica + ': ' + res.descripcion,
+        _pat = await Promise.all(result.map((res) => ({
+          
+          descripcion: res.codigo_etica!==null ? res.codigo_etica + ': ' + res.descripcion : res.descripcion,
           tipo: res.tipo,
           codigo_etica: res.codigo_etica,
           url: res.url,
           estatus: true,
           view: res.view,
+          uid: res.uid,
+          definicion: res.definicion
         })));        
       });
-    this.srvPatologia.consultaFilter(undefined,'SIN ESPECIFICACION',undefined,true, 'NINGUNA', undefined)
+    /*this.srvPatologia.consultaFilter(undefined,'SIN ESPECIFICACION',undefined,true, 'NINGUNA', undefined)
     .toPromise()
     .then(result => {      
       this.patologias.push(result[0])
       this.selectedPatolog = result[0].descripcion;
       this.selectedOptionPatolog = result[0];
-    });
-    //console.log(this.patologias);
+    });*/    
+    return _pat;
   }
 
   private llenarArrayTiposDiagnosticos(){
@@ -697,6 +698,12 @@ export class ConsultasComponent  implements OnInit  {
     this.verTurno();
     this.newConsulta=true;
     this.modalTitle = "Nueva Consulta Medica";
+    if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
+      this.patologias= await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'ICD', 1);
+    }
+    else{
+      this.patologias= await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'DOMINIO', 2);
+    }
     await this.llenarArrayMedicos();    
     this.selectMedicos= this.medicos.filter( m => m.activo=true);
     this.selectParamedicos= this.paramedicos.filter( m => m.activo=true);    
@@ -719,6 +726,7 @@ export class ConsultasComponent  implements OnInit  {
   }  
 
   async  showModalActualizar(item: IvConsulta){
+    
     this.soloLectura=true;
     if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
       this. soloLectura=false;
@@ -785,14 +793,21 @@ export class ConsultasComponent  implements OnInit  {
       }
     }
 
-    for await (let pt of this.patologias){
-      if (pt.descripcion==item.patologia){
+    if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
+      this.patologias = await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'ICD', 1);
+    }
+    else{
+      this.patologias = await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'DOMINIO', 2);
+    }
+    console.log(item);
+    for await (let pt of this.patologiasAll){      
+      if (pt.uid==item.id_patologia){        
         this.selectedOptionPatolog= pt;
-        this.selectedPatolog=pt.descripcion
+        this.selectedPatolog=pt.descripcion;
         break;
       }
     }
-    
+    console.log(this.selectedOptionPatolog)    
     this.buscarSignosVitales(item.ci, item.fecha);    
     this.convReferenciaInArray(item.referencia_medica);
     this.buscarMedicamentosAplicados(item.uid);
@@ -940,7 +955,7 @@ export class ConsultasComponent  implements OnInit  {
         indicaciones = indicaciones + decodeURI(this.medicamentoIndicados[j].medicamento)  + ": " + this.medicamentoIndicados[j].indicacion + "\n";
 
       }      
-      console.log(indicaciones);
+      
       this.consultas={
         uid: undefined,
         id_paciente: this.paciente.uid_paciente,
@@ -1196,68 +1211,67 @@ export class ConsultasComponent  implements OnInit  {
 
   async searchPatologiasInArray(){
     let encontrado: boolean =  false;
-    if (this.selectedOptionPatolog.codigo_etica!=null && this.selectedOptionPatolog.codigo_etica!=undefined){
-      let posicion: number = await this.srvVarios.searchArrayObject(this.patologias, this.selectedOptionPatolog.codigo_etica, 'codigo_etica')
+    if (this.selectedOptionPatolog && this.selectedOptionPatolog.codigo_etica!=null && this.selectedOptionPatolog.codigo_etica!=undefined){
+      let posicion: number = await this.srvVarios.searchArrayObject(this.patologiasAll, this.selectedOptionPatolog.codigo_etica, 'codigo_etica')
       encontrado =  posicion >= 0 ? true : false;
     }
     return encontrado
   }
 
   async validarEntradaBusquedaPatologia(){    
-    if (this.tipoUser!='SISTEMA' && this.tipoUser!='MEDICO' ){
-      console.log(1);
+    if (this.tipoUser!='SISTEMA' && this.tipoUser!='MEDICO' ){      
       return false;
     }
-    if (this.selectedPatolog=='' || this.selectedPatolog=='SIN ESPECIFICACION'){
-      console.log(2);
+    if (this.selectedPatolog=='' || this.selectedPatolog=='SIN ESPECIFICACION'){      
       return false;
     }
-    if (this.selectedOptionPatolog.descripcion.trim() == this.selectedPatolog.trim()){
-      console.log(3);
+    if (this.selectedOptionPatolog?.descripcion.trim() == this.selectedPatolog.trim()){      
       return false;
     }
-    if (this.yaFueBuscadaAntes()){
-      console.log(4);
+    if (this.yaFueBuscadaAntes()){      
       return false;
     }
-    if(await this.searchPatologiasInArray()){
-      console.log(5);
+    if(await this.searchPatologiasInArray()){      
       return false;
     }
     return true;
   }
 
   async onSearchEnter() {
-    if (await this.validarEntradaBusquedaPatologia()){
-      
-      this.loadingPatologia= true;
-      this._patologias=[];
-      console.log(this.selectedPatolog);
-      
-      const result = await this.srvPatologia.filterICD({ query: this.selectedPatolog }).toPromise();
-      if (result){
-        this._patologias = await Promise.all(result.map((res) => ({
-          descripcion: res.release.code + ': ' + this.srvVarios.getContentFromEm(res.entity.title),
-          tipo: this.tipoUser == 'SISTEMA' || this.tipoUser=='MEDICO' ? 'ICD' : 'NANDA',
-          codigo_etica: res.release.code,
-          url: res.entity.entity,
-          estatus: true,
-          view: this.tipoUser == 'SISTEMA' || this.tipoUser=='MEDICO' ? 1 : 2,
-        })));
-        this._patologias = this._patologias.filter( (p: IPatologia) => {p.codigo_etica != '' })
-        console.log(this._patologias.length);
-        this.patologias = this.patologias.concat(this._patologias);
-        this._patologias.forEach(async (res) => {
-          await this.insertarPatologia(res);
-        });
-        this.showSuggestions = true;
-      }else{
-        this.onInputChange();
+    if (this.selectedPatolog!='' && this.selectedPatolog!=undefined){
+      if (await this.validarEntradaBusquedaPatologia()){
+        
+        this.loadingPatologia= true;
+        this._patologias=[];
+        let resultPatog: IPatologia[]=[];
+        console.log(this.selectedPatolog);
+        
+        const result = await this.srvPatologia.filterICD({ query: this.selectedPatolog }).toPromise();
+        console.log(result);
+        if (result.length>0){
+          resultPatog = await Promise.all(result.map((res) => ({
+            descripcion: res.release.code + ': ' + this.srvVarios.getContentFromEm(res.entity.title),
+            tipo: this.tipoUser == 'SISTEMA' || this.tipoUser=='MEDICO' ? 'ICD' : 'NANDA',
+            codigo_etica: res.release.code,
+            url: res.entity.entity,
+            estatus: true,
+            view: this.tipoUser == 'SISTEMA' || this.tipoUser=='MEDICO' ? 1 : 2,
+            definicion: res.release?.definicion !== undefined ? res.release?.definicion: '--',
+          })));
+          
+          this._patologias = resultPatog.filter((p: IPatologia) => p.codigo_etica !== '');
+          console.log(this._patologias.length);
+          this.patologias = this.patologias.concat(this._patologias);
+          this._patologias.forEach(async (res) => {
+            await this.insertarPatologia(res);
+          });
+          this.showSuggestions = true;
+        }else{
+          this.onInputChange();
+        }
+        
+        this.loadingPatologia= false;
       }
-      
-      console.log(this.patologias.length);      
-      this.loadingPatologia= false;
-      
     }
   }
 
@@ -1268,7 +1282,7 @@ export class ConsultasComponent  implements OnInit  {
       let pat: IPatologia = _pat;
       let arrpat: string[] = pat.descripcion.split(": ");
       pat.descripcion = arrpat[1].trim();
-      console.log(pat);
+      pat.definicion = pat.definicion.replace(/—/g, '');      
       this.srvPatologia.registrar(pat).toPromise();
     }
   }
