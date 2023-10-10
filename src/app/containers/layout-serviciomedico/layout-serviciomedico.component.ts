@@ -91,9 +91,9 @@ export class LayoutServicioMedicoComponent {
   private async menusUsuarioServicioMedico(user: string) {    
 		return await this.srvMenuServicioMedico.menusUser(user)
 			.toPromise()
-      .then(results => {				
-				this.navItems = results;				
-			})			
+      .then(results => {
+				this.navItems = results;
+			})
 			.catch(err => { console.log(err) });
 	}
 

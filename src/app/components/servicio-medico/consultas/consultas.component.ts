@@ -323,13 +323,13 @@ export class ConsultasComponent  implements OnInit  {
           definicion: res.definicion
         })));        
       });
-    /*this.srvPatologia.consultaFilter(undefined,'SIN ESPECIFICACION',undefined,true, 'NINGUNA', undefined)
+    this.srvPatologia.consultaFilter(undefined,'SIN ESPECIFICACION',undefined,true, 'NINGUNA', undefined)
     .toPromise()
     .then(result => {      
-      this.patologias.push(result[0])
-      this.selectedPatolog = result[0].descripcion;
-      this.selectedOptionPatolog = result[0];
-    });*/    
+      _pat.push(result[0]);
+      /*this.selectedPatolog = result[0].descripcion;
+      this.selectedOptionPatolog = result[0];*/
+    });   
     return _pat;
   }
 
@@ -708,6 +708,7 @@ export class ConsultasComponent  implements OnInit  {
     this.selectMedicos= this.medicos.filter( m => m.activo=true);
     this.selectParamedicos= this.paramedicos.filter( m => m.activo=true);    
     this.selectedOptionPatolog= this.patologias.find(p => p.descripcion=='SIN ESPECIFICACION');
+    
     this.paciente={};
     this.consultas={};
     if (this.tipoUser=='PARAMEDICO'){
@@ -799,7 +800,7 @@ export class ConsultasComponent  implements OnInit  {
     else{
       this.patologias = await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'DOMINIO', 2);
     }
-    console.log(item);
+    
     for await (let pt of this.patologiasAll){      
       if (pt.uid==item.id_patologia){        
         this.selectedOptionPatolog= pt;
@@ -807,7 +808,7 @@ export class ConsultasComponent  implements OnInit  {
         break;
       }
     }
-    console.log(this.selectedOptionPatolog)    
+    
     this.buscarSignosVitales(item.ci, item.fecha);    
     this.convReferenciaInArray(item.referencia_medica);
     this.buscarMedicamentosAplicados(item.uid);
