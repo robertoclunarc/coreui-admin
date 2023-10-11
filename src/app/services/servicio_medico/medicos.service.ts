@@ -17,8 +17,7 @@ export class MedicosService {
   
   constructor(private http: HttpClient) { }
 
-  medicosAll() : Observable<IMedicos[]> { 
-
+  medicosAll() : Observable<IMedicos[]> {
     return this.http.get<IMedicos[]>(this.apiUrlMedicos + 'medicos/consultar')
 			.pipe(
 			//	tap(result => console.log(`medicosAll`)),
@@ -26,8 +25,11 @@ export class MedicosService {
 			);
   }
 
-  paraMedicosAll() : Observable<IMedicos[]> { 
+  medicoTitular() : Promise<IMedicos> {
+    return this.http.get<IMedicos>(this.apiUrlMedicos + 'medicos/titular').toPromise();
+  }
 
+  paraMedicosAll() : Observable<IMedicos[]> {
     return this.http.get<IMedicos[]>(this.apiUrlMedicos + 'paramedicos/consultar')
 			.pipe(
 				//tap(result => console.log(`paramedicosAll`)),
