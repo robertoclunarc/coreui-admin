@@ -108,10 +108,10 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
        
       }
       else {
-        this.router.navigate(["login"]);
+        this.router.navigate(["serviciomedico/login"]);
       }
     }else{
-      this.router.navigate(["login"]);
+      this.router.navigate(["serviciomedico/login"]);
     }
     console.log(`Protocolo: ${this.inIDProtocolo}`);
     this.llenarArrayRespuestas();    

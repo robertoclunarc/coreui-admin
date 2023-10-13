@@ -97,10 +97,10 @@ export class MaestroHistoriasComponent  implements OnInit  {
             this.tipoUser= sessionStorage.tipoUser;
           }
           else {
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
           }
       }else{
-        this.router.navigate(["login"]);
+        this.router.navigate(["serviciomedico/login"]);
       }
       
       if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){

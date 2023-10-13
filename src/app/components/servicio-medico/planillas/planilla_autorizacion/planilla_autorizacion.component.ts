@@ -49,10 +49,10 @@ export class planillaAutorizacion implements OnChanges {
                 this.ci = this.route.snapshot.paramMap.get("inCiPaciente")==undefined? this.inCiPaciente: this.route.snapshot.paramMap.get("inCiPaciente");        
             }
             else {
-                this.router.navigate(["login"]);
+                this.router.navigate(["serviciomedico/login"]);
             }
         }else{
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
         }
         if (this.ci!=undefined && this.inCiPaciente!="-1"){      
             this.buscarPaciente();

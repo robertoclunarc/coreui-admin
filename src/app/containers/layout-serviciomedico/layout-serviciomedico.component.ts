@@ -127,7 +127,7 @@ export class LayoutServicioMedicoComponent {
 
   Logout(){
     this.srvLoginService.logout();
-    this.router.navigate(["login"]);
+    this.router.navigate(["serviciomedico/login"]);
   }
 
   imageExists(url): boolean {

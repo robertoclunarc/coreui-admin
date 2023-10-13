@@ -206,14 +206,14 @@ export class ConsultasComponent  implements OnInit  {
     
     if (sessionStorage.currentUser){
         this.user=JSON.parse(sessionStorage.currentUser);
-        if (this.user) {             
+        if (this.user) { 
           this.tipoUser= sessionStorage.tipoUser;
         }
         else {
-          this.router.navigate(["login"]);
+          this.router.navigate(["serviciomedico/login"]);
         }
     }else{
-      this.router.navigate(["login"]);
+      this.router.navigate(["serviciomedico/login"]);
     }
     
     this.llenarArrayTiposDiagnosticos();
@@ -577,9 +577,7 @@ export class ConsultasComponent  implements OnInit  {
       this.srvConsultas.searchConsultaPromise(this.buscarConsulta)
       .then(async (res) => {
             
-            this.returnedSearch= res;
-            console.log(this.searchText);
-            console.log(this.returnedSearch);
+            this.returnedSearch= res;            
             this.totalItems = this.returnedSearch.length;
             this.returnedArray = this.returnedSearch.slice(0, this.numPages);
             this.maxSize = Math.ceil(this.totalItems/this.numPages);
@@ -725,18 +723,21 @@ export class ConsultasComponent  implements OnInit  {
       this.patologias= await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'DOMINIO', 2);
     }
     await this.llenarArrayMedicos();    
-    this.selectMedicos= this.medicos.filter( m => m.activo=true);
-    this.selectParamedicos= this.paramedicos.filter( m => m.activo=true);    
+    this.selectMedicos= this.medicos.filter( m => m.activo==true);
+    
+    this.selectParamedicos= this.paramedicos.filter( m => m.activo===true);    
     this.selectedOptionPatolog= this.patologias.find(p => p.descripcion=='SIN ESPECIFICACION');
     
     this.paciente={};
     this.consultas={};
     if (this.tipoUser=='PARAMEDICO'){
       this.consultas.id_paramedico=this.paramedicos.find(p => (p.login==this.user.login)).uid;
+      this.consultas.id_medico = this.selectMedicos.find( m => { return m.titular===true}).uid;
     }
     if (this.tipoUser=='MEDICO'){
       this.consultas.id_medico=this.medicos.find(m => (m.login==this.user.login)).uid;
     }
+    
     //this.llenarArraymedicamentos('EXISTECIA');
     this.medicamentoAplicado={};
     this.medicamentoAplicado.medicamentos=[];
@@ -752,6 +753,8 @@ export class ConsultasComponent  implements OnInit  {
     if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
       this. soloLectura=false;
       this.blockRegister=false;
+    }else{
+      this.blockRegister=true;
     }
     this.signoVital = {};
     this.antropometria={};

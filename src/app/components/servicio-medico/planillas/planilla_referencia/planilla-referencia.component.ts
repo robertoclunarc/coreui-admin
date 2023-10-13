@@ -47,10 +47,10 @@ export class planillaReferenciaComponent implements OnChanges {
                 this.idConsulta = this.route.snapshot.paramMap.get("inIdConsulta")==undefined? this.inIdConsulta: this.route.snapshot.paramMap.get("inIdConsulta");        
             }
             else {
-                this.router.navigate(["login"]);
+                this.router.navigate(["serviciomedico/login"]);
             }
         }else{
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
         }
         if (this.idConsulta!=undefined && this.idConsulta!="-1"){ 
             this.arrayReferencias=[];     

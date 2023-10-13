@@ -65,10 +65,10 @@ export class HistorialConsultasComponent implements OnChanges {
         this.tipoUser= sessionStorage.tipoUser;
       }
       else {
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
       }
     }else{
-      this.router.navigate(["login"]);
+      this.router.navigate(["serviciomedico/login"]);
     }
     
     this.uidPaciente = this.route.snapshot.paramMap.get("idPaciente")==undefined? this._uidPaciente: this.route.snapshot.paramMap.get("idPaciente");

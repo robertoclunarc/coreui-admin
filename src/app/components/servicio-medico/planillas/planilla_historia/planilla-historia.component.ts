@@ -111,10 +111,10 @@ export class planillaHistoriaComponent implements OnChanges {
        
       }
       else {
-        this.router.navigate(["login"]);
+        this.router.navigate(["serviciomedico/login"]);
       }
     }else{
-      this.router.navigate(["login"]);
+      this.router.navigate(["serviciomedico/login"]);
     }
 
     /*this.llenarArrayRespuestas();    

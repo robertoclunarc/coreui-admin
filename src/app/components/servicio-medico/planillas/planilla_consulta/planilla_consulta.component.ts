@@ -61,10 +61,10 @@ export class planillaConsultaComponent implements OnChanges {
        
       }
       else {
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
       }
     }else{
-      this.router.navigate(["login"]);
+      this.router.navigate(["serviciomedico/login"]);
     }
     if (this.id!=undefined && this.id!="-1"){
       this.consultasFilter(this.id);
