@@ -84,7 +84,8 @@
               <div class="form-group">
                 <span class="form-group has-float-label">
                     <select  class="form-control form-control-sm"  name="cboDepartamento" [(ngModel)]="paciente.id_departamento" id="cboDepartamento" (change)="seleccionarGerencia($event.target.value)">
-                        <option *ngFor="let depto of arrayDepartamentos" [value]="depto.departamento.uid">{{depto.departamento.descripcion}}</option>
+                      <option value="">Seleccione Departamento</option>
+                      <option *ngFor="let depto of arrayDepartamentos" [value]="depto.departamento.uid">{{depto.departamento.descripcion}}</option>
                     </select>
                     <label class="badge-light" for="cboDepartamento">Departamento</label>
                 </span>
@@ -93,8 +94,9 @@
             <td>
               <div class="form-group">
                 <span class="form-group has-float-label">                                                                    
-                    <select [disabled]="true" class="form-control form-control-sm" name="cboGerencia" id="cboGerencia" [(ngModel)]="gerencia.uid" >
-                        <option *ngFor="let gcia of arrayGerencias" [selected]="gcia.nombre == paciente.gcia" [value]="gcia.uid">{{gcia.nombre}}</option>
+                    <select [disabled]="true" class="form-control form-control-sm" name="cboGerencia" id="cboGerencia" [(ngModel)]="gerencia.uid" >                        
+                      <option value="">Seleccione Gerencia</option>  
+                      <option *ngFor="let gcia of arrayGerencias" [selected]="gcia.nombre == paciente.gcia" [value]="gcia.uid">{{gcia.nombre}}</option>
                                                     
                     </select>
                     <label for="cboGerencia">Gerencia</label>

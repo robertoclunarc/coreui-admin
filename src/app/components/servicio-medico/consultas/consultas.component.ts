@@ -70,7 +70,7 @@ export class ConsultasComponent  implements OnInit  {
 
   isCollapsed_1: boolean = true;
   iconCollapse_1: string = 'icon-arrow-down';
-
+  private searchTimeout: any;
   user: IUsuarios={};
   tipoUser: string;
   uidPaciente: string;  
@@ -261,6 +261,7 @@ export class ConsultasComponent  implements OnInit  {
 	}
   
   private async llenarArrayConsultas() {
+    this.searchText="";
     this.limpiarFiltro();
 		this.srvConsultas.consultaFilter(this.buscarConsulta)
 			.toPromise()
@@ -530,9 +531,25 @@ export class ConsultasComponent  implements OnInit  {
   }   
   
   async Search(){
-    
-    if(this.searchText!== ""){
+    // Borra el temporizador si ya se había iniciado uno
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
 
+    // Inicia un nuevo temporizador
+    this.searchTimeout = setTimeout(() => {
+      // Verifica que searchText tenga al menos 3 caracteres
+      if (this.searchText.length >= 2) {
+        // Realiza la búsqueda aquí
+        this.performSearch();
+      }
+    }, 2000); // Espera 2 segundos      
+  }
+
+  performSearch(){
+    
+    if(this.searchText!==""){
+      
       let searchValue = this.searchText.toLocaleLowerCase();
 
       let date_regex = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
@@ -556,10 +573,13 @@ export class ConsultasComponent  implements OnInit  {
         fecha: fecha,
         condlogica: 'OR'       
       } 
-      
-      await this.srvConsultas.searchConsultaPromise(this.buscarConsulta)
+      this.returnedSearch=[];
+      this.srvConsultas.searchConsultaPromise(this.buscarConsulta)
       .then(async (res) => {
-            this.returnedSearch= res            
+            
+            this.returnedSearch= res;
+            console.log(this.searchText);
+            console.log(this.returnedSearch);
             this.totalItems = this.returnedSearch.length;
             this.returnedArray = this.returnedSearch.slice(0, this.numPages);
             this.maxSize = Math.ceil(this.totalItems/this.numPages);

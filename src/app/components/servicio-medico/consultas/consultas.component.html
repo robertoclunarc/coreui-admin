@@ -9,7 +9,8 @@
             <div class="card">
               <div class="card-header">
                  <strong>Atenciones Medicas</strong>                 
-                 <div class="card-header-actions">                  
+                 <div class="card-header-actions">
+                  <button type="button" class="btn btn-sm btn-pill btn-info" title="Refrescar Consultas" (click)="llenarArrayConsultas()"><i class="fa fa-refresh"></i></button>
                   <button type="button" class="btn btn-sm btn-pill btn-success" title="Registrar Nueva Consulta" [disabled]="soloLectura" (click)="primaryModal.show(); showModalRegistrar()"><i class="fa fa-plus"></i>&nbsp;Nuevo</button>
                   <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="titleButtonExport!='Exportar'" (click)="exportExcel()" title="Explortar a Excel"><i class="fa fa-file-excel-o"></i>&nbsp;{{titleButtonExport}}</button>
                   <button type="button" class="btn btn-sm btn-pill btn-warning" [disabled]="titleButtonSend!='Enviar'" (click)="enviarMorbilidad('MORBILIDAD')" title="Enviar Reporte de Morbilidad"><i class="fa fa-envelope-o"></i>&nbsp;{{titleButtonSend}}</button>
