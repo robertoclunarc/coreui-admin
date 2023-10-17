@@ -28,10 +28,10 @@ export class PrincipalServicioMedicoComponent implements OnInit {
   cantMotivos3: number=0;
   countMotivos4: number=0;
   cantMotivos4: number=0;
-  loginHtml1: string;
-  loginHtml2: string;
-  loginHtml3: string;
-  loginHtml4: string;
+  loginHtml1: string="brismd";
+  loginHtml2: string="brismd";
+  loginHtml3: string="brismd";
+  loginHtml4: string="brismd";
   loginDrTitular: IMedicos;
   constructor(
     private srvConsultas: ConsultasService,
@@ -47,10 +47,8 @@ export class PrincipalServicioMedicoComponent implements OnInit {
       this.mainChartData3.push(65);
     }*/
     this.loginDrTitular = await this.srvMedicos.medicoTitular();
-    this.loginHtml1= this.loginDrTitular.login;
-    this.loginHtml2= this.loginDrTitular.login;
-    this.loginHtml3= this.loginDrTitular.login;
-    this.loginHtml4= this.loginDrTitular.login;
+    this.loginHtml1= this.loginDrTitular.login;    
+    
     await this.llenarArrayMedicos('PARAMEDICO');
     await this.llenarArrayMotivos();
     this.llenarArrayMotivosDelanio();

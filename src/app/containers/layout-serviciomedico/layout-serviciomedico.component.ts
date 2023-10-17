@@ -44,10 +44,11 @@ export class LayoutServicioMedicoComponent {
             srvConsultaMedica.consultasCount(this.user.login).toPromise().then(resutl => { this.totalAtenciones=resutl});        
             this.sistemaActual=sessionStorage.sistemaActual;        
             
-            this.imagenUser= 'assets/img/avatars/' + this.user.login + '.bmp';
+            this.imagenUser= this.user.login ? `assets/img/avatars/${this.user.login}.bmp` : "";
             
-            if (this.imageExists(this.imagenUser)==false)
-              this.imagenUser= 'assets/img/avatars/desconocido.png';
+            if (this.imagenUser!=="")
+              if (this.imageExists(this.imagenUser)==false)
+                this.imagenUser= 'assets/img/avatars/desconocido.png';
 
             this.srvMedicos.contadorAtenciones()
             .toPromise()

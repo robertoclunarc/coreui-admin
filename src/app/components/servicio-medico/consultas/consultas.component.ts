@@ -218,7 +218,7 @@ export class ConsultasComponent  implements OnInit  {
     
     this.llenarArrayTiposDiagnosticos();
     this.llenarArrayConsultasMotivos();
-		this.llenarArrayConsultas();    
+		this.llenarArrayConsultas(true);    
     this.llenarArrayMotivos();
     this.llenarArrayAreas();
     
@@ -244,7 +244,7 @@ export class ConsultasComponent  implements OnInit  {
       uidMotivo: 'null',
       fechaIni: 'null',
       fechaFin: 'null',
-      Medico:'null',
+      Medico: this.tipoUser==='PARAMEDICO' ? this.user.login  : 'null',
       Paramedico: 'null',
       nombrePaciente: 'null',
       cargo: 'null',
@@ -260,9 +260,10 @@ export class ConsultasComponent  implements OnInit  {
 			.catch(err => { console.log(err) });
 	}
   
-  private async llenarArrayConsultas() {
-    this.searchText="";
+  private async llenarArrayConsultas(conFechaActual?: boolean) {
+    this.searchText = conFechaActual ? formatDate(Date.now(), 'yyyy-MM-dd', this.locale) : "";
     this.limpiarFiltro();
+    this.buscarConsulta.fecha = conFechaActual ? this.searchText : 'null';
 		this.srvConsultas.consultaFilter(this.buscarConsulta)
 			.toPromise()
 			.then(results => {				
@@ -555,23 +556,25 @@ export class ConsultasComponent  implements OnInit  {
       let date_regex = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
       let testDate = this.searchText;
       let fecha: string='null';
+      let user: string='null';
       if (date_regex.test(testDate)) {
         fecha=searchValue;
+        user = this.tipoUser==='PARAMEDICO' ? this.user.login : 'null';
       }
       
       this.buscarConsulta = { 
-        uidConsulta: searchValue,
-        ciPaciente: searchValue,
-        Motivo: searchValue,
-        uidMotivo: 'null',
+        uidConsulta: fecha==='null' ? searchValue : 'null',
+        ciPaciente: fecha==='null' ? searchValue : 'null',
+        Motivo: fecha==='null' ? searchValue : 'null',
+        uidMotivo: fecha==='null' ? searchValue : 'null',
         fechaIni: fecha,
         fechaFin: fecha,
-        Medico: searchValue,
-        Paramedico: searchValue,
-        nombrePaciente: searchValue,
-        cargo: searchValue,
-        fecha: fecha,
-        condlogica: 'OR'       
+        Medico: this.tipoUser==='PARAMEDICO' ? this.user.login : 'null',
+        Paramedico: fecha==='null' ? searchValue : 'null',
+        nombrePaciente: fecha==='null' ? searchValue : 'null',
+        cargo: fecha==='null' ? searchValue : 'null',
+        fecha: 'null',
+        condlogica: 'OR'
       } 
       this.returnedSearch=[];
       this.srvConsultas.searchConsultaPromise(this.buscarConsulta)
@@ -603,17 +606,24 @@ export class ConsultasComponent  implements OnInit  {
 
   sortTable(prop: string) {
     
-      if(this.searchText== ""){        
+      if(this.searchText == "" || this.returnedSearch===undefined){        
         if (this.sortOrder==1)
           this.returnedArray = this.consultasTodas.sort(((a , b) => {  return this.sortData(a, b, prop, typeof a[prop]) } )).slice(0, this.numPages);
         else
           this.returnedArray = this.consultasTodas.sort(((a , b) => {  return this.sortData(b, a, prop, typeof a[prop]) } )).slice(0, this.numPages);        
       }
       else{
-        if (this.sortOrder==1)  
+        if (this.sortOrder==1){
           this.returnedArray = this.returnedSearch.sort(((a , b) => {  return this.sortData(a, b, prop, typeof a[prop]) } )).slice(this.startItem, this.endItem);
-        else
-          this.returnedArray = this.returnedSearch.sort(((a , b) => {  return this.sortData(b, a, prop, typeof a[prop]) } )).slice(this.startItem, this.endItem);         
+        }
+        else{          
+          this.returnedArray = this.returnedSearch.sort(((a , b) => {  return this.sortData(b, a, prop, typeof a[prop]) } )).slice(this.startItem, this.endItem);
+        } 
+          
+          /*this.returnedArray = this.returnedSearch
+          .filter(item => item && item[prop] !== undefined && item[prop] !== null)
+          .sort((a, b) => this.sortData(b, a, prop, typeof a[prop]))
+          .slice(this.startItem, this.endItem);*/        
       }        
       this.sortOrder =  this.sortOrder * (-1);
   }
@@ -938,7 +948,7 @@ export class ConsultasComponent  implements OnInit  {
       Motivo: 'null',
       fechaIni: fechaCons,
       fechaFin: fechaCons,
-      Medico:'null',
+      Medico: this.tipoUser==='PARAMEDICO' ? this.user.login  : 'null',
       Paramedico: 'null',
       nombrePaciente: 'null',
       cargo: 'null',
@@ -1039,7 +1049,7 @@ export class ConsultasComponent  implements OnInit  {
               Motivo: 'null',
               fechaIni: 'null',
               fechaFin: 'null',
-              Medico:'null',
+              Medico:this.tipoUser==='PARAMEDICO' ? this.user.login  : 'null',
               Paramedico: 'null',
               nombrePaciente:'null',
               cargo: 'null',
@@ -1381,7 +1391,7 @@ export class ConsultasComponent  implements OnInit  {
 
   obtenerArchivo(): Promise<Blob> {
     return new Promise(async (resolve, reject)  => {
-      this.buscarConsulta.Medico = this.user.nivel != 1 ? this.user.login : 'null';
+      this.buscarConsulta.Medico = this.user.nivel === 1 ? 'null' : this.user.login;
       const data: any[] = await this.morbilidad(this.buscarConsulta);
       
       const worksheet = XLSX.utils.json_to_sheet(data);
@@ -1395,7 +1405,8 @@ export class ConsultasComponent  implements OnInit  {
 
   async enviarMorbilidad(actividad: string){   
     this.titleButtonSend='Enviando...'; 
-    const remitentes: string[] = await this.getRemitentes(actividad);    
+    const remitentes: string[] = await this.getRemitentes(actividad);
+    console.log(remitentes);  
     if (remitentes.length>0){
       const correos: string = remitentes.toString();
       const mailOptions: ImailOptions = {
