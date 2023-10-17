@@ -58,7 +58,7 @@ export class LoginSecioMedicoService {
               return "ADMINISTRATIVO"
             }
             else
-              return "VISITANTE"
+              return "TTHH"
     }
     return "NINGUNO";
   }  

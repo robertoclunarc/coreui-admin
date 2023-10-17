@@ -1,8 +1,8 @@
 import { Component, OnChanges, Inject, LOCALE_ID, Output, Input, EventEmitter, NgModule} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
-import { formatDate } from '@angular/common';
+//import { formatDate } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
-import { TypeaheadMatch} from 'ngx-bootstrap/typeahead';
+//import { TypeaheadMatch} from 'ngx-bootstrap/typeahead';
 
 //modelos
 import { IMedicos, IParamedicos, IMedicosParamedicos } from '../../../models/servicio-medico/medicos.model';
@@ -11,6 +11,8 @@ import { Ipopover } from '../../../models/servicio-medico/varios.model';
 
 //servicios
 import { MedicosService } from '../../../services/servicio_medico/medicos.service';
+import { CorreoService } from '../../../services/servicio_medico/correo.service';
+import { ImailOptions } from '../../../models/servicio-medico/correo.model';
 
 @Component({
   selector: 'app-medicos',
@@ -24,7 +26,8 @@ export class MedicosComponent implements OnChanges {
   constructor( 
     private route: ActivatedRoute,  
     private router: Router,
-    private srvMedicos: MedicosService,        
+    private srvMedicos: MedicosService,
+    private srvCorreo: CorreoService,
     @Inject(LOCALE_ID) public locale: string,
     
   ) { }
@@ -61,8 +64,8 @@ export class MedicosComponent implements OnChanges {
     }else{
       this.router.navigate(["serviciomedico/login"]);
     }
-
-    if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+    
+    if (this.tipoUser==='SISTEMA' || this.tipoUser==='ADMINISTRATIVO'){
       this.soloLectura=false;
     }
     else{
@@ -75,7 +78,7 @@ export class MedicosComponent implements OnChanges {
 
   async buscarMedico(ciMedico: string, nombre: string, uid: string, tipo: string, condlogica: string){
     
-    if (this.medico.ci!="" && this.medico.ci!= undefined && this.medico.ci!= null){
+    if (this.medico.ci!="" && this.medico.ci!= undefined && this.medico.ci!= null  && this.medico.ci!= '-1'){
       await this.srvMedicos.searchMedicosPromise(ciMedico, nombre, uid, tipo, condlogica)      
       .then(async result => {
         if (result.length>0){          
@@ -89,7 +92,9 @@ export class MedicosComponent implements OnChanges {
         }
         
       })
-    }    
+    } else{
+      this.reset();
+    }   
   }
 
   async buscarMedicoOne(){
@@ -129,7 +134,7 @@ export class MedicosComponent implements OnChanges {
 
     tipoPersonal = this.medico.tipo_medico;
     
-    if (tipoPersonal=='MEDICO'){
+    if (tipoPersonal==='MEDICO'){
         personalMedico={
             uid : this.medico.uid,
             nombre: this.medico.nombre,
@@ -144,7 +149,7 @@ export class MedicosComponent implements OnChanges {
         
     }else{
         personalParaMedico={            
-            uid   : this.medico.uid,
+            uid: this.medico.uid,
             nombre: this.medico.nombre,
             activo: true,
             ci: this.medico.ci,            
@@ -155,7 +160,7 @@ export class MedicosComponent implements OnChanges {
     await this.buscarMedico(this.medico.ci,'null', 'null', 'null', 'AND');    
     
     if (this.nuevo){
-      if (tipoPersonal=='MEDICO'){
+      if (tipoPersonal==='MEDICO'){
         await this.registrarMedico(personalMedico);
         this.medico=this.srvMedicos.medico;
              
@@ -166,13 +171,18 @@ export class MedicosComponent implements OnChanges {
       if (this.medico.uid!=undefined){
         this.outMedico.emit(this.medico);
         this.showSuccess(`Datos del ${tipoPersonal} registrados satisfactoriamente`, 'success');
+        
+        const asuntoExamen: string = `Nuevo Personal ${tipoPersonal}: Dr(a). ${this.medico.nombre}`;
+        const cuerpoExamen: string = `Se es grato notificarle que el <strong>Dr. ${this.medico.nombre}</strong> con cédula de identidad ${this.medico.ci}, formará parte de nuestro personal médico en nuestra empresa. Por tal razón, le agradecemos darle acceso al Sistema de Gestión Integral de Salud con las credenciales que corresponden y con el usuario: <strong>${this.medico.login}</strong>.`;
+        this.enviarExamenCorreo(asuntoExamen, cuerpoExamen, 'PRUEBA');
+      
       }else{
         this.showSuccess(`Error en el registro del ${tipoPersonal}`, 'danger'); 
       }
       
     }else{      
       
-        if (tipoPersonal=='MEDICO'){
+        if (tipoPersonal==='MEDICO'){
             await this.actualizarMedico(personalMedico);            
             this.medico=personalMedico;     
           } else{
@@ -238,6 +248,47 @@ export class MedicosComponent implements OnChanges {
       //msg: `This alert will be closed in 5 seconds (added: ${new Date().toLocaleTimeString()})`,
       timeout: 5000
     });
+  }
+
+  async getRemitentes(actividad: string){
+    let data: string[]=[];
+    await this.srvCorreo.remitentes(actividad)
+      .toPromise()
+      .then(async (res) => {
+        data = res;
+      })
+    return data;
+  }
+
+  async enviarExamenCorreo(asunto: string, cuerpo: string, actividad: string){
+    const remitentes: string[] = await this.getRemitentes(actividad);    
+    if (remitentes.length>0){
+      const correos: string = remitentes.toString();
+      const mailOptions: ImailOptions = {
+        to: correos,
+        subject: `${asunto}`,
+        html: cuerpo,
+      };
+      this.enviarCorreoHTML(mailOptions)
+      .then((result) => {        
+        if (result.info)
+          this.showSuccess(`Notificacion Enviado a: ${correos}`, 'warning');
+        else
+          this.showSuccess(`Error: ${result?.error}`, 'danger');
+      });
+    }  
+  }
+
+  async enviarCorreoHTML(mailOptions: ImailOptions) {    
+    let respuesta: any;     
+    respuesta = await this.srvCorreo.enviarBuffer(mailOptions);
+    if (respuesta.error==undefined){
+      console.log(`Info: ${respuesta?.info}`);
+    }else{
+      console.log(`Error: ${respuesta.error}`);
+    }
+       
+    return respuesta;  
   }
 
 }

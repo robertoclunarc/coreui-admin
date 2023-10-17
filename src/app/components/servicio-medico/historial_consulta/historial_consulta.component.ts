@@ -85,7 +85,7 @@ export class HistorialConsultasComponent implements OnChanges {
   
   private async buscarConsultasPaciente(){
     
-    if (this.uidPaciente!= undefined && this.uidPaciente!= null){
+    if (this.uidPaciente!= undefined && this.uidPaciente!= null && this._ci.length>=7){      
       let filtro: IFiltroConsulta = {fechaIni: this.fechaIni, fechaFin: this.fechaFin, ciPaciente: this._ci}
       await this.srvConsultas.morbilidadFilter(filtro)
       .toPromise()

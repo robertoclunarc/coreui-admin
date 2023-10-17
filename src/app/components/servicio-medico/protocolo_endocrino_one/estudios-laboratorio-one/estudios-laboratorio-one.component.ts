@@ -72,7 +72,7 @@ export class EstudiosLaboratorioOneComponent implements OnChanges {
       this.router.navigate(["serviciomedico/login"]);
     }
 
-    if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+    if (this.tipoUser==='MEDICO' || this.tipoUser==='SISTEMA' || this.tipoUser==='ADMINISTRATIVO'){
       this.soloLectura=false;
     }
     else{
@@ -344,7 +344,7 @@ export class EstudiosLaboratorioOneComponent implements OnChanges {
       }
       
     }   
-    console.log(this.arrayEvaluacionesConRespuestas)
+    //console.log(this.arrayEvaluacionesConRespuestas)
   }
 
   async guardar(){    

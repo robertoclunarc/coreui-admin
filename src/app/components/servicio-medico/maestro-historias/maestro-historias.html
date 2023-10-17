@@ -6,7 +6,7 @@
               <div class="card-header">
                 <strong>Historias Medicas</strong>
                 <div class="card-header-actions">                  
-                  <button type="button" class="btn btn-sm btn-pill btn-success" title="Registrar Nueva Consulta" [disabled]="soloLectura"><i class="fa fa-plus"></i>&nbsp;Nuevo</button>
+                  <button type="button" class="btn btn-sm btn-pill btn-success" title="Registrar Nueva Consulta" (click)="nuevo()" [disabled]="soloLectura"><i class="fa fa-plus"></i>&nbsp;Nuevo</button>
                   <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="titleButtonExport!='Exportar'" (click)="exportExcel()" title="Explortar a Excel"><i class="fa fa-file-excel-o"></i>&nbsp;{{titleButtonExport}}</button>                  
                 </div>
               </div>

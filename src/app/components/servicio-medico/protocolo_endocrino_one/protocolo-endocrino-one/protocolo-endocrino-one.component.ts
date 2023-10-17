@@ -77,7 +77,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
       this.router.navigate(["serviciomedico/login"]);
     }
 
-    if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+    if (this.tipoUser==='MEDICO' || this.tipoUser==='SISTEMA' || this.tipoUser==='ADMINISTRATIVO'){
       this.soloLectura=false;
     }
     else{

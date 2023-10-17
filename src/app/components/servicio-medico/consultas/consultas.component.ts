@@ -1506,7 +1506,7 @@ export class ConsultasComponent  implements OnInit  {
       this.enviarCorreoHTML(mailOptions)
       .then((result) => {        
         if (result.info)
-          this.showSuccess(`Reposo Enviado a: matlux`, 'warning');
+          this.showSuccess(`Reposo Enviado a: ${correos}: `, 'warning');
         else
           this.showSuccess(`Error: ${result?.error}`, 'danger');
       });

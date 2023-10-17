@@ -22,7 +22,7 @@ export class MaestroHistoriasComponent  implements OnInit  {
 
   private user: IUsuarios={};
   private tipoUser: string;  
-  private nuevo: boolean = false;
+  
   medico: IHistoriaGral={};  
   soloLectura: boolean;
   private alertsDismiss: any = [];
@@ -103,7 +103,7 @@ export class MaestroHistoriasComponent  implements OnInit  {
         this.router.navigate(["serviciomedico/login"]);
       }
       
-      if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
+      if (this.tipoUser==='SISTEMA' || this.tipoUser==='MEDICO' || this.tipoUser==='ADMINISTRATIVO'){
         this.soloLectura=false;
       }
       else{
@@ -111,6 +111,10 @@ export class MaestroHistoriasComponent  implements OnInit  {
       }     
 
       this.llenarArrayHistorias('null','null','null','null','null','null','OR');
+  }
+
+  nuevo(){
+    this.router.navigate(["serviciomedico/historia"]);
   }
 
   private async llenarArrayHistorias(idHistoria: string, idPaciente: string, ci:string, nombre: string, cargo: string, depto:string, condlogica: string) {

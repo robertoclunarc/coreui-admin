@@ -86,7 +86,7 @@ export class MaestroPacienteComponent  implements OnInit  {
         this.router.navigate(["serviciomedico/login"]);
       }
       
-      if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+      if (this.tipoUser==='SISTEMA' || this.tipoUser==='TTHH'){
         this.soloLectura=false;
       }
       else{

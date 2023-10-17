@@ -74,7 +74,7 @@ export class ExamenFisicoOneComponent implements OnChanges {
       this.router.navigate(["serviciomedico/login"]);
     }
 
-    if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+    if (this.tipoUser==='MEDICO' || this.tipoUser==='SISTEMA' || this.tipoUser==='ADMINISTRATIVO'){
       this.soloLectura=false;
     }
     else{
@@ -328,7 +328,7 @@ export class ExamenFisicoOneComponent implements OnChanges {
       this.arrayRespuestas=[];
       this.respuestas = [];      
       for await (let eva of this.arrayEvaluaciones){
-        console.log(eva);        
+        //console.log(eva);        
         respuesta=[];
         marcada=[];
         for await (let r of eva.posibles_resp){
@@ -355,7 +355,7 @@ export class ExamenFisicoOneComponent implements OnChanges {
       }
       
     }   
-    console.log(this.arrayEvaluacionesConRespuestas)
+    //console.log(this.arrayEvaluacionesConRespuestas)
   }
 
   async guardar(){    

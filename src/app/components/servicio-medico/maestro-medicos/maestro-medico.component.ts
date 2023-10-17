@@ -1,5 +1,5 @@
 //componentes
-import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID, ElementRef } from '@angular/core';
+import { Component, OnInit,Inject,  LOCALE_ID } from '@angular/core';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router } from '@angular/router';
@@ -85,7 +85,7 @@ export class MaestroMedicoComponent  implements OnInit  {
         this.router.navigate(["serviciomedico/login"]);
       }
       
-      if (this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+      if (this.tipoUser==='SISTEMA' || this.tipoUser==='ADMINISTRATIVO'){
         this.soloLectura=false;
       }
       else{
