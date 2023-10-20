@@ -14,7 +14,7 @@ export class DefaultLayoutComponent {
   }*/
 
   sistemaActual: string;
- 
+  
   constructor(){
     this.sistemaActual=sessionStorage.sistemaActual;
     

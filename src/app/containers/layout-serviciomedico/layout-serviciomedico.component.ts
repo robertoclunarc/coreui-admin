@@ -7,6 +7,7 @@ import { MedicosService } from '../../services/servicio_medico/medicos.service';
 import { MenusService } from '../../services/servicio_medico/menu_serviciomedico.service';
 import { IUsuarios } from '../../models/servicio-medico/usuarios.model';
 import { ItotalAtenciones } from '../../models/servicio-medico/medicos.model';
+import { environment } from '../../../environments/environment';
  
 @Component({
   selector: 'app-layout-serviciomedico',
@@ -25,7 +26,7 @@ export class LayoutServicioMedicoComponent {
   totalesAtenciones: ItotalAtenciones[]=[];
   totalGlobalAtenciones: number;
   modoOscuro: boolean;
-  
+  nameSistem: string;
   constructor(
     private router: Router,
     private srvLoginService: LoginSecioMedicoService,
@@ -33,6 +34,7 @@ export class LayoutServicioMedicoComponent {
     private srvMedicos: MedicosService,
     private srvMenuServicioMedico: MenusService,
     ) {
+        this.nameSistem = environment.nameSistema;
         if (this.nroMensajes>0)
           this.claseMensaje="badge badge-pill badge-danger";
         else
@@ -71,7 +73,7 @@ export class LayoutServicioMedicoComponent {
 
   ngOnInit(): void {
     this.navItems = [];
-
+    
     if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
       sessionStorage.setItem('modoOscuro', "Off");
       sessionStorage.setItem('classTable', "table table-striped");

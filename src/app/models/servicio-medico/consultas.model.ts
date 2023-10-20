@@ -123,7 +123,8 @@ export interface IFiltroConsulta{
     nombrePaciente?: string,
     cargo?: string,
     fecha?: string,
-    condlogica?: string
+    condlogica?: string,
+    patologia?: string,
 }
 
 export interface Ireferencia{

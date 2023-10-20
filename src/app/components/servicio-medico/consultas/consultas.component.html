@@ -8,7 +8,7 @@
           <div class="col-lg-12">
             <div class="card">
               <div class="card-header">
-                 <strong>Atenciones Medicas</strong>                 
+                 <strong>Atenciones Médicas</strong>                 
                  <div class="card-header-actions">
                   <button type="button" class="btn btn-sm btn-pill btn-info" title="Refrescar Consultas/Mostrar Todas" (click)="llenarArrayConsultas(false)"><i class="fa fa-refresh"></i></button>
                   <button type="button" class="btn btn-sm btn-pill btn-success" title="Registrar Nueva Consulta" [disabled]="soloLectura" (click)="primaryModal.show(); showModalRegistrar()"><i class="fa fa-plus"></i>&nbsp;Nuevo</button>
@@ -23,13 +23,13 @@
 
                 <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by ..." />
                 
-                <table class="{{ classTable }} table-hover table-sm" id="dataConsultas">
+                <table class="{{ classTable }} table-responsive table-sm" id="dataConsultas">
                   <thead>
                     <tr>
                       <th> </th>                      
                       <th scope="col" *ngFor="let t of titulos">
                         
-                        <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
+                        <div class="col-1 col-sm-1 col-md-1 col-xl mb-1 mb-xl-0">
                           <button type="button" (click)="sortTable(t.campo)" class="{{ classButton }}"><strong>{{t.titulo}}</strong></button>
                         </div>
                     </th>
@@ -51,17 +51,18 @@
                           </ul>
                         </div>
                       </td>
-                      <td>{{c.uid}}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{c.uid}}</td>
                       <td>{{c.fecha | date:'yyyy-MM-dd'}}</td>
-                      <td>{{c.ci}}</td>
-                      <td>{{c.nombre_completo}}</td>
-                      <td>{{c.sexo}}</td>
-                      <td>{{c.cargo}}</td>
-                      <td>{{c.motivo}}</td>
-                      <td>{{c.paramedico}}</td>                      
+                      <td style="text-align: center;">{{c.ci}}</td>
+                      <td style="font-size: 0.7rem;">{{c.nombre_completo}}</td>
+                      <td style="text-align: center;">{{c.sexo}}</td>
+                      <td style="font-size: 0.7rem;">{{c.cargo}}</td>
+                      <td style="font-size: 0.7rem;">{{c.motivo}}</td>
+                      <td style="font-size: 0.7rem;">{{c.paramedico}}</td>                      
                       <td>
                         <span class="badge badge-success">{{c.login_atendio}}</span>
                       </td>
+                      <td style="font-size: 0.7rem;">{{c.patologia}}</td>
                     </tr>                    
                    
                   </tbody>

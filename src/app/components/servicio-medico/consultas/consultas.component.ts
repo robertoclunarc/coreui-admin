@@ -46,6 +46,8 @@ import { IHistoria_medica, IHistoria_paciente } from '../../../models/servicio-m
 import { ImailOptions } from "../../../models/servicio-medico/correo.model";
 import { ItipoDiagnostico } from "../../../models/servicio-medico/tipoDiagnostico.model";
 
+import { environment } from "../../../../environments/environment";
+
 @Component({
   selector: 'app-consultas',
   templateUrl: 'consultas.component.html',
@@ -67,7 +69,6 @@ export class ConsultasComponent  implements OnInit  {
 
   isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
-
   isCollapsed_1: boolean = true;
   iconCollapse_1: string = 'icon-arrow-down';
   private searchTimeout: any;
@@ -130,7 +131,7 @@ export class ConsultasComponent  implements OnInit  {
   queryPatologia: string[]=[];
   blockRegister: boolean = false;
   soloLectura: boolean;
-  urlICD: string = "https://icd.who.int/browse11/l-m/es#/";
+  urlICD: string;
   public classTable: string;
   public classButton: string;
   public estiloOscuro: string;
@@ -156,8 +157,9 @@ export class ConsultasComponent  implements OnInit  {
   html: string = `<span class="btn btn-warning">Never trust not sanitized <code>HTML</code>!!!</span>`; 
 
   titulos = [
-    {titulo: 'Nro.', campo:'uid'}, {titulo: 'Fecha', campo:'fecha'}, {titulo: 'Cedula', campo:'ci'}, {titulo: 'Nombre', campo:'nombre_completo'},{titulo: 'Sexo', campo:'sexo'}, 
-    {titulo: 'Cargo', campo:'cargo'}, {titulo: 'Motivo', campo:'motivo'}, {titulo: 'Paramedico', campo:'paramedico'}, {titulo: 'Atendido por', campo:'login_atendio'}
+    {titulo: 'Nro.', campo:'uid'}, {titulo: 'Fecha', campo:'fecha'}, {titulo: 'Cédula', campo:'ci'}, {titulo: 'Nombre', campo:'nombre_completo'},
+    {titulo: 'Sexo', campo:'sexo'},{titulo: 'Cargo', campo:'cargo'}, {titulo: 'Motivo', campo:'motivo'}, {titulo: 'Paramédico', campo:'paramedico'}, 
+    {titulo: 'Asistenciado', campo:'login_atendio'}, {titulo: 'Patología', campo:'patologia'}
   ];
 
   condiciones =[
@@ -190,7 +192,7 @@ export class ConsultasComponent  implements OnInit  {
     private srvTipoDiagnosticos: DiagnosticosService,
     private srvVarios: VarioService,
     @Inject(LOCALE_ID) public locale: string,  
-  ) {  }
+  ) { this.urlICD = environment.urlICD;  }
 
   async ngOnInit() { 
     
@@ -249,7 +251,8 @@ export class ConsultasComponent  implements OnInit  {
       nombrePaciente: 'null',
       cargo: 'null',
       fecha: 'null',
-      condlogica: 'null'
+      condlogica: 'null',
+      patologia: 'null',
     }
   }
 
@@ -266,13 +269,13 @@ export class ConsultasComponent  implements OnInit  {
     this.buscarConsulta.fecha = conFechaActual ? this.searchText : 'null';
 		this.srvConsultas.consultaFilter(this.buscarConsulta)
 			.toPromise()
-			.then(results => {				
+			.then(results => {			
 				
-				this.consultasTodas = results;       
+				this.consultasTodas = results;
         
         this.totalItems = this.consultasTodas.length;
-        this.maxSize = Math.ceil(this.totalItems/this.numPages);             
-        this.returnedArray = this.consultasTodas.slice(0, this.numPages);            
+        this.maxSize = Math.ceil(this.totalItems/this.numPages);
+        this.returnedArray = this.consultasTodas.slice(0, this.numPages);
 				
 			})
 			.catch(err => { console.log(err) });
@@ -544,7 +547,7 @@ export class ConsultasComponent  implements OnInit  {
         // Realiza la búsqueda aquí
         this.performSearch();
       }
-    }, 2000); // Espera 2 segundos      
+    }, 3000); // Espera 2 segundos      
   }
 
   performSearch(){
@@ -556,10 +559,10 @@ export class ConsultasComponent  implements OnInit  {
       let date_regex = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
       let testDate = this.searchText;
       let fecha: string='null';
-      let user: string='null';
+      
       if (date_regex.test(testDate)) {
         fecha=searchValue;
-        user = this.tipoUser==='PARAMEDICO' ? this.user.login : 'null';
+        
       }
       
       this.buscarConsulta = { 
@@ -574,7 +577,8 @@ export class ConsultasComponent  implements OnInit  {
         nombrePaciente: fecha==='null' ? searchValue : 'null',
         cargo: fecha==='null' ? searchValue : 'null',
         fecha: 'null',
-        condlogica: 'OR'
+        condlogica: 'OR',
+        patologia: this.tipoUser==='PARAMEDICO' ? 'null' : searchValue,
       } 
       this.returnedSearch=[];
       this.srvConsultas.searchConsultaPromise(this.buscarConsulta)
@@ -954,7 +958,8 @@ export class ConsultasComponent  implements OnInit  {
       cargo: 'null',
       uidMotivo: 'null',
       fecha: 'null',
-      condlogica: 'AND'
+      condlogica: 'AND',
+      patologia: 'null',
     }   
     
     for await  (let mot of motivosRepetidos){
@@ -1054,7 +1059,8 @@ export class ConsultasComponent  implements OnInit  {
               nombrePaciente:'null',
               cargo: 'null',
               fecha: 'null',
-              condlogica: 'null'
+              condlogica: 'null',
+              patologia: 'null',
             };
             await this.guardarSignosVit(fechaConsulta, this.paciente.ci );
             this.medicamentoAplicado.id_consulta=this.consultas.uid
@@ -1212,7 +1218,7 @@ export class ConsultasComponent  implements OnInit  {
       type: clase,
       msg: mensaje,
       //msg: `This alert will be closed in 5 seconds (added: ${new Date().toLocaleTimeString()})`,
-      timeout: 5000
+      timeout: 8000
     });
   }  
 
@@ -1225,7 +1231,7 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   onSelectOption(_pat: IPatologia){
-    console.log(_pat)
+    
     this.selectedOptionPatolog = _pat;
     this.onInputChange();
     
@@ -1277,11 +1283,10 @@ export class ConsultasComponent  implements OnInit  {
         
         this.loadingPatologia= true;
         this._patologias=[];
-        let resultPatog: IPatologia[]=[];
-        console.log(this.selectedPatolog);
+        let resultPatog: IPatologia[]=[];        
         
         const result = await this.srvPatologia.filterICD({ query: this.selectedPatolog }).toPromise();
-        console.log(result);
+        
         if (result.length>0){
           resultPatog = await Promise.all(result.map((res) => ({
             descripcion: res.release.code + ': ' + this.srvVarios.getContentFromEm(res.entity.title),
@@ -1294,7 +1299,7 @@ export class ConsultasComponent  implements OnInit  {
           })));
           
           this._patologias = resultPatog.filter((p: IPatologia) => p.codigo_etica !== '');
-          console.log(this._patologias.length);
+          
           this.patologias = this.patologias.concat(this._patologias);
           this._patologias.forEach(async (res) => {
             await this.insertarPatologia(res);
@@ -1330,7 +1335,7 @@ export class ConsultasComponent  implements OnInit  {
     let data: any[]=[];
     let morbilidad: IvMorbilidad[]=[];
     let edad: any;
-    console.log(filtro);
+    
     await this.srvConsultas.morbilidadFilter(filtro)
       .toPromise()            
       .then(async (res) => {
@@ -1406,7 +1411,7 @@ export class ConsultasComponent  implements OnInit  {
   async enviarMorbilidad(actividad: string){   
     this.titleButtonSend='Enviando...'; 
     const remitentes: string[] = await this.getRemitentes(actividad);
-    console.log(remitentes);  
+    
     if (remitentes.length>0){
       const correos: string = remitentes.toString();
       const mailOptions: ImailOptions = {
