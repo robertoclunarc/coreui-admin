@@ -70,7 +70,7 @@ export class MorbilidadComponent  implements OnInit  {
     ) {  }
 
   ngOnInit(): void {
-    console.log(sessionStorage.modoOscuro);
+    
     if (sessionStorage.modoOscuro===undefined || sessionStorage.modoOscuro==='Off'){
       this.classTable = "table table-striped";
       this.classButton ="btn btn-sm btn-ghost-dark";
@@ -93,12 +93,12 @@ export class MorbilidadComponent  implements OnInit  {
       this.router.navigate(["serviciomedico/login"]);
     }
     this.limpiarFiltro();
-    this.morbilidadFilter();
+    this.morbilidadFilter(true);
   }
   
   private async morbilidadFilter(conFechaActual?: boolean) {
     this.searchText = conFechaActual ? formatDate(Date.now(), 'yyyy-MM-dd', this.locale) : "";
-    //this.buscarConsulta.fecha = conFechaActual ? this.searchText : 'null';
+    this.buscarConsulta.fecha = conFechaActual ? this.searchText : 'null';
     
 		return await this.srvConsultas.morbilidadFilter(this.buscarConsulta)
 			.toPromise()
