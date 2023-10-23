@@ -8,20 +8,20 @@ text-align: center;" class="">
           <div style="margin-top:300px;" class="card-group">
             <div  class="card p-4">
               <div  class="card-body">
-                <form (submit)="loguear()" name="form" style="max-width: 500px;">
+                <form name="form" style="max-width: 500px;">
                   <h1>Login</h1>
                   <p class="text-muted">Accede con tu usuario</p>
                   <div class="input-group mb-3">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-user"></i></span>
                     </div>
-                    <input type="text" class="form-control" name="login" id="login" placeholder="Username" [(ngModel)]="model.login" #login="ngModel" autocomplete="username" required>
+                    <input type="text" class="form-control" name="login" id="login" placeholder="Username" [(ngModel)]="model.login" autocomplete="username" required>
                   </div>
                   <div class="input-group mb-4">
                     <div class="input-group-prepend">
                       <span class="input-group-text"><i class="icon-lock"></i></span>
                     </div>
-                    <input name="passw" id="passw" type="password" class="form-control" (keyup.enter)="loguear()" placeholder="Password" [(ngModel)]="model.passw" #passw="ngModel" required autocomplete="current-password" required>
+                    <input name="passw" id="passw" type="password" class="form-control" (keyup.enter)="loguear()" placeholder="Password" [(ngModel)]="model.passw" required autocomplete="current-password" required>
                   </div>
                   <div class="row">
                     <div class="col-6">

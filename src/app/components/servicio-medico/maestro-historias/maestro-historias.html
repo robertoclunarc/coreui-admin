@@ -4,21 +4,23 @@
           <div class="col-lg-12">
             <div class="card">
               <div class="card-header">
-                <strong>Rpt. Historias Medicas</strong>                   
+                <strong>Historias Medicas</strong>
+                <div class="card-header-actions">                  
+                  <button type="button" class="btn btn-sm btn-pill btn-success" title="Registrar Nueva Consulta" (click)="nuevo()" [disabled]="soloLectura"><i class="fa fa-plus"></i>&nbsp;Nuevo</button>
+                  <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="titleButtonExport!='Exportar'" (click)="exportExcel()" title="Explortar a Excel"><i class="fa fa-file-excel-o"></i>&nbsp;{{titleButtonExport}}</button>                  
+                </div>
               </div>
               <div class="card-body">
                 <div *ngFor="let alert of alertsDismiss">
-                  <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+                  <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>
                 </div>
-
                 <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by ..." />
                 <div class="overflow-auto">
                   <table class="{{ classTable }} table-hover table-sm" id="dataConsultas">
                     <thead>
                       <tr>
-                        <th>&nbsp;</th>                      
+                        <th>&nbsp;</th>
                         <th scope="col" *ngFor="let t of titulos">
-                          
                           <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
                             <button type="button" (click)="sortTable(t.campo)" class="{{ classButton }}"><strong>{{t.titulo}}</strong></button>
                           </div>
@@ -26,12 +28,12 @@
                       </tr>
                     </thead>
                     <tbody>
-                      <tr *ngFor="let h of returnedArray">                      
+                      <tr *ngFor="let h of returnedArray">
                         <td>
                           <div class="btn-group" dropdown>
                             <button [disabled]="soloLectura"  type="button" title="Ver Paciente" (click)="showModalActualizar(h);" class="btn btn-block btn-link"><i class="icon-eye"></i></button>                           
                           </div>
-                        </td>                                           
+                        </td>
                         <td>{{ h.historia.uid_historia}}</td>
                         <td>{{ h.historia.fecha_apertura  | date:'yyyy-MM-dd'}}</td>
                         <td>{{ h.historia.fecha_ultima_actualizacion  | date:'yyyy-MM-dd'}}</td>

@@ -16,7 +16,6 @@ export class LoginSecioMedicoService {
   constructor(private http: HttpClient) { }
 
   usuariosFiltrados(departamento: number) : Observable<IUsuarios[]> {
-
       return this.http.get<IUsuarios[]>(`${this.apiUrlLogin}/usuarios/filtrados/${departamento}`)
 			.pipe(
 			//	tap(result => console.log(`usuariosFiltrados`)),
@@ -24,12 +23,10 @@ export class LoginSecioMedicoService {
 			);
   }
 
-  loguear(username: string, password: string): Observable<IUsuarios> {
-		
+  loguear(username: string, password: string): Observable<IUsuarios> {		
 		return this.http.post<IUsuarios>(this.apiUrlLogin , { login: username, passw: password })
 			.pipe(
-				tap(result => { 
-          
+				tap(result => {           
           if (JSON.stringify(result).length>2) {
             //console.log(JSON.stringify(result));
             // store user details and jwt token in local storage to keep user logged in between page refreshes
@@ -61,7 +58,7 @@ export class LoginSecioMedicoService {
               return "ADMINISTRATIVO"
             }
             else
-              return "VISITANTE"
+              return "TTHH"
     }
     return "NINGUNO";
   }  

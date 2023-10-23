@@ -73,6 +73,7 @@ export interface IvConsulta {
     indicaciones_comp?: string;
     referencia_medica?: string;
     fkafeccion?: number;
+    id_patologia?: number;
     condicion?: string;
     id_area?: number;
     idmotivo?: number;
@@ -81,6 +82,7 @@ export interface IvConsulta {
     medico?: string;
     id_ss?: string;
     ci_medico?: string;
+    firma_dr?: string;
     area?: string;
     patologia?: string;
     reposo?: string;
@@ -105,6 +107,8 @@ export interface IvConsulta {
     desc_discapacidad?: string;
     estado_paciente?: string;
     login_atendio?: string;
+    fkdiagnostico?: number;
+    descripciondiagnostico?: string;
 }
 
 export interface IFiltroConsulta{
@@ -115,11 +119,12 @@ export interface IFiltroConsulta{
     Medico?: string,
     Paramedico?: string,
     Motivo?: string,
-    uidMotivo: string
+    uidMotivo?: string
     nombrePaciente?: string,
     cargo?: string,
     fecha?: string,
-    condlogica?: string
+    condlogica?: string,
+    patologia?: string,
 }
 
 export interface Ireferencia{
@@ -136,6 +141,7 @@ export interface IvMorbilidad{
     fkafeccion?: string;
     descripcion_afeccion?: string;
     motivo_consulta?: string;
+    fktipoconsulta?: number;
     cargo?: string;
     sexo?: string;
     direccion_hab?: string;
@@ -143,9 +149,15 @@ export interface IvMorbilidad{
     talla?: string;
     peso?: string;
     imc?: string;
+    fresp?: string;
+	temper?: string;
+	fcard?: string;
+    pulso?: string;
+    tart?: string;
     edad?: string;
     departamento?: string;
     diagnostico?: string;
+    descripciondiagnostico?: string;
     medicamentos?: string;
     ci_paramedico?: string;
     uid_paciente?: string;
@@ -163,3 +175,21 @@ export interface IvMorbilidad{
     reposo?: string;
     resultado_eva?: string;
  }
+
+ export interface INotaExamen{
+    desc_mot?: string;
+	motivo?: number;
+	nombre_completo?: string;
+	mor_sex?: string;
+	mor_ci?: string;
+	nom_paramedico?: string;
+	nom_medico?: string;
+	mor_cond?: string;
+	mor_fecha?: string;
+	mor_depar?: string;
+	mor_cargo?: string;
+	mor_nomjefe?: string;
+	mor_reposo?: string;
+	resultado_eva?: string;
+    firma_dr?: string;
+}

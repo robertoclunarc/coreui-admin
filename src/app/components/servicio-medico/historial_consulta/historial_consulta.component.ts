@@ -4,7 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { ModalDirective} from 'ngx-bootstrap/modal';
 //modelos
 
-import { IvMorbilidad } from '../../../models/servicio-medico/consultas.model'
+import { IFiltroConsulta, IvMorbilidad } from '../../../models/servicio-medico/consultas.model'
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 
 //servicios
@@ -23,20 +23,18 @@ export class HistorialConsultasComponent implements OnChanges {
   @Output() itemsConsulta = new EventEmitter<number>();
   @ViewChild('primaryModal') public primaryModal: ModalDirective;  
   @Input() _uidPaciente: string;
+  @Input() _ci: string;
   @Input() _fechaIni: string;
   @Input() _fechaFin: string;
   
-  constructor( 
-    
+  constructor(    
     private route: ActivatedRoute,  
     private router: Router,
     private srvConsultas: ConsultasService,     
-    @Inject(LOCALE_ID) public locale: string,
-    
+    @Inject(LOCALE_ID) public locale: string,    
   ) { }
 
   idConsulta: string;
-
   uidPaciente: string;
   fechaIni: string;
   fechaFin: string
@@ -67,11 +65,12 @@ export class HistorialConsultasComponent implements OnChanges {
         this.tipoUser= sessionStorage.tipoUser;
       }
       else {
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
       }
     }else{
-      this.router.navigate(["login"]);
-    }   
+      this.router.navigate(["serviciomedico/login"]);
+    }
+    
     this.uidPaciente = this.route.snapshot.paramMap.get("idPaciente")==undefined? this._uidPaciente: this.route.snapshot.paramMap.get("idPaciente");
     this.fechaIni = this.route.snapshot.paramMap.get("fechaIni")==undefined? this._fechaIni: this.route.snapshot.paramMap.get("fechaIni");
     this.fechaFin = this.route.snapshot.paramMap.get("fechaFin")==undefined? this._fechaFin: this.route.snapshot.paramMap.get("fechaFin");
@@ -81,14 +80,14 @@ export class HistorialConsultasComponent implements OnChanges {
     else
       this.sliceIndex=2;
     
-    await this.buscarConsultasPaciente();    
+    await this.buscarConsultasPaciente();
   }  
   
   private async buscarConsultasPaciente(){
     
-    if (this.uidPaciente!= undefined && this.uidPaciente!= null){      
-      
-      await this.srvConsultas.morbilidadFilter('null', this.uidPaciente, 'null',this.fechaIni,this.fechaFin,'null','null','null')
+    if (this.uidPaciente!= undefined && this.uidPaciente!= null && this._ci.length>=7){      
+      let filtro: IFiltroConsulta = {fechaIni: this.fechaIni, fechaFin: this.fechaFin, ciPaciente: this._ci}
+      await this.srvConsultas.morbilidadFilter(filtro)
       .toPromise()
       .then(async result => {
         
@@ -99,17 +98,15 @@ export class HistorialConsultasComponent implements OnChanges {
           this.returnedArray = this.morbilidad.slice(0, this.numPages);
           this.itemsConsulta.emit(this.totalItems);                
         }
-        else{                   
+        else{
           this.morbilidad=[];
-        }         
+        }
       })
     }   
   }
 
-  private irConsulta(uid: string){    
-    
+  private irConsulta(uid: string){
     this.idConsulta=uid;
-    
   }
 
   /*private close(){    

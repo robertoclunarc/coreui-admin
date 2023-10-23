@@ -3,6 +3,7 @@ import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID, Eleme
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router } from '@angular/router';
+import * as XLSX from 'xlsx';
 
 //servicios
 import { HistoriaService } from '../../../services/servicio_medico/historias.service';
@@ -21,7 +22,7 @@ export class MaestroHistoriasComponent  implements OnInit  {
 
   private user: IUsuarios={};
   private tipoUser: string;  
-  private nuevo: boolean = false;
+  
   medico: IHistoriaGral={};  
   soloLectura: boolean;
   private alertsDismiss: any = [];
@@ -29,7 +30,7 @@ export class MaestroHistoriasComponent  implements OnInit  {
   classTable: string;
   classButton: string;
   estiloOscuro: string;
-   
+  public titleButtonExport: string = 'Exportar'; 
   show = false;
   autohide = true;
 
@@ -96,13 +97,13 @@ export class MaestroHistoriasComponent  implements OnInit  {
             this.tipoUser= sessionStorage.tipoUser;
           }
           else {
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
           }
       }else{
-        this.router.navigate(["login"]);
+        this.router.navigate(["serviciomedico/login"]);
       }
       
-      if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
+      if (this.tipoUser==='SISTEMA' || this.tipoUser==='MEDICO' || this.tipoUser==='ADMINISTRATIVO'){
         this.soloLectura=false;
       }
       else{
@@ -110,6 +111,10 @@ export class MaestroHistoriasComponent  implements OnInit  {
       }     
 
       this.llenarArrayHistorias('null','null','null','null','null','null','OR');
+  }
+
+  nuevo(){
+    this.router.navigate(["serviciomedico/historia"]);
   }
 
   private async llenarArrayHistorias(idHistoria: string, idPaciente: string, ci:string, nombre: string, cargo: string, depto:string, condlogica: string) {
@@ -151,9 +156,7 @@ export class MaestroHistoriasComponent  implements OnInit  {
   async Search(){
     
     if(this.searchText!== ""){
-
       let searchValue = this.searchText.toLocaleLowerCase();
-
       //tratamiento para fechas------------------------------
       /*
       let date_regex = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
@@ -162,23 +165,22 @@ export class MaestroHistoriasComponent  implements OnInit  {
       if (date_regex.test(testDate)) {
         fecha=searchValue;
       }
-      */
-      
+      */      
       await this.srvHistoriaGral.searchHistoriasPromise(searchValue, searchValue, searchValue, searchValue, searchValue, searchValue, 'OR')        
       .then(async (res) => {          
-            this.returnedSearch= res            
-            this.totalItems = this.returnedSearch.length;            
-            this.returnedArray = this.returnedSearch.slice(0, this.numPages);            
+            this.returnedSearch= res;
+            this.arrayHistorias= res;
+            this.totalItems = this.returnedSearch.length;
+            this.returnedArray = this.returnedSearch.slice(0, this.numPages);  
             this.maxSize = Math.ceil(this.totalItems/this.numPages);
             //console.log(this.returnedSearch)
-          });               
+      });
     }
-    else { 
+    else {
       this.totalItems = this.arrayHistorias.length;
-      this.returnedArray = this.arrayHistorias;      
+      this.returnedArray = this.arrayHistorias;
       this.returnedArray = this.returnedArray.slice(0, this.numPages);
-      this.maxSize = Math.ceil(this.totalItems/this.numPages);     
-       
+      this.maxSize = Math.ceil(this.totalItems/this.numPages);       
     } 
   }
   
@@ -192,27 +194,24 @@ export class MaestroHistoriasComponent  implements OnInit  {
    
   }
 
-  sortTable(prop: string) {
-     
-      if(this.searchText== ""){        
-        if (this.sortOrder==1)
-          {this.returnedArray = this.arrayHistorias.sort(((a , b) => {  return this.sortData(a, b, prop, typeof a[prop]) } )).slice(0, this.numPages);}
-        else
-          {this.returnedArray = this.arrayHistorias.sort(((a , b) => {  return this.sortData(b, a, prop, typeof a[prop]) } )).slice(0, this.numPages);}        
-      }
-      else{
-        if (this.sortOrder==1)  
-          {this.returnedArray = this.returnedSearch.sort(((a , b) => {  return this.sortData(a, b, prop, typeof a[prop]) } )).slice(this.startItem, this.endItem);}
-        else
-          {this.returnedArray = this.returnedSearch.sort(((a , b) => {  return this.sortData(b, a, prop, typeof a[prop]) } )).slice(this.startItem, this.endItem);}         
-      }        
-      this.sortOrder =  this.sortOrder * (-1);
+  sortTable(prop: string) {     
+    if(this.searchText== ""){        
+      if (this.sortOrder==1)
+        {this.returnedArray = this.arrayHistorias.sort(((a , b) => {  return this.sortData(a, b, prop, typeof a[prop]) } )).slice(0, this.numPages);}
+      else
+        {this.returnedArray = this.arrayHistorias.sort(((a , b) => {  return this.sortData(b, a, prop, typeof a[prop]) } )).slice(0, this.numPages);}        
+    }
+    else{
+      if (this.sortOrder==1)  
+        {this.returnedArray = this.returnedSearch.sort(((a , b) => {  return this.sortData(a, b, prop, typeof a[prop]) } )).slice(this.startItem, this.endItem);}
+      else
+        {this.returnedArray = this.returnedSearch.sort(((a , b) => {  return this.sortData(b, a, prop, typeof a[prop]) } )).slice(this.startItem, this.endItem);}         
+    }        
+    this.sortOrder =  this.sortOrder * (-1);
   }
 
-  sortData (a: any, b: any, prop: string, type = ""){
-    
-    if (type === "date" || type === 'string') {
-      
+  sortData (a: any, b: any, prop: string, type = ""){    
+    if (type === "date" || type === 'string') {      
       if (a[prop] > b[prop]) {
         return 1;
       }
@@ -227,11 +226,83 @@ export class MaestroHistoriasComponent  implements OnInit  {
     }
   }
 
-  outMedicoEvent(entrada: IHistoriaGral){
-    
+  outMedicoEvent(entrada: IHistoriaGral){    
     if (entrada){
       this.llenarArrayHistorias('null','null','null','null','null','null','OR');
     }
+  }
+
+  async obtenerData(){
+    let data: any[]=[];
+    for await (let hist of this.arrayHistorias){
+      data.push({
+        uid_historia: hist.historia.uid_historia,
+        //hist.paciente.uid_paciente,
+        CI: hist.paciente.ci,
+        Nombre: hist.paciente.nombre,
+        Apellido: hist.paciente.apellido,
+        //hist.paciente.id_departamento,
+        Es_contratista: hist.paciente.es_contratista, 
+        FechaNac: formatDate(hist.paciente.fechanac, 'dd-MM-yyyy', this.locale), 
+        Sexo: hist.paciente.sexo,
+        Cargo: hist.paciente.cargo,
+        Turno: hist.paciente.turno,
+        Antiguedad_puesto: formatDate(hist.paciente.antiguedad_puesto, 'dd-MM-yyyy', this.locale),
+        Fecha_ingreso: formatDate(hist.paciente.fecha_ingreso, 'dd-MM-yyyy', this.locale),
+        Tipo_sangre: hist.paciente.tipo_sangre,
+        LugarNac: hist.paciente.lugar_nac,
+        EdoCivil: hist.paciente.edo_civil,
+        Nacionalidad: hist.paciente.nacionalidad,
+        Telefono: hist.paciente.telefono,
+        Direccion_hab: hist.paciente.direccion_hab,
+        //fecharegistro: hist.paciente.fecharegistro,
+        Fecha_apertura: hist.historia.fecha_apertura,
+        //hist.historia.fk_medico,
+        Ha_sufrido_accidentes: hist.historia.ha_sufrido_accidentes,
+        Partes_cuerpo_lesionados: hist.historia.partes_cuerpo_lesionados,
+        Fecha_accidente: hist.historia.fecha_accidente,
+        Dejo_secuelas: hist.historia.dejo_secuelas,
+        Ha_padecido_enfermeda: hist.historia.ha_padecido_enfermeda,
+        Cambia_trab_frecuente: hist.historia.cambia_trab_frecuente,
+        Fue_certif_inpsasel: hist.historia.fue_certif_inpsasel,
+        //uid_paciente: hist.historia.uid_paciente,
+        Fecha_ultima_actualizacion:  hist.historia.fecha_ultima_actualizacion, //(hist.historia.fecha_ultima_actualizacion, 'dd-MM-yyyy HH:mm:ss', this.locale),      
+        //hist.paciente.id_contratista,
+        Mano_dominante: hist.paciente.mano_dominante,
+        Frecuencia_rotacion: hist.paciente.frecuencia_rotacion,
+        Nivel_educativo: hist.paciente.nivel_educativo,
+        Tipo_vivienda: hist.paciente.tipo_vivienda,
+        Vivienda_propia: hist.paciente.vivienda_propia,
+        Medio_transp_trabajo: hist.paciente.medio_transp_trabajo,
+        Alergia: hist.paciente.alergia,
+        Tipo_discapacidad: hist.paciente.tipo_discapacidad,
+        Desc_discapacidad: hist.paciente.desc_discapacidad,
+        Estado_paciente: hist.paciente.estado_paciente,   
+        //hist.depto.uid,
+        Desc_CCosto: hist.depto.descripcion,
+        //hist.depto.id_gerencia,
+        CCosto: hist.depto.ccosto,
+        //Area: hist.depto.area,    
+        Examenfisico:  JSON.stringify(hist.examenfisico),
+        Habitos: JSON.stringify(hist.habitos),
+        Riesgos: (hist.riesgos),
+        Psicologicos: JSON.stringify(hist.psicologicos),
+      });
+      
+    }
+    return data;
+  }
+
+  async exportExcel(){
+    this.titleButtonExport='Descargando...'; 
+    console.log(this.arrayHistorias);
+    const data: any[] = await this.obtenerData();
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Datos');
+    await XLSX.writeFile(workbook, 'historialMedico.xlsx');
+    this.titleButtonExport = 'Exportar';
+    this.showSuccess(`Archivo Descargado. Revise su carpeta local de descargas`, 'primary');
   }
  
 }

@@ -80,13 +80,13 @@ export class MaestroPacienteComponent  implements OnInit  {
             this.tipoUser= sessionStorage.tipoUser;
           }
           else {
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
           }
       }else{
-        this.router.navigate(["login"]);
+        this.router.navigate(["serviciomedico/login"]);
       }
       
-      if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+      if (this.tipoUser==='SISTEMA' || this.tipoUser==='TTHH'){
         this.soloLectura=false;
       }
       else{

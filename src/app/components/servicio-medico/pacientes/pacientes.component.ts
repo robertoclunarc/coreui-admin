@@ -9,12 +9,13 @@ import { IvPaciente, IPaciente } from '../../../models/servicio-medico/paciente.
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { Ipopover, INivelAcademico, IContratista } from '../../../models/servicio-medico/varios.model';
 import { IvDepartamentos, IGerencia } from '../../../models/servicio-medico/departamentos.model';
-
+import { ImailOptions } from "../../../models/servicio-medico/correo.model";
 
 //servicios
 import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
 import { DepartamentosService } from '../../../services/servicio_medico/departamentos.service';
 import { VarioService } from '../../../services/servicio_medico/varios.service';
+import { CorreoService } from '../../../services/servicio_medico/correo.service';
 
 @Component({
   selector: 'app-pacientes',
@@ -25,12 +26,13 @@ import { VarioService } from '../../../services/servicio_medico/varios.service';
 })
 export class PacientesComponent implements OnChanges {
 
-  constructor( 
-    private route: ActivatedRoute,  
+  constructor(
+    private route: ActivatedRoute,
     private router: Router,
-    private srvPacientes: PacientesService, 
+    private srvPacientes: PacientesService,
     private srvDepartamentos: DepartamentosService,
-    private srvVarios: VarioService,   
+    private srvVarios: VarioService,
+    private srvCorreo: CorreoService,
     @Inject(LOCALE_ID) public locale: string,
     
   ) { }
@@ -85,13 +87,13 @@ export class PacientesComponent implements OnChanges {
         this.tipoUser= sessionStorage.tipoUser;
       }
       else {
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
       }
     }else{
-      this.router.navigate(["login"]);
+      this.router.navigate(["serviciomedico/login"]);
     }
 
-    if (this.tipoUser=='MEDICO' || this.tipoUser=='SISTEMA' || this.tipoUser=='ADMPERSONAL'){
+    if (this.tipoUser==='SISTEMA' || this.tipoUser==='TTHH'){
       this.soloLectura=false;
     }
     else{
@@ -244,7 +246,7 @@ export class PacientesComponent implements OnChanges {
       sexo: this.paciente.sexo,
       cargo: this.paciente.cargo,
       turno: this.paciente.turno,
-      antiguedad_puesto: formatDate(this.paciente.antiguedad_puesto, 'yyyy-MM-dd HH:mm:ss', this.locale),
+      antiguedad_puesto: this.paciente.antiguedad_puesto ? formatDate(this.paciente.antiguedad_puesto, 'yyyy-MM-dd HH:mm:ss', this.locale) : formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale),
       fecha_ingreso: formatDate(this.paciente.fecha_ingreso, 'yyyy-MM-dd HH:mm:ss', this.locale),
       tipo_sangre: this.paciente.tipo_sangre,
       lugar_nac : this.paciente.lugar_nac,
@@ -277,10 +279,14 @@ export class PacientesComponent implements OnChanges {
       ObjPaciente.fecharegistro=formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
       await this.srvPacientes.registrar(ObjPaciente).toPromise();
       pacienteAux.uid_paciente= this.srvPacientes.paciente.uid_paciente;
-      if (pacienteAux.uid_paciente)
+      if (pacienteAux.uid_paciente){
+        this.paciente.ci = this.srvPacientes.paciente.ci;
         this.showSuccess('Datos del Paciente registrados satisfactoriamente', 'success');
-      else
-        this.showSuccess('Error en el registro del paciente', 'danger'); 
+        this.enviarNotificacionCorreo();
+      }
+      else{
+        this.showSuccess('Error en el registro del paciente', 'danger');
+      } 
     }
     
     pacienteAux.id_contratista=this.ObjContratista.uid;
@@ -302,8 +308,9 @@ export class PacientesComponent implements OnChanges {
   }
 
   seleccionarGerencia(uidDepartamento: number){
-    this.gerencia.uid = this.arrayDepartamentos.find( g => (g.departamento.uid==uidDepartamento)).gerencia.uid;
-    this.gerencia.nombre = this.arrayDepartamentos.find( g => (g.departamento.uid==uidDepartamento)).gerencia.nombre;
+    
+    this.gerencia.uid = uidDepartamento ? this.arrayDepartamentos.find( g => (g.departamento.uid==uidDepartamento)).gerencia.uid : undefined;
+    this.gerencia.nombre = uidDepartamento ? this.arrayDepartamentos.find( g => (g.departamento.uid==uidDepartamento)).gerencia.nombre : undefined
   }
 
   private async  validaEntradas(){
@@ -412,5 +419,50 @@ export class PacientesComponent implements OnChanges {
       timeout: 5000
     });
   }
+
+  async getRemitentes(actividad: string){
+    let data: string[]=[];
+    await this.srvCorreo.remitentes(actividad)
+      .toPromise()
+      .then(async (res) => {
+        data = res;
+      })
+    return data;
+  }
+
+  async enviarCorreoHTML(mailOptions: ImailOptions) {    
+    let respuesta: any;     
+    respuesta = await this.srvCorreo.enviarBuffer(mailOptions);
+    if (respuesta.error==undefined){
+      console.log(`Info: ${respuesta?.info}`);
+    }else{
+      console.log(`Error: ${respuesta.error}`);
+    }
+       
+    return respuesta;  
+  }
+
+  async enviarNotificacionCorreo(){
+    await this.buscarPaciente();
+    const asunto: string = `Nuevo Ingreso: Paciente ${this.paciente.nombre_completo}`;
+    const cuerpo: string = await this.srvPacientes.cuerpoCorreoNuevoIngreso(this.paciente, this.user.nombres);
+    const actividad: string = "INGRESO";
+    const remitentes: string[] = await this.getRemitentes(actividad);    
+    if (remitentes.length>0){
+      const correos: string = remitentes.toString();
+      const mailOptions: ImailOptions = {
+        to: correos,
+        subject: `${asunto}`,
+        html: cuerpo,
+      };
+      this.enviarCorreoHTML(mailOptions)
+      .then((result) => {        
+        if (result.info)
+          this.showSuccess(`Reposo Enviado a: matlux`, 'warning');
+        else
+          this.showSuccess(`Error: ${result?.error}`, 'danger');
+      });
+    }  
+  }  
 
 }

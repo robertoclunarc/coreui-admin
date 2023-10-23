@@ -1,1 +1,54 @@
 .has-float-label{display:block;position:relative}.has-float-label label,.has-float-label>span{font-weight: bold; position:absolute;cursor:text;font-size:75%;opacity:1;-webkit-transition:all .2s;transition:all .2s;top:-.5em;left:12px;z-index:3;line-height:1;padding:0 1px}.has-float-label label::after,.has-float-label>span::after{content:" ";display:block;position:absolute;background:rgb(243, 246, 250);height:14px;top:0%;left:-.2em;right:-.2em;z-index:-1}.has-float-label .form-control::-webkit-input-placeholder{opacity:1;-webkit-transition:all .2s;transition:all .2s}.has-float-label .form-control::-moz-placeholder{opacity:1;transition:all .2s}.has-float-label .form-control:-ms-input-placeholder{opacity:1;transition:all .2s}.has-float-label .form-control::placeholder{opacity:1;-webkit-transition:all .2s;transition:all .2s}.has-float-label .form-control:placeholder-shown:not(:focus)::-webkit-input-placeholder{opacity:0}.has-float-label .form-control:placeholder-shown:not(:focus)::-moz-placeholder{opacity:0}.has-float-label .form-control:placeholder-shown:not(:focus):-ms-input-placeholder{opacity:0}.has-float-label .form-control:placeholder-shown:not(:focus)::placeholder{opacity:0}.has-float-label .form-control:placeholder-shown:not(:focus)+*{font-size:100%;opacity:.5;top:.3em;font-weight:500}.input-group .has-float-label{display:table-cell}.input-group .has-float-label .form-control{border-radius:4px}.input-group .has-float-label:not(:last-child) .form-control{border-bottom-right-radius:0;border-top-right-radius:0}.input-group .has-float-label:not(:first-child) .form-control{border-bottom-left-radius:0;border-top-left-radius:0;margin-left:-1px}
+.custom-list-container {
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Asegura que los elementos se estiren para adaptarse */
+  }
+  
+  .custom-list-group {
+    flex-grow: 1;
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+  }
+  
+  .custom-list-group-item {
+    display: flex; /* Utiliza flexbox para alinear verticalmente los elementos */
+    flex-direction: column;
+    background-color: #fff;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+  }
+  
+  .found,
+  .nonwbe {
+    flex: 1; /* Divide el espacio disponible verticalmente */
+    padding: .25rem .35rem;   
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .found {
+    background-color: #e3e4e7;
+    font-weight: bold;
+    font-family: sans-serif;
+    font-size: 13px;
+    color: rgb(141, 142, 143);
+  }
+  
+  .nonwbe {
+    margin-top: 5px;
+    font-family: sans-serif;
+    font-size: 13px;
+    color: black;
+    margin-top: -5px; /* Ajusta el margen superior para eliminar el espacio */
+    padding-top: 5px; /* Agrega un pequeño espaciado entre las franjas */
+  }
+  
+  .nonwbe:hover {
+    color: #fff;
+    background-color: #49c1f8e7;
+  }

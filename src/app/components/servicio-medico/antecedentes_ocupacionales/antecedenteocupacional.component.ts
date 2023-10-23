@@ -69,10 +69,10 @@ export class AntecedenteOcupacionalComponent implements OnChanges {
         this.tipoUser= sessionStorage.tipoUser;
       }
       else {
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
       }
     }else{
-      this.router.navigate(["login"]);
+      this.router.navigate(["serviciomedico/login"]);
     }
 
     

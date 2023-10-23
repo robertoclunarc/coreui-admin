@@ -6,23 +6,23 @@ import { Router } from '@angular/router';
 import { formatDate } from '@angular/common';
 
 //servicios
-import { ConsultasService } from '../../../services/servicio_medico/consultas.service';
-import { SignosVitalesService } from '../../../services/servicio_medico/signosvitales.service';
-import { AntropometriaService } from '../../../services/servicio_medico/antropometria.service';
-import { MedicamentosService } from '../../../services/servicio_medico/medicamentos.service';
+import { ConsultasService } from '../../../../services/servicio_medico/consultas.service';
+import { SignosVitalesService } from '../../../../services/servicio_medico/signosvitales.service';
+import { AntropometriaService } from '../../../../services/servicio_medico/antropometria.service';
+import { MedicamentosService } from '../../../../services/servicio_medico/medicamentos.service';
 
 //modelos
-import { IvConsulta, IFiltroConsulta, Ireferencia, IvMorbilidad } from '../../../models/servicio-medico/consultas.model';
-import { IsignosVitales } from '../../../models/servicio-medico/signos_vitales.model';
-import { Iantropometria  } from '../../../models/servicio-medico/antropometria.model';
-import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
-import { ImedicamentosConsulta } from '../../../models/servicio-medico/medicamentos.model';
+import { IvConsulta, IFiltroConsulta, Ireferencia, IvMorbilidad } from '../../../../models/servicio-medico/consultas.model';
+import { IsignosVitales } from '../../../../models/servicio-medico/signos_vitales.model';
+import { Iantropometria  } from '../../../../models/servicio-medico/antropometria.model';
+import { IUsuarios } from '../../../../models/servicio-medico/usuarios.model';
+import { ImedicamentosConsulta } from '../../../../models/servicio-medico/medicamentos.model';
 
 @Component({
   selector: 'planilla-consulta',
   templateUrl: './planilla_consulta.html',
   providers: [ConsultasService, SignosVitalesService, AntropometriaService, MedicamentosService],
-  styleUrls: ['./planilla_consulta.css']
+  styleUrls: ['../planilla_style.css']
 })
 
 export class planillaConsultaComponent implements OnChanges {
@@ -38,6 +38,8 @@ export class planillaConsultaComponent implements OnChanges {
   countMedicamentos: number=0
   private user: IUsuarios={};
   private tipoUser: string;
+  titleButtonImp: string = "Imprimir PDF";
+  disableButtonImp: boolean = false;
 
   constructor(private route: ActivatedRoute,private router: Router,
     private srvConsultas: ConsultasService,    
@@ -59,10 +61,10 @@ export class planillaConsultaComponent implements OnChanges {
        
       }
       else {
-            this.router.navigate(["login"]);
+            this.router.navigate(["serviciomedico/login"]);
       }
     }else{
-      this.router.navigate(["login"]);
+      this.router.navigate(["serviciomedico/login"]);
     }
     if (this.id!=undefined && this.id!="-1"){
       this.consultasFilter(this.id);
@@ -77,11 +79,8 @@ export class planillaConsultaComponent implements OnChanges {
 		return await this.srvConsultas.consultaFilter(this.buscarConsulta)
 			.toPromise()
       .then(results => {				
-				
 				this.vConsulta = results[0];
-        this.buscarSignosVitales(this.vConsulta.ci, this.vConsulta.fecha);
-        
-				
+        this.buscarSignosVitales(this.vConsulta.ci, this.vConsulta.fecha);				
 			})			
 			.catch(err => { console.log(err) });
 	}
@@ -89,12 +88,10 @@ export class planillaConsultaComponent implements OnChanges {
   private async morbilidadFilter(uid: string) {
     this.limpiarFiltro();
     this.buscarConsulta.uidConsulta=uid;
-		return await this.srvConsultas.morbilidadFilter('null','null',uid,'null','null','null','null','null')
+		return await this.srvConsultas.morbilidadFilter(this.buscarConsulta)
 			.toPromise()
       .then(results => {				
-				
-				this.vMorbilidad = results[0];
-				
+				this.vMorbilidad = results[0];				
 			})			
 			.catch(err => { console.log(err) });
 	}
@@ -122,11 +119,10 @@ export class planillaConsultaComponent implements OnChanges {
       .then(result => {
         if (result!= undefined){           
            this.medicamentoAplicado=result;
-           this.countMedicamentos= this.medicamentoAplicado.medicamentos==undefined ? 0 : this.medicamentoAplicado.medicamentos.length ;           
+           this.countMedicamentos= this.medicamentoAplicado.medicamentos==undefined ? 0 : this.medicamentoAplicado.medicamentos.length;
         }
         else
-        this.medicamentoAplicado={}
-        
+          this.medicamentoAplicado={}
       })
     }    
   }
@@ -156,6 +152,8 @@ export class planillaConsultaComponent implements OnChanges {
   }  
 
   public exportHtmlToPDF(){
+    this.titleButtonImp = "Loading...";
+    this.disableButtonImp = true;
     let data = document.getElementById('htmltable');
      
       html2canvas(data).then(canvas => {
@@ -169,7 +167,8 @@ export class planillaConsultaComponent implements OnChanges {
           doc.addImage(contentDataURL, 'PNG', 0, position, docWidth, docHeight)
           
           doc.save('consulta.pdf');
-          
+          this.titleButtonImp = "Imprimir PDF";
+          this.disableButtonImp = false;
       });
   }
 

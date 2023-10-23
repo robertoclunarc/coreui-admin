@@ -3,4 +3,10 @@ export interface IPatologia{
     descripcion?: string;
     tipo?: string;
     codigo_etica?: string;
+    url?: string;
+    padre?: number;
+    hijo?: number;
+    estatus?: boolean;
+    view?: number;
+    definicion?: string;
 }

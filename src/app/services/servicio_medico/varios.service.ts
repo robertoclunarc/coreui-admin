@@ -59,7 +59,36 @@ export class VarioService {
       console.log(`No entontro archivo: ${url} => error.status: ${http.status}`);
       return false;
     }
-  }  
+  }
+  
+  async searchArrayObject(pajal: any[], aguja: any, pista: string){
+    let posicion: number = -1;
+    for await (const [index, ag] of pajal.entries()){      
+      if(aguja === ag[pista]){
+        console.log(`aguja: ${aguja}, ag[pista]: ${ag[pista]}`)
+        return index;
+      }
+    }
+    console.log(`posicion: ${posicion}`)
+    return posicion;
+  }
+
+  getContentFromEm(element: string): string {
+    const emRegex = /<em[^>]*>([^<]*)<\/em>/gi;
+    let content = '';
+    let lastIndex = 0;
+    
+    let match: any;
+    while ((match = emRegex.exec(element)) !== null) {
+      content += element.slice(lastIndex, match.index); // Agrega el texto antes del componente <em>
+      content += match[1] + ' '; // Agrega el contenido del componente <em>
+      lastIndex = emRegex.lastIndex; // Actualiza el último índice de coincidencia
+    }
+    
+    content += element.slice(lastIndex); // Agrega el texto después del último componente <em>
+    
+    return content.trim();
+  }
 
   searchHeroes(cedula: string):Observable<Blob>{
     const param: string =  cedula + this.extFoto;

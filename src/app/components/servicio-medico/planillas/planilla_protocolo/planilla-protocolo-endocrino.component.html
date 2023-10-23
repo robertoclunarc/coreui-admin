@@ -1,0 +1,150 @@
+<div class="container">
+    <div class="container-fluid">
+        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+            <button type="button" [disabled]="disableButtonImp" class="btn btn-outline-dark" (click)="exportHtmlToPDF()">{{titleButtonImp}}</button>
+        <!--    <button printSectionId="htmltable" class="btn btn-outline-dark" ngxPrint>Imprimir</button> -->       
+        </div>    
+    </div>
+    <div class="container-fluid" id="htmltable" #htmltable>
+        <div class="container-fluid" id="htmlpage1" #htmlpage1 style="page-break-before: always;">
+            <ng-container *ngIf="encabezados[0]">
+                <div id="htmlhead_1" style="font-weight:bold;font-style:italic; text-align: left;font-size:10px; font-weight:bold;" #htmlhead_1 [innerHTML]="encabezados[0].outerHTML"></div>           
+            </ng-container>
+            <div style="font-weight:bold;font-style:italic; text-align: center;font-size:12px; font-weight:bold;">Información  a  Evaluar</div>
+            <table *ngFor="let eva of arrayTiposEvalucionesPage1; let i=index" class="table table-bordered table-sm" style="font-size: 11px;" width="95%" >
+                <tr bgcolor="#F0ECEC">
+                    <th width="33%">{{eva.tipoevaluacion}}</th>
+                    <th width="27%">Dato(s)</th>
+                    <th width="40%">Observación</th>
+                </tr>
+                <tr *ngFor="let res of arrayEvaluacionesConRespuestasPage1; let j=index">
+                    <td *ngIf="res.evaluaciones.tipoevaluacion==eva.tipoevaluacion">
+                        <span style="font-weight:bold;font-style:italic; text-align: left;">{{res.evaluaciones.descripcion_evaluacion}}:</span>
+                    </td>
+                    <td *ngIf="res.evaluaciones.tipoevaluacion==eva.tipoevaluacion">
+                        <ol *ngFor="let pos of res.posibles_resp; let k=index" style="font-weight:bold;font-style:italic; text-align: left;">
+                            <div *ngIf="pos.descripcion!='Observacion' && pos.descripcion!='General(es)'">
+                                <div *ngIf="pos.descripcion=='SI' || pos.descripcion=='NO'">{{pos.descripcion}}</div>
+                                <li value="{{k+1}}" *ngIf="(pos.descripcion!='SI' && pos.descripcion!='NO') && pos.posible_resp!=''">
+                                    {{pos.descripcion}}: {{pos.posible_resp}}&nbsp;
+                                </li>
+                            </div>
+                        </ol>
+                                        
+                    </td>
+                    <td *ngIf="res.evaluaciones.tipoevaluacion==eva.tipoevaluacion">
+                        <span *ngFor="let pos of res.posibles_resp; let h=index" style="font-weight:bold;font-style:italic; text-align: left;">
+                            <div *ngIf="(pos.descripcion=='Observacion' || pos.descripcion=='General(es)')">{{pos.posible_resp}}</div>
+                            <div *ngIf="(pos.descripcion=='SI' || pos.descripcion=='NO') && (pos.posible_resp!='') && (pos.posible_resp!='NO' && pos.posible_resp!='SI')">{{pos.posible_resp}}</div>
+                        </span>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="container-fluid" id="htmlpage2" #htmlpage2  style="page-break-before: always;">
+            <ng-container *ngIf="encabezados[1]">            
+                <div id="htmlhead_2" #htmlhead_2 style="font-weight:bold;font-style:italic; text-align: left;font-size:10px; font-weight:bold;" [innerHTML]="encabezados[1].outerHTML"></div>           
+            </ng-container>
+            <div style="font-weight:bold;font-style:italic; text-align: center;font-size:12px; font-weight:bold;">Información  a  Evaluar</div>
+            <table *ngFor="let eva of arrayTiposEvalucionesPage2; let i=index" class="table table-bordered table-sm" style="font-size: 11px;" width="95%" >
+                <tr bgcolor="#F0ECEC">
+                    <th width="33%">{{eva.tipoevaluacion}}</th>
+                    <th width="30%">Dato(s)</th>
+                    <th width="37%">Observación</th>
+                </tr>
+                <tr *ngFor="let res of arrayEvaluacionesConRespuestasPage2; let j=index">
+                    <td *ngIf="res.evaluaciones.tipoevaluacion==eva.tipoevaluacion">
+                        <span style="font-weight:bold;font-style:italic; text-align: left;">{{res.evaluaciones.descripcion_evaluacion}}:</span>
+                    </td>
+                    <td *ngIf="res.evaluaciones.tipoevaluacion==eva.tipoevaluacion">
+                        <ol *ngFor="let pos of res.posibles_resp; let k=index" style="font-weight:bold;font-style:italic; text-align: left;">
+                            <div *ngIf="pos.descripcion!='Observacion' && pos.descripcion!='General(es)'">
+                                <div *ngIf="pos.descripcion=='SI' || pos.descripcion=='NO'">{{pos.descripcion}}</div>
+                                <li *ngIf="(pos.descripcion!='SI' && pos.descripcion!='NO') && pos.posible_resp!=''">
+                                    - {{pos.descripcion}}: {{pos.posible_resp}}&nbsp;
+                                </li>
+                            </div>
+                        </ol>
+                                        
+                    </td>
+                    <td *ngIf="res.evaluaciones.tipoevaluacion==eva.tipoevaluacion">
+                        <span *ngFor="let pos of res.posibles_resp; let h=index" style="font-weight:bold;font-style:italic; text-align: left;">
+                            <div *ngIf="(pos.descripcion=='Observacion' || pos.descripcion=='General(es)')">{{pos.posible_resp}}</div>
+                            <div *ngIf="(pos.descripcion=='SI' || pos.descripcion=='NO') && (pos.posible_resp!='') && (pos.posible_resp!='NO' && pos.posible_resp!='SI')">{{pos.posible_resp}}</div>
+                        </span>
+                    </td>
+                </tr>                      
+            </table>
+        </div>
+        <div class="container-fluid" id="htmlpage3" #htmlpage3  style="page-break-before: always;">
+            <ng-container *ngIf="encabezados[2]">            
+                <div id="htmlhead_3" #htmlhead_3 style="font-weight:bold;font-style:italic; text-align: left;font-size:10px; font-weight:bold;" [innerHTML]="encabezados[2].outerHTML"></div>
+            </ng-container>
+            <div style="font-weight:bold;font-style:italic; text-align: center;font-size:12px; font-weight:bold;">Información  a  Evaluar</div>
+            <table *ngFor="let eva of arrayTiposEvalucionesPage3; let i=index" class="table table-bordered table-sm" style="font-size: 11px;" width="95%" >
+                <tr bgcolor="#F0ECEC">
+                    <th width="33%">{{eva.tipoevaluacion}}</th>
+                    <th width="30%">Dato(s)</th>
+                    <th width="37%">Observación</th>
+                </tr>
+                <tr *ngFor="let res of arrayEvaluacionesConRespuestasPage3; let j=index">
+                    <td *ngIf="res.evaluaciones.tipoevaluacion==eva.tipoevaluacion">
+                        <span style="font-weight:bold;font-style:italic; text-align: left;">{{res.evaluaciones.descripcion_evaluacion}}:</span>
+                    </td>
+                    <td *ngIf="res.evaluaciones.tipoevaluacion==eva.tipoevaluacion">
+                        <ol *ngFor="let pos of res.posibles_resp; let k=index" style="font-weight:bold;font-style:italic; text-align: left;">
+                            <div *ngIf="pos.descripcion!='Observacion' && pos.descripcion!='General(es)'">
+                                <div *ngIf="pos.descripcion=='SI' || pos.descripcion=='NO'">{{pos.descripcion}}</div>
+                                <li value="{{k+1}}" *ngIf="(pos.descripcion!='SI' && pos.descripcion!='NO') && pos.posible_resp!=''">
+                                    {{pos.descripcion}}: {{pos.posible_resp}}&nbsp;
+                                </li>
+                            </div>
+                        </ol>
+                                        
+                    </td>
+                    <td *ngIf="res.evaluaciones.tipoevaluacion==eva.tipoevaluacion">
+                        <span *ngFor="let pos of res.posibles_resp; let h=index" style="font-weight:bold;font-style:italic; text-align: left;">
+                            <div *ngIf="(pos.descripcion=='Observacion' || pos.descripcion=='General(es)')">{{pos.posible_resp}}</div>
+                            <div *ngIf="(pos.descripcion=='SI' || pos.descripcion=='NO') && (pos.posible_resp!='') && (pos.posible_resp!='NO' && pos.posible_resp!='SI')">{{pos.posible_resp}}</div>
+                        </span>
+                    </td>
+                </tr>                      
+            </table>
+
+            <div class="container">
+                <div class="row align-items-start">
+                    <div  class="col">
+                        <strong>Proxima Cita:</strong>
+                    </div>                          
+                    <div  class="col">
+                        <strong>{{protocoloObj?.protocolo?.proxima_cita | date:'yyyy-MM-dd'}}</strong>
+                    </div>
+                </div>
+                <div class="row align-items-start">
+                    <div  class="col">
+                        <strong>MÉDICO EVALUADOR&nbsp; :</strong>
+                    </div>                          
+                    <div  class="col">
+                        <strong>{{protocoloObj.medico.nombre}}</strong>
+                    </div>
+                </div>
+                <div class="row align-items-start">
+                    <div  class="col">
+                        <strong>LUGAR Y FECHA&nbsp; :</strong>
+                    </div>                   
+                    <div *ngIf="protocoloObj?.protocolo?.lugar!=undefined && protocoloObj?.protocolo?.emision!=undefined"  class="col">
+                        <strong>{{protocoloObj?.protocolo?.lugar}} {{protocoloObj?.protocolo?.emision | date:'yyyy-MM-dd'}}</strong>
+                    </div>
+                </div>
+                <div class="row align-items-start">
+                    <div class="col">
+                        <font color="#F0ECEC">FIRMA</font>
+                    </div>                          
+                    <div class="col">
+                        <font color="#F0ECEC">FIRMA</font>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>    
+  </div>

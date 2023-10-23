@@ -8,9 +8,12 @@
           <div class="col-lg-12">
             <div class="card">
               <div class="card-header">
-                 <strong>Atenciones Medicas</strong>                 
+                 <strong>Atenciones Médicas</strong>                 
                  <div class="card-header-actions">
-                  <button title="Registrar una Nueva Consulta Medica" type="button" class="btn btn-pill btn-block btn-success" (click)="primaryModal.show(); showModalRegistrar()">+</button>
+                  <button type="button" class="btn btn-sm btn-pill btn-info" title="Refrescar Consultas/Mostrar Todas" (click)="llenarArrayConsultas(false)"><i class="fa fa-refresh"></i></button>
+                  <button type="button" class="btn btn-sm btn-pill btn-success" title="Registrar Nueva Consulta" [disabled]="soloLectura" (click)="primaryModal.show(); showModalRegistrar()"><i class="fa fa-plus"></i>&nbsp;Nuevo</button>
+                  <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="titleButtonExport!='Exportar'" (click)="exportExcel()" title="Explortar a Excel"><i class="fa fa-file-excel-o"></i>&nbsp;{{titleButtonExport}}</button>
+                  <button type="button" class="btn btn-sm btn-pill btn-warning" [disabled]="titleButtonSend!='Enviar'" (click)="enviarMorbilidad('MORBILIDAD')" title="Enviar Reporte de Morbilidad"><i class="fa fa-envelope-o"></i>&nbsp;{{titleButtonSend}}</button>
                 </div>
               </div>
               <div class="card-body">
@@ -20,23 +23,23 @@
 
                 <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by ..." />
                 
-                <table class="{{ classTable }} table-hover table-sm" id="dataConsultas">
+                <table class="{{ classTable }} table-responsive table-sm" id="dataConsultas">
                   <thead>
                     <tr>
                       <th> </th>                      
                       <th scope="col" *ngFor="let t of titulos">
                         
-                        <div class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
+                        <div class="col-1 col-sm-1 col-md-1 col-xl mb-1 mb-xl-0">
                           <button type="button" (click)="sortTable(t.campo)" class="{{ classButton }}"><strong>{{t.titulo}}</strong></button>
                         </div>
                     </th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr *ngFor="let c of returnedArray">                      
+                    <tr *ngFor="let c of returnedArray">
                       <td>
                         <div class="btn-group" dropdown>
-                          <button type="button" class="btn btn-danger">Accion</button>
+                          <button type="button" class="btn btn-danger">Ver</button>
                           <button type="button" dropdownToggle class="btn btn-danger dropdown-toggle dropdown-toggle-split">
                             <span class="caret"></span>
                             <span class="sr-only">Estirar buton!</span>
@@ -44,21 +47,22 @@
                           
                           <ul *dropdownMenu class="dropdown-menu" role="menu">
                             <li role="menuitem"><a class="dropdown-item" (click)="showModalActualizar(c); primaryModal.show();" href="javascript:void(0)">Detalles de Consulta</a></li>
-                            <li role="menuitem"><a class="dropdown-item" (click)="downloadAsPDF(c.uid); myModalPlanilla.show();" href="javascript:void(0)">Descargar PDF</a></li>                            
+                            <li role="menuitem"><a class="dropdown-item" (click)="planilla='consulta'; downloadAsPDF(c.uid); myModalPlanilla.show();" href="javascript:void(0)">Archivo en PDF</a></li>                            
                           </ul>
                         </div>
                       </td>
-                      <td>{{c.uid}}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{c.uid}}</td>
                       <td>{{c.fecha | date:'yyyy-MM-dd'}}</td>
-                      <td>{{c.ci}}</td>
-                      <td>{{c.nombre_completo}}</td>
-                      <td>{{c.sexo}}</td>
-                      <td>{{c.cargo}}</td>
-                      <td>{{c.motivo}}</td>
-                      <td>{{c.paramedico}}</td>                      
+                      <td style="text-align: center;">{{c.ci}}</td>
+                      <td style="font-size: 0.7rem;">{{c.nombre_completo}}</td>
+                      <td style="text-align: center;">{{c.sexo}}</td>
+                      <td style="font-size: 0.7rem;">{{c.cargo}}</td>
+                      <td style="font-size: 0.7rem;">{{c.motivo}}</td>
+                      <td style="font-size: 0.7rem;">{{c.paramedico}}</td>                      
                       <td>
                         <span class="badge badge-success">{{c.login_atendio}}</span>
                       </td>
+                      <td style="font-size: 0.7rem;">{{c.patologia}}</td>
                     </tr>                    
                    
                   </tbody>
@@ -95,11 +99,9 @@
                         </div>
                       </div>           
                       
-                        <div class="card-body" (collapsed)="collapsed($event)" (expanded)="expanded($event)" [collapse]="isCollapsed" >                    
-                          
+                        <div class="card-body" (collapsed)="collapsed($event)" (expanded)="expanded($event)" [collapse]="isCollapsed">                          
                             <div class="row">
-                              <div class="col-sm-6">
-                                
+                              <div class="col-sm-6">                                
                                 <div class="input-group">                            
                                   <span class="input-group-prepend">
                                     <button [disabled]="soloLectura" type="button"                                      
@@ -200,7 +202,7 @@
                                 <div class="form-group">
                                   <span class="form-group has-float-label">                                                                    
                                     <select [disabled]="soloLectura" class="form-control form-control-sm" name="cboMedicoGuardia" [(ngModel)]="consultas.id_medico"  id="cboMedicoGuardia">
-                                      <option *ngFor="let medico of selectMedicos" [value]=" medico.uid">{{medico.nombre}}</option>
+                                      <option *ngFor="let medico of selectMedicos" [selected]="consultas.id_medico == medico.uid" [value]="medico.uid">{{medico.nombre}}</option>
                                                                      
                                     </select>
                                     <label for="cboMedicoGuardia">M&eacute;dico de Guardia</label>
@@ -222,18 +224,19 @@
                             <div class="row">
                               <div class="col-sm-6">
                                 <div class="form-group">
-                                    <span class="form-group has-float-label">                                    
-                                      <select class="form-control form-control-sm" id="cboMotivo" [disabled]="soloLectura" name="cboMotivo" (change)="chequeaAutorizacionMotivo($event.target.value)" [(ngModel)]="consultas.id_motivo">
-                                        <option *ngFor="let mov of motivos" [value]="mov.uid">{{mov.descripcion}}</option>
-                                      </select>                                      
-                                      <label class="badge-light" for="cboMotivo">Motivo</label>
+                                    <span class="form-group has-float-label">
+                                      <select class="form-control form-control-sm" id="cboTipoDiagnostico" [disabled]="soloLectura" name="cboTipoDiagnostico" (change)="listarMotivos($event.target.value)" [(ngModel)]="vConsultas.fkdiagnostico">
+                                        <option *ngFor="let diag of arrayTiposDiagnoticos" [value]="diag.uid">{{diag.descripcion}}</option>
+                                      </select>
+                                      <label class="badge-light" for="cboTipoDiagnostico">Tipo Diagnóstico</label>
                                     </span>
                                 </div>                          
                               </div>
         
                               <div class="col-sm-6">
+                                
                                 <div class="form-group">
-                                  <span class="form-group has-float-label">                                    
+                                  <span class="form-group has-float-label">
                                     <select class="form-control form-control-sm" [disabled]="soloLectura" id="cboAreaIncidente" name="cboAreaIncidente" [(ngModel)]="consultas.id_area">
                                       <option *ngFor="let are of areas" [value]="are.uid">{{are.descripcion}}</option>
                                     </select>
@@ -241,30 +244,80 @@
 
                                   </span>                             
                                 </div>
+                               
                               </div>
                             </div><!--/.row 3-->
                             <div class="row">
                               <div class="col-sm-6">
                                 <div class="form-group">
                                     <span class="form-group has-float-label">                                    
-                                      <input  [(ngModel)]="selectedPatolog" name="txtPatologia" id="txtPatologia" [disabled]="soloLectura" 
+                                      <select class="form-control form-control-sm" id="cboMotivo" [disabled]="soloLectura" name="cboMotivo" (change)="chequeaAutorizacionMotivo($event.target.value)" [(ngModel)]="consultas.id_motivo">
+                                        <option *ngFor="let mov of arrayMotivos" [value]="mov.uid" [selected]="mov.fkdiagnostico == vConsultas.fkdiagnostico">{{mov.descripcion}}</option>
+                                      </select>
+                                      <label class="badge-light" for="cboMotivo">Motivo</label>
+                                    </span>
+                                </div>
+                              </div>
+        
+                              <div class="col-sm-6">
+                                <div *ngIf="user.nivel==1 || soloLectura" class="input-group">                            
+                                  <span class="input-group-prepend">
+                                    <button [disabled]="soloLectura" type="button"                                      
+                                      (click)="onSearchEnter()" 
+                                      class="btn btn-primary btn-sm">
+                                      <i class="fa fa-search"></i> 
+                                      Patología
+                                    </button>
+                                  </span>
+                                  <input #typeaheadInstance [(ngModel)]="selectedPatolog" name="txtPatologia" id="txtPatologia"
+                                      [disabled]="soloLectura"
                                       [typeahead]="patologias"
                                       typeaheadOptionField="descripcion"
                                       [isAnimated]="true"
                                       [typeaheadScrollable]="true"
-                                      [typeaheadOptionsInScrollableView]="10"
-                                      [typeaheadSelectFirstItem]="true"
-                                      [typeaheadIsFirstItemActive]="true"
-                                      typeaheadGroupField="codigo_etica" 
+                                      [typeaheadOptionsInScrollableView]="10"                                      
+                                      typeaheadGroupField="tipo"
                                       [typeaheadSingleWords]="false"
-                                      (typeaheadOnSelect)="onSelect($event)"                                  
-                                      class="form-control form-control-sm">
-                                      <label class="badge-light" for="txtPatologia">Patolog&iacute;a</label>
-
-                                    </span>  
+                                      (typeaheadOnSelect)="onSelect($event)"                                       
+                                      (keydown.enter)="onSearchEnter()"
+                                      (ngModelChange)="onInputChange()"                                      
+                                      class="form-control form-control-sm"
+                                  >
+                                  <span class="input-group-append"> 
+                                    <ng-template #popTemplatePatog>                                      
+                                      {{selectedOptionPatolog?.definicion}}
+                                      <br>
+                                      <a href="{{urlICD}}{{selectedOptionPatolog?.url}}" target="_blank">
+                                        <small className="text-muted">{{selectedOptionPatolog?.url}}</small>
+                                      </a>                                                                            
+                                    </ng-template>
+                                    <button type="button"                                       
+                                      [popover]="popTemplatePatog"
+                                      
+                                      popoverTitle="{{selectedOptionPatolog?.descripcion}}"
+                                      placement="right"
+                                      class="btn btn-primary btn-sm">
+                                      <i *ngIf="!loadingPatologia" class="fa fa-eye fa-sm"></i>
+                                      <img *ngIf="loadingPatologia" width="16px" height="16px" src="../../../../assets/img/loading.gif">
+                                    </button>
+                                    
+                                  </span>
+                                  <!-- Mostrar las sugerencias si la bandera showSuggestions es true -->
+                                  <div class="custom-list-container" *ngIf="showSuggestions && _patologias.length > 0">                                      
+                                    <ul class="custom-list-group">
+                                      <li class="custom-list-group-item"
+                                          *ngFor="let patologia of _patologias"
+                                          (click)="onSelectOption(patologia)">
+                                        <!-- Utiliza directamente las clases found y nonwbe en el mismo elemento li -->
+                                        <div class="found">{{ patologia.codigo_etica }}</div>
+                                        <div class="nonwbe" [innerHTML]="patologia.descripcion"></div>
+                                      </li>
+                                    </ul>
+                                  </div>
                                 </div>
                               </div>
-        
+                            </div><!--/.row 3-->
+                            <div class="row">        
                               <div class="col-sm-6">
                                 <div class="form-group">
                                   <span class="form-group has-float-label">                                                                       
@@ -318,7 +371,7 @@
                               </div>
                               <div class="form-group col-sm-3">
                                 <span class="form-group has-float-label">
-                                  <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtImc" [(ngModel)]="antropometria.imc" id="txtImc" placeholder="Indice Masa Corporal">
+                                  <input type="number" readonly [disabled]="soloLectura" class="form-control form-control-sm" name="txtImc" [(ngModel)]="antropometria.imc" id="txtImc" placeholder="Indice Masa Corporal">
                                   <label for="txtImc">IMC</label>
                                 </span>
                               </div>
@@ -383,7 +436,7 @@
                               <div class="col-md-6">
                                 <span class="form-group has-float-label">
                                   <textarea id="diagnostico" name="diagnostico" [disabled]="soloLectura" rows="2" [(ngModel)]="consultas.resultado_eva" class="form-control form-control-sm" placeholder="Diagnostico..."></textarea>
-                                  <label for="diagnostico">Diagn&oacute;stico</label>
+                                  <label for="diagnostico">Descripcion Diagn&oacute;stico</label>
                                 </span>
                               </div>
                             
@@ -409,8 +462,12 @@
                         <div class="card-body" (collapsed)="collapsed($event)" (expanded)="expanded($event)" [collapse]="isCollapsed_1" >
                           <div *ngIf="tipoUser!='PARAMEDICO' || soloLectura" class="card">
                             <div class="card-header">
-                              <strong>Referencias</strong>                              
-                            </div>                            
+                              <strong>Referencias</strong>
+                              <div class="card-header-actions">                            
+                                <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="arrayReferencias.length==0" (click)="planilla='referencia'; myModalPlanilla.show();" title="Imprimir Referencia"><i class="fa fa-print"></i></button>                              
+                              </div>
+                            </div>
+                                                        
                             <table class="table table-condensed" id="dataReferencias">
                               
                                 <tr>                                
@@ -442,7 +499,7 @@
                           </div>
                           <div class="card">                            
                             <div class="card-header">
-                              <strong>Medicamentos Aplicados</strong>                              
+                              <strong>Medicamentos Aplicados</strong>                                                            
                             </div>
                             <table class="table table-condensed" id="dataMedicamentosAplicados">                              
                                 <tr>                                
@@ -488,7 +545,10 @@
                           </div>
                           <div *ngIf="tipoUser!='PARAMEDICO' || soloLectura" class="card">                            
                             <div class="card-header">
-                              <strong>Recetario</strong>                              
+                              <strong>Recetario</strong>
+                              <div class="card-header-actions">                            
+                                <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="medicamentoIndicados.length==0" (click)="planilla='recipe'; myModalPlanilla.show();" title="Imprimir Recetario"><i class="fa fa-print"></i></button>                              
+                              </div>                              
                             </div>
                             <table class="table table-condensed" id="dataMedicamentosIndicados">
                               
@@ -532,13 +592,14 @@
                   <div *ngFor="let alert of alertsDismiss">
                     <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
                   </div>
-                  <label class="switch switch-label switch-pill switch-warning" tooltip="Requiere de Autorizaci&oacute;n">                    
-                    <input [disabled]="soloLectura" type="checkbox" name="chkAutorizacion" id="chkAutorizacion" class="switch-input" [(ngModel)]="autorizacion">
-                    <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-                  </label>
-
+                  <div *ngIf="preEmpleo">
+                    <label class="switch switch-label switch-pill switch-warning" tooltip="Requiere de Autorizaci&oacute;n">                    
+                      <input [disabled]="soloLectura" type="checkbox" name="chkAutorizacion" id="chkAutorizacion" class="switch-input" [(ngModel)]="autorizacion">
+                      <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
+                    </label>
+                  </div>
                   <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
-                  <button type="button" [disabled]="soloLectura" (click)="registrar()" class="btn btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar">Guardar</button>
+                  <button type="button" [disabled]="blockRegister" (click)="registrar()" class="btn btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar">Guardar</button>
                 </div>
               </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->
@@ -579,7 +640,15 @@
         </button>
       </div>
       <div class="modal-body">
-        <planilla-consulta [uidPaciente]="uidPaciente" ></planilla-consulta>
+        <div *ngIf="planilla=='consulta'">
+          <planilla-consulta [uidPaciente]="uidPaciente" ></planilla-consulta>
+        </div>
+        <div *ngIf="planilla=='recipe'">
+          <planilla-recipe [inIdConsulta]="consultas.uid" ></planilla-recipe>
+        </div>
+        <div *ngIf="planilla=='referencia'">
+          <planilla-referencia [inIdConsulta]="consultas.uid" ></planilla-referencia>
+        </div>
       </div>
                 
       <div class="modal-footer">

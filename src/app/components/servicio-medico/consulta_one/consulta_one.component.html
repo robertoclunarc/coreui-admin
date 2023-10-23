@@ -331,12 +331,11 @@
                 <tr>                                
                   <th scope="col"><input type="text" [disabled]="soloLectura" class="form-control form-control-sm" [(ngModel)]="referencia.especialidad"  name="txtEspecialidad" id="txtEspecialidad" placeholder="Referenciado a..."></th>
                   <th scope="col"><input type="text" [disabled]="soloLectura" class="form-control form-control-sm" [(ngModel)]="referencia.informe" name="txtInforme" id="txtInforme" placeholder="Descripcion de Referencia"></th>
-                  <th scope="col">                                  
-                  <button type="button" [disabled]="soloLectura" (click)="addReferencia(); pop.show() " #pop="bs-popover" class="btn btn-block btn-link"
-                        [popover]="alertaReferencia" [popoverTitle]="titleReferencia">
-                        <i class="fa fa-paperclip"></i>
-                  </button>
-                  
+                  <th scope="col">
+                    <button type="button" [disabled]="soloLectura" (click)="addReferencia(); pop.show() " #pop="bs-popover" class="btn btn-block btn-link"
+                          [popover]="alertaReferencia" [popoverTitle]="titleReferencia">
+                          <i class="fa fa-paperclip"></i>
+                    </button>
                   </th>
                 </tr>                              
                 <tr *ngFor="let ref of arrayReferencias; let i=index">                                
@@ -443,11 +442,11 @@
 
           <div class="container">
             <div class="row justify-content-md-center">
-              <div class="col-md-auto">
+              <div *ngIf="preEmpleo" class="col-md-auto">
                 <strong>Requiere de Autorizaci&oacute;n</strong>
               </div>
               <div class="col-md-auto">
-                <label class="switch switch-label switch-pill switch-warning" tooltip="Requiere de Autorizaci&oacute;n">                    
+                <label *ngIf="preEmpleo" class="switch switch-label switch-pill switch-warning" tooltip="Requiere de Autorizaci&oacute;n">                    
                   <input [disabled]="soloLectura" type="checkbox" name="chkAutorizacion" id="chkAutorizacion" class="switch-input" [(ngModel)]="autorizacion">
                   <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
                 </label>

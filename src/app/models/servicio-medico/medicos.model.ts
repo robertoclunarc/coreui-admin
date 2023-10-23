@@ -8,6 +8,7 @@ export interface IMedicos {
     nombre_ssst?: string;
     tipo_ssst?: string;
     login?: string;
+    titular?: boolean;
 }    
 
 export interface IParamedicos {

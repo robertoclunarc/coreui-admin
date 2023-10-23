@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { IPatologia } from '../../models/servicio-medico/patologias.model';
+import { Iicd } from "../../models/servicio-medico/icd.model";
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -11,8 +12,10 @@ import { environment } from '../../../environments/environment';
 })
 export class PatologiasService {
   patologia: IPatologia={};
+  icd: Iicd[]=[];
   
   private apiUrlPatologias : string = environment.apiUrlServMedico + 'patologias/';
+  private apiUrlIcd : string = environment.apiUrlServMedico + 'icd/';
 
   constructor(private http: HttpClient) { }
 
@@ -43,17 +46,24 @@ export class PatologiasService {
 			);
   }
   
-  consultaFilter(uid: number, descripcion: string, codigo: string) : Observable<IPatologia[]> { 
-    let parametrosUrl = uid + '/' + descripcion + '/' + codigo;
-    return this.http.get<IPatologia[]>(this.apiUrlPatologias + '/filtrar/' + parametrosUrl )
+  consultaFilter(uid: number, descripcion: string, codigo: string, estatus: boolean, tipo: string, view: number) : Observable<IPatologia[]> {
+    let parametrosUrl = `${uid}/${descripcion}/${codigo}/${estatus}/${tipo}/${view}`;
+    return this.http.get<IPatologia[]>(this.apiUrlPatologias + 'filtrar/' + parametrosUrl)
 			.pipe(
 			//	tap(result => console.log(`consultaFilter`)),
 				catchError(this.handleError)
 			);
   }
 
+  filterICD(reg: {query: string}) {
+    return this.http.post<Iicd[]>(this.apiUrlIcd + 'filter', reg).pipe(
+        tap(result => { this.icd = result; }),
+        catchError(this.handleError)
+    );
+  }
+
   registrar(reg: IPatologia) {
-    return this.http.post<IPatologia>(this.apiUrlPatologias + 'insertar', reg).pipe(
+    return this.http.post<IPatologia>(this.apiUrlPatologias + 'insert', reg).pipe(
         tap(result => { this.patologia = result; console.log(`patologia insertado`) }),
         catchError(this.handleError)
     );

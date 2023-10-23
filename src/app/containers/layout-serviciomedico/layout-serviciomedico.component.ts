@@ -7,6 +7,7 @@ import { MedicosService } from '../../services/servicio_medico/medicos.service';
 import { MenusService } from '../../services/servicio_medico/menu_serviciomedico.service';
 import { IUsuarios } from '../../models/servicio-medico/usuarios.model';
 import { ItotalAtenciones } from '../../models/servicio-medico/medicos.model';
+import { environment } from '../../../environments/environment';
  
 @Component({
   selector: 'app-layout-serviciomedico',
@@ -25,7 +26,7 @@ export class LayoutServicioMedicoComponent {
   totalesAtenciones: ItotalAtenciones[]=[];
   totalGlobalAtenciones: number;
   modoOscuro: boolean;
-  
+  nameSistem: string;
   constructor(
     private router: Router,
     private srvLoginService: LoginSecioMedicoService,
@@ -33,6 +34,7 @@ export class LayoutServicioMedicoComponent {
     private srvMedicos: MedicosService,
     private srvMenuServicioMedico: MenusService,
     ) {
+        this.nameSistem = environment.nameSistema;
         if (this.nroMensajes>0)
           this.claseMensaje="badge badge-pill badge-danger";
         else
@@ -44,10 +46,11 @@ export class LayoutServicioMedicoComponent {
             srvConsultaMedica.consultasCount(this.user.login).toPromise().then(resutl => { this.totalAtenciones=resutl});        
             this.sistemaActual=sessionStorage.sistemaActual;        
             
-            this.imagenUser= 'assets/img/avatars/' + this.user.login + '.bmp';
+            this.imagenUser= this.user.login ? `assets/img/avatars/${this.user.login}.bmp` : "";
             
-            if (this.imageExists(this.imagenUser)==false)
-              this.imagenUser= 'assets/img/avatars/desconocido.png';
+            if (this.imagenUser!=="")
+              if (this.imageExists(this.imagenUser)==false)
+                this.imagenUser= 'assets/img/avatars/desconocido.png';
 
             this.srvMedicos.contadorAtenciones()
             .toPromise()
@@ -70,7 +73,7 @@ export class LayoutServicioMedicoComponent {
 
   ngOnInit(): void {
     this.navItems = [];
-
+    
     if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
       sessionStorage.setItem('modoOscuro', "Off");
       sessionStorage.setItem('classTable', "table table-striped");
@@ -91,9 +94,9 @@ export class LayoutServicioMedicoComponent {
   private async menusUsuarioServicioMedico(user: string) {    
 		return await this.srvMenuServicioMedico.menusUser(user)
 			.toPromise()
-      .then(results => {				
-				this.navItems = results;				
-			})			
+      .then(results => {
+				this.navItems = results;
+			})
 			.catch(err => { console.log(err) });
 	}
 
@@ -127,7 +130,7 @@ export class LayoutServicioMedicoComponent {
 
   Logout(){
     this.srvLoginService.logout();
-    this.router.navigate(["login"]);
+    this.router.navigate(["serviciomedico/login"]);
   }
 
   imageExists(url): boolean {

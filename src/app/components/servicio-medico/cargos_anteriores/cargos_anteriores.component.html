@@ -5,7 +5,7 @@
     <form action="" method="post" class="form-horizontal">
       <div class="card-body">                 
         <table class="table table-condensed" id="dataReferencias">                              
-          <tr>                                
+          <tr>            
             <th scope="col">Cargo</th>
             <th scope="col">Actividad Lab. y/o Area de Desempeño</th>
             <th scope="col">Desde</th>
@@ -13,19 +13,19 @@
             <th scope="col">Riesgo y/o Proceso Peligroso Expuesto</th>
             <th scope="col">Add+</th>
           </tr>
-          <tr>                                
+          <tr>
             <th scope="col"><input type="text" class="form-control form-control-sm" [(ngModel)]="cargoAnterior.cargo"   name="txtCargo" id="txtCargo" #txtCargo placeholder="Cargo"></th>
             <th scope="col"><input type="text" class="form-control form-control-sm" [(ngModel)]="cargoAnterior.actividad_laboral" name="txtActividad" #txtActividad id="txtActividad" placeholder="Actividad"></th>
             <th scope="col"><input type="date" class="form-control form-control-sm" [(ngModel)]="cargoAnterior.desde"  name="txtDesde" id="txtDesde" #txtDesde placeholder="Inicio"></th>
             <th scope="col"><input type="date" class="form-control form-control-sm" [(ngModel)]="cargoAnterior.hasta"  name="txtHasta" id="txtHasta" #txtHasta placeholder="Fin"></th>
             <th scope="col"><input type="text" class="form-control form-control-sm" [(ngModel)]="cargoAnterior.riesgos"  name="txtRiesgo" id="txtRiesgo" placeholder="Riesgos"></th>
-            <th scope="col">              
+            <th scope="col">
               <button title="Registrar Cargo" type="button" class="btn btn-pill btn-block btn-success" (click)="guardar()">
                 <i class="fa fa-paperclip"></i>
               </button>
             </th>
-          </tr> 
-          <tr *ngFor="let ref of cargosAnteriores; let i=index">                                
+          </tr>
+          <tr *ngFor="let ref of cargosAnteriores; let i=index">
             <th><i class="fa fa-paperclip"></i> {{ref.cargo}}</th>
             <th>{{ref.actividad_laboral}}</th>
             <th>{{ref.desde | date:'dd-MM-yyyy'}}</th>

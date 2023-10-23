@@ -16,11 +16,11 @@
                     <div class="col-md-6">
                       <div class="input-group">                            
                         <span class="input-group-prepend">
-                        <button [disabled]="soloLectura" type="button"                                      
-                            (click)="buscarPaciente()"                      
-                            class="btn btn-primary btn-sm">
-                            <i class="fa fa-search"></i> 
-                            Paciente
+                          <button [disabled]="soloLectura" type="button"
+                              (click)="buscarPaciente()"                      
+                              class="btn btn-primary btn-sm">
+                              <i class="fa fa-search"></i> 
+                              Paciente
                           </button>
                         </span>
                         <input type="text" id="txtCi" name="txtCi" [(ngModel)]="protocoloObj.paciente.ci" [disabled]="soloLectura" (keyup.enter)="buscarPaciente()" class="form-control form-control-sm" placeholder="Cedula Trabajador">                    
@@ -96,7 +96,7 @@
                   <div class="row">
                     <div class="col-md-12">
                       <span class="form-group has-float-label">                                  
-                        <textarea id="txtReferencia" [disabled]="soloLectura" name="txtReferencia" [(ngModel)]="protocoloObj.protocolo.referencia" rows="2"  class="form-control form-control-sm" placeholder="Referencia"></textarea>
+                        <textarea id="txtReferencia" [disabled]="soloLectura" name="txtReferencia" [(ngModel)]="protocoloObj.protocolo.referecia" rows="2"  class="form-control form-control-sm" placeholder="Referencia"></textarea>
                         <label for="txtReferencia">Referencia</label>
                       </span>
                     </div>
@@ -145,60 +145,87 @@
                     </div>
                   </div>
                 </div>
+                <div *ngFor="let alert of alertsDismiss">
+                  <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+                </div>
+                <div class="card-footer">
+      
+                  <button type="button" [disabled]="soloLectura" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
+                  <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-eraser"></i> Reset</button>
+                  <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-success" (click)="imprimir(); myModalPlanilla.show();"><i class="fa fa-file-pdf-o"></i> Imprimir</button>
+                </div>
               </div>
             </div>
           </tab>
 
           <tab>
-            <ng-template tabHeading><i class="icon-note"></i> Riesgo General &nbsp;</ng-template>          
+            <ng-template tabHeading><i class="fa fa-medkit"></i> Riesgo General</ng-template>          
             <div class="col-lg-12">
-              <div class="card">
-                <div class="card-body">
-
-                  <div *ngFor="let eva of arrayEvaluaciones; let i=index">
-                    
-                      <div *ngIf="(eva.evaluaciones.tipoindice==1)" class="input-group mb-3">
-                        
-                        <span class="input-group-text" style="width : 600px" >{{eva.evaluaciones.descripcion_evaluacion}}</span>&nbsp;
-
-                        <label class="switch switch-label switch-pill switch-warning">                    
-                          <input [disabled]="soloLectura" type="checkbox" [name]="'chkResp_' + eva.evaluaciones.indice"  class="switch-input" >
-                          <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-                        </label>
-                        &nbsp;
-                        <div class="form-group">
-                          <span class="form-group has-float-label">                                                                    
-                            <input type="text" class="form-control form-control-sm" [name]="'obs_' + eva.evaluaciones.indice" placeholder="Observacion">
-                            <label class="badge-light" for="'obs_' + eva.evaluaciones.indice">Observacion</label>
-                          </span>
-                        </div>
-                        <!--
-                        <div *ngFor="let pos of eva.posibles_resp; let j=index">
-                          
-                          <div class="input-group-prepend">
-                            <span class="input-group-text" style="width : 300px" >{{pos.posible_resp}}</span>
-                          </div>
-                          <input type="text" placeholder="Respuesta" maxlength="15" [name]="'resp_' + pos.index"  [(ngModel)]="habitosPacientes[i].resp"  class="form-control">                               
-                      
-                        </div>
-                        -->
-                      </div>
-                    </div>                  
-
-                </div>
-              </div>  
+              <app-riesgo-general-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-riesgo-general-one>               
             </div>
-          </tab> 
-
+          </tab>
+          <tab><!--<i class="icon-note"></i>-->
+            <ng-template tabHeading><i class="fa fa-plus-square"></i> Riesgo Metabolico</ng-template>          
+            <div class="col-lg-12">              
+              <app-riesgos-metabolicos-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-riesgos-metabolicos-one>
+            </div>
+          </tab>
+          <tab>
+            <ng-template tabHeading><i class="fa fa-thermometer"></i> Enfermedad Actual</ng-template>          
+            <div class="col-lg-12">              
+              <app-enfermedad-actual-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-enfermedad-actual-one>
+            </div>
+          </tab>
+          <tab>
+            <ng-template tabHeading><i class="fa fa-hospital-o"></i> Ultimo Chequeo</ng-template>          
+            <div class="col-lg-12">              
+              <app-ultimo-chequeo-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-ultimo-chequeo-one>
+            </div>
+          </tab>
+          <tab>
+            <ng-template tabHeading><i class="fa fa-stethoscope"></i> Examen Fisico</ng-template>          
+            <div class="col-lg-12">              
+              <app-examen-fisico-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-examen-fisico-one>
+            </div>
+          </tab>
+          <tab>
+            <ng-template tabHeading><i class="fa fa-heartbeat"></i> Auscultacion</ng-template>          
+            <div class="col-lg-12">              
+              <app-auscultacion-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-auscultacion-one>
+            </div>
+          </tab>
+          <tab>
+            <ng-template tabHeading><i class="icon-chemistry icons "></i> Est. Laboratorio</ng-template>          
+            <div class="col-lg-12">              
+              <app-estudios-laboratorio-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-estudios-laboratorio-one>
+            </div>
+          </tab>
+          <tab>
+            <ng-template tabHeading><i class="icon-note"></i> Compromisos</ng-template>          
+            <div class="col-lg-12">              
+              <app-compromisos-one [inIDPaciente]="protocoloObj.paciente.uid_paciente" [inIDProtocolo]="protocoloObj.protocolo.idprotocolo" [nuevo]="nuevo"></app-compromisos-one>
+            </div>
+          </tab>
         </tabset>  
       </form>
     </div>
-    <div class="card-footer">
-      
-      <button type="button" [disabled]="soloLectura" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
-      <button [disabled]="soloLectura" type="submit" class="btn btn-sm btn-danger" (click)="reset()"><i class="fa fa-dot-circle-o"></i> Reset</button>
-      <div *ngFor="let alert of alertsDismiss">
-        <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
-      </div>
-    </div>
+    
   </div>
+  <div bsModal #myModalPlanilla="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalPlanilla" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content modal-secondary" >
+        <div class="modal-header"><strong>Vista Preliminar</strong>
+          <button type="button" class="close" (click)="myModalPlanilla.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div *ngIf="impIDProtocolo!='-1' && impIDProtocolo!=undefined" class="modal-body">
+          <planilla-protocolo-endocrino [inCiPaciente]="impCiPaciente" [inIDProtocolo]="impIDProtocolo" ></planilla-protocolo-endocrino>
+        </div>
+                  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="myModalPlanilla.hide()">Close</button>      
+        </div>
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->

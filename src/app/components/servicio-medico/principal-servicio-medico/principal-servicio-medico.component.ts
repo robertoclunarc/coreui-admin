@@ -4,7 +4,7 @@ import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { ConsultasService  } from '../../../services/servicio_medico/consultas.service';
 import { VarioService  } from '../../../services/servicio_medico/varios.service';
 import { MedicosService } from '../../../services/servicio_medico/medicos.service';
-import { ItotalAtenciones } from '../../../models/servicio-medico/medicos.model';
+import { IMedicos, ItotalAtenciones } from '../../../models/servicio-medico/medicos.model';
 import { formatDate } from '@angular/common';
 
 @Component({
@@ -28,10 +28,11 @@ export class PrincipalServicioMedicoComponent implements OnInit {
   cantMotivos3: number=0;
   countMotivos4: number=0;
   cantMotivos4: number=0;
-  loginHtml1: string='brismd';
-  loginHtml2: string='brismd';
-  loginHtml3: string='brismd';
-  loginHtml4: string='brismd';
+  loginHtml1: string="brismd";
+  loginHtml2: string="brismd";
+  loginHtml3: string="brismd";
+  loginHtml4: string="brismd";
+  loginDrTitular: IMedicos;
   constructor(
     private srvConsultas: ConsultasService,
     private srvVarios: VarioService,
@@ -45,6 +46,9 @@ export class PrincipalServicioMedicoComponent implements OnInit {
       this.mainChartData2.push(this.random(80, 100));
       this.mainChartData3.push(65);
     }*/
+    this.loginDrTitular = await this.srvMedicos.medicoTitular();
+    this.loginHtml1= this.loginDrTitular.login;    
+    
     await this.llenarArrayMedicos('PARAMEDICO');
     await this.llenarArrayMotivos();
     this.llenarArrayMotivosDelanio();
@@ -60,10 +64,14 @@ export class PrincipalServicioMedicoComponent implements OnInit {
       .then(async result => 
         {
           for await (let s of result ){
-            if (formatFecha==="y")
+            if (formatFecha==="y"){
               this.mainChartLabels.push(formatDate(s.fecha, formatFecha, 'en'));
-            else  
-              this.mainChartLabels.push(s.dia + ' ' + formatDate(s.fecha, formatFecha, 'en'));
+            }
+            else{
+              const formatoDate: string = s.dia + ' ' + formatDate(s.fecha, formatFecha, 'en');
+              
+              this.mainChartLabels.push(formatoDate);
+            }
             this.mainChartFecha.push(s.fecha);
           }
         }
@@ -82,7 +90,14 @@ export class PrincipalServicioMedicoComponent implements OnInit {
 		return await this.srvConsultas.consultasPorMotivos()
 			.toPromise()
       .then(result => 
-        {this.arrayMotivos= result}
+        {
+          this.arrayMotivos= result;
+          if (result.length<4){
+            for(let i = result.length; i<4; i++){
+              this.arrayMotivos.push({descripcion: null, id_motivo: null, totalmotivos: 0})
+            }
+          }
+        }
       )			
 			.catch(err => { console.log(err) });
 	}
@@ -115,12 +130,12 @@ export class PrincipalServicioMedicoComponent implements OnInit {
           
           this.inicioMainGraf=formatDate(result[0].fecha, 'yyyy-MM-dd', 'en');
           this.finMainGraf=formatDate(result[result.length - 1].fecha, 'yyyy-MM-dd', 'en');
-
-          await this.generarSerie(this.inicioMainGraf, this.finMainGraf, '1 day', 'DY', 'dd-mm-YYYY');
+          
+          await this.generarSerie(this.inicioMainGraf, this.finMainGraf, '1 day', 'DY', 'dd-MM-YYYY');
           afeccionesAll = await this.afeccionesAll('30 day');
-          afecciones.push(afeccionesAll[0].fkafeccion);
-          afecciones.push(afeccionesAll[1].fkafeccion);
-          afecciones.push(afeccionesAll[2].fkafeccion);
+          for (let i = 0; i < afeccionesAll.length; i++){
+            afecciones.push(afeccionesAll[i].fkafeccion);            
+          }
           /*afecciones= result.map(item => item.fkafeccion)
           .filter((value, index, self) => self.indexOf(value) === index)*/// esto hace lo mismo que un select disctinct pero con un array
           
@@ -423,10 +438,10 @@ export class PrincipalServicioMedicoComponent implements OnInit {
     this.lineChart3Data=[];
     this.barChart1Data=[];
     
-    this.totallineChart1Data= this.arrayMotivos[0].totalmotivos;
-    this.totallineChart2Data= this.arrayMotivos[1].totalmotivos;
-    this.totallineChart3Data=this.arrayMotivos[2].totalmotivos;
-    this.totalbarChart1Data= this.arrayMotivos[3].totalmotivos;
+    this.totallineChart1Data= this.arrayMotivos[0].totalmotivos == undefined ? 0 : this.arrayMotivos[0].totalmotivos;
+    this.totallineChart2Data= this.arrayMotivos[1].totalmotivos == undefined ? 0 : this.arrayMotivos[1].totalmotivos;    
+    this.totallineChart3Data= this.arrayMotivos[2].totalmotivos == undefined ? 0 : this.arrayMotivos[2].totalmotivos;
+    this.totalbarChart1Data= this.arrayMotivos[3].totalmotivos == undefined ? 0 : this.arrayMotivos[3].totalmotivos;
     
     this.desclineChart1Data= this.arrayMotivos[0].descripcion;
     this.desclineChart2Data= this.arrayMotivos[1].descripcion;
@@ -498,7 +513,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
     let arrayMotivosMedicosData: number[]=[];
     let cantMotivos: number=0;
     this.brandBoxChartData1 = [];
-    let loginDr: string= 'matoln';
+    let loginDr: string= this.loginDrTitular.login;
     await this.srvConsultas.countAtencionPorMotivosMedicos(loginDr, 'MEDICO')
 			.toPromise()
       .then(async result => 

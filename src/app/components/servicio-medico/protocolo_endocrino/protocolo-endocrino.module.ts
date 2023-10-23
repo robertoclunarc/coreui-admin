@@ -11,7 +11,17 @@ import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
 import { AlertModule } from 'ngx-bootstrap/alert';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { protocoloEndocrinoOneComponent } from '../protocolo_endocrino_one/protocolo-endocrino-one.component';
+import { protocoloEndocrinoOneComponent } from '../protocolo_endocrino_one/protocolo-endocrino-one/protocolo-endocrino-one.component';
+import { RiesgoGeneralOneComponent } from '../protocolo_endocrino_one/riesgo-general-one/riesgo-general-one.component';
+import { RiesgosMetabolicosOneComponent } from '../protocolo_endocrino_one/riesgos-metabolicos-one/riegos-metabolicos-one.component';
+import { EnfermedadActualOneComponent } from '../protocolo_endocrino_one/enfermedad-actual/enfermedad-actual-one.component';
+import { UltimoChequeoOneComponent } from '../protocolo_endocrino_one/ultimo-chequeo-one/ultimo-chequeo-one.component';
+import { ExamenFisicoOneComponent } from '../protocolo_endocrino_one/examen-fisico-one/examen-fisico-one.component';
+import { auscultacionOneComponent } from '../protocolo_endocrino_one/auscultacion-one/auscultacion-one.component';
+import { EstudiosLaboratorioOneComponent } from '../protocolo_endocrino_one/estudios-laboratorio-one/estudios-laboratorio-one.component';
+import { CompromisosOneComponent } from '../protocolo_endocrino_one/compromisos-one/compromisos-one.component';
+import { planillaProtocoloEndocrinoComponent } from '../planillas/planilla_protocolo/planilla-protocolo-endrocrino.component';
+import { NgxPrintModule } from 'ngx-print';
 
 @NgModule({
   imports: [
@@ -23,13 +33,22 @@ import { protocoloEndocrinoOneComponent } from '../protocolo_endocrino_one/proto
     ModalModule.forRoot(),    
     TypeaheadModule.forRoot(),
     AlertModule.forRoot(),
-    
+    NgxPrintModule
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
   declarations: [
     
     ProtocoloEndocrinoComponent,
-    protocoloEndocrinoOneComponent
+    protocoloEndocrinoOneComponent,
+    RiesgoGeneralOneComponent,
+    RiesgosMetabolicosOneComponent,
+    EnfermedadActualOneComponent,
+    UltimoChequeoOneComponent,
+    ExamenFisicoOneComponent,
+    auscultacionOneComponent,
+    EstudiosLaboratorioOneComponent,
+    CompromisosOneComponent,
+    planillaProtocoloEndocrinoComponent
   ]
 })
 export class ProtocoloEndocrinoModule { }

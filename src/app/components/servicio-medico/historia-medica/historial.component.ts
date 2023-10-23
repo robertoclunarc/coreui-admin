@@ -21,11 +21,12 @@ import { IHistoria_medica, IHistoria_paciente } from '../../../models/servicio-m
   styleUrls: ["historial.component.css"]             
 })
 export class HistoriaMedicaComponent  implements OnInit  {  
-
+  
   private user: IUsuarios={};
   private tipoUser: string;    
   itemsConsulta: number;
   itemCargos: number;
+  itemCargosOtras: number;
   itemAntecedentes: number;
   itemOcupaciones: number;
   itemExamenFuncionalA: number;
@@ -42,7 +43,7 @@ export class HistoriaMedicaComponent  implements OnInit  {
   uidPaciente: string;
   soloLectura: boolean=false;
   private alertsDismiss: any = [];  
-
+  modal: string="";
   constructor(
     private router: Router, 
     private srvHistorias: HistoriaService,   
@@ -129,6 +130,10 @@ export class HistoriaMedicaComponent  implements OnInit  {
 
   outputEmiterItemsCargos(total:number){
     this.itemCargos=total;
+  }
+
+  outputEmiterItemsCargosOtras(total:number){
+    this.itemCargosOtras=total;
   }
 
   outputEmiterItemsAntecedentes(total:number){

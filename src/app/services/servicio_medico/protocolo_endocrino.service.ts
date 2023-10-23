@@ -40,13 +40,9 @@ export class ProtocolosEndocrinosService {
 			
   }
 
-  respuestasPacientesEvalEndocrino(fkPaciente: string, fkProtocolo: string) : Observable<IRespuestas_pacientes_eval_endocrino[]> { 
+  async respuestasPacientesEvalEndocrino(fkPaciente: string, fkProtocolo: string, tipoindice: number) : Promise<IRespuestas_pacientes_eval_endocrino[]> { 
 
-    return this.http.get<IRespuestas_pacientes_eval_endocrino[]>(this.apiUrlProtocolo + `consultar/respuestas/${fkPaciente}/${fkProtocolo}` )
-			.pipe(
-			//	tap(result => console.log(`respuestasPacientesEvalEndocrino`)),
-				catchError(this.handleError)
-			);
+    return await this.http.get<IRespuestas_pacientes_eval_endocrino[]>(this.apiUrlProtocolo + `consultar/respuestas/${fkPaciente}/${fkProtocolo}/${tipoindice}`).toPromise();
   }
   
   async consultaFilter(filtro: filtroProtoEndocrino) : Promise<IvProtocoloEndrocrinos[]> { 
@@ -55,7 +51,21 @@ export class ProtocolosEndocrinosService {
 			/*.pipe(
 			//	tap(result => console.log(`consultaFilter`)),
 				catchError(this.handleError)
+		
+        );*/
+  }
+  async vistaProtocolosEndrocrinos(filtro: filtroProtoEndocrino) : Promise<IvProtocoloEndrocrinos[]> { 
+    let parametrosUrl = `${filtro.ciPaciente}/${filtro.idProtocolo}/${filtro.fechaIni}/${filtro.fechaFin}/${filtro.medico}/${filtro.uidPaciente}/${filtro.condlogica}`;
+    return this.http.get<IvProtocoloEndrocrinos[]>(this.apiUrlProtocolo + 'filtrar/vista/' + parametrosUrl ).toPromise();
+			/*.pipe(
+			//	tap(result => console.log(`consultaFilter`)),
+				catchError(this.handleError)
 			);*/
+  }
+
+  async ultimaEvaluacion(idPaciente: string,  tipoIndice: number) : Promise<{ultimoprotocolo: number}> { 
+    let parametrosUrl = `${this.apiUrlProtocolo}ultima-evaluacion/${idPaciente}/${tipoIndice}`;
+    return await this.http.get<{ultimoprotocolo: number}>(parametrosUrl).toPromise();
   }
 
   createRecordProtocoloEndocrino(reg: IProtocolosEndrocrinos) {
@@ -66,14 +76,14 @@ export class ProtocolosEndocrinosService {
   }
 
   createRecordRespProtEndocrino(reg: IRespuestas_pacientes_eval_endocrino) {
-    return this.http.post<IRespuestas_pacientes_eval_endocrino>(this.apiUrlProtocolo + 'insertar', reg).pipe(
+    return this.http.post<IRespuestas_pacientes_eval_endocrino>(this.apiUrlProtocolo + 'insertar/respuesta', reg).pipe(
         tap(result => { this.protocolo = result; console.log(`Protocolo insertado`) }),
         catchError(this.handleError)
     );
   }
 
   updateRecordRespProtEndocrino(reg: IRespuestas_pacientes_eval_endocrino) {
-    const url = `${this.apiUrlProtocolo}update/respuesta/${reg.idresp}`;
+    const url = `${this.apiUrlProtocolo}update/respuesta/${reg.fkprotocolo}`;
 
     return this.http.put(url, reg).pipe(
         tap(result => {
@@ -83,8 +93,8 @@ export class ProtocolosEndocrinosService {
   }
 
   updateRecordProtocoloEndocrino(reg: IProtocolosEndrocrinos) {
+    
     const url = `${this.apiUrlProtocolo}update/${reg.idprotocolo}`;
-
     return this.http.put(url, reg).pipe(
         tap(result => {
         }),
@@ -102,8 +112,8 @@ export class ProtocolosEndocrinosService {
     );
   }
 
-  deleteRecordRespProtEndocrino(id: number) {
-    const url = `${this.apiUrlProtocolo}delete/respuesta/${id}`;
+  deleteRecordRespProtEndocrino(id: number, tipoindice: number) {
+    const url = `${this.apiUrlProtocolo}delete/respuesta/${id}/${tipoindice}`;
 
     return this.http.delete(url).pipe(
         tap(result => {
