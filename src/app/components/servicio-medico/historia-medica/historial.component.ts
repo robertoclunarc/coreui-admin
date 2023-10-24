@@ -42,7 +42,7 @@ export class HistoriaMedicaComponent  implements OnInit  {
   paciente: IvPaciente={};
   uidPaciente: string;
   soloLectura: boolean=false;
-  private alertsDismiss: any = [];  
+  alertsDismiss: any = [];  
   modal: string="";
   constructor(
     private router: Router, 

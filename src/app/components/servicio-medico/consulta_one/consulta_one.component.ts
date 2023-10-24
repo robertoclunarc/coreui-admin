@@ -141,10 +141,10 @@ export class ConsultaOneComponent implements OnChanges {
         this.tipoUser= sessionStorage.tipoUser;
       }
       else {
-        this.router.navigate(["serviciomedico/login"]);
+        this.router.navigate(["login"]);
       }
     }else{
-      this.router.navigate(["serviciomedico/login"]);
+      this.router.navigate(["login"]);
     }    
     
     this.uidConsulta = this.route.snapshot.paramMap.get("uidConsulta")==undefined? this.uidConsulta.toString(): this.route.snapshot.paramMap.get("uidConsulta");    

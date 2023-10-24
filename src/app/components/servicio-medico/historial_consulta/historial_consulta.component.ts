@@ -38,7 +38,8 @@ export class HistorialConsultasComponent implements OnChanges {
   uidPaciente: string;
   fechaIni: string;
   fechaFin: string
-  sliceIndex: number;  
+  sliceIndex: number;
+  public classTable: string;
   private morbilidad: IvMorbilidad[]=[];
   returnedArray: IvMorbilidad[]=[];
   private user: IUsuarios={};
@@ -57,6 +58,15 @@ export class HistorialConsultasComponent implements OnChanges {
   //currentPager: number   = 5;  
 
   async ngOnChanges() {
+    
+    if (sessionStorage.modoOscuro===undefined || sessionStorage.modoOscuro==='Off'){
+      this.classTable = "table table-striped";      
+    }
+    else { 
+      this.classTable = sessionStorage.classTable;
+      
+    }
+
     if (sessionStorage.currentUser){  
 
       this.user=JSON.parse(sessionStorage.currentUser);

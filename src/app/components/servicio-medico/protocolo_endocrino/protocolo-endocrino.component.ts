@@ -29,7 +29,7 @@ export class ProtocoloEndocrinoComponent  implements OnInit {
   private nuevo: boolean = false;
   paciente: IPaciente={};  
   soloLectura: boolean;
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
   searchText: string='';
   classTable: string;
   classButton: string;

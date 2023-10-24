@@ -25,7 +25,7 @@ export class MaestroHistoriasComponent  implements OnInit  {
   
   medico: IHistoriaGral={};  
   soloLectura: boolean;
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
   searchText: string='';
   classTable: string;
   classButton: string;

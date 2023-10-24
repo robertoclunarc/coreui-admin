@@ -4,38 +4,38 @@
     </div>
     <form action="" method="post" class="form-horizontal">
       <div class="card-body">                 
-        <table class="table table-sm" id="dataReferencias"> 
+        <table class="{{ classTable }} table-hover table-sm table-responsive" id="dataReferencias">    
           <thead *ngIf="returnedArray.length>0">                            
             <tr>                                
-              <th *ngFor="let col of columnas | slice:sliceIndex; let i = index;" scope="col">{{ col }}</th>            
+              <th  style="font-size: 0.7rem;" *ngFor="let col of columnas | slice:sliceIndex; let i = index;" scope="col">{{ col }}</th>            
             </tr>
           </thead>
           <tr *ngFor="let mor of returnedArray; let i = index;">                                            
-            <td *ngIf="sliceIndex==0">{{mor.ci}}</td>
-            <td *ngIf="sliceIndex==0">{{mor.nombre_completo}}</td>
+            <td style="font-size: 0.7rem;" *ngIf="sliceIndex==0">{{mor.ci}}</td>
+            <td style="font-size: 0.7rem;" *ngIf="sliceIndex==0">{{mor.nombre_completo}}</td>
             <td><button type="button" title="Ver Consulta: {{mor.uid}}"   
               (click)="irConsulta(mor.uid); primaryModal.show();" 
               class="btn btn-block btn-link">
               <i class="icon-eye"></i>
             </button></td>          
-            <td>{{mor.cargo}}</td>
-            <td>{{mor.nombres_jefe}}</td>
-            <td>{{mor.area}}</td>            
-            <td>{{mor.fecha  | date:'yyyy-MM-dd HH:mm'}}</td>
-            <td>{{mor.motivo}}</td>
-            <td>{{mor.resultado_eva}}</td>
-            <td>{{mor.descripcion_afeccion}}</td>
-            <td>{{mor.motivo_consulta}}</td>
-            <td>{{mor.aplicacion}}</td>
-            <td>{{mor.talla}}</td>
-            <td>{{mor.peso}}</td>
-            <td>{{mor.imc}}</td>
-            <td>{{mor.edad.years}}A {{mor.edad.months}}M</td>
-            <td>{{mor.direccion_hab}}</td>
-            <td>{{mor.mano_dominante}}</td>
-            <td>{{mor.sexo}}</td>
-            <td>{{mor.medico}}</td>                      
-            <td>{{mor.paramedico}}</td>            
+            <td style="font-size: 0.7rem;">{{mor.cargo}}</td>
+            <td style="font-size: 0.7rem;">{{mor.nombres_jefe}}</td>
+            <td style="font-size: 0.7rem;">{{mor.area}}</td>            
+            <td style="font-size: 0.7rem;">{{mor.fecha  | date:'yyyy-MM-dd HH:mm'}}</td>
+            <td style="font-size: 0.7rem;">{{mor.motivo}}</td>
+            <td style="font-size: 0.7rem;">{{mor.resultado_eva}}</td>
+            <td style="font-size: 0.7rem;">{{mor.descripcion_afeccion}}</td>
+            <td style="font-size: 0.7rem;">{{mor.motivo_consulta}}</td>
+            <td style="font-size: 0.7rem;">{{mor.aplicacion}}</td>
+            <td style="font-size: 0.7rem;">{{mor.talla}}</td>
+            <td style="font-size: 0.7rem;">{{mor.peso}}</td>
+            <td style="font-size: 0.7rem;">{{mor.imc}}</td>
+            <td style="font-size: 0.7rem;">{{mor.edad.years}}A {{mor.edad.months}}M</td>
+            <td style="font-size: 0.7rem;">{{mor.direccion_hab}}</td>
+            <td style="font-size: 0.7rem;">{{mor.mano_dominante}}</td>
+            <td style="font-size: 0.7rem;">{{mor.sexo}}</td>
+            <td style="font-size: 0.7rem;">{{mor.medico}}</td>                      
+            <td style="font-size: 0.7rem;">{{mor.paramedico}}</td>            
              
           </tr>                              
         </table>            

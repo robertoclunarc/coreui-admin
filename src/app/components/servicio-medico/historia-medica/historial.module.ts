@@ -28,20 +28,18 @@ import { PacientesHistoriaComponent } from '../paciente-historia/pacientes.compo
 import { planillaHistoriaComponent } from '../planillas/planilla_historia/planilla-historia.component';
 import { CargosOtrasEmpresasComponent } from '../cargos_otras_empresas/cargos_otras_empresas.component';
 import { planillaAutorizacion } from '../planillas/planilla_autorizacion/planilla_autorizacion.component';
+import { CollapseModule } from 'ngx-bootstrap/collapse';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     HistoriaMedicaRoutingModule,    
-    TabsModule,PaginationModule.forRoot(), ModalModule.forRoot(),
-    //HistorialConsultasComponent,    
-    PopoverModule.forRoot(),    
-    //TooltipModule.forRoot(),
-    //ModalModule.forRoot(),    
+    TabsModule,PaginationModule.forRoot(), ModalModule.forRoot(),    
+    PopoverModule.forRoot(),      
     TypeaheadModule.forRoot(),
     AlertModule.forRoot(),
-    //PacientesModule
+    CollapseModule.forRoot(),
   ],
   
   declarations: [

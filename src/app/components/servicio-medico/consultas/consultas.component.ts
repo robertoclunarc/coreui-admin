@@ -263,7 +263,7 @@ export class ConsultasComponent  implements OnInit  {
 			.catch(err => { console.log(err) });
 	}
   
-  private async llenarArrayConsultas(conFechaActual?: boolean) {
+  async llenarArrayConsultas(conFechaActual?: boolean) {
     this.searchText = conFechaActual ? formatDate(Date.now(), 'yyyy-MM-dd', this.locale) : "";
     this.limpiarFiltro();
     this.buscarConsulta.fecha = conFechaActual ? this.searchText : 'null';
