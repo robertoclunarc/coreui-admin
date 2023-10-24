@@ -1,21 +1,20 @@
 {
-  "name": "@coreui/coreui-free-angular-admin-template",
+  "name": "coreui-admin",
   "version": "2.11.2",
   "description": "CoreUI Free Angular 11 Admin Template",
   "author": {
-    "name": "Łukasz Holeczek",
-    "url": "http://holeczek.pl",
-    "github": "https://github.com/mrholek",
-    "twitter": "https://twitter.com/lukaszholeczek"
+    "name": "Ing. Roberto Lunar",
+    "url": "https://github.com/robertoclunarc",
+    "github": "https://github.com/robertoclunarc/coreui-admin"    
   },
   "contributors": [
     {
-      "name": "Andrzej Kopański",
-      "url": "https://github.com/xidedix"
+      "name": "Roberto Lunar",
+      "url": "https://github.com/robertoclunarc"
     }
   ],
   "homepage": "https://coreui.io/angular",
-  "copyright": "Copyright 2021 creativeLabs Łukasz Holeczek",
+  "copyright": "Copyright 2021 creativeLabs Roberto Lunar",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
