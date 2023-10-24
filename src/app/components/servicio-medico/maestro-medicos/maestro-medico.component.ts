@@ -24,7 +24,7 @@ export class MaestroMedicoComponent  implements OnInit  {
   private nuevo: boolean = false;
   medico: IMedicosParamedicos={};  
   soloLectura: boolean;
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
   searchText: string='';
   classTable: string;
   classButton: string;

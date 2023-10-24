@@ -24,7 +24,7 @@ export class MaestroPacienteComponent  implements OnInit  {
   private nuevo: boolean = false;
   paciente: IvPaciente={};  
   soloLectura: boolean;
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
   searchText: string='';
   classTable: string;
   classButton: string;

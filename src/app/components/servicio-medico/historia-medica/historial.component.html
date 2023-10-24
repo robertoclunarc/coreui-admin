@@ -106,7 +106,7 @@
                 <div *ngFor="let alert of alertsDismiss">
                   <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
                 </div>
-                <button type="button" [disabled]="soloLectura" (click)="registrar()" class="btn btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar">Guardar</button>   
+                <button type="button" [disabled]="soloLectura" (click)="registrar()" class="btn btn-primary">Guardar</button>   
               </div>
             </div>
           </div>

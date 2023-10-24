@@ -37,7 +37,7 @@ export class MorbilidadComponent  implements OnInit  {
   searchText = "";
   public titleButtonSend: string = 'Enviar';
   public titleButtonExport: string = 'Exportar';
-  private alertsDismiss: any = [];
+  alertsDismiss: any = [];
   totalItems: number;//total number of items in all pages
   //currentPage: number   = 1;
   //smallnumPages: number;
@@ -96,7 +96,7 @@ export class MorbilidadComponent  implements OnInit  {
     this.morbilidadFilter(true);
   }
   
-  private async morbilidadFilter(conFechaActual?: boolean) {
+  async morbilidadFilter(conFechaActual?: boolean) {
     this.searchText = conFechaActual ? formatDate(Date.now(), 'yyyy-MM-dd', this.locale) : "";
     this.buscarConsulta.fecha = conFechaActual ? this.searchText : 'null';
     
