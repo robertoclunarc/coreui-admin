@@ -10,6 +10,6 @@ RUN npm run build --prod
 ### stage 2: Run ###
 
 FROM nginx:1.17.1-alpine AS prod-stage
-COPY --from=build /app/dist/coreui-admin /usr/share/nginx/html
-EXPOSE 4200
+COPY --from=build /dist /usr/share/nginx/html
+EXPOSE 80
 CMD ["nginx","-g","daemon off;"]
