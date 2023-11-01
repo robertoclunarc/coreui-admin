@@ -1,6 +1,6 @@
 ### Stage 1: Build ###
 
-FROM node:16 as build
+FROM node:16 AS build
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --legacy-peer-deps
@@ -9,7 +9,7 @@ RUN npm run build --prod
 
 ### stage 2: Run ###
 
-FROM nginx:1.17.1-alpine as prod-stage
-COPY --from=build /dist/coreui-admin /usr/share/nginx/html
-EXPOSE 80
+FROM nginx:1.17.1-alpine AS prod-stage
+COPY --from=build /app/dist/coreui-admin /usr/share/nginx/html
+EXPOSE 4200
 CMD ["nginx","-g","daemon off;"]
