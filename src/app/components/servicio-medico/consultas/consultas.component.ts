@@ -164,7 +164,7 @@ export class ConsultasComponent  implements OnInit  {
 
   condiciones =[
     {valor:'N/A', display:'No Aplica'}, {valor: 'APTO', display:'APTO'},
-    {valor:'NO APTO', display:'NO APTO'}, {valor:'APTO RESTR', display:'APTO CON RESTRICCIONES'}
+    {valor:'NO APTO', display:'NO APTO'}, {valor:'APTO RESTR', display:'APTO CON RESTRICCION'}
   ];
 
   // PolarArea
@@ -485,27 +485,32 @@ export class ConsultasComponent  implements OnInit  {
     }    
   }
   
-  buscarSignosVitales(ci: string, fecha: string){
+  async buscarSignosVitales(ci: string, fecha: string){
     if (ci!="" &&  ci!= undefined){
-      
-      this.srvSignosVitales.signosVitalesOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
-      .toPromise()
-      .then(result => {
-        if (result[0]!= undefined)
-          this.signoVital=result[0];
-        else
-          this.signoVital={} 
-        
-      });
-      this.srvAntropometria.antropometriaOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
-      .toPromise()
-      .then(result => {
-        if (result[0]!= undefined)
-          this.antropometria=result[0];
-        else
-          this.antropometria={} 
-        
-      });
+      console.log(formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale));
+      console.log( this.locale);
+      try {       
+        await this.srvSignosVitales.signosVitalesOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
+        .toPromise()
+        .then(result => {
+          if (result[0]!= undefined)
+            this.signoVital=result[0];
+          else
+            this.signoVital={} 
+          
+        });
+        await this.srvAntropometria.antropometriaOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
+        .toPromise()
+        .then(result => {
+          if (result[0]!= undefined)
+            this.antropometria=result[0];
+          else
+            this.antropometria={} 
+          
+        });
+      } catch (error) {
+        console.error(error)
+      }
     }    
   }
 
@@ -740,7 +745,8 @@ export class ConsultasComponent  implements OnInit  {
     this.selectMedicos= this.medicos.filter( m => m.activo==true);
     
     this.selectParamedicos= this.paramedicos.filter( m => m.activo===true);    
-    this.selectedOptionPatolog= this.patologias.find(p => p.descripcion=='SIN ESPECIFICACION');
+    this.selectedOptionPatolog= this.patologias.find((p) => {return p.descripcion=='SIN ESPECIFICACION'});
+    this.selectedPatolog ='SIN ESPECIFICACION';
     
     this.paciente={};
     this.consultas={};
@@ -788,7 +794,7 @@ export class ConsultasComponent  implements OnInit  {
       id_motivo: item.idmotivo,
       id_area: item.id_area,      
       fkafeccion: item.fkafeccion,      
-      condicion: item.condicion,
+      condicion: item.condicion==='APTO CON RESTRICCION'? 'APTO RESTR': item.condicion,
       fecha_prox_cita: item.fecha_prox_cita,
       sintomas: item.sintomas,
       observaciones: item.observaciones,
@@ -829,7 +835,7 @@ export class ConsultasComponent  implements OnInit  {
         this.consultas.id_reposo = p.uid;        
         break;
       }
-    }
+    }    
 
     if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
       this.patologias = await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'ICD', 1);
@@ -862,20 +868,21 @@ export class ConsultasComponent  implements OnInit  {
     this.newConsulta=false;
     this.modalTitle = "Detalles de la Consulta Nro."+item.uid;    
     
-  }
+  } 
 
   async guardarSignosVit(_fecha: string, _cedula: string){    
     if (_fecha!=undefined && _cedula!=undefined){      
-      //if (this.signoVital.fcard!=undefined || this.signoVital.pulso!=undefined || this.signoVital.temper!=undefined || this.signoVital.tart!=undefined || this.signoVital.fresp!=undefined){          
+      try {      
           this.signoVital.cedula=_cedula;
           this.signoVital.fecha=_fecha;          
           await this.srvSignosVitales.registrar(this.signoVital).toPromise();
-      //}
-      //if (this.antropometria.imc!=undefined || this.antropometria.talla!=undefined || this.antropometria.peso!=undefined){        
+             
           this.antropometria.fecha=_fecha;
           this.antropometria.cedula=_cedula
           await this.srvAntropometria.registrar(this.antropometria).toPromise();
-     // }  
+      } catch (error) {
+        this.showSuccess('Error Registrando Signos vitales: '+error, 'danger');
+      }
     }
   }
 
@@ -888,17 +895,20 @@ export class ConsultasComponent  implements OnInit  {
   async guardarMedicametosAplicados(){
     let medAplic: IMedicamentosAplicados;
     const idConsul: number = this.medicamentoAplicado.id_consulta;
-
-    for (const med of this.medicamentoAplicado.medicamentos){
-      medAplic={
-        uid: null,
-        id_consulta: idConsul,
-        id_medicamento: med.medicamento.uid,
-        cantidad: med.cantidad,
-        medidas: med.medidas
-      };
-      await this.srvMedicamentos.registrarMedicamentosAplicados(medAplic).toPromise();
-    }    
+    try {
+      for (const med of this.medicamentoAplicado.medicamentos){
+        medAplic={
+          uid: null,
+          id_consulta: idConsul,
+          id_medicamento: med.medicamento.uid,
+          cantidad: med.cantidad,
+          medidas: med.medidas
+        };        
+        await this.srvMedicamentos.registrarMedicamentosAplicados(medAplic).toPromise();        
+      } 
+    } catch (error) {
+      this.showSuccess('Error Registrando medicamentos aplicados: '+error, 'danger');
+    }   
   }
 
   private async validaEntradas(idPaciente: number, fechaCons: string){
@@ -937,6 +947,14 @@ export class ConsultasComponent  implements OnInit  {
       };      
       return  popOver;
     }    
+    
+    if ((this.selectedPatolog.trim() !== "") && (this.selectedOptionPatolog?.descripcion.trim()==="" || this.selectedOptionPatolog?.descripcion===undefined)){
+      popOver= {
+        titulo:"Error en el Registro",
+        alerta: "Seleccione una Patología Válida del Sistema"
+      };      
+      return  popOver;
+    }
 
     if ((this.consultas.condicion == undefined || this.consultas.condicion=="N/A") && (this.consultas.id_motivo==8 || this.consultas.id_motivo==7)){
       popOver= {
@@ -1012,14 +1030,14 @@ export class ConsultasComponent  implements OnInit  {
         fkafeccion: this.consultas.fkafeccion,
         id_remitido: this.consultas.id_remitido,
         id_reposo: this.consultas.id_reposo,
-        condicion: this.consultas.condicion,
+        condicion: this.consultas.condicion==='APTO CON RESTRICCION'? 'APTO RESTR': this.consultas.condicion,
         sintomas: this.consultas.sintomas,
         observaciones: this.consultas.observacion_medicamentos,
         resultado_eva: this.consultas.resultado_eva,
         observacion_medicamentos: this.consultas.observacion_medicamentos
         
       };
-
+      
       this.popoverConsulta = await this.validaEntradas(this.consultas.id_paciente, fechaConsulta);
       
       if ( this.popoverConsulta.alerta!=undefined){        
@@ -1073,23 +1091,30 @@ export class ConsultasComponent  implements OnInit  {
                 this.sortTable('uid');                
               }
             );
+            this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
           }
           else{
             this.showSuccess('Error Registrando', 'danger');
           }
         })
-				.catch(err => { console.log(err) });			
+				.catch(err => {
+          this.showSuccess('Error Registrando: '+err, 'danger'); 
+          console.log(err);
+        });			
 		}
 		else {
 
 			this.srvConsultas.actualizar(this.consultas)
 				.toPromise()
-				.catch(err => { console.log(err) });
+				.catch(err => {
+          this.showSuccess('Error actualizando: '+err, 'danger');
+          console.log(err);
+        });
 
 			this.showSuccess('Atencion Medica actualizada satisfactoriamente', 'success');
 
 		}
-    this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
+    
     this.blockRegister=false;
 		this.consultas = {};
     this.paciente={};
@@ -1236,6 +1261,7 @@ export class ConsultasComponent  implements OnInit  {
     this.onInputChange();
     
     this.selectedPatolog = this.selectedOptionPatolog.descripcion;
+    
   }
 
   private yaFueBuscadaAntes(){
@@ -1300,10 +1326,17 @@ export class ConsultasComponent  implements OnInit  {
           
           this._patologias = resultPatog.filter((p: IPatologia) => p.codigo_etica !== '');
           
-          this.patologias = this.patologias.concat(this._patologias);
+          let nuevasPatol:IPatologia[]=[];
           this._patologias.forEach(async (res) => {
-            await this.insertarPatologia(res);
+            const nuevaPatol:IPatologia = await this.insertarPatologia(res);
+            
+            if (nuevaPatol.uid){
+              nuevasPatol.push(nuevaPatol);
+              this.patologias.push(nuevaPatol);
+            }
           });
+          this._patologias = nuevasPatol;
+          
           this.showSuggestions = true;
         }else{
           this.onInputChange();
@@ -1315,6 +1348,7 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   async insertarPatologia(_pat: IPatologia){
+    let nuevaPatol:IPatologia={};
     let codigoEtica: string = _pat.codigo_etica==undefined || _pat.codigo_etica=='' ? 'null' : _pat.codigo_etica;
     const patologia= await this.srvPatologia.consultaFilter(undefined, undefined, codigoEtica, true, undefined, undefined).toPromise();    
     if (patologia.length==0){
@@ -1322,8 +1356,10 @@ export class ConsultasComponent  implements OnInit  {
       let arrpat: string[] = pat.descripcion.split(": ");
       pat.descripcion = arrpat[1].trim();
       pat.definicion = pat.definicion.replace(/—/g, '');      
-      this.srvPatologia.registrar(pat).toPromise();
+      nuevaPatol = await this.srvPatologia.registrar(pat).toPromise();
+      
     }
+    return nuevaPatol;
   }
 
   onInputChange() {

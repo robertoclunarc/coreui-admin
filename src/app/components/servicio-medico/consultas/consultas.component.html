@@ -403,7 +403,7 @@
                               <div class="form-group col-sm-3">
                                 <span class="form-group has-float-label">                                
                                   <select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="consultas.condicion" name="cboCondicion" id="cboCondicion">
-                                    <option *ngFor="let cond of condiciones" [value]="cond.valor">{{cond.display}}</option>
+                                    <option *ngFor="let cond of condiciones" [selected]="consultas.condicion == cond.valor" [value]="cond.valor">{{cond.display}}</option>
                                   </select>
                                   <label for="cboCondicion">Condici&oacute;n</label>
                                 </span>
