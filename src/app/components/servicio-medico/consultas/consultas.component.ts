@@ -445,29 +445,37 @@ export class ConsultasComponent  implements OnInit  {
   }
   
   buscarPaciente(){
-    if (this.paciente.ci!="" &&  this.paciente.ci!= undefined){
-      this.srvPacientes.pacienteOne(this.paciente.ci)
-      .toPromise()
-      .then(result => {
-        if (result[0]!= undefined){
-          this.paciente=result[0];
-          this.buscarHistoriaPaciente(this.paciente.uid_paciente);
-        }
-        else
-          this.paciente={} 
-        
-      })
-    }    
+    try {    
+      if (this.paciente.ci!="" &&  this.paciente.ci!= undefined){
+        this.srvPacientes.pacienteOne(this.paciente.ci)
+        .toPromise()
+        .then(result => {
+          if (result[0]!= undefined){
+            this.paciente=result[0];
+            this.buscarHistoriaPaciente(this.paciente.uid_paciente);
+          }
+          else
+            this.paciente={} 
+          
+        })
+      }
+    } catch (error) {
+      console.error('buscarPaciente: '+error);
+    }  
   }
 
   async buscarHistoriaPaciente(idpaciente: number){
-    if ( idpaciente!= undefined){
-      await this.srvHistorias.historiaMedicaOne('null', idpaciente.toString())
-      .toPromise()
-      .then((result) => {
-        this.historiaMedica=result;
-      })      
-    }    
+    try {
+      if ( idpaciente!= undefined){
+        await this.srvHistorias.historiaMedicaOne('null', idpaciente.toString())
+        .toPromise()
+        .then((result) => {          
+          this.historiaMedica=result;
+        });        
+      }
+    } catch (error) {
+      console.error('buscarHistoriaPaciente: '+error);
+    }  
   }
 
   buscarMedicamentosAplicados(idConsulta: number){
@@ -487,10 +495,11 @@ export class ConsultasComponent  implements OnInit  {
   
   async buscarSignosVitales(ci: string, fecha: string){
     if (ci!="" &&  ci!= undefined){
+      console.log(fecha);
       console.log(formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale));
       console.log( this.locale);
       try {       
-        await this.srvSignosVitales.signosVitalesOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
+        await this.srvSignosVitales.signosVitalesOne(ci, fecha)
         .toPromise()
         .then(result => {
           if (result[0]!= undefined)
@@ -499,7 +508,7 @@ export class ConsultasComponent  implements OnInit  {
             this.signoVital={} 
           
         });
-        await this.srvAntropometria.antropometriaOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
+        await this.srvAntropometria.antropometriaOne(ci, fecha)
         .toPromise()
         .then(result => {
           if (result[0]!= undefined)
@@ -552,7 +561,7 @@ export class ConsultasComponent  implements OnInit  {
         // Realiza la búsqueda aquí
         this.performSearch();
       }
-    }, 3000); // Espera 2 segundos      
+    }, 2000); // Espera 2 segundos      
   }
 
   performSearch(){
@@ -768,7 +777,7 @@ export class ConsultasComponent  implements OnInit  {
   }  
 
   async  showModalActualizar(item: IvConsulta){
-    
+    console.log(item)
     this.soloLectura=true;
     if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
       this. soloLectura=false;
@@ -852,7 +861,24 @@ export class ConsultasComponent  implements OnInit  {
       }
     }
     
-    this.buscarSignosVitales(item.ci, item.fecha);    
+    this.signoVital = {
+      fresp: item.fresp,
+      pulso: item.pulso,
+      temper: item.temper,
+      tart: item.tart,
+      fcard: item.fcard,
+      fecha: item.fecha,
+      cedula: item.ci
+    };
+    this.antropometria = {
+      talla: item.talla,
+      peso: item.peso,
+      imc: item.imc,
+      fecha: item.fecha,
+      cedula: item.ci,
+    }
+    //console.log(`buscarSignosVitales(${item.ci},${item.fecha})`);
+    //this.buscarSignosVitales(item.ci, item.fecha);    
     this.convReferenciaInArray(item.referencia_medica);
     this.buscarMedicamentosAplicados(item.uid);
     this.convIndicacionesInArray(item.indicaciones_comp);
@@ -1514,7 +1540,8 @@ export class ConsultasComponent  implements OnInit  {
     });
     if (notaExamen.nombre_completo){
       notaExamen.mor_fecha = formatDate(notaExamen.mor_fecha, 'dd-MM-yyyy HH:mm', this.locale);
-      if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10 || idMotivo==13){      
+      if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10 || idMotivo==13){ 
+        console.log(`Motivo: ${idMotivo}`);     
         if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10){
           const asuntoExamen = this.motivos.find( m => m.uid === idMotivo ).descripcion + " " + notaExamen.nombre_completo;
           const cuerpoExamen: string = await this.srvConsultas.cuerpoDelExamen(notaExamen);

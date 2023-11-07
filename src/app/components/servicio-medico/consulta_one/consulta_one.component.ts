@@ -174,8 +174,8 @@ export class ConsultaOneComponent implements OnChanges {
     cargo: 'null',
     fecha: 'null',
     condlogica: 'OR'
+    }
   }
-}
 
   private async consultasFilter() {
     
@@ -490,8 +490,25 @@ export class ConsultaOneComponent implements OnChanges {
         break;
       }
     }
+
+    this.signoVital = {
+      fresp: item.fresp,
+      pulso: item.pulso,
+      temper: item.temper,
+      tart: item.tart,
+      fcard: item.fcard,
+      fecha: item.fecha,
+      cedula: item.ci
+    };
+    this.antropometria = {
+      talla: item.talla,
+      peso: item.peso,
+      imc: item.imc,
+      fecha: item.fecha,
+      cedula: item.ci,
+    }
     
-    this.buscarSignosVitales(item.ci, item.fecha);    
+    //this.buscarSignosVitales(item.ci, item.fecha);    
     this.convReferenciaInArray(item.referencia_medica);
     this.buscarMedicamentosAplicados(item.uid);
     this.convIndicacionesInArray(item.indicaciones_comp);

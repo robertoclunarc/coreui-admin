@@ -1,10 +1,12 @@
 import { IAfecciones } from './afecciones.model';
+import { Iantropometria } from './antropometria.model';
 import { IAreas } from './areas.model';
 import { IMedicos, IParamedicos } from './medicos.model';
 import { IMotivo } from './motivos.model';
 import { IPaciente, IvPaciente } from './paciente.model';
 import { IPatologia } from './patologias.model';
 import { IRemitido } from './remitidos.model';
+import { IsignosVitales } from './signos_vitales.model';
 import { ITiempoReposo } from './tiemporeposos.model';
 
 export interface IConsultas{
@@ -109,6 +111,14 @@ export interface IvConsulta {
     login_atendio?: string;
     fkdiagnostico?: number;
     descripciondiagnostico?: string;
+    fresp?: string;
+    pulso?: string;
+    temper?: string;
+    tart?: string;
+    fcard?: string;
+	talla?: string;
+    peso?: string;
+    imc?: string;
 }
 
 export interface IFiltroConsulta{
