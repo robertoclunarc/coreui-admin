@@ -156,7 +156,7 @@ export class ConsultasService {
       else
           sx='Femenino';
 
-      const dirser: string = 'http://10.50.188.48/servicio_medico/';
+      const dirser: string = environment.archivosServidorLocal;
       
       const imgvacia: string = `<img width="40px" height="40px" align="center" src="${dirser}images/check_vacio_1.jpg">`;
       const imgv: string = `<img width="40px" height="40px" align="center" src="${dirser}images/check_green_1.jpg">`;

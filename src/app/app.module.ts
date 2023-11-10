@@ -26,7 +26,6 @@ import { AppComponent } from './app.component';
 // Import containers
 import { DefaultLayoutComponent } from './containers';
 import { LayoutServicioMedicoComponent } from './containers/layout-serviciomedico';
-import { LayoutBalanzaComponent } from './containers/layout-balanza';
 
 //eliminar despues de terminar historial medico:
 
@@ -50,7 +49,7 @@ import { P500Component } from './views/error/500.component';
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
-  DefaultLayoutComponent, LayoutServicioMedicoComponent, LayoutBalanzaComponent , 
+  DefaultLayoutComponent, LayoutServicioMedicoComponent , 
   
   //CargosAnterioresComponent,  
   //AntecedenteFamiliarComponent, 
@@ -84,7 +83,6 @@ import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 
 import { LoginServicioMedicoComponent } from './components/servicio-medico/login-servicio-medico/login-servicio-medico.component';
-import { LoginBalanzaComponent } from './components/balanza/login-balanza/login-balanza.component';
 
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 //import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
@@ -125,9 +123,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     P404Component,
     P500Component,    
     RegisterComponent, 
-    LoginServicioMedicoComponent,
-    LoginBalanzaComponent,
-    
+    LoginServicioMedicoComponent,    
   ],
   /* 
   providers: [

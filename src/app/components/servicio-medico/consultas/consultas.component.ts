@@ -1109,14 +1109,16 @@ export class ConsultasComponent  implements OnInit  {
             await this.guardarSignosVit(fechaConsulta, this.paciente.ci );
             this.medicamentoAplicado.id_consulta=this.consultas.uid
             await this.guardarMedicametosAplicados();
-            this.consultasFilter().then(
+            /*this.consultasFilter().then(
               result => { 
                 consultaNew=result[0];                
                 this.consultasTodas.unshift(consultaNew);
                 this.sortOrder =  this.sortOrder * (-1);
                 this.sortTable('uid');                
               }
-            );
+            );*/
+            this.llenarArrayConsultas(true);
+            console.log(`Reposo: ${this.consultas.id_reposo}`);
             this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
           }
           else{
@@ -1268,8 +1270,8 @@ export class ConsultasComponent  implements OnInit  {
     this.alertsDismiss.push({
       type: clase,
       msg: mensaje,
-      //msg: `This alert will be closed in 5 seconds (added: ${new Date().toLocaleTimeString()})`,
-      timeout: 8000
+      //msg: `This alert will be closed in 15 seconds (added: ${new Date().toLocaleTimeString()})`,
+      timeout: 15000
     });
   }  
 
@@ -1504,7 +1506,7 @@ export class ConsultasComponent  implements OnInit  {
       if (respuesta.error==undefined){
         console.log(`Info: ${respuesta?.info}`);
       }else{
-        console.log(`Error: ${respuesta.error}`);
+        console.error(`Error: ${respuesta.error}`);
       }
     });    
     return respuesta;  
@@ -1539,7 +1541,10 @@ export class ConsultasComponent  implements OnInit  {
         notaExamen= res;
     });
     if (notaExamen.nombre_completo){
-      notaExamen.mor_fecha = formatDate(notaExamen.mor_fecha, 'dd-MM-yyyy HH:mm', this.locale);
+      //notaExamen.mor_fecha = formatDate(notaExamen.mor_fecha, 'dd-MM-yyyy HH:mm', this.locale);
+      console.log(notaExamen);
+      notaExamen.mor_fecha = await this.srvVarios.formateaFecha(notaExamen.mor_fecha.toString());
+      console.log(notaExamen.mor_fecha);
       if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10 || idMotivo==13){ 
         console.log(`Motivo: ${idMotivo}`);     
         if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10){
@@ -1557,7 +1562,7 @@ export class ConsultasComponent  implements OnInit  {
       if (idReposo || idReposo!==0){
         const asuntoReposo: string = "REPOSO " + notaExamen.nombre_completo;        
         const cuerpoReposo: string = await this.srvConsultas.cuerpoDelReposo(notaExamen);
-        this.enviarExamenCorreo(asuntoReposo, cuerpoReposo, notaExamen.desc_mot);
+        this.enviarExamenCorreo(asuntoReposo, cuerpoReposo, "REPOSO");
       }
     }
   }
@@ -1574,7 +1579,7 @@ export class ConsultasComponent  implements OnInit  {
       this.enviarCorreoHTML(mailOptions)
       .then((result) => {        
         if (result.info)
-          this.showSuccess(`Reposo Enviado a: ${correos}: `, 'warning');
+          this.showSuccess(`${asunto} Enviado a: ${correos}: `, 'warning');
         else
           this.showSuccess(`Error: ${result?.error}`, 'danger');
       });

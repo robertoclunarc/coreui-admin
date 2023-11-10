@@ -90,6 +90,17 @@ export class VarioService {
     return content.trim();
   }
 
+  async formateaFecha(fechaHora: string){
+    const year = fechaHora.slice(0, 4);
+    const month = fechaHora.slice(5, 7);
+    const day = fechaHora.slice(8, 10);
+    const hora = fechaHora.slice(11, 19);
+
+    const fechaFormateada = `${day}/${month}/${year} ${hora.replace("T", " ")}`;   
+
+    return fechaFormateada;
+  }
+
   searchHeroes(cedula: string):Observable<Blob>{
     const param: string =  cedula + this.extFoto;
     const params = new HttpParams({fromString: `file=${param}`});
