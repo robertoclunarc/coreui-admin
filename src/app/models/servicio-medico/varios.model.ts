@@ -12,4 +12,9 @@ export interface INivelAcademico{
 export interface IContratista{
     uid?: number;
     nombre?: string;
+} 
+
+export interface brandBoxChartData {    
+    data?: number[];
+    label?: string;
 }

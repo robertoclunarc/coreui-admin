@@ -260,7 +260,7 @@
                               </div>
         
                               <div class="col-sm-6">
-                                <div *ngIf="user.nivel==1 || soloLectura" class="input-group">                            
+                                <div *ngIf="user.nivel==1 || user.nivel==2 || soloLectura" class="input-group">                            
                                   <span class="input-group-prepend">
                                     <button [disabled]="soloLectura" type="button"                                      
                                       (click)="onSearchEnter()" 

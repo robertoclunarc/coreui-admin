@@ -72,7 +72,7 @@ $ git clone https://github.com/coreui/coreui-free-angular-admin-template.git my-
 $ cd my-project
 
 # install app's dependencies
-$ npm install
+$ npm install --legacy-peer-deps
 ```
 
 ## Usage
@@ -82,7 +82,7 @@ $ npm install
 $ ng serve
 
 # build for production with minification
-$ ng build
+$ ng build --prod
 ```
 
 ## What's included
@@ -107,7 +107,105 @@ free-angular-admin-template/
 
 ## Documentation
 
+Informe de implementación de aplicación web en Docker
+
+Introducción
+
+Este informe describe el proceso de implementación de una aplicación web desarrollada en Node.js v16 con Angular 11.2, TypeScript y Bootstrap 4. La aplicación fue implementada en una máquina virtual Proxmox 141 con sistema operativo Linux Mint 20.3. El servidor tiene la configuración local "America/Caracas".
+
+Requisitos
+
+Para implementar la aplicación web, se necesitan los siguientes requisitos:
+
+Máquina virtual Proxmox 141 con sistema operativo Linux Mint 20.3
+Docker instalado en la máquina virtual
+Configuración local "America/Caracas" en el servidor
+Apache instalado en el servidor
+Instalación de Docker
+
+Para instalar Docker en la máquina virtual, siga los siguientes pasos:
+
+Abra una terminal en la máquina virtual.
+Ejecute el siguiente comando para actualizar los paquetes del sistema:
+```sudo apt update```
+Ejecute el siguiente comando para instalar Docker:
+```sudo apt install docker.io```
+Una vez que Docker esté instalado, inicie el servicio con el siguiente comando:
+```sudo systemctl start docker```
+Configuración de la zona horaria
+
+Para configurar la zona horaria "America/Caracas" en el servidor, siga los siguientes pasos:
+
+Abra un editor de texto en la máquina virtual.
+Abra el archivo /etc/timezone con el editor.
+Cambie la línea que contiene la zona horaria actual a la siguiente:
+America/Caracas
+Guarde los cambios y cierre el editor.
+Reinicie el servidor para que los cambios surtan efecto.
+Instalación de Apache
+
+Para instalar Apache en la máquina virtual, siga los siguientes pasos:
+
+Abra una terminal en la máquina virtual.
+Ejecute el siguiente comando para actualizar los paquetes del sistema:
+```sudo apt update```
+Ejecute el siguiente comando para instalar Apache:
+```sudo apt install apache2```
+Una vez que Apache esté instalado, inicie el servicio con el siguiente comando:
+```sudo systemctl start apache2```
+Comandos para ejecutar la aplicación web
+
+Para ejecutar la aplicación web, siga los siguientes pasos:
+
+En la máquina virtual, vaya a la carpeta donde se encuentra la aplicación web (en la raiz de la carpeta del proyecto donde esta ubicado el archivo dockerfile).
+Ejecute el siguiente comando para crear una imagen Docker de la aplicación:
+```docker build -t core-admin .```
+Una vez que la imagen esté creada, ejecute el siguiente comando para iniciar la aplicación:
+```docker run  -d -t -p 4200:80 core-admin```
+El comando docker build crea una imagen Docker de la aplicación web. El comando docker run inicia la aplicación en un contenedor Docker.
+
+Explicación de los comandos
+
+docker build
+El comando docker build crea una imagen Docker a partir de un archivo Dockerfile. El archivo Dockerfile contiene las instrucciones para construir la imagen. En este caso, el archivo Dockerfile contiene las instrucciones para instalar Node.js, Angular y Bootstrap.
+
+docker run
+El comando docker run inicia un contenedor Docker a partir de una imagen Docker. En este caso, la imagen Docker es la que se creó con el comando docker build. El comando docker run tiene los siguientes parámetros:
+
+* `-d` : Especifica que el contenedor se debe iniciar en modo demonio.
+* `-t` : Especifica que el contenedor debe tener un terminal.
+* `-p 4200:80` : Especifica que el puerto 80 del contenedor se debe mapear al puerto 4200 del host.
+* `core-admin` : Es el nombre de la imagen Docker que se va a ejecutar.
+¿Qué es Docker?
+
+Docker es una plataforma de software que permite crear, ejecutar y administrar aplicaciones en contenedores. Los contenedores son unidades de software que empaquetan código, dependencias y archivos de configuración en un entorno aislado.
+
+Docker ofrece una serie de ventajas, entre las que se incluyen:
+
+Portabilidad: Las aplicaciones empaquetadas en contenedores pueden ejecutarse en cualquier máquina que tenga Docker instalado.
+Seguridad: Los contenedores están aislados entre sí, lo que ayuda a proteger las aplicaciones.
+Eficiencia: Los contenedores utilizan menos recursos que las máquinas virtuales tradicionales.
+Una vez que se hayan completado estos pasos, la aplicación web estará disponible en la dirección http://[dirección IP de la máquina virtual]:80.
+
 The documentation for the CoreUI Free Angularp Admin Template is hosted at our website [CoreUI](https://coreui.io/angular/)
+
+•	VARIABLES DE ENTORNO:
+Se debe agregar al sistema operativo las siguientes variables de entrono:
+apiUrlServMedico=http://10.50.188.217:3000/sist_epidemiologico/api/
+ urlImagenFotoTrabajador=http://10.50.188.48/getimagen.php
+extensionFotoTrabajador=.bmp
+ fromEmail=brismd@briqven.com.ve
+ nameSistemaSalud=’Sistema de Gestión Integral de Salud’
+ urlICD=https://icd.who.int/browsell/l-m/es#/
+ archivosServidorLocal=http://10.50.188.217/servicio_medico/
+hostemailserviciomedico=10.0.3.20
+portemailserviciomedico=587
+passwemailserviciomedico=brismd.123
+dbuserserviciomedico=roberto
+ dbhostserviciomedico=10.50.188.48
+ dbpasswserviciomedico=roberto
+ dbserviciomedico=bdmatserviciomedico
+ dbportserviciomedico=5432
 
 ## Creators
 

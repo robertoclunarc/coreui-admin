@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { ConsultasService  } from '../../../services/servicio_medico/consultas.service';
 import { VarioService  } from '../../../services/servicio_medico/varios.service';
 import { MedicosService } from '../../../services/servicio_medico/medicos.service';
 import { IMedicos, ItotalAtenciones } from '../../../models/servicio-medico/medicos.model';
+import { brandBoxChartData } from '../../../models/servicio-medico/varios.model'
 import { formatDate } from '@angular/common';
 
 @Component({
@@ -33,6 +35,7 @@ export class PrincipalServicioMedicoComponent implements OnInit {
   loginHtml3: string="brismd";
   loginHtml4: string="brismd";
   loginDrTitular: IMedicos;
+  brandBoxChartDataX: { login?: string, countMotivos?: number, cantMotivos?:number, box?:brandBoxChartData[] }[]=[];
   constructor(
     private srvConsultas: ConsultasService,
     private srvVarios: VarioService,
@@ -536,12 +539,10 @@ export class PrincipalServicioMedicoComponent implements OnInit {
         data: arrayMotivosMedicosData,
         label: 'ultimos 12 meses ' + loginDr
       }
-    ];
-    let i:number=2;
+    ];    
     
-    this.arrayMedicos.splice(3, this.arrayMedicos.length);
-    //console.log(this.arrayMedicos);
-
+    //this.arrayMedicos.splice(3, this.arrayMedicos.length);     
+    
     for await (let m of this.arrayMedicos){
         if (m.login!=loginDr){
           cantMotivos=0;
@@ -558,43 +559,24 @@ export class PrincipalServicioMedicoComponent implements OnInit {
             }
           )			
           .catch(err => { console.log(err) });
-          //console.log(arrayMotivosMedicosData);
+          
           /////////////////////////////////////////////
-          if (i==2){
+          
             this.loginHtml2 = m.login;
             this.countMotivos2 = arrayMotivosMedicosData.length;
-            this.cantMotivos2 = cantMotivos;          
-            this.brandBoxChartData2 = [
-              {
-                data: arrayMotivosMedicosData,
-                label: 'ultimos 12 meses ' + m.login
-              }
-            ];
-          }
-          if (i==3){
-            this.loginHtml3 = m.login;
-            this.countMotivos3 = arrayMotivosMedicosData.length;
-            this.cantMotivos3 = cantMotivos;          
-            this.brandBoxChartData3 = [
-              {
-                data: arrayMotivosMedicosData,
-                label: 'ultimos 12 meses ' + m.login
-              }
-            ];
-          }
-          if (i==4){
-            this.loginHtml4 = m.login;
-            this.countMotivos4 = arrayMotivosMedicosData.length;
-            this.cantMotivos4 = cantMotivos;          
-            this.brandBoxChartData4 = [
-              {
-                data: arrayMotivosMedicosData,
-                label: 'ultimos 12 meses ' + m.login
-              }
-            ];
-          }
-          /////////////////////////////////////////////
-          i++;
+            this.cantMotivos2 = cantMotivos;
+
+            this.brandBoxChartDataX.push({
+              login: m.login,
+              countMotivos: arrayMotivosMedicosData.length,
+              cantMotivos: cantMotivos,
+              box: [
+                {
+                  data: arrayMotivosMedicosData,
+                  label: 'ultimos 12 meses ' + m.login
+                }
+              ]
+            })            
         }
         
     }

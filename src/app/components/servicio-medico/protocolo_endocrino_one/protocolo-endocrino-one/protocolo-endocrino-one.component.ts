@@ -36,6 +36,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
   ) {    
     this.llenarArrayMedico();
     
+    
   }
   @ViewChild('myModalPlanilla') public myModalPlanilla: ModalDirective;
   @Input() vProtocolo :string="";
@@ -52,7 +53,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
   popover: Ipopover={} ;
   soloLectura: boolean;
   nuevo: boolean=false;
-  
+  medicos: IMedicos[]=[];
   alertsDismiss: any = [];
 
   ngOnChanges() {    
@@ -83,8 +84,10 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     else{
       this.soloLectura=true;
     }   
-    
-    if (this.vProtocolo!="" && this.vProtocolo!=undefined){
+    //console.log(this.vProtocolo);
+    if (this.vProtocolo!=="" && this.vProtocolo!==undefined){
+      this.selectMedicos = this.medicos;
+      //console.log(this.selectMedicos);
       this.nuevo=true;      
       this.protocoloObj=JSON.parse(this.vProtocolo);
       
@@ -119,9 +122,12 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
         this.protocoloObj.protocolo.vigencia= formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
         this.vProtocolo=JSON.stringify(this.protocoloObj);
         this.nuevo=false;
+        this.selectMedicos = this.medicos.filter( (m) => m.activo === true  ) 
       }
-      else
+      else{       
+        
         this.protocoloObj.paciente={};
+      }
       this.vProtocolo="";
     })
   }
@@ -130,8 +136,9 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     this.srvMedicos.medicosAll()
     .toPromise()
     .then(result => {
-      if (result){ 
+      if (result){        
         this.selectMedicos=result;
+        this.medicos=result;
       }
     })
   }  

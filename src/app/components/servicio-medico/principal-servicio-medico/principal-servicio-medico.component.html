@@ -217,75 +217,18 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="col-sm-6 col-lg-3">
-        <div class="brand-card">
-          <div class="brand-card-header bg-twitter">
-            <!--<i class="fa fa-twitter"></i>-->
-            <div class="avatar">
-              <img src="assets/img/avatars/{{loginHtml2}}.bmp" class="img-avatar" alt="{{loginHtml2}}@briqven.com.ve">              
-            </div>
-            <div class="chart-wrapper">
-              <canvas baseChart class="chart"
-              [datasets]="brandBoxChartData2"
-              [labels]="brandBoxChartLabels"
-              [options]="brandBoxChartOptions"
-              [colors]="brandBoxChartColours"
-              [legend]="brandBoxChartLegend"
-              [chartType]="brandBoxChartType"></canvas>
-            </div>
-          </div>
-          <div class="brand-card-body">
-            <div>
-              <div class="text-value">{{ countMotivos2 }}</div>
-              <div class="text-uppercase text-muted small">Motivos</div>
-            </div>
-            <div>
-              <div class="text-value">{{ cantMotivos2 }}</div>
-              <div class="text-uppercase text-muted small">Atenciones</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-3">
-        <div class="brand-card">
-          <div class="brand-card-header bg-linkedin">
-            <!--<i class="fa fa-linkedin"></i>-->
-            <div class="avatar">
-              <img src="assets/img/avatars/{{loginHtml3}}.bmp" class="img-avatar" alt="{{loginHtml3}}@briqven.com.ve">              
-            </div>
-            <div class="chart-wrapper">
-              <canvas baseChart class="chart"
-              [datasets]="brandBoxChartData3"
-              [labels]="brandBoxChartLabels"
-              [options]="brandBoxChartOptions"
-              [colors]="brandBoxChartColours"
-              [legend]="brandBoxChartLegend"
-              [chartType]="brandBoxChartType"></canvas>
-            </div>
-          </div>
-          <div class="brand-card-body">
-            <div>
-              <div class="text-value">{{ countMotivos3 }}</div>
-              <div class="text-uppercase text-muted small">Motivos</div>
-            </div>
-            <div>
-              <div class="text-value">{{ cantMotivos3 }}</div>
-              <div class="text-uppercase text-muted small">Atenciones</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="col-sm-6 col-lg-3">
+      </div>      
+      <!-- ///////////////////////////////////////////////////////////////////////////////-->           
+      <div *ngFor="let b of brandBoxChartDataX" class="col-sm-6 col-lg-3">
         <div class="brand-card">
           <div class="brand-card-header bg-google-plus">
             <!--<i class="fa fa-google-plus"></i>-->
             <div class="avatar">
-              <img src="assets/img/avatars/{{loginHtml4}}.bmp" class="img-avatar" alt="{{loginHtml4}}@briqven.com.ve">              
+              <img src="assets/img/avatars/{{b.login}}.bmp" class="img-avatar" alt="{{b.login}}@briqven.com.ve">              
             </div>
             <div class="chart-wrapper">
               <canvas baseChart class="chart"
-              [datasets]="brandBoxChartData4"
+              [datasets]="b.box"
               [labels]="brandBoxChartLabels"
               [options]="brandBoxChartOptions"
               [colors]="brandBoxChartColours"
@@ -295,16 +238,17 @@
           </div>
           <div class="brand-card-body">
             <div>
-              <div class="text-value">{{ countMotivos4 }}</div>
+              <div class="text-value">{{ b.countMotivos }}</div>
               <div class="text-uppercase text-muted small">Motivos</div>
             </div>
             <div>
-              <div class="text-value">{{ cantMotivos4 }}</div>
+              <div class="text-value">{{ b.cantMotivos }}</div>
               <div class="text-uppercase text-muted small">Atenciones</div>
             </div>
           </div>
         </div>
-      </div>
+      </div>      
+      <!-- ///////////////////////////////////////////////////////////////////////////////-->
       
     </div>
     

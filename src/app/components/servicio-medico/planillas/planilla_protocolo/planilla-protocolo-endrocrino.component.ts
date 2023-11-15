@@ -322,7 +322,7 @@ export class planillaProtocoloEndocrinoComponent implements OnChanges {
       <tr>
         <td><img width="130px" height="80px" src="../../../../assets/logo.jpg"></td>
         <td>
-          <span style="font-weight:bold;font-style:italic; text-align: center; font-size: 10px;">DEPTO. &nbsp; DE &nbsp;  HIGIENE &nbsp;  Y &nbsp;  SEGURIDAD &nbsp;  INDUSTRIAL</span><br>
+          <span style="font-weight:bold;font-style:italic; text-align: center; font-size: 10px;">DEPTO. &nbsp; DE &nbsp;  SEGURIDAD &nbsp;  LABORAL</span><br>
           <span style="font-weight:bold;font-style:italic; text-align: center;">EVALUACION &nbsp;  FISICA</span><br>
           <span style="font-weight:bold;font-style:italic; text-align: center;">DEL &nbsp; PROTOCOLO &nbsp; ENDOCRINO</span><br>
           <span style="font-weight:bold;font-style:italic; text-align: center;">METABOLICO &nbsp; / &nbsp; CARDIOVASCULAR</span>                                   
