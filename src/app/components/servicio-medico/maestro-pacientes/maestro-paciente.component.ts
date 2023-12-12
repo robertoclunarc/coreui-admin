@@ -64,7 +64,7 @@ export class MaestroPacienteComponent  implements OnInit  {
 
   ngOnInit(): void {
 
-    if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
+      if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
         this.classTable = "table table-striped";
         this.classButton ="btn btn-block btn-ghost-dark";
         this.estiloOscuro="";

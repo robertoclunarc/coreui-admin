@@ -4,7 +4,7 @@
         <i class="fa fa-edit"></i>
         <strong>Datos Generales para la Atenci&oacute;n:   <code *ngIf="consultas.uid != undefined">Nro. {{consultas.uid}}</code></strong>
         <div class="card-header-actions">
-          <span *ngIf="consultas.fecha != undefined" class="badge badge-dark">Fecha: {{consultas.fecha | date:'dd/MM/yyyy'}}</span>
+          <span *ngIf="consultas.fecha != undefined" class="badge badge-dark">Fecha: {{consultas.fecha | date:'dd/MM/yyyy HH:mm'}}</span>
           <span *ngIf="consultas.turno != undefined" class="badge badge-info">Turno: {{consultas.turno}}</span>
           <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()"><i class={{iconCollapse}}></i></button>
           
@@ -144,47 +144,81 @@
               </div>
 
               <div class="col-sm-6">
-                <div class="form-group">
-                  <span class="form-group has-float-label">                                    
-                    <select class="form-control form-control-sm" [disabled]="soloLectura" id="cboAreaIncidente" name="cboAreaIncidente" [(ngModel)]="consultas.id_area">
-                      <option *ngFor="let are of areas" [value]="are.uid">{{are.descripcion}}</option>
-                    </select>
-                    <label class="badge-light" for="cboAreaIncidente">&Aacute;rea Incidente  o Atenci&oacute;n</label>
-
-                  </span>                             
+                <div *ngIf="user.nivel==1 || user.nivel==2 || soloLectura" class="input-group">                            
+                  <span class="input-group-prepend">
+                    <button [disabled]="soloLectura" type="button"                                      
+                      (click)="onSearchEnter()" 
+                      class="btn btn-primary btn-sm">
+                      <i class="fa fa-search"></i> 
+                      Patología
+                    </button>
+                  </span>
+                  <input #typeaheadInstance [(ngModel)]="selectedPatolog" name="txtPatologia" id="txtPatologia"
+                      [disabled]="soloLectura"
+                      [typeahead]="patologias"
+                      typeaheadOptionField="descripcion"
+                      [isAnimated]="true"
+                      [typeaheadScrollable]="true"
+                      [typeaheadOptionsInScrollableView]="10"                                      
+                      typeaheadGroupField="tipo"
+                      [typeaheadSingleWords]="false"
+                      (typeaheadOnSelect)="onSelect($event)"                                       
+                      (keydown.enter)="onSearchEnter()"
+                      (ngModelChange)="onInputChange()"                                      
+                      class="form-control form-control-sm"
+                  >
+                  <span class="input-group-append"> 
+                    <ng-template #popTemplatePatog>                                      
+                      {{selectedOptionPatolog?.definicion}}
+                      <br>
+                      <a href="{{urlICD}}{{selectedOptionPatolog?.url}}" target="_blank">
+                        <small className="text-muted">{{selectedOptionPatolog?.url}}</small>
+                      </a>                                                                            
+                    </ng-template>
+                    <button type="button"                                       
+                      [popover]="popTemplatePatog"
+                      
+                      popoverTitle="{{selectedOptionPatolog?.descripcion}}"
+                      placement="right"
+                      class="btn btn-primary btn-sm">
+                      <i *ngIf="!loadingPatologia" class="fa fa-eye fa-sm"></i>
+                      <img *ngIf="loadingPatologia" width="16px" height="16px" src="../../../../assets/img/loading.gif">
+                    </button>
+                    
+                  </span>
+                  <!-- Mostrar las sugerencias si la bandera showSuggestions es true -->
+                  <div class="custom-list-container" *ngIf="showSuggestions && _patologias.length > 0">                                      
+                    <ul class="custom-list-group">
+                      <li class="custom-list-group-item"
+                          *ngFor="let patologia of _patologias"
+                          (click)="onSelectOption(patologia)">
+                        <!-- Utiliza directamente las clases found y nonwbe en el mismo elemento li -->
+                        <div class="found">{{ patologia.codigo_etica }}</div>
+                        <div class="nonwbe" [innerHTML]="patologia.descripcion"></div>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div><!--/.row 3-->
             <div class="row">
               <div class="col-sm-6">
-                <div class="form-group">
-                    <span class="form-group has-float-label">                                    
-                      <input  [(ngModel)]="selectedPatolog" name="txtPatologia" id="txtPatologia" [disabled]="soloLectura" 
-                      [typeahead]="patologias"
-                      typeaheadOptionField="descripcion"
-                      [isAnimated]="true"
-                      [typeaheadScrollable]="true"
-                      [typeaheadOptionsInScrollableView]="10"
-                      [typeaheadSelectFirstItem]="true"
-                      [typeaheadIsFirstItemActive]="true"
-                      typeaheadGroupField="codigo_etica" 
-                      [typeaheadSingleWords]="false"
-                      (typeaheadOnSelect)="onSelect($event)"                                  
-                      class="form-control form-control-sm">
-                      <label class="badge-light" for="txtPatologia">Patolog&iacute;a</label>
-
-                    </span>  
+                <div class="form-group">                  
+                  <span class="form-group has-float-label">                                                                       
+                    <select class="form-control form-control-sm" [disabled]="soloLectura" name="cboTipoAfecciones" [(ngModel)]="consultas.fkafeccion"  id="cboTipoAfecciones">
+                      <option *ngFor="let afec of afecciones" [value]="afec.idafecciones">{{afec.descripcion_afeccion}}</option>
+                    </select>
+                    <label class="badge-light" for="cboTipoAfecciones">Tipo de Afecci&oacute;n por Sistema</label>
+                 </span>
                 </div>
               </div>
 
               <div class="col-sm-6">
                 <div class="form-group">
-                  <span class="form-group has-float-label">                                                                       
-                      <select class="form-control form-control-sm" [disabled]="soloLectura" name="cboTipoAfecciones" [(ngModel)]="consultas.fkafeccion"  id="cboTipoAfecciones">
-                        <option *ngFor="let afec of afecciones" [value]="afec.idafecciones">{{afec.descripcion_afeccion}}</option>
-                      </select>
-                      <label class="badge-light" for="cboTipoAfecciones">Tipo de Afecci&oacute;n por Sistema</label>
-                   </span>
+                  <span class="form-group has-float-label">
+                    <input type="datetime-local" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFechaSalida" [(ngModel)]="fechaSalida" id="txtFechaSalida">
+                    <label for="txtFechaSalida">Fecha/Hora Salida</label>
+                  </span>
                 </div>
               </div>
             </div><!--/.row 4-->
@@ -269,7 +303,7 @@
               </div>
               <div class="form-group col-sm-3">
                 <span class="form-group has-float-label">                                
-                  <input type="date" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFechaproxCita" [(ngModel)]="consultas.fecha_prox_cita" id="txtFechaproxCita">
+                  <input type="datetime-local" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFechaproxCita" [(ngModel)]="consultas.fecha_prox_cita" id="txtFechaproxCita">
                   <label for="txtFechaproxCita">Fecha Prox. Cita</label>
                 </span>
               </div>

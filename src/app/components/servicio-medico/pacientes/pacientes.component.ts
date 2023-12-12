@@ -436,7 +436,7 @@ export class PacientesComponent implements OnChanges {
     if (respuesta.error==undefined){
       console.log(`Info: ${respuesta?.info}`);
     }else{
-      console.log(`Error: ${respuesta.error}`);
+      console.error(`Error: ${JSON.stringify(respuesta.error)}`);
     }
        
     return respuesta;  
@@ -458,7 +458,7 @@ export class PacientesComponent implements OnChanges {
       this.enviarCorreoHTML(mailOptions)
       .then((result) => {        
         if (result.info)
-          this.showSuccess(`Reposo Enviado a: matlux`, 'warning');
+          this.showSuccess(`Nuevo Ingreso Enviado a: ${correos}`, 'warning');
         else
           this.showSuccess(`Error: ${result?.error}`, 'danger');
       });

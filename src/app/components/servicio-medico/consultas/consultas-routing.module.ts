@@ -21,7 +21,7 @@ const routes: Routes = [
         data: {
           title: 'Atenciones'
         }
-      },      
+      },
       /*{
         path: 'serviciomedico/atenciones/planillaconsulta/:uid',
         component: planillaConsultaComponent,
@@ -32,7 +32,7 @@ const routes: Routes = [
       /*{
         path: 'serviciomedico/medicos',
         loadChildren: () => import('../planillas/planilla.module').then(m => m.PlanillaModule)
-      }, */           
+      },*/
     ]
   }
 ];

@@ -1,0 +1,91 @@
+<div class="animated fadeIn">
+  <div class="row">    
+    <div class="col-md-12 mb-4">        
+          <div class="col-lg-12">
+            <div class="card">
+              <div class="card-header">
+                 <strong>Solicitudes de Asistencias Médicas</strong>                 
+                 <div class="card-header-actions">                  
+                  <button type="button" class="btn btn-sm btn-pill btn-info" title="Mostrar Todas" (click)="mostrarTodo()"><i class="fa fa-refresh"></i></button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div *ngFor="let alert of alertsDismiss">
+                  <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+                </div>
+
+                <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by ... ID, C.I., Nombre, F.Solicitud, Estatus, Paramedico, Medico" />
+                
+                <table class="{{ classTable }} table-responsive table-sm" id="dataSolicitudes">
+                  <thead>
+                    <tr>
+                      <th>&nbsp;</th>                      
+                      <th scope="col" *ngFor="let t of titulos">                        
+                        <div *ngIf="returnedArray" class="col-6 col-sm-4 col-md-2 col-xl mb-3 mb-xl-0">
+                          <button type="button" (click)="sortTable(t.campo)" class="{{ classButton }}"><strong style="font-size: 0.75rem;">{{t.titulo}}</strong></button>
+                        </div>
+                    </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let p of returnedArray">                      
+                      <td>                            
+                        <div class="btn-group" dropdown>
+                          <button [disabled]="soloLectura" type="button" title="Imprimir Solicitud" (click)="planilla='imprimir'; downloadAsPDF(p); primaryModal.show();" class="btn btn-block btn-link"><i class="icon-printer"></i></button>                           
+                        </div>
+                      </td>
+                      <td>
+                        <a href="javascript:void(0)" (click)="darAtencion(p.uid)" class="badge badge-primary">{{p.uid}}</a>
+                      </td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.ci_paciente }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.paciente }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.fecha_solicitud | date:'yyyy-MM-dd hh:mm' }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.fecha_atencion | date:'yyyy-MM-dd hh:mm' }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.fecha_salida | date:'yyyy-MM-dd hh:mm' }}</td>
+                      <td style="font-size: 0.7rem;">{{ p.motivo }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.estatus }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">
+                        <div *ngFor="let c of p.consultas">
+                          <a href="javascript:void(0)" (click)="planilla='consulta'; irConsulta(c);">
+                            <small className="text-muted">{{c}}</small>
+                          </a>
+                        </div>
+                      </td>
+                      <td style="font-size: 0.7rem;">{{ p.observaciones }}</td>
+                      <td style="font-size: 0.7rem;">{{ p.observacion_sup }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.reposo }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.paramedico }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.medico }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.nombres_jefe }}</td>
+                    </tr>                   
+                  </tbody>
+                </table>
+                <ul class="pagination">
+                  <div class="col-xs-12 col-12 d-sm-down-none">
+                    <pagination [totalItems]="totalItems" (pageChanged)="pageChanged($event)" [rotate]="true" [maxSize]="10"></pagination>
+                  </div>
+                </ul>
+              </div>
+            </div>
+          </div>
+    </div>
+  </div>
+</div>
+<div bsModal #primaryModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content modal-primary" >
+      <div class="modal-header">        
+        <button type="button" class="close" (click)="primaryModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div *ngIf="planilla=='consulta'">
+          <app-consulta_one *ngIf="idConsulta!=undefined" [uidConsulta]="idConsulta"></app-consulta_one>
+        </div>
+        <div *ngIf="planilla=='imprimir'">
+          <planilla-solicitud [inSolicitud]="solicitudOne" ></planilla-solicitud>
+        </div>
+      </div>
+  </div>
+</div>

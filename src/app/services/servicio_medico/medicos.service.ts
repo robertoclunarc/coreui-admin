@@ -69,7 +69,7 @@ export class MedicosService {
 			);
   } 
   
-  paraMedicosOne(id: number) : Observable<IMedicos> { 
+  paraMedicosOne(id: number) : Observable<IParamedicos> { 
 
     return this.http.get<IParamedicos>(this.apiUrlMedicos + 'paramedicos/consultar/' + id)
 			.pipe(

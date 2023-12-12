@@ -29,17 +29,7 @@ import { LayoutServicioMedicoComponent } from './containers/layout-serviciomedic
 
 //eliminar despues de terminar historial medico:
 
-//import { CargosAnterioresComponent } from './components/servicio-medico/cargos_anteriores/cargos_anteriores.component';
-//import { AntecedenteFamiliarComponent } from './components/servicio-medico/antecedentes_familiares/antecedentefamiliar.component';
-//import { AntecedenteOcupacionalComponent } from './components/servicio-medico/antecedentes_ocupacionales/antecedenteocupacional.component';
-//import { HistorialConsultasComponent  } from './components/servicio-medico/historial_consulta/historial_consulta.component';
-//import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
-//import { AntecedentePatologicoComponent  } from './components/servicio-medico/antecedentes_patologicos/antecedentepatologico.component';
-//import { HabitosComponent  } from './components/servicio-medico/habitos/habitos.component';
-//import { AnamnesisPsicologicoComponent } from './components/servicio-medico/anamnesis_psicologico/anamnesispsicologico.component';
-//import { EstudiosFisicosComponent } from './components/servicio-medico/examen_fisico/examenfisico.component';
-//import { SignosVitalesComponent } from './components/servicio-medico/signos_vitales/signosvitales.component';
-//import { AntropometriaComponent } from './components/servicio-medico/antropometria/antropometria.component';
+import { SolicitudComponent } from './components/servicio-medico/solicitudes_asistencias/solicitud-one/solicitud.component';
 
 ///////////////////////////////////////////////
 
@@ -49,19 +39,8 @@ import { P500Component } from './views/error/500.component';
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
-  DefaultLayoutComponent, LayoutServicioMedicoComponent , 
-  
-  //CargosAnterioresComponent,  
-  //AntecedenteFamiliarComponent, 
-  //AntecedenteOcupacionalComponent, 
-  //HistorialConsultasComponent,
-  //ConsultaOneComponent, 
-  //AntecedentePatologicoComponent, 
-  //HabitosComponent, 
-  //AnamnesisPsicologicoComponent, 
-  //EstudiosFisicosComponent,
-  //SignosVitalesComponent, 
-  //AntropometriaComponent
+  DefaultLayoutComponent, LayoutServicioMedicoComponent ,   
+  SolicitudComponent
 ];
 
 import {

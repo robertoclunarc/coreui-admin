@@ -92,7 +92,12 @@
                         <i class="fa fa-edit"></i>
                         <strong>Datos Generales para la Atenci&oacute;n:   <code *ngIf="consultas.uid != undefined">Nro. {{consultas.uid}}</code></strong>
                         <div class="card-header-actions">
-                          <span class="badge badge-dark">Fecha: {{consultas.fecha | date:'dd/MM/yyyy'}}</span>
+                          <!--<span class="badge badge-dark">Fecha: {{consultas.fecha | date:'dd/MM/yyyy'}}</span>-->
+                          <label class="badge badge-info" for="txtFecha">Fecha:</label>
+                          <span class="badge">
+                            <input type="datetime-local" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFecha" [(ngModel)]="consultas.fecha" id="txtFecha">
+                            
+                          </span>
                           <span class="badge badge-info">Turno: {{consultas.turno}}</span>
                           <button type="button" class="card-header-action btn btn-link btn-minimize" (click)="toggleCollapse()"><i class={{iconCollapse}}></i></button>
                           
@@ -318,15 +323,21 @@
                               </div>
                             </div><!--/.row 3-->
                             <div class="row">        
-                              <div class="col-sm-6">
+                              <div class="form-group col-sm-6">
                                 <div class="form-group">
-                                  <span class="form-group has-float-label">                                                                       
+                                  <span class="form-group has-float-label">
                                       <select class="form-control form-control-sm" [disabled]="soloLectura" name="cboTipoAfecciones" [(ngModel)]="consultas.fkafeccion"  id="cboTipoAfecciones">
                                         <option *ngFor="let afec of afecciones" [value]="afec.idafecciones">{{afec.descripcion_afeccion}}</option>
                                       </select>
                                       <label class="badge-light" for="cboTipoAfecciones">Tipo de Afecci&oacute;n por Sistema</label>
                                    </span>
                                 </div>
+                              </div>
+                              <div class="form-group col-sm-6">
+                                <span class="form-group has-float-label">
+                                  <input type="datetime-local" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFechaSalida" [(ngModel)]="fechaSalida" id="txtFechaSalida">
+                                  <label for="txtFechaSalida">Fecha/Hora Salida</label>
+                                </span>
                               </div>
                             </div><!--/.row 4-->
                             <div class="row">
@@ -410,7 +421,7 @@
                               </div>
                               <div class="form-group col-sm-3">
                                 <span class="form-group has-float-label">                                
-                                  <input type="date" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFechaproxCita" [(ngModel)]="consultas.fecha_prox_cita" id="txtFechaproxCita">
+                                  <input type="datetime-local" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFechaproxCita" [(ngModel)]="consultas.fecha_prox_cita" id="txtFechaproxCita">
                                   <label for="txtFechaproxCita">Fecha Prox. Cita</label>
                                 </span>
                               </div>
@@ -419,14 +430,14 @@
                             <div class="row">
                               <div class="col-md-6">
                                 <span class="form-group has-float-label">                                  
-                                  <textarea id="txtMotivoConsulta" [disabled]="soloLectura" name="txtMotivoConsulta" [(ngModel)]="consultas.sintomas" rows="2"  class="form-control form-control-sm" placeholder="Descripcion Consulta..."></textarea>
+                                  <textarea id="txtMotivoConsulta" [disabled]="soloLectura" name="txtMotivoConsulta" maxlength="900" [(ngModel)]="consultas.sintomas" rows="2"  class="form-control form-control-sm" placeholder="Descripcion Consulta..."></textarea>
                                   <label for="txtMotivoConsulta">Motivo de la Consulta</label>
                                 </span>
                               </div>
                             
                               <div class="col-md-6">
                                 <span class="form-group has-float-label">                                
-                                  <textarea id="enfermedadActual" [disabled]="soloLectura" name="enfermedadActual" rows="2" [(ngModel)]="consultas.observaciones" class="form-control form-control-sm" placeholder="Sintomas Actuales..."></textarea>
+                                  <textarea id="enfermedadActual" [disabled]="soloLectura" name="enfermedadActual" maxlength="900" rows="2" [(ngModel)]="consultas.observaciones" class="form-control form-control-sm" placeholder="Sintomas Actuales..."></textarea>
                                   <label for="enfermedadActual">Enfermedad Actual</label>
                                 </span>
                               </div>
@@ -442,7 +453,7 @@
                             
                               <div class="col-md-6">
                                 <span class="form-group has-float-label">                                
-                                  <textarea id="observacion" name="observacion" [disabled]="soloLectura" rows="2" [(ngModel)]="consultas.observacion_medicamentos" class="form-control form-control-sm" placeholder="Observaciones..."></textarea>
+                                  <textarea id="observacion" name="observacion" [disabled]="soloLectura" rows="2" maxlength="900" [(ngModel)]="consultas.observacion_medicamentos" class="form-control form-control-sm" placeholder="Observaciones..."></textarea>
                                   <label for="observacion">Observaci&oacute;n</label>
                               </span>  
                               </div>

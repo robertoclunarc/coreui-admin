@@ -5,7 +5,7 @@ import { ModalDirective} from 'ngx-bootstrap/modal';
 import { TypeaheadMatch, TypeaheadDirective } from 'ngx-bootstrap/typeahead';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import * as XLSX from 'xlsx';
 
 //servicios
@@ -47,6 +47,8 @@ import { ImailOptions } from "../../../models/servicio-medico/correo.model";
 import { ItipoDiagnostico } from "../../../models/servicio-medico/tipoDiagnostico.model";
 
 import { environment } from "../../../../environments/environment";
+import { ISolicitudAtencion } from '../../../models/servicio-medico/solicitudatencion.model';
+import { SolicitudAtencionService } from '../../../services/servicio_medico/solicitudatencion.service';
 
 @Component({
   selector: 'app-consultas',
@@ -123,13 +125,16 @@ export class ConsultasComponent  implements OnInit  {
   medicamentoAplic: IMedicamentosAplicados={};
   arrayMedicamentosIndicados: IMedicamento[]=[];
   medicamentoIndicados: IindicacionMedica[]=[];
-  medicamentoIndic: IindicacionMedica={};  
+  medicamentoIndic: IindicacionMedica={};
+  solicitud: ISolicitudAtencion={}; 
   turno: number;
+  idSolicitud: number;
   historiaMedica: IHistoria_medica={};
   arrayTiposDiagnoticos: ItipoDiagnostico[]=[];
   loadingPatologia: boolean = false;
   queryPatologia: string[]=[];
   blockRegister: boolean = false;
+  fechaSalida: string;
   soloLectura: boolean;
   urlICD: string;
   public classTable: string;
@@ -174,6 +179,7 @@ export class ConsultasComponent  implements OnInit  {
   polarAreaChartType = 'polarArea';  
 
   constructor(
+    private route: ActivatedRoute,
     private router: Router,    
     private srvConsultas: ConsultasService,
     private srvPacientes: PacientesService,
@@ -191,6 +197,7 @@ export class ConsultasComponent  implements OnInit  {
     private srvCorreo: CorreoService,
     private srvTipoDiagnosticos: DiagnosticosService,
     private srvVarios: VarioService,
+    private srvSolicitud: SolicitudAtencionService,
     @Inject(LOCALE_ID) public locale: string,  
   ) { this.urlICD = environment.urlICD;  }
 
@@ -220,8 +227,8 @@ export class ConsultasComponent  implements OnInit  {
     
     this.llenarArrayTiposDiagnosticos();
     this.llenarArrayConsultasMotivos();
-		this.llenarArrayConsultas(true);    
-    this.llenarArrayMotivos();
+		
+    await this.llenarArrayMotivos();
     this.llenarArrayAreas();
     
     this.patologiasAll = await  this.llenarArrayPatologias(undefined,undefined,undefined,undefined, undefined, undefined)
@@ -230,8 +237,43 @@ export class ConsultasComponent  implements OnInit  {
     this.llenarArrayRemitidos();
     this.llenarArrayTiempoReposo();
     this.llenarArraymedicamentos('EXISTECIA');
+
+    this.idSolicitud = this.route.snapshot.paramMap.get("idsolicitud")!==undefined? Number(this.route.snapshot.paramMap.get("idsolicitud")): undefined;
     
+    if (this.idSolicitud){
+      this.traerDatosSolicitud();      
+    }
+    this.llenarArrayConsultas(true);
 	}
+
+  async traerDatosSolicitud(){
+    try {
+      this.solicitud = await this.srvSolicitud.solicitudOne(this.idSolicitud).toPromise();
+      
+      this.primaryModal.show();
+      await this.showModalRegistrar();
+      this.paciente.ci = this.solicitud.ci_paciente;
+      this.buscarPaciente();    
+      this.consultas.sintomas = this.solicitud.motivo;
+      let fecha = new Date();
+      this.fechaSalida = formatDate(fecha.setMinutes(fecha.getMinutes()+15), 'yyyy-MM-dd HH:mm', this.locale);
+      this.solicitud.fecha_salida = this.fechaSalida;
+      
+      if (this.solicitud.id_consulta){
+        const ultimaAtencion: IConsultas = await this.srvConsultas.consultasOne(this.solicitud.id_consulta).toPromise();
+        this.vConsultas.fkdiagnostico = this.motivos.find((m) => {return m.uid == ultimaAtencion.id_motivo}).fkdiagnostico
+        await this.listarMotivos(this.vConsultas.fkdiagnostico);       				
+        this.consultas.id_patologia = ultimaAtencion.id_patologia;
+        this.consultas.id_area = ultimaAtencion.id_area;
+        this.consultas.id_motivo = ultimaAtencion.id_motivo;
+        this.consultas.fkafeccion = ultimaAtencion.fkafeccion;        
+      }
+      
+    } catch (error) {
+      console.error(error);
+    }    			
+  }
+
   public downloadAsPDF(uid: number) {
     
     //this.router.navigate([`serviciomedico/atenciones/planillaconsulta/${uid}`]);
@@ -260,7 +302,7 @@ export class ConsultasComponent  implements OnInit  {
     
 		return await this.srvConsultas.consultaFilter(this.buscarConsulta)
 			.toPromise()			
-			.catch(err => { console.log(err) });
+			.catch(err => { console.error(err) });
 	}
   
   async llenarArrayConsultas(conFechaActual?: boolean) {
@@ -269,7 +311,7 @@ export class ConsultasComponent  implements OnInit  {
     this.buscarConsulta.fecha = conFechaActual ? this.searchText : 'null';
 		this.srvConsultas.consultaFilter(this.buscarConsulta)
 			.toPromise()
-			.then(results => {			
+			.then(results => {
 				
 				this.consultasTodas = results;
         
@@ -278,7 +320,7 @@ export class ConsultasComponent  implements OnInit  {
         this.returnedArray = this.consultasTodas.slice(0, this.numPages);
 				
 			})
-			.catch(err => { console.log(err) });
+			.catch(err => { console.error(err) });
 	} 
   
   private async llenarArrayConsultasMotivos() {    
@@ -426,9 +468,9 @@ export class ConsultasComponent  implements OnInit  {
 
   }
 
-  private llenarArrayMotivos(){
+  private async llenarArrayMotivos(){
 
-    this.srvMotivo.motivosAll()
+    await this.srvMotivo.motivosAll()
       .toPromise()
       .then(result => {
         this.motivos=result;           
@@ -605,9 +647,8 @@ export class ConsultasComponent  implements OnInit  {
           });
     }
     else {
-      this.totalItems = this.consultasTodas.length;
-      this.returnedArray = this.consultasTodas;
-      this.returnedArray = this.returnedArray.slice(0, this.numPages);
+      this.totalItems = this.consultasTodas.length;      
+      this.returnedArray = this.consultasTodas.slice(0, this.numPages);
       this.maxSize = Math.ceil(this.totalItems/this.numPages);
     }
   }
@@ -738,10 +779,11 @@ export class ConsultasComponent  implements OnInit  {
     }    
   }
 
-  async showModalRegistrar(){
+  async showModalRegistrar(){    
     this.soloLectura=false;
     this.autorizacion=false;
-    this.verTurno();
+    this.verTurno();   
+    this.fechaSalida="";
     this.newConsulta=true;
     this.modalTitle = "Nueva Consulta Medica";
     if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
@@ -770,14 +812,20 @@ export class ConsultasComponent  implements OnInit  {
     //this.llenarArraymedicamentos('EXISTECIA');
     this.medicamentoAplicado={};
     this.medicamentoAplicado.medicamentos=[];
-    this.consultas.fecha= formatDate(Date.now(), 'yyyy-MM-dd', 'en');
+
+    let fecha = new Date();    
+    const fechaObjeto = formatDate(fecha.setMinutes(fecha.getMinutes()+1), 'yyyy-MM-dd HH:mm', this.locale);
+    this.consultas.fecha = fechaObjeto;
+
+    /*const hoy = formatDate(Date.now(), 'yyyy-MM-dd HH:mm', this.locale);
+    const fechaObjeto = new Date(hoy);
+    this.consultas.fecha= fechaObjeto.toISOString().slice(0, 16);*/
     this.consultas.turno=this.turno;
     this.signoVital={};
     this.antropometria={};
   }  
 
-  async  showModalActualizar(item: IvConsulta){
-    console.log(item)
+  async  showModalActualizar(item: IvConsulta){    
     this.soloLectura=true;
     if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
       this. soloLectura=false;
@@ -797,20 +845,33 @@ export class ConsultasComponent  implements OnInit  {
     await this.listarMotivos(item.fkdiagnostico);
     this.consultas={};
     this.paciente={};
+    this.srvSolicitud.atencionOne(item.uid)
+    .toPromise()
+    .then((res)=>{      
+      if (res.fecha_salida){       
+        const fechaSalidaSolicitud = new Date(res.fecha_salida);
+        this.fechaSalida = fechaSalidaSolicitud.toISOString().slice(0, 16);
+      }
+    });
+    const fechaObjeto = new Date(item.fecha_prox_cita);  
+    const fechaProxCita = fechaObjeto.toISOString().slice(0, 16);
+    const fechaConsulta = new Date(item.fecha);  
+    const fechaAtencion = fechaConsulta.toISOString().slice(0, 16);    
     this.consultas = {
-      fecha: item.fecha,
+      fecha: fechaAtencion,
       uid: item.uid,      
       id_motivo: item.idmotivo,
       id_area: item.id_area,      
       fkafeccion: item.fkafeccion,      
       condicion: item.condicion==='APTO CON RESTRICCION'? 'APTO RESTR': item.condicion,
-      fecha_prox_cita: item.fecha_prox_cita,
+      fecha_prox_cita: fechaProxCita,
       sintomas: item.sintomas,
       observaciones: item.observaciones,
       resultado_eva: item.resultado_eva,
       observacion_medicamentos: item.observacion_medicamentos,
       autorizacion: item.autorizacion,
       turno: item.turno,
+      
     }
     if (this.consultas.id_motivo===9){
       this.preEmpleo=true;
@@ -1024,11 +1085,12 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   async registrar(){
+    
     this.blockRegister=true;
     this.popoverConsulta={};
-    const fechaConsulta: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
-    if (this.newConsulta) {
-      let consultaNew: IvConsulta={};
+    const fechaRegistro: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
+    const fechaConsulta: string = this.consultas.fecha;
+    if (this.newConsulta) {      
       let referenciaMedica: string="";
       for (let i=0; i< this.arrayReferencias.length; i++){
         referenciaMedica = referenciaMedica + ">>" + this.arrayReferencias[i].especialidad.toUpperCase().trim() + ":" + "\n" + this.arrayReferencias[i].informe.trim() + "\n";
@@ -1042,9 +1104,9 @@ export class ConsultasComponent  implements OnInit  {
       this.consultas={
         uid: undefined,
         id_paciente: this.paciente.uid_paciente,
-        fecha: fechaConsulta,        
+        fecha: this.consultas.fecha,        
         id_patologia: this.selectedOptionPatolog.uid,        
-        fecha_registro: fechaConsulta,
+        fecha_registro: fechaRegistro,
         turno: this.turno,
         indicaciones_comp: indicaciones,
         referencia_medica: referenciaMedica,                 
@@ -1060,11 +1122,11 @@ export class ConsultasComponent  implements OnInit  {
         sintomas: this.consultas.sintomas,
         observaciones: this.consultas.observacion_medicamentos,
         resultado_eva: this.consultas.resultado_eva,
-        observacion_medicamentos: this.consultas.observacion_medicamentos
-        
+        observacion_medicamentos: this.consultas.observacion_medicamentos,
+        fecha_prox_cita: this.consultas.fecha_prox_cita
       };
       
-      this.popoverConsulta = await this.validaEntradas(this.consultas.id_paciente, fechaConsulta);
+      this.popoverConsulta = await this.validaEntradas(this.consultas.id_paciente, fechaRegistro);
       
       if ( this.popoverConsulta.alerta!=undefined){        
         this.alertaRegistrar = this.popoverConsulta.alerta;
@@ -1076,7 +1138,7 @@ export class ConsultasComponent  implements OnInit  {
 
       let historia: IHistoria_paciente ={
         fk_historia: this.historiaMedica.uid_historia,
-        fecha_historia: fechaConsulta,
+        fecha_historia: fechaRegistro,
         indice: 0,
         motivo_historia: this.motivos.find((m: any) => {return m.uid==this.consultas.id_motivo }).descripcion,
         observacion: this.consultas.observaciones,
@@ -1086,7 +1148,7 @@ export class ConsultasComponent  implements OnInit  {
 			await this.srvConsultas.nuevo(this.consultas)				
 				.then(async results => {
           this.consultas=results;
-          
+          this.consultas.fecha = fechaConsulta;
           if (this.consultas.uid && typeof this.consultas.uid === 'number'){
             
             this.srvHistorias.nuevoHistoriaPaciente(historia);
@@ -1106,20 +1168,20 @@ export class ConsultasComponent  implements OnInit  {
               condlogica: 'null',
               patologia: 'null',
             };
-            await this.guardarSignosVit(fechaConsulta, this.paciente.ci );
+            await this.guardarSignosVit(fechaRegistro, this.paciente.ci );
             this.medicamentoAplicado.id_consulta=this.consultas.uid
             await this.guardarMedicametosAplicados();
-            /*this.consultasFilter().then(
-              result => { 
-                consultaNew=result[0];                
-                this.consultasTodas.unshift(consultaNew);
-                this.sortOrder =  this.sortOrder * (-1);
-                this.sortTable('uid');                
-              }
-            );*/
+            
+            if (this.solicitud){
+              await this.solicitudAtendida(this.consultas, this.paciente);
+            }
+
             this.llenarArrayConsultas(true);
             console.log(`Reposo: ${this.consultas.id_reposo}`);
             this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
+            if (this.idSolicitud){
+              this.router.navigate(["serviciomedico/solicitudes"]);
+            }
           }
           else{
             this.showSuccess('Error Registrando', 'danger');
@@ -1151,6 +1213,59 @@ export class ConsultasComponent  implements OnInit  {
     this.arrayReferencias=[];
 		this.newConsulta = false;
     this.primaryModal.hide();
+  }
+
+  async solicitudAtendida(newConsulta: IConsultas, paciente: IvPaciente){
+    try {      
+    
+      console.log(`prox. cita: ${newConsulta.fecha_prox_cita}`);
+      this.solicitud.estatus = newConsulta.fecha_prox_cita ? "PENDIENTE" : "CERRADA";
+      this.solicitud.fecha_atencion = newConsulta.fecha;
+      this.solicitud.fecha_salida = this.fechaSalida==this.solicitud.fecha_salida ? this.solicitud.fecha_salida : this.fechaSalida;
+      this.solicitud.motivo = newConsulta.sintomas;
+      this.solicitud.id_reposo = newConsulta.id_reposo;
+      this.solicitud.id_medico = newConsulta.id_medico;
+      this.solicitud.id_paramedico = newConsulta.id_paramedico;
+      this.solicitud.observaciones = newConsulta.observaciones;
+      this.solicitud.id_consulta = newConsulta.uid;
+      console.log(this.solicitud);
+      console.log(newConsulta);
+      this.srvSolicitud.actualizar(this.solicitud).subscribe();
+      this.srvSolicitud.registrarConsultaSolicitud({id_consulta: this.solicitud.id_consulta, id_solicitud: this.solicitud.uid, fecha_salida: this.solicitud.fecha_salida }).subscribe();
+      const reposo: string = this.tiemposReposo.find((t) => { return t.uid == newConsulta.id_reposo}).descripcion;
+      
+      let remitentes: string[] = await this.getRemitentes('PRUEBA');
+      remitentes.push(this.solicitud.email_solicitante);
+      if (this.solicitud.email_supervisor){
+        remitentes.push(this.solicitud.email_supervisor);
+      }
+      
+      if (remitentes.length>0){
+        const correos: string = remitentes.toString();
+        const asunto: string =  `RE: Solicitud de Asistencia ID ${this.solicitud.uid}: Paciente ${paciente.nombre_completo}`;
+
+        this.solicitud.fecha_atencion = await this.srvVarios.formateaFecha(this.solicitud.fecha_atencion.toString());
+        this.solicitud.fecha_salida = await this.srvVarios.formateaFecha(this.solicitud.fecha_salida.toString());
+        newConsulta.fecha_prox_cita = newConsulta.fecha_prox_cita!==undefined ? await this.srvVarios.formateaFecha(newConsulta.fecha_prox_cita) : undefined;
+        
+        const cuerpo: string = await this.srvSolicitud.cuerpoCorreoSolicitudAtendida(paciente, this.solicitud, newConsulta.fecha_prox_cita, reposo);
+        const mailOptions: ImailOptions = {
+          to: correos,
+          subject: asunto,
+          html: cuerpo,
+        };
+        this.enviarCorreoHTML(mailOptions)
+        .then((result) => {        
+          if (result.info)
+            this.showSuccess(`${asunto} Enviado a: ${correos}: `, 'warning');
+          else
+            this.showSuccess(`Error: ${result?.error}`, 'danger');
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      this.showSuccess(`Error: ${error}`, 'danger');
+    }
   }
 
   addReferencia(){
@@ -1273,7 +1388,7 @@ export class ConsultasComponent  implements OnInit  {
       //msg: `This alert will be closed in 15 seconds (added: ${new Date().toLocaleTimeString()})`,
       timeout: 15000
     });
-  }  
+  }
 
   onClosed(dismissedAlert: AlertComponent): void {
     this.alertsDismiss = this.alertsDismiss.filter(alert => alert !== dismissedAlert);
@@ -1528,7 +1643,7 @@ export class ConsultasComponent  implements OnInit  {
     if (respuesta.error==undefined){
       console.log(`Info: ${respuesta?.info}`);
     }else{
-      console.log(`Error: ${respuesta.error}`);
+      console.error(`Error: ${JSON.stringify(respuesta.error)}`);
     }
        
     return respuesta;  
@@ -1542,11 +1657,11 @@ export class ConsultasComponent  implements OnInit  {
     });
     if (notaExamen.nombre_completo){
       //notaExamen.mor_fecha = formatDate(notaExamen.mor_fecha, 'dd-MM-yyyy HH:mm', this.locale);
-      console.log(notaExamen);
+      //console.log(notaExamen);
       notaExamen.mor_fecha = await this.srvVarios.formateaFecha(notaExamen.mor_fecha.toString());
-      console.log(notaExamen.mor_fecha);
+      //console.log(notaExamen.mor_fecha);
       if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10 || idMotivo==13){ 
-        console.log(`Motivo: ${idMotivo}`);     
+       // console.log(`Motivo: ${idMotivo}`);     
         if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10){
           const asuntoExamen = this.motivos.find( m => m.uid === idMotivo ).descripcion + " " + notaExamen.nombre_completo;
           const cuerpoExamen: string = await this.srvConsultas.cuerpoDelExamen(notaExamen);

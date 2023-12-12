@@ -8,6 +8,7 @@ import { LoginServicioMedicoComponent  } from './components/servicio-medico/logi
 import { RegisterComponent } from './views/register/register.component';
 import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
 import { PortadaComponent } from './views/portada/portada.component';
+import { SolicitudComponent } from './components/servicio-medico/solicitudes_asistencias/solicitud-one/solicitud.component';
 
 export const routes: Routes = [
   {
@@ -16,9 +17,11 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'principalBalanza',
-    redirectTo: 'principalBalanza',    
-    pathMatch: 'full',
+    path: 'solicitud',
+    component: SolicitudComponent,
+    data: {
+      title: 'Solicitud de Asistencia'
+    }
   },
   {
     path: '',
@@ -33,7 +36,7 @@ export const routes: Routes = [
     data: {
       title: 'Portada'
     }
-  },  
+  },
   {
     path: '404',
     component: P404Component,
@@ -85,6 +88,14 @@ export const routes: Routes = [
         loadChildren: () => import('./components/servicio-medico/consultas/consultas.module').then(m => m.ConsultasModule)
       },
       {
+        path: 'serviciomedico/atenciones/:idsolicitud',
+        loadChildren: () => import('./components/servicio-medico/consultas/consultas.module').then(m => m.ConsultasModule)
+      },
+      {
+        path: 'serviciomedico/solicitudes',
+        loadChildren: () => import('./components/servicio-medico/solicitudes_asistencias/solicitudes-all/solicitudes-all.module').then(m => m.SolicitudesAllModule)
+      },
+      {
         path: 'serviciomedico/historia',
         loadChildren: () => import('./components/servicio-medico/historia-medica/historial.module').then(m => m.HistorialModule)
       }, 
@@ -95,7 +106,7 @@ export const routes: Routes = [
       {
         path: 'serviciomedico/principal',
         loadChildren: () => import('./components/servicio-medico/principal-servicio-medico/principal-servicio-medico.module').then(m => m.DashboardModule)
-      },
+      },      
       {
         path: 'serviciomedico/medicos',
         loadChildren: () => import('./components/servicio-medico/maestro-medicos/maestro-medico.module').then(m => m.MaestroMedicoModule)

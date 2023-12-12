@@ -1,0 +1,142 @@
+<div class="container">
+    <div class="row" >
+        <div class="container-fluid">
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <button type="button" [disabled]="disableButtonImp" class="btn btn-outline-dark" (click)="exportHtmlToPDF()">{{titleButtonImp}}</button>
+                <!--<button printSectionId="htmltable" class="btn btn-outline-dark" ngxPrint>Vista Prelim.</button> -->     
+            </div>    
+        </div>
+    </div>    
+  
+    <div class="container-fluid" id="htmltable" #htmltable>
+        <table style="width: 100%; border: none;">
+            <thead>
+                <tr>
+                    <td style="width: 15%" ><img width="110px" height="70px" src="../../../assets/MATESI_logo_1.png"></td>
+                    <td style="width: 15%" ><img width="110px" height="70px" src="../../../assets/logo.jpg"></td>
+                    <th style="width: 50%" >
+                        <span style="font-size: 14px; text-align: center;">GERENCIA&nbsp; DE&nbsp; SEGURIDAD&nbsp; LABORAL</span><br>                                  
+                    </th>
+                    <td style="width: 20%;;" >
+                        <span style="font-size: 10px; text-align: left;"><strong>41601PRAC003-FORM001</strong><br> VERSIÓN: 01<br> VIGENCIA:</span>                    
+                    </td>
+                </tr>
+            </thead>
+        </table>
+        <table style="width: 100%; border: 1px solid #595959; border-collapse: collapse;">        
+            <tbody>                
+                <tr>
+                    <th style="background-color: red; color: white; text-align: center;" colspan="6"><strong>SOLICITUD DE ASISTENCIA MEDICA</strong></th>
+                </tr>
+                <tr>
+                    <td colspan="2"><strong>1. FECHA</strong></td>
+                    <td colspan="2"><strong>2. GERENCIA GENERAL O GERENCIA</strong></td>
+                    <td colspan="2"><strong>3. DEPARTAMENTO / CORDINACION / SECCION</strong></td>
+                </tr>
+                <tr>
+                    <td colspan="2">{{inSolicitud.fecha_solicitud | date:'dd-MM-yyyy'}}</td>
+                    <td colspan="2">{{paciente.gcia}}</td>
+                    <td colspan="2">{{paciente.departamento}}</td>
+                </tr>                
+                <tr>
+                    <th style="background-color: red; color: white; text-align: center;" colspan="6"><strong>DATOS DEL TRABAJADOR</strong></th>
+                </tr>
+                <tr>
+                    <th colspan="2">5.1 NOMBRE Y APELLLIDO</th>
+                    <th>5.2 N° CÉDULA</th>
+                    <th>EDAD</th>
+                    <th colspan="2">CARGO</th>
+                </tr>
+                <tr>
+                    <td style="font-family: 'Courier New', Courier, monospace;" colspan="2">{{inSolicitud.paciente}}</td>
+                    <td>{{inSolicitud.ci_paciente}}</td>
+                    <td>{{edad}}</td>
+                    <td style="font-family: 'Courier New', Courier, monospace;" colspan="2">{{paciente.cargo}}</td>
+                </tr>
+                <tr>
+                    <th style="background-color: red; color: white; text-align: center;" colspan="6"><strong>MOTIVO DE LA CONSULTA</strong></th>
+                </tr>
+                <tr>
+                    <td colspan="6">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="font-family: 'Courier New', Courier, monospace;" colspan="6">{{inSolicitud.motivo}}</td>
+                </tr>
+                <tr>
+                    <td colspan="6">&nbsp;</td>
+                </tr>
+                <tr>
+                    <th style="background-color: red; color: white; text-align: center;" colspan="6"><strong>CRONOGRAMA DE EVALUACIÓN</strong></th>
+                </tr>
+                <tr>
+                    <th style="background-color: rgb(121, 211, 247); text-align: center;">HORA&nbsp; DE&nbsp; SOLICITUD</th>
+                    <td>{{inSolicitud.fecha_solicitud | date:'hh:mm'}}</td>
+                    <th style="background-color: rgb(121, 211, 247); text-align: center;">LLEGADA&nbsp; SERVICIO&nbsp; MEDICO</th>
+                    <td>{{inSolicitud.fecha_atencion | date:'hh:mm'}}</td>
+                    <th style="background-color: rgb(121, 211, 247); text-align:  center;">SALIDA&nbsp; SERVICIO&nbsp; MEDICO</th>
+                    <td>{{inSolicitud.fecha_salida | date:'hh:mm'}}</td>
+                </tr>
+                <tr>
+                    <th>NOMBRE Y APELLIDO <br> DEL SUPERVISOR:</th>
+                    <td style="font-family: 'Courier New', Courier, monospace;">{{inSolicitud.nombres_jefe}}</td>
+                    <th>NOMBRE Y APELLIDO <br> DEL ENFERMERO:</th>
+                    <td style="font-family: 'Courier New', Courier, monospace;">{{inSolicitud.paramedico}}</td>
+                    <th>NOMBRE Y APELLIDO <br> DEL MÉDICO:</th>
+                    <td style="font-family: 'Courier New', Courier, monospace;">{{inSolicitud.medico}}</td>
+                </tr>
+                <tr>
+                    <td colspan="2">FIRMA</td>
+                    <td colspan="2">FIRMA</td>
+                    <td colspan="2">FIRMA</td>
+                </tr>
+                <tr>
+                    <td colspan="2">&nbsp;</td>
+                    <td colspan="2">&nbsp;</td>
+                    <td colspan="2">&nbsp;</td>
+                </tr>
+                <tr>
+                    
+                    <th style="background-color: red; color: white; text-align: center;" colspan="6"><strong>RESULTADOS DE LA EVALUACIÓN</strong></th>
+                </tr>
+                <tr>
+                    <td><img width="60px" height="40px" src="{{incorporacionTrabajo}}"></td>
+                    <td colspan="2">INCORPORACIÓN&nbsp; AL&nbsp; TRABAJO</td>
+                    <td><img width="60px" height="40px" src="{{reposoRestoTurno}}"></td>
+                    <td colspan="2">REPOSO&nbsp; EL&nbsp; RESTO&nbsp; DEL&nbsp; TURNO</td>
+                </tr>
+                <tr>
+                    <th style="background-color: red; color: white; text-align: center;" colspan="6"><strong>OBSERVACIONES</strong></th>
+                </tr>
+                <tr>
+                    <td colspan="6">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="font-family: 'Courier New', Courier, monospace;" colspan="6">{{inSolicitud.observaciones}}</td>
+                </tr>
+                <tr>
+                    <td colspan="6">&nbsp;</td>
+                </tr>
+                <tr>
+                    <th style="background-color: red; color: white; text-align: center;" colspan="6"><strong>PARA&nbsp; USO DEL SUPERVISOR</strong></th>
+                </tr>                
+                <tr>
+                    <td colspan="6">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td style="font-family: 'Courier New', Courier, monospace;" colspan="6">{{inSolicitud.observacion_sup}}</td>
+                </tr>
+                <tr>
+                    <td colspan="6">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td colspan="6">FIRMA</td>
+                </tr>
+                <tr>
+                    <th style="font-family: 'Courier New', Courier, monospace; font-size: 12px;" colspan="6"><strong>EN&nbsp; CASO&nbsp; DE&nbsp; EMERGENCIA&nbsp; NO&nbsp; SERÁ&nbsp; NECESARIO&nbsp; PRESENTAR&nbsp; ESTA&nbsp; SOLICITUD&nbsp; PARA&nbsp; LA&nbsp; ASISTENCIA MÉDICA.</strong></th>
+                </tr>
+            </tbody>
+        
+        </table>
+    </div>
+</div>    
+        

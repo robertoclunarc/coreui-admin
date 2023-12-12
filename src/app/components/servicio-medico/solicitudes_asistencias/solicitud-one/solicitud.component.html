@@ -1,0 +1,123 @@
+<div style="background: url('../../../assets/img/banner.JPG')no-repeat 0px 0px; height: 100vh; background-size: cover;
+text-align: center;" class="">  
+  <div  class="col-sm-12 col-md mb-sm-2 mb-1">
+    <div style="background: rgba(255, 255, 255, 0.09); max-width: 100%; padding: 40px 15px 15px; margin: 0 auto;	margin-top:0px;" class="card">      
+      <div class="row">
+        <div class="card mx-auto">
+          <div class="card-header">
+            <strong>Solicitud de Asistencia Médica</strong>
+          </div>
+          <div class="card-body">
+            <form action="" method="post" class="form-horizontal">
+              <table class="table table-sm table-borderless">          
+                <tr>
+                  <td>                
+                      <div class="input-group">                            
+                        <span class="input-group-prepend">
+                        <button type="button"                                      
+                            (click)="buscarPaciente()" 
+                            class="btn btn-primary btn-sm">
+                            <i class="fa fa-search"></i> 
+                            Trabajador
+                          </button>
+                        </span>
+                        <input type="text" id="txtCi" name="txtCi" [(ngModel)]="paciente.ci" (keyup.enter)="buscarPaciente()" class="form-control form-control-sm" placeholder="Cedula">                    
+                      </div>                
+                  </td>
+                  <td>                    
+                      <div class="form-group">
+                        <span class="form-group has-float-label">                                                                    
+                          <input type="text" class="form-control form-control-sm" id="txtNombre" name="txtNombre" readonly [(ngModel)]="paciente.nombre" placeholder="Nombre del Paciente">
+                          <label class="badge-light" for="txtNombre">Nombre</label>
+                        </span>
+                      </div>                    
+                  </td>
+                  <td>                    
+                      <div class="form-group">
+                        <span class="form-group has-float-label">                                                                    
+                          <input type="text" class="form-control form-control-sm" id="txtApellido" readonly name="txtApellido" [(ngModel)]="paciente.apellido" placeholder="Apellido del Paciente">
+                          <label class="badge-light" for="txtApellido">Apellido</label>
+                        </span>
+                      </div>
+                    
+                  </td>
+                  <td  rowspan="3">
+                    <div class="col-sm text-center">                  
+                      <img width="150px" height="150px" [src]="fotoPaciente" alt="Foto" class="rounded-circle">
+                    </div>               
+                  </td>
+                </tr>               
+                 
+                <tr>
+                  <td>
+                    <div class="form-group">
+                      <span class="form-group has-float-label">
+                        <input type="text" class="form-control form-control-sm" readonly name="txtCargo" [(ngModel)]="paciente.cargo" id="txtCargo" placeholder="Cargo">
+                        <label for="txtCargo">Cargo</label>
+                      </span>
+                    </div>
+                  </td>
+                  <td >
+                    <div class="form-group">                                
+                      <span class="form-group has-float-label">
+                        <input type="text" class="form-control form-control-sm" readonly name="txtDpto" id="txtDepto" [(ngModel)]="paciente.departamento" placeholder="Departamento">
+                        <label for="txtDpto">Departamento</label>
+                      </span>
+                    </div>
+                  </td>
+                  <td >
+                    <div class="form-group">
+                      <span class="form-group has-float-label">                                  
+                        <input type="text" class="form-control form-control-sm" readonly name="txtGcia"  id="txtGcia" [(ngModel)]="paciente.gcia" placeholder="Gerencia">
+                        <label for="txtGcia">Gerencia</label>
+                      </span>
+                    </div>
+                  </td>
+                  
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <div class="col-md-12">
+                      <span class="form-group has-float-label">                                                                       
+                        <select class="form-control form-control-sm" (change)="seleccionarMotivo($event.target.value)" name="cboTipoAfecciones" [(ngModel)]="selectedMotivo"  id="cboTipoAfecciones">
+                          <option *ngFor="let afec of arrayMotivos" [value]="afec">{{afec}}</option>
+                        </select>
+                        <label class="badge-light" for="cboTipoAfecciones">Motivo</label>
+                      </span>
+                      <span *ngIf="selectedMotivo=='Otro'" class="form-group has-float-label">
+                        <textarea id="motivo" name="motivo" rows="3" maxlength="900" [(ngModel)]="solicitud.motivo" class="form-control form-control-sm" placeholder="Motivo"></textarea>
+                        <label for="motivo">Motivo</label>
+                      </span>
+                    </div>
+                  </td>
+                  
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <div class="col-md-12">
+                      <span class="form-group has-float-label">
+                        <textarea id="observacionSup" name="observacionSup" rows="3" maxlength="900" [(ngModel)]="solicitud.observacion_sup" class="form-control form-control-sm" placeholder="Observacion"></textarea>
+                        <label for="observacionSup">Observacion Supervisor</label>
+                      </span>
+                    </div>
+                  </td>
+                  
+                </tr>
+              
+              </table>
+            </form>
+          </div>
+          <div class="card-footer">
+            
+            <button [disabled]="soloLectura" type="button" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
+            <button type="button" (click)="reset()" class="btn btn-sm btn-danger" ><i class="fa fa-dot-circle-o"></i> Reset</button>
+            <div *ngFor="let alert of alertsDismiss">
+              <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
+            </div>
+          </div>
+        </div>
+            
+      </div><!--/.row-->
+    </div>
+  </div>
+</div>
