@@ -27,11 +27,22 @@ export class LoginSecioMedicoService {
 		return this.http.post<IUsuarios>(this.apiUrlLogin , { login: username, passw: password })
 			.pipe(
 				tap(result => {           
-          if (JSON.stringify(result).length>2) {
-            //console.log(JSON.stringify(result));
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            sessionStorage.setItem('currentUser', JSON.stringify(result));
-            
+          if (result) {            
+            sessionStorage.setItem('currentUser', JSON.stringify(result));            
+            this.user=JSON.parse(sessionStorage.currentUser);
+            sessionStorage.setItem('tipoUser', this.tipoUser(this.user))
+          }
+        }),
+				catchError(this.handleError)
+			);
+	}
+
+  loguearAsistenciaLaboral(username: string, password: string): Observable<IUsuarios> {		
+		return this.http.post<IUsuarios>(this.apiUrlLogin + "/asistencialaboral" , { login: username, passw: password })
+			.pipe(
+				tap(result => {           
+          if (result) {            
+            sessionStorage.setItem('currentUser', JSON.stringify(result));            
             this.user=JSON.parse(sessionStorage.currentUser);
             sessionStorage.setItem('tipoUser', this.tipoUser(this.user))
           }

@@ -107,10 +107,17 @@ text-align: center;" class="">
               </table>
             </form>
           </div>
-          <div class="card-footer">
-            
-            <button [disabled]="soloLectura" type="button" (click)="guardar()" class="btn btn-sm btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Guardar</button>
-            <button type="button" (click)="reset()" class="btn btn-sm btn-danger" ><i class="fa fa-dot-circle-o"></i> Reset</button>
+          <div>
+            <alert type="warning" [dismissible]="dismissible">
+              <strong>EN CASO DE EMERGENCIA NO SERÁ NECESARIO PRESENTAR ESTA SOLICITUD PARA LA ASISTENCIA MÉDICA.</strong>
+            </alert>
+          </div>
+          
+          <div class="card-footer">            
+            <button [disabled]="soloLectura" type="button" (click)="guardar()" class="btn btn-sm btn-success" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar"><i class="fa fa-dot-circle-o"></i> Enviar</button>
+            <button type="button" (click)="reset()" class="btn btn-sm btn-primary" ><i class="fa fa-eraser"></i> Limpiar</button>
+            <button type="button" (click)="salir()" class="btn btn-sm btn-danger" ><i class="fa fa-sign-out"></i> Salir</button>
+            <br><br>
             <div *ngFor="let alert of alertsDismiss">
               <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
             </div>

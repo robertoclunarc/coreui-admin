@@ -17,7 +17,7 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'solicitud',
+    path: 'serviciomedico/solicitud',
     component: SolicitudComponent,
     data: {
       title: 'Solicitud de Asistencia'
@@ -90,6 +90,13 @@ export const routes: Routes = [
       {
         path: 'serviciomedico/atenciones/:idsolicitud',
         loadChildren: () => import('./components/servicio-medico/consultas/consultas.module').then(m => m.ConsultasModule)
+      },
+      {
+        path: 'serviciomedico/solicitudes/nueva',
+        component: SolicitudComponent,
+        data: {
+          title: 'Nueva Solicitud de Asistencia'
+        }
       },
       {
         path: 'serviciomedico/solicitudes',

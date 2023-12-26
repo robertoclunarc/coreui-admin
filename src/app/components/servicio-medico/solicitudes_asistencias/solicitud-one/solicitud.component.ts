@@ -1,7 +1,7 @@
 import { Component, OnInit, Inject, LOCALE_ID } from '@angular/core';
-
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { formatDate } from '@angular/common';
+import { Router, ActivatedRoute } from '@angular/router';
 //Models
 import { ISolicitudAtencion } from '../../../../models/servicio-medico/solicitudatencion.model';
 //import { ITiempoReposo } from '../../../models/servicio-medico/tiemporeposos.model';
@@ -14,6 +14,9 @@ import { PacientesService } from '../../../../services/servicio_medico/pacientes
 import { VarioService } from '../../../../services/servicio_medico/varios.service'
 import { CorreoService } from '../../../../services/servicio_medico/correo.service';
 import { TrabajadoresService } from '../../../../services/servicio_medico/trabajadores.service';
+import { LoginSecioMedicoService } from '../../../../services/servicio_medico/login-secio-medico.service';
+import { IUsuarios } from '../../../../models/servicio-medico/usuarios.model';
+import { ITrabajadores } from '../../../../models/servicio-medico/trabajadores.model';
 
 @Component({
   templateUrl: 'solicitud.component.html',
@@ -25,7 +28,7 @@ import { TrabajadoresService } from '../../../../services/servicio_medico/trabaj
 export class SolicitudComponent implements OnInit {  
   
   solicitud: ISolicitudAtencion={};
-  //reposos: ITiempoReposo[]=[];
+  subordinados: ITrabajadores[]=[]
   paciente: IPacienteConSupervisores={};
   fotoPaciente: any;
   imageDesconocido: any='../../../../../assets/img/avatars/desconocido.png';  
@@ -37,64 +40,109 @@ export class SolicitudComponent implements OnInit {
   remitentes: string[] = [];
   arrayMotivos: string[] = ['Afeccion de Salud','Otro'];
   selectedMotivo: string="";
+  tipoUser: string = "";
+  private user: IUsuarios = {};
+  dismissible = true;
   constructor(
-    //private router: Router,
-    //private srvTiempoReposo: TiempoReposoService,
+    
+    private router: Router,
     private srvPacientes: PacientesService,
     private srvSolicitud: SolicitudAtencionService,
     private srvVarios: VarioService,
     private srvCorreo: CorreoService,
     private srvTrabajadores: TrabajadoresService,
+    private authenticationService: LoginSecioMedicoService,
     @Inject(LOCALE_ID) public locale: string,
     ) {  }
 
   ngOnInit(): void {
+
+    if (sessionStorage.currentUser){  
+
+      this.user=JSON.parse(sessionStorage.currentUser);
+      console.log(this.user);
+      if (this.user) {
+        this.buscarSubordinados(this.user.login);   
+        this.tipoUser= sessionStorage.tipoUser;
+      }
+      else {
+            this.router.navigate(["serviciomedico/login"]);
+      }
+    }else{
+      this.router.navigate(["serviciomedico/login"]);
+    }
     
     this.fotoPaciente = this.imageDesconocido;
+  }
+
+  async buscarSubordinados(login: string){
+    await this.srvTrabajadores.trabajadoresPorSigladoSupervisor(login)
+      .toPromise()
+      .then(async (res) => {        
+        if (res.length>0){
+          this.subordinados = res;
+        }
+      });
+  }
+
+  async subordinadoValido(idTrabajador: string): Promise<boolean> {
+    for await (const trabajador of this.subordinados) {
+      if (trabajador.trabajador === idTrabajador) {
+        return true;
+      }
+    }  
+    return false;
   }
    
   async buscarPaciente(){
     this.remitentes = [];
     if (this.paciente.ci!="" && this.paciente.ci!= undefined && this.paciente.ci!= null){
-      await this.srvPacientes.searchPacientesPromise(this.paciente.ci, 'null', 'null', 'null', 'null', 'and')      
-      .then(async result => {
-        if (result[0]!= undefined){
-          this.paciente=result[0];
-          this.paciente.edad=result[0].edad.years.toString();          
-          this.solicitud = {
-            ci_paciente : this.paciente.ci,
-            id_paciente : this.paciente.uid_paciente,
-            ci_supervisor : this.paciente.supervisor,
-            nombres_jefe : this.paciente.nombres_jefe,
+      if (await this.subordinadoValido(this.paciente.ci)){
+        await this.srvPacientes.searchPacientesPromise(this.paciente.ci, 'null', 'null', 'null', 'null', 'and')      
+        .then(async result => {
+          if (result[0]!= undefined){
+            this.paciente=result[0];
+            this.paciente.edad=result[0].edad.years.toString();          
+            this.solicitud = {
+              ci_paciente : this.paciente.ci,
+              id_paciente : this.paciente.uid_paciente,
+              ci_supervisor : this.paciente.supervisor,
+              nombres_jefe : this.paciente.nombres_jefe,
+            }
+            this.soloLectura = false;
+            this.getThumbnail();
+            
           }
-          this.soloLectura = false;
-          this.getThumbnail();
-          
-        }
-        else{
-          this.paciente={};
-          this.soloLectura = true;
-        }
-      });
-      await this.srvTrabajadores.trabajadoresOne(this.paciente.ci)
-      .toPromise()
-      .then(async (res) => {
-        if (res.correo){
-          this.remitentes.push(res.correo);
-          this.solicitud.email_solicitante = res.correo;
-        }
-      });
-      if (this.paciente.supervisor){
-        await this.srvTrabajadores.trabajadoresOne(this.paciente.supervisor)
-        .toPromise()
-        .then(async (res) => {          
-          if (res.correo){            
-            this.remitentes.push(res.correo)
-            this.solicitud.email_supervisor = res.correo;
+          else{
+            this.paciente={};
+            this.soloLectura = true;
           }
         });
+        await this.srvTrabajadores.trabajadoresOne(this.paciente.ci)
+        .toPromise()
+        .then(async (res) => {
+          if (res.correo){
+            this.remitentes.push(res.correo);
+            this.solicitud.email_solicitante = res.correo;
+          }
+        });
+        if (this.paciente.supervisor){
+          await this.srvTrabajadores.trabajadoresOne(this.paciente.supervisor)
+          .toPromise()
+          .then(async (res) => {          
+            if (res.correo){            
+              this.remitentes.push(res.correo)
+              this.solicitud.email_supervisor = res.correo;
+            }
+          });
+        }
       }
-      console.log(this.solicitud) 
+      else{
+        const ci: string = this.paciente.ci;
+        this.reset();
+        this.paciente.ci = ci;
+        this.showSuccess(`Esta Cedula NO  Pertece a un Trabajador de Su Centro de Costo`, 'danger');
+      } 
     }
   }
 
@@ -246,6 +294,11 @@ export class SolicitudComponent implements OnInit {
           this.showSuccess(`Error: ${result?.error}`, 'danger');
       });
     }  
+  }
+
+  salir(){
+    this.authenticationService.logout();
+    this.router.navigate(['serviciomedico/login']);
   }
 
   onClosed(dismissedAlert: AlertComponent): void {

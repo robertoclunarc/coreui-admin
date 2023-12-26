@@ -1,11 +1,12 @@
 export interface IUsuarios
 {
-    login?,
-    passw?,
-    nombres?,
-    nivel?,
-    fkdepartamento?,
-    email?,
-    telefono_oficina?,
-    estatus?,
+    login?: string,
+    passw?: string,
+    nombres?: string,
+    nivel?: number,
+    fkdepartamento?: number,
+    email?: string,
+    telefono_oficina?: string,
+    estatus?: string,
+    error?: string,
 }

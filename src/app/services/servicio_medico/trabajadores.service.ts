@@ -30,7 +30,15 @@ export class TrabajadoresService {
             tap(),
             catchError(this.handleError)
         );
-  } 
+  }
+
+  trabajadoresPorSigladoSupervisor(login: string) : Observable<ITrabajadores[]> {
+    return this.http.get<ITrabajadores[]>(this.apiUrlTrabajadores + 'subordinados/supervisor/' + login)
+        .pipe(
+            tap(),
+            catchError(this.handleError)
+        );
+  }
 
   handleError(error: HttpErrorResponse) {
     return throwError(error.message || ' server Error');
