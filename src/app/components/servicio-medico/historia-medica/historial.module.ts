@@ -1,7 +1,7 @@
 // Angular
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import {  NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { HistoriaMedicaComponent } from './historial.component';
 import { HistoriaMedicaRoutingModule } from './historial-routing.module';
@@ -14,7 +14,6 @@ import { AlertModule } from 'ngx-bootstrap/alert';
 // Pagination Component
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { ModalModule } from 'ngx-bootstrap/modal';
-import { ConsultaOneComponent } from '../consulta_one/consulta_one.component';
 import { CargosAnterioresComponent } from '../cargos_anteriores/cargos_anteriores.component';
 import { AntecedenteFamiliarComponent } from '../antecedentes_familiares/antecedentefamiliar.component';
 import { AntecedenteOcupacionalComponent } from '../antecedentes_ocupacionales/antecedenteocupacional.component';
@@ -29,6 +28,7 @@ import { planillaHistoriaComponent } from '../planillas/planilla_historia/planil
 import { CargosOtrasEmpresasComponent } from '../cargos_otras_empresas/cargos_otras_empresas.component';
 import { planillaAutorizacion } from '../planillas/planilla_autorizacion/planilla_autorizacion.component';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
+
 
 @NgModule({
   imports: [
@@ -46,7 +46,6 @@ import { CollapseModule } from 'ngx-bootstrap/collapse';
     
     HistoriaMedicaComponent,
     HistorialConsultasComponent,
-    ConsultaOneComponent, 
     CargosAnterioresComponent,
     CargosOtrasEmpresasComponent, 
     AntecedenteFamiliarComponent,

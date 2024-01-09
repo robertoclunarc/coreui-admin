@@ -1,11 +1,11 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER,  } from '@angular/core';
+import { NgModule/*, APP_INITIALIZER*/,  } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+//import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
-import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
+//import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { PaginationModule } from 'ngx-bootstrap/pagination';
 import { TypeaheadModule } from 'ngx-bootstrap/typeahead';
@@ -17,30 +17,27 @@ import { AlertModule } from 'ngx-bootstrap/alert';
 import { CollapseModule } from 'ngx-bootstrap/collapse';
 import { ModalModule } from 'ngx-bootstrap/modal';
 
-const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
+/*const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true
-};
+};*/
 
 import { AppComponent } from './app.component';
 
 // Import containers
 import { DefaultLayoutComponent } from './containers';
 import { LayoutServicioMedicoComponent } from './containers/layout-serviciomedico';
-
-//eliminar despues de terminar historial medico:
-
+import { LoginServicioMedicoComponent } from './components/servicio-medico/login-servicio-medico/login-servicio-medico.component';
 import { SolicitudComponent } from './components/servicio-medico/solicitudes_asistencias/solicitud-one/solicitud.component';
 
 ///////////////////////////////////////////////
 
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
-
 import { RegisterComponent } from './views/register/register.component';
 
 const APP_CONTAINERS = [
   DefaultLayoutComponent, LayoutServicioMedicoComponent ,   
-  SolicitudComponent
+  SolicitudComponent,
 ];
 
 import {
@@ -48,8 +45,7 @@ import {
   AppBreadcrumbModule,
   AppHeaderModule,
   AppFooterModule,
-  AppSidebarModule,
-  
+  AppSidebarModule,  
   
 } from '@coreui/angular';
 
@@ -60,10 +56,8 @@ import { AppRoutingModule } from './app.routing';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
-
-import { LoginServicioMedicoComponent } from './components/servicio-medico/login-servicio-medico/login-servicio-medico.component';
-
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
+
 //import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
 
 @NgModule({
@@ -92,7 +86,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     ModalModule.forRoot(),
     BsDropdownModule,    
     ButtonsModule.forRoot(),
-    NgbToastModule, 
+    NgbToastModule,
     //LazyLoadImageModule
   ],
   
@@ -102,7 +96,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     P404Component,
     P500Component,    
     RegisterComponent, 
-    LoginServicioMedicoComponent,    
+    LoginServicioMedicoComponent,
   ],
   /* 
   providers: [

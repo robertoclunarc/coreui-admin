@@ -238,13 +238,37 @@ export class ConsultasComponent  implements OnInit  {
     this.llenarArrayTiempoReposo();
     this.llenarArraymedicamentos('EXISTECIA');
 
-    this.idSolicitud = this.route.snapshot.paramMap.get("idsolicitud")!==undefined? Number(this.route.snapshot.paramMap.get("idsolicitud")): undefined;
+    if (this.route.snapshot.paramMap.get("idsolicitud")!==undefined && this.route.snapshot.paramMap.get("idsolicitud")!==null){
+      const getParam = this.route.snapshot.paramMap.get("idsolicitud");
+      if (getParam.includes('-')){
+         const idConsulta = getParam.split('-')[0];
+         this.abrirConsultaOne(idConsulta);
+      }else{
+        this.idSolicitud = Number(getParam);        
+      }
+    }
+    
+    //this.idSolicitud = this.route.snapshot.paramMap.get("idsolicitud")!==undefined ? Number(this.route.snapshot.paramMap.get("idsolicitud")): undefined;
     
     if (this.idSolicitud){
       this.traerDatosSolicitud();      
     }
     this.llenarArrayConsultas(true);
 	}
+
+  async abrirConsultaOne(idConsulta: string) {
+    try {
+      this.limpiarFiltro();
+      this.buscarConsulta.uidConsulta = idConsulta;
+      const consultaOne: any = await this.consultasFilter();
+      this.searchText = idConsulta;
+      this.Search();
+      await this.showModalActualizar(consultaOne[0]);
+      this.primaryModal.show();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   async traerDatosSolicitud(){
     try {
@@ -297,7 +321,7 @@ export class ConsultasComponent  implements OnInit  {
       patologia: 'null',
     }
   }
-
+   
   private async consultasFilter() {
     
 		return await this.srvConsultas.consultaFilter(this.buscarConsulta)
@@ -465,7 +489,6 @@ export class ConsultasComponent  implements OnInit  {
       .then(result => {
         this.paramedicos=result;            
       });
-
   }
 
   private async llenarArrayMotivos(){
@@ -848,7 +871,7 @@ export class ConsultasComponent  implements OnInit  {
     this.srvSolicitud.atencionOne(item.uid)
     .toPromise()
     .then((res)=>{      
-      if (res.fecha_salida){       
+      if (res?.fecha_salida !== undefined && res?.fecha_salida !== null){       
         const fechaSalidaSolicitud = new Date(res.fecha_salida);
         this.fechaSalida = fechaSalidaSolicitud.toISOString().slice(0, 16);
       }

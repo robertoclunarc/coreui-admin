@@ -21,7 +21,7 @@ import { ConsultasService } from '../../../services/servicio_medico/consultas.se
 export class HistorialConsultasComponent implements OnChanges {
 
   @Output() itemsConsulta = new EventEmitter<number>();
-  @ViewChild('primaryModal') public primaryModal: ModalDirective;  
+  //@ViewChild('primaryModal') public primaryModal: ModalDirective;  
   @Input() _uidPaciente: string;
   @Input() _ci: string;
   @Input() _fechaIni: string;
@@ -117,6 +117,7 @@ export class HistorialConsultasComponent implements OnChanges {
 
   private irConsulta(uid: string){
     this.idConsulta=uid;
+    this.router.navigate([`serviciomedico/atenciones/${uid}-1`]);
   }
 
   /*private close(){    

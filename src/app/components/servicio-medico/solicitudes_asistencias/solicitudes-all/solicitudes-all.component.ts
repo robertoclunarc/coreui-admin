@@ -186,6 +186,7 @@ export class SolicitudesALLComponent implements OnInit {
       const consulta: IConsultas = await this.srvConsultas.consultasOne(Number(uid)).toPromise();
       const paramedico: IParamedicos = await this.srvMedicos.paraMedicosOne(consulta.id_paramedico).toPromise();
       if (paramedico && (this.user.nivel===1 || this.user.login===paramedico.login)){
+        console.log(uid);
         this.idConsulta=uid;      
         this.primaryModal.show();
       }else{

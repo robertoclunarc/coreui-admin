@@ -57,14 +57,14 @@ export const routes: Routes = [
     data: {
       title: 'Login Page'
     }
-  },  
+  },
   {
     path: 'serviciomedico/consulta/:uidConsulta',
     component: ConsultaOneComponent,
     data: {
       title: 'Consulta del Paciente'
     }
-  },  
+  },
   {
     path: 'register',
     component: RegisterComponent,

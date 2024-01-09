@@ -14,7 +14,7 @@
             <td style="font-size: 0.7rem;" *ngIf="sliceIndex==0">{{mor.ci}}</td>
             <td style="font-size: 0.7rem;" *ngIf="sliceIndex==0">{{mor.nombre_completo}}</td>
             <td><button type="button" title="Ver Consulta: {{mor.uid}}"   
-              (click)="irConsulta(mor.uid); primaryModal.show();" 
+              (click)="irConsulta(mor.uid);" 
               class="btn btn-block btn-link">
               <i class="icon-eye"></i>
             </button></td>          
@@ -52,7 +52,7 @@
       </div>
     </div>
 </div>
-
+<!--
 <div bsModal #primaryModal="bs-modal" class="modal fade"  tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content modal-primary" >
@@ -66,4 +66,5 @@
         <app-consulta_one *ngIf="idConsulta!=undefined" [uidConsulta]="idConsulta"></app-consulta_one>
     </div>
   </div>
-</div>     
+</div>
+-->

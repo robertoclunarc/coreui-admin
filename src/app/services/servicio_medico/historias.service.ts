@@ -48,7 +48,7 @@ export class HistoriaService {
      
     return  this.http.get<IHistoria_medica>(`${this.apiUrlHistoria}accidente/ocupacional/${uid_historia}/${uid_paciente}` )
     .pipe(
-        tap(result => console.log(`historiaMedicaOne(${result?.uid_historia}, ${result?.uid_paciente}`)),
+        tap(result => console.log(`historiaMedicaOne(${result?.uid_historia}, ${result?.uid_paciente})`)),
         catchError(this.handleError)
     );
   }
