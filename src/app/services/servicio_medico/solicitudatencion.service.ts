@@ -121,6 +121,8 @@ export class SolicitudAtencionService {
     
     cuerpo=`Se le notifica que ${enc}, con Cedula de Identidad <strong>${paciente.ci}</strong>, a sido atendido en Servicio Médico de nuestra empresa<strong>. Solicitud ID: ${solicitud.uid}</strong>, en la fecha <strong>${solicitud.fecha_atencion}</strong>, hora de salida: ${solicitud.fecha_salida}.<br>`;
 
+    cuerpo+=`<strong>Observacion(es):</strong> ${solicitud.observaciones}<br>`;
+
     if (proxCita){
       cuerpo+=`${enc} queda pendiente para una próxima cita médica el ${proxCita}<br>`;
     }else{

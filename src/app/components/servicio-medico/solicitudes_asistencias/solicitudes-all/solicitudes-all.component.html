@@ -46,7 +46,7 @@
                       <td style="font-size: 0.7rem; text-align: center;">{{ p.estatus }}</td>
                       <td style="font-size: 0.7rem; text-align: center;">
                         <div *ngFor="let c of p.consultas">
-                          <a href="javascript:void(0)" (click)="planilla='consulta';      (c);">
+                          <a href="javascript:void(0)" (click)="planilla='consulta'; irConsulta(c);">
                             <small className="text-muted">{{c}}</small>
                           </a>
                         </div>
@@ -81,7 +81,6 @@
       </div>
       <div class="modal-body">
         <div *ngIf="planilla=='consulta'">
-          prueba
           <app-consulta_one *ngIf="idConsulta!=undefined" [uidConsulta]="idConsulta"></app-consulta_one>
         </div>
         <div *ngIf="planilla=='imprimir'">

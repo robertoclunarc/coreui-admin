@@ -1239,9 +1239,8 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   async solicitudAtendida(newConsulta: IConsultas, paciente: IvPaciente){
-    try {      
-    
-      console.log(`prox. cita: ${newConsulta.fecha_prox_cita}`);
+    try {    
+      //console.log(`prox. cita: ${newConsulta.fecha_prox_cita}`);
       this.solicitud.estatus = newConsulta.fecha_prox_cita ? "PENDIENTE" : "CERRADA";
       this.solicitud.fecha_atencion = newConsulta.fecha;
       this.solicitud.fecha_salida = this.fechaSalida==this.solicitud.fecha_salida ? this.solicitud.fecha_salida : this.fechaSalida;
@@ -1251,8 +1250,7 @@ export class ConsultasComponent  implements OnInit  {
       this.solicitud.id_paramedico = newConsulta.id_paramedico;
       this.solicitud.observaciones = newConsulta.observaciones;
       this.solicitud.id_consulta = newConsulta.uid;
-      console.log(this.solicitud);
-      console.log(newConsulta);
+      
       this.srvSolicitud.actualizar(this.solicitud).subscribe();
       this.srvSolicitud.registrarConsultaSolicitud({id_consulta: this.solicitud.id_consulta, id_solicitud: this.solicitud.uid, fecha_salida: this.solicitud.fecha_salida }).subscribe();
       const reposo: string = this.tiemposReposo.find((t) => { return t.uid == newConsulta.id_reposo}).descripcion;
