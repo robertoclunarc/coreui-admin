@@ -33,6 +33,9 @@ export interface IConsultas{
     condicion?: string;
     fkafeccion?: number;
     autorizacion?: string;
+    userRegister?: string;
+    userModific?: string;
+    fechaModificacion?: string;
 }
 
 export interface IConsultasConstraint{
@@ -119,6 +122,9 @@ export interface IvConsulta {
 	talla?: string;
     peso?: string;
     imc?: string;
+    userRegister?: string;
+    userModific?: string;
+    fechaModificacion?: string;
 }
 
 export interface IFiltroConsulta{

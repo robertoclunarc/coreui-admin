@@ -129,7 +129,7 @@ export class SolicitudAtencionService {
       cuerpo+=`La atención Médica queda es estatus Cerrada. Si ${enc} requiere otra atención deberá reportale a su supervisor para hacer una nueva solicitud de asistencia.<br>`;
     }
     
-    if(solicitud.id_reposo){
+    if(solicitud.id_reposo !== null && solicitud!== undefined){
       cuerpo+=`El Dr. le ha recomendado guardar reposo por ${reposo}.`;
     }
     

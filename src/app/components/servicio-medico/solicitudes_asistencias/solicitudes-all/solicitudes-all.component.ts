@@ -2,6 +2,7 @@ import { Component, OnInit, Inject,  LOCALE_ID, ViewChild } from '@angular/core'
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
+import { formatDate } from '@angular/common';
 
 //modelos
 import { IFilterSolicitud, ISolicitudesAtenciones } from '../../../../models/servicio-medico/solicitudatencion.model';
@@ -36,7 +37,7 @@ export class SolicitudesALLComponent implements OnInit {
     {titulo: 'ID', campo:'uid'}, {titulo: 'C.I.', campo:'ci_paciente'}, {titulo: 'Nombre', campo:'paciente'}, 
     {titulo: 'F.Solicitud', campo:'fecha_solicitud'}, {titulo: 'F.Atención', campo:'fecha_atencion'}, 
     {titulo: 'F.Salida', campo:'fecha_salida'}, {titulo: 'Motivo', campo:'motivo'}, {titulo: 'Estatus', campo:'estatus'}, 
-    {titulo: 'Consultas', campo:'consultas'}, {titulo: 'Observaciones', campo:'observaciones'}, 
+    {titulo: 'Consultas', campo:'consultas'}, {titulo: 'Prox.Cita', campo:'fecha_prox_cita'}, {titulo: 'Observaciones', campo:'observaciones'}, 
     {titulo: 'Obs.Supervisor', campo:'observacion_sup'}, {titulo: 'Reposo', campo:'reposo'}, {titulo: 'Paramédico', campo:'paramedico'}, 
     {titulo: 'Médico', campo:'medico'}, {titulo: 'Supervisor', campo:'nombres_jefe'}
   ];
@@ -97,10 +98,13 @@ export class SolicitudesALLComponent implements OnInit {
       this.classTable = sessionStorage.classTable;
       this.classButton ="btn btn-block btn-ghost-dark active";      
     }
-    
+    this.filtroSolicitud.fecha_solicitud = formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
+    this.filtroSolicitud.estatus = 'PENDIENTE';
+    this.filtroSolicitud.condlogica = 'AND';
+    console.log(`filtroSolicitud.fecha_solicitud: ${this.filtroSolicitud.fecha_solicitud}`);
     this.llenarArraySolicitudes();
   }
-
+  
   private async llenarArraySolicitudes() {
     
 		this.srvSolicitud.searchSolicitudesPromise(this.filtroSolicitud)			
@@ -115,6 +119,14 @@ export class SolicitudesALLComponent implements OnInit {
 
   mostrarTodo(){
     this.filtroSolicitud={};
+    this.llenarArraySolicitudes();
+  }
+
+  displayToday(){
+    this.filtroSolicitud={};
+    this.filtroSolicitud.fecha_solicitud = formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
+    this.filtroSolicitud.estatus = 'PENDIENTE';
+    this.filtroSolicitud.condlogica = 'AND';
     this.llenarArraySolicitudes();
   }
 
@@ -148,7 +160,7 @@ export class SolicitudesALLComponent implements OnInit {
         fecha=searchValue;
         
       }
-      
+      this.filtroSolicitud = {};
       this.filtroSolicitud = { 
         uid: fecha==='null' ? searchValue : 'null',
         ciPaciente: fecha==='null' ? searchValue : 'null',

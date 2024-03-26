@@ -32,7 +32,12 @@ export class LoginServicioMedicoComponent implements OnInit {
 		this.authenticationService.loguear(this.model.login , this.model.passw)
 			.toPromise()
 			.then(async results => {
-          message1 = await this.validarUsuario(results);                   
+          message1 = await this.validarUsuario(results);
+          if (message1.access == false && message1.text=='Clave Incorrecta'){
+            this.loading = false;
+            this.error = message1.text;
+            return;
+          }               
           if(!message1.access && message1.text=='Usuario No Encontrado'){
             
             let userAsistenciaLaboral: IUsuarios = await this.loguearAsistenciaLaboral(this.model.login , this.model.passw);

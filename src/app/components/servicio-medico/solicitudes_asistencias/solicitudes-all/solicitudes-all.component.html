@@ -7,6 +7,7 @@
                  <strong>Solicitudes de Asistencias Médicas</strong>                 
                  <div class="card-header-actions">                  
                   <button type="button" class="btn btn-sm btn-pill btn-info" title="Mostrar Todas" (click)="mostrarTodo()"><i class="fa fa-refresh"></i></button>
+                  <button type="button" class="btn btn-sm btn-pill btn-info" title="Pendientes Para Hoy" (click)="displayToday()"><i class="fa fa-calendar-check-o"></i></button>
                 </div>
               </div>
               <div class="card-body">
@@ -51,6 +52,7 @@
                           </a>
                         </div>
                       </td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.fecha_prox_cita }}</td>
                       <td style="font-size: 0.7rem;">{{ p.observaciones }}</td>
                       <td style="font-size: 0.7rem;">{{ p.observacion_sup }}</td>
                       <td style="font-size: 0.7rem; text-align: center;">{{ p.reposo }}</td>

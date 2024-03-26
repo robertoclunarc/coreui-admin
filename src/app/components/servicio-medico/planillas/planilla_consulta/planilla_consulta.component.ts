@@ -80,6 +80,8 @@ export class planillaConsultaComponent implements OnChanges {
 			.toPromise()
       .then(results => {				
 				this.vConsulta = results[0];
+        this.vConsulta.observacion_medicamentos = this.vConsulta.observacion_medicamentos.replace(/<br>/g, "; ").replace(/\n/g, " ");
+        console.log(this.vConsulta);
         this.buscarSignosVitales(this.vConsulta.ci, this.vConsulta.fecha);				
 			})			
 			.catch(err => { console.log(err) });

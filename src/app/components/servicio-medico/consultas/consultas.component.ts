@@ -128,6 +128,8 @@ export class ConsultasComponent  implements OnInit  {
   medicamentoIndic: IindicacionMedica={};
   solicitud: ISolicitudAtencion={}; 
   turno: number;
+  observacionesArray: {user?: string, observacion?:string, fecha?: string}[]=[];
+  observacion: string = '';
   idSolicitud: number;
   historiaMedica: IHistoria_medica={};
   arrayTiposDiagnoticos: ItipoDiagnostico[]=[];
@@ -163,7 +165,7 @@ export class ConsultasComponent  implements OnInit  {
 
   titulos = [
     {titulo: 'Nro.', campo:'uid'}, {titulo: 'Fecha', campo:'fecha'}, {titulo: 'Cédula', campo:'ci'}, {titulo: 'Nombre', campo:'nombre_completo'},
-    {titulo: 'Sexo', campo:'sexo'},{titulo: 'Cargo', campo:'cargo'}, {titulo: 'Motivo', campo:'motivo'}, {titulo: 'Paramédico', campo:'paramedico'}, 
+    {titulo: 'Sexo', campo:'sexo'},{titulo: 'Cargo', campo:'cargo'}, {titulo: 'Motivo', campo:'motivo'}, {titulo: 'Enfermera(o)', campo:'paramedico'}, 
     {titulo: 'Asistenciado', campo:'login_atendio'}, {titulo: 'Patología', campo:'patologia'}
   ];
 
@@ -802,9 +804,11 @@ export class ConsultasComponent  implements OnInit  {
     }    
   }
 
-  async showModalRegistrar(){    
+  async showModalRegistrar(){
     this.soloLectura=false;
     this.autorizacion=false;
+    this.observacion = "";
+    this.observacionesArray = [];
     this.verTurno();   
     this.fechaSalida="";
     this.newConsulta=true;
@@ -846,9 +850,45 @@ export class ConsultasComponent  implements OnInit  {
     this.consultas.turno=this.turno;
     this.signoVital={};
     this.antropometria={};
-  }  
+  }
+  
+  async formatearCampo(cadena: string, user: string, fecha: string){    
+    if (cadena){
+      const index = cadena.indexOf("<br>");
+      let observ: {user?: string, observacion?:string, fecha?: string}[]=[];
+      if(index===-1){
+        
+        observ.push({
+          user: user,
+          observacion: cadena,
+          fecha: fecha,
+        });
+        this.observacion = `${user}\n${cadena}\n${fecha}<br>`;     
+      }else{
+        let arr = cadena.split('<br>');        
+        for await (const ob of arr){
+          if (ob){
+            let res = ob.split('\n');            
+            observ.push({
+              user: res[0],
+              observacion: res[1],
+              fecha: res[2],
+            });
+            this.observacion += `${res[0]}\n${res[1]}\n${res[2]}<br>`;
+          }
+        }
+      }      
+      this.observacionesArray = observ;
+      console.log(this.observacion);
+      console.log(this.observacionesArray);
+    }  
+   
+  }
 
-  async  showModalActualizar(item: IvConsulta){    
+  async  showModalActualizar(item: IvConsulta){
+    console.log(item);
+    this.observacion = "";
+    this.observacionesArray = [];
     this.soloLectura=true;
     if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
       this. soloLectura=false;
@@ -877,7 +917,7 @@ export class ConsultasComponent  implements OnInit  {
       }
     });
     const fechaObjeto = new Date(item.fecha_prox_cita);  
-    const fechaProxCita = fechaObjeto.toISOString().slice(0, 16);
+    const fechaProxCita = item.fecha_prox_cita ? fechaObjeto.toISOString().slice(0, 16) : null;
     const fechaConsulta = new Date(item.fecha);  
     const fechaAtencion = fechaConsulta.toISOString().slice(0, 16);    
     this.consultas = {
@@ -891,7 +931,7 @@ export class ConsultasComponent  implements OnInit  {
       sintomas: item.sintomas,
       observaciones: item.observaciones,
       resultado_eva: item.resultado_eva,
-      observacion_medicamentos: item.observacion_medicamentos,
+      //observacion_medicamentos: item.observacion_medicamentos,
       autorizacion: item.autorizacion,
       turno: item.turno,
       
@@ -976,7 +1016,12 @@ export class ConsultasComponent  implements OnInit  {
     this.paciente.nombre_completo= item.nombre_completo;
     this.buscarPaciente();
     this.newConsulta=false;
-    this.modalTitle = "Detalles de la Consulta Nro."+item.uid;    
+    this.modalTitle = "Detalles de la Consulta Nro."+item.uid;
+
+    const atendio: string = item.userRegister ? item.userRegister : item.login_atendio;
+    const fAtendio: string = item.fechaModificacion ? item.fechaModificacion : formatDate(item.fecha, 'yyyy-MM-dd hh:mm', this.locale);
+    
+    await this.formatearCampo(item.observacion_medicamentos, atendio, fAtendio);
     
   } 
 
@@ -1108,11 +1153,19 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   async registrar(){
-    
     this.blockRegister=true;
     this.popoverConsulta={};
     const fechaRegistro: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
     const fechaConsulta: string = this.consultas.fecha;
+    let observacion: string = this.observacion + `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}`;
+    if (this.observacion == undefined || this.observacion == null  || this.observacion == ''){
+      
+      observacion = `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}<br>`;
+    }else{
+      
+      observacion = this.observacion + `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}`;
+    }
+    
     if (this.newConsulta) {      
       let referenciaMedica: string="";
       for (let i=0; i< this.arrayReferencias.length; i++){
@@ -1122,8 +1175,7 @@ export class ConsultasComponent  implements OnInit  {
       for (let j=0; j< this.medicamentoIndicados.length; j++){
         indicaciones = indicaciones + decodeURI(this.medicamentoIndicados[j].medicamento)  + ": " + this.medicamentoIndicados[j].indicacion + "\n";
 
-      }      
-      
+      }     
       this.consultas={
         uid: undefined,
         id_paciente: this.paciente.uid_paciente,
@@ -1143,10 +1195,11 @@ export class ConsultasComponent  implements OnInit  {
         id_reposo: this.consultas.id_reposo,
         condicion: this.consultas.condicion==='APTO CON RESTRICCION'? 'APTO RESTR': this.consultas.condicion,
         sintomas: this.consultas.sintomas,
-        observaciones: this.consultas.observacion_medicamentos,
+        observaciones: this.consultas.observaciones,
         resultado_eva: this.consultas.resultado_eva,
-        observacion_medicamentos: this.consultas.observacion_medicamentos,
-        fecha_prox_cita: this.consultas.fecha_prox_cita
+        observacion_medicamentos: observacion,
+        fecha_prox_cita: this.consultas.fecha_prox_cita,
+        userRegister: this.user.login,
       };
       
       this.popoverConsulta = await this.validaEntradas(this.consultas.id_paciente, fechaRegistro);
@@ -1165,10 +1218,10 @@ export class ConsultasComponent  implements OnInit  {
         indice: 0,
         motivo_historia: this.motivos.find((m: any) => {return m.uid==this.consultas.id_motivo }).descripcion,
         observacion: this.consultas.observaciones,
-        fk_medico: this.consultas.id_medico,      
+        fk_medico: this.consultas.id_medico,
       }
       
-			await this.srvConsultas.nuevo(this.consultas)				
+			await this.srvConsultas.nuevo(this.consultas)
 				.then(async results => {
           this.consultas=results;
           this.consultas.fecha = fechaConsulta;
@@ -1176,7 +1229,7 @@ export class ConsultasComponent  implements OnInit  {
             
             this.srvHistorias.nuevoHistoriaPaciente(historia);
             this.showSuccess('Atencion Medica Registrada Satisfactoriamente', 'success');
-            this.buscarConsulta = { 
+            this.buscarConsulta = {
               uidConsulta: this.consultas.uid.toString(),
               ciPaciente: 'null',
               uidMotivo: 'null',
@@ -1216,14 +1269,16 @@ export class ConsultasComponent  implements OnInit  {
         });			
 		}
 		else {
-
+      this.consultas.observacion_medicamentos = observacion;
+      this.consultas.userModific = this.user.login;
+      this.consultas.fechaModificacion = fechaRegistro;
 			this.srvConsultas.actualizar(this.consultas)
 				.toPromise()
 				.catch(err => {
           this.showSuccess('Error actualizando: '+err, 'danger');
           console.log(err);
         });
-
+      this.llenarArrayConsultas(false);
 			this.showSuccess('Atencion Medica actualizada satisfactoriamente', 'success');
 
 		}
@@ -1250,12 +1305,20 @@ export class ConsultasComponent  implements OnInit  {
       this.solicitud.id_paramedico = newConsulta.id_paramedico;
       this.solicitud.observaciones = newConsulta.observaciones;
       this.solicitud.id_consulta = newConsulta.uid;
+      this.solicitud.fecha_prox_cita = newConsulta.fecha_prox_cita;
       
       this.srvSolicitud.actualizar(this.solicitud).subscribe();
       this.srvSolicitud.registrarConsultaSolicitud({id_consulta: this.solicitud.id_consulta, id_solicitud: this.solicitud.uid, fecha_salida: this.solicitud.fecha_salida }).subscribe();
-      const reposo: string = this.tiemposReposo.find((t) => { return t.uid == newConsulta.id_reposo}).descripcion;
       
-      let remitentes: string[] = await this.getRemitentes('PRUEBA');
+      let reposo: string;
+      for await (let t of this.tiemposReposo){
+        if (t.uid == newConsulta.id_reposo){
+          reposo = t.descripcion;        
+          break;
+        }
+      }
+      
+      let remitentes: string[] = await this.getRemitentes('SOLICITUD');
       remitentes.push(this.solicitud.email_solicitante);
       if (this.solicitud.email_supervisor){
         remitentes.push(this.solicitud.email_supervisor);

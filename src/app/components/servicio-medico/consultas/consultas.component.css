@@ -52,3 +52,7 @@
     color: #fff;
     background-color: #49c1f8e7;
   }
+
+  #observaciones{ 
+    overflow-x: scroll
+}

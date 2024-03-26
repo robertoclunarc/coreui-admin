@@ -5,6 +5,7 @@ export interface ISolicitudAtencion{
     fecha_solicitud?: string;
 	fecha_atencion?: string;
 	fecha_salida?: string;
+    fecha_prox_cita?: string;
     motivo?: string;
     observaciones?: string;
 	observacion_sup?: string;
@@ -27,6 +28,7 @@ export interface ISolicitudesAtenciones{
     fecha_solicitud?: string;
 	fecha_atencion?: string;
 	fecha_salida?: string;
+    fecha_prox_cita?: string;
     motivo?: string;
     observaciones?: string;
 	observacion_sup?: string;

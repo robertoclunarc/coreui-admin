@@ -343,11 +343,12 @@ export class ConsultasService {
         atendio=`m&eacute;dico ocupante <strong>${notaExamen.nom_medico}</strong>`;
       }
       
-      if (notaExamen.mor_reposo!="N/A"){
-        colorcondicion=`<font color="red"><strong>REPOSO POR ${notaExamen.mor_reposo}</strong></font>`
-      };  
+      if (notaExamen.mor_reposo!="N/A" && notaExamen.mor_reposo!="null" && notaExamen.mor_reposo!=null && notaExamen.mor_reposo!=undefined){
+        colorcondicion=`<font color="red"><strong>REPOSO POR ${notaExamen.mor_reposo}</strong></font>`;
+        cuerpo += `El cual est&aacute; en condici&oacute;n de ${colorcondicion} seg&uacute;n lo considerado en la consulta m&eacute;dica `;
+      };
       
-      cuerpo += `El cual est&aacute; en condici&oacute;n de ${colorcondicion} seg&uacute;n lo considerado en la consulta m&eacute;dica registrada en la fecha: <strong>${notaExamen.mor_fecha}.</strong> por el ${atendio}.<br>Cuyo diagnostico fue: <strong>${notaExamen.resultado_eva}</strong>.<br>`;
+      cuerpo += `registrada en la fecha: <strong>${notaExamen.mor_fecha}.</strong> por el ${atendio}.<br>Cuyo diagnostico fue: <strong>${notaExamen.resultado_eva}</strong>.<br>`;
 
       if (notaExamen.mor_sex=='M'){
         cuerpo += 'Otros datos de inter&eacute;s sobre el trabajador:<br>';

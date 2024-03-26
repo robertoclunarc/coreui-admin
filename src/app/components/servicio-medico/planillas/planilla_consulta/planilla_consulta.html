@@ -115,12 +115,12 @@
                     <span *ngIf="antropometria.imc!=undefined">IMC: {{ antropometria.imc }}</span>                    
                 </th>
             </tr>
-            <tr bgcolor="#F0ECEC">
+            <!--<tr bgcolor="#F0ECEC">
                 <th colspan="3" width="110%">OBSERVACION</th>
             </tr>
             <tr>
-                <td colspan="3" height="30px">{{ vConsulta.observacion_medicamentos }}</td>
-            </tr>
+                <td colspan="3" height="30px">{{ vConsulta.observaciones }}</td>
+            </tr>-->
             <tr bgcolor="#F0ECEC">
                 <th colspan="3" width="110%">REFERENCIA MEDICA</th>
             </tr>
@@ -144,7 +144,7 @@
                 <td>{{ medA.cantidad }}</td>
             </tr>
             <tr *ngIf="vConsulta.observacion_medicamentos != undefined && vConsulta.observacion_medicamentos != ''" >
-                <th colspan="3" width="110%">OBSERVACIÓN (MEDICAMENTOS)</th>
+                <th colspan="3" width="110%">OBSERVACIONES (MEDICAMENTOS)</th>
             </tr>
 		    <tr *ngIf="vConsulta.observacion_medicamentos != undefined && vConsulta.observacion_medicamentos != ''" bgcolor="#F0ECEC">
                 <td colspan="3" height="30px">{{ vConsulta.observacion_medicamentos }}</td>
@@ -157,7 +157,7 @@
                     <strong>MÉDICO DE GUARDIA</strong>
                 </div>                          
                 <div *ngIf="vConsulta.paramedico != undefined && vConsulta.paramedico != ''" class="col">
-                    <strong>PARAMÉDICO/ENFERMERO(A) DE GUARDIA</strong>
+                    <strong>ENFERMERA(O) DE GUARDIA</strong>
                 </div>
             </div>
             <div class="row align-items-start">
