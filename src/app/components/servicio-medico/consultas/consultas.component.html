@@ -463,7 +463,7 @@
                               <div class="col-md-12">
                                 <span class="form-group has-float-label">
                                   <select id="observaciones" name="observaciones" class="form-control" size="3" multiple>
-                                    <option *ngFor="let obs of observacionesArray; let o=index" value="{{0}}">{{obs.user}}: {{obs.observacion}} {{obs.fecha}}</option>                                    
+                                    <option *ngFor="let obs of observacionesArray; let o=index" value="{{o}}">{{obs.user}}: {{obs.observacion}} {{obs.fecha}}</option>                                    
                                   </select>
                                   <label for="observaciones">Observaciones Anteriores</label>
                                 </span>  
