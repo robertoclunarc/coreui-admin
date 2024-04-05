@@ -100,6 +100,6 @@ import { planillaReferenciaComponent } from '../planillas/planilla_referencia/pl
     //--TooltipsComponent,
     //--NavbarsComponent,
    //--AlertsComponent
-  ]
+  ],
 })
 export class ConsultasModule { }

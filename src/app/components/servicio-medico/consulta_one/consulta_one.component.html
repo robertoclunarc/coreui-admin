@@ -124,7 +124,7 @@
                 <div class="form-group">
                   <span class="form-group has-float-label">
                     <select  class="form-control form-control-sm" [disabled]="soloLectura" name="cboParamedico" [(ngModel)]="consultas.id_paramedico" id="cboParamedico">
-                      <option *ngFor="let para of selectParamedicos" [value]="para.uid">{{para.nombre}}</option>                                                                     
+                      <option *ngFor="let para of selectParamedicos" [selected]="consultas.id_paramedico == para.uid" [value]="para.uid">{{para.nombre}}</option>                                                                     
                     </select>
                     <label class="badge-light" for="cboParamedico">Paramedico de Guardia</label>
                   </span>  
@@ -340,6 +340,16 @@
               </span>  
               </div>
             </div><!--/.row 9-->
+            <div class="row">                                                         
+              <div class="col-md-12">
+                <span class="form-group has-float-label">
+                  <select id="observaciones" name="observaciones" class="form-control" size="3" multiple>
+                    <option *ngFor="let obs of observacionesArray; let o=index" value="{{o}}">{{obs.user}}: {{obs.observacion}} {{obs.fecha}}</option>                                    
+                  </select>
+                  <label for="observaciones">Observaciones Anteriores</label>
+                </span>  
+              </div>
+            </div><!--/.row 10-->
         </div>
 
         <div class="card-header">

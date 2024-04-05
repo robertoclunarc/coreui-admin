@@ -79,6 +79,7 @@ export interface IvConsulta {
     referencia_medica?: string;
     fkafeccion?: number;
     id_patologia?: number;
+    id_paramedico?: number;
     condicion?: string;
     id_area?: number;
     idmotivo?: number;

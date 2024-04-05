@@ -1,8 +1,8 @@
 //componentes
-import { Component, ViewChild, OnInit, ChangeDetectorRef,Inject,  LOCALE_ID, ElementRef, NgModule } from '@angular/core';
+import { Component, ViewChild, OnInit,Inject,  LOCALE_ID, ElementRef } from '@angular/core';
 import { ModalDirective} from 'ngx-bootstrap/modal';
 //import { FormsModule } from '@angular/forms';
-import { TypeaheadMatch, TypeaheadDirective } from 'ngx-bootstrap/typeahead';
+import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -56,7 +56,9 @@ import { SolicitudAtencionService } from '../../../services/servicio_medico/soli
   providers: [ConsultasService, PacientesService, MedicosService, MotivosService, AreasService, PatologiasService, 
               AfeccionesService, SignosVitalesService, RemitidosService, TiempoReposoService, AntropometriaService,
               MedicosService,HistoriaService, DiagnosticosService,
-              { provide: AlertConfig }],
+              { provide: AlertConfig },
+              
+            ],
   styleUrls: ["consultas.component.css"],
              
 })
@@ -201,16 +203,16 @@ export class ConsultasComponent  implements OnInit  {
     private srvVarios: VarioService,
     private srvSolicitud: SolicitudAtencionService,
     @Inject(LOCALE_ID) public locale: string,  
-  ) { this.urlICD = environment.urlICD;  }
+  ) { this.urlICD = environment.urlICD; }
 
   async ngOnInit() { 
-    
+    console.log(this.locale);  
     if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
       this.classTable = "table table-striped";
       this.classButton ="btn btn-block btn-ghost-dark";
       this.estiloOscuro="";
     }
-    else { 
+    else {
       this.classTable = sessionStorage.classTable;
       this.classButton ="btn btn-block btn-ghost-dark active";      
     }
@@ -246,14 +248,14 @@ export class ConsultasComponent  implements OnInit  {
          const idConsulta = getParam.split('-')[0];
          this.abrirConsultaOne(idConsulta);
       }else{
-        this.idSolicitud = Number(getParam);        
+        this.idSolicitud = Number(getParam);
       }
     }
     
     //this.idSolicitud = this.route.snapshot.paramMap.get("idsolicitud")!==undefined ? Number(this.route.snapshot.paramMap.get("idsolicitud")): undefined;
     
     if (this.idSolicitud){
-      this.traerDatosSolicitud();      
+      this.traerDatosSolicitud();
     }
     this.llenarArrayConsultas(true);
 	}
@@ -279,7 +281,7 @@ export class ConsultasComponent  implements OnInit  {
       this.primaryModal.show();
       await this.showModalRegistrar();
       this.paciente.ci = this.solicitud.ci_paciente;
-      this.buscarPaciente();    
+      this.buscarPaciente();
       this.consultas.sintomas = this.solicitud.motivo;
       let fecha = new Date();
       this.fechaSalida = formatDate(fecha.setMinutes(fecha.getMinutes()+15), 'yyyy-MM-dd HH:mm', this.locale);
@@ -288,16 +290,16 @@ export class ConsultasComponent  implements OnInit  {
       if (this.solicitud.id_consulta){
         const ultimaAtencion: IConsultas = await this.srvConsultas.consultasOne(this.solicitud.id_consulta).toPromise();
         this.vConsultas.fkdiagnostico = this.motivos.find((m) => {return m.uid == ultimaAtencion.id_motivo}).fkdiagnostico
-        await this.listarMotivos(this.vConsultas.fkdiagnostico);       				
+        await this.listarMotivos(this.vConsultas.fkdiagnostico);
         this.consultas.id_patologia = ultimaAtencion.id_patologia;
         this.consultas.id_area = ultimaAtencion.id_area;
         this.consultas.id_motivo = ultimaAtencion.id_motivo;
-        this.consultas.fkafeccion = ultimaAtencion.fkafeccion;        
+        this.consultas.fkafeccion = ultimaAtencion.fkafeccion;
       }
       
     } catch (error) {
       console.error(error);
-    }    			
+    }
   }
 
   public downloadAsPDF(uid: number) {
@@ -307,7 +309,7 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   private async limpiarFiltro(){
-      this.buscarConsulta = { 
+      this.buscarConsulta = {
       uidConsulta: 'null',
       ciPaciente: 'null',
       Motivo: 'null',
@@ -327,7 +329,7 @@ export class ConsultasComponent  implements OnInit  {
   private async consultasFilter() {
     
 		return await this.srvConsultas.consultaFilter(this.buscarConsulta)
-			.toPromise()			
+			.toPromise()
 			.catch(err => { console.error(err) });
 	}
   
@@ -349,24 +351,21 @@ export class ConsultasComponent  implements OnInit  {
 			.catch(err => { console.error(err) });
 	} 
   
-  private async llenarArrayConsultasMotivos() {    
+  private async llenarArrayConsultasMotivos() {
     this.polarAreaChartLabels=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25'];
     this.polarAreaChartData=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25];
-    let desc: string[]=[]
-    let cant: number[]=[]
+    let desc: string[]=[];
+    let cant: number[]=[];
 		this.srvConsultas.consultasPorMotivos()
 			.toPromise()
 			.then(async results => {        
-				//this.arrayConnsultaMotivos = results;
-        
-        
+				//this.arrayConnsultaMotivos = results;        
         for await (let mot of results){
-          desc.push(mot.descripcion)
-          cant.push(mot.totalmotivos)
-          
+          desc.push(mot.descripcion);
+          cant.push(mot.totalmotivos);          
         }	
         this.polarAreaChartLabels=desc;
-        this.polarAreaChartData=cant
+        this.polarAreaChartData=cant;
 			})
 			.catch(err => { console.log(err) });
 	} 
@@ -394,11 +393,11 @@ export class ConsultasComponent  implements OnInit  {
           view: res.view,
           uid: res.uid,
           definicion: res.definicion
-        })));        
+        })));
       });
     this.srvPatologia.consultaFilter(undefined,'SIN ESPECIFICACION',undefined,true, 'NINGUNA', undefined)
     .toPromise()
-    .then(result => {      
+    .then(result => {
       _pat.push(result[0]);
       /*this.selectedPatolog = result[0].descripcion;
       this.selectedOptionPatolog = result[0];*/
@@ -483,13 +482,13 @@ export class ConsultasComponent  implements OnInit  {
     await this.srvMedicos.medicosAll()
       .toPromise()
       .then(result => {
-        this.medicos=result;           
+        this.medicos=result;
       });
 
     await  this.srvMedicos.paraMedicosAll()
       .toPromise()
       .then(result => {
-        this.paramedicos=result;            
+        this.paramedicos=result;
       });
   }
 
@@ -809,7 +808,7 @@ export class ConsultasComponent  implements OnInit  {
     this.autorizacion=false;
     this.observacion = "";
     this.observacionesArray = [];
-    this.verTurno();   
+    this.verTurno();
     this.fechaSalida="";
     this.newConsulta=true;
     this.modalTitle = "Nueva Consulta Medica";
@@ -819,17 +818,18 @@ export class ConsultasComponent  implements OnInit  {
     else{
       this.patologias= await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'DOMINIO', 2);
     }
-    await this.llenarArrayMedicos();    
+    await this.llenarArrayMedicos();
     this.selectMedicos= this.medicos.filter( m => m.activo==true);
     
-    this.selectParamedicos= this.paramedicos.filter( m => m.activo===true);    
+    this.selectParamedicos= this.paramedicos.filter( (m) => {return m.activo===true});
     this.selectedOptionPatolog= this.patologias.find((p) => {return p.descripcion=='SIN ESPECIFICACION'});
     this.selectedPatolog ='SIN ESPECIFICACION';
     
     this.paciente={};
     this.consultas={};
-    if (this.tipoUser=='PARAMEDICO'){
-      this.consultas.id_paramedico=this.paramedicos.find(p => (p.login==this.user.login)).uid;
+    if (this.tipoUser=='PARAMEDICO'){      
+      const i = await this.srvVarios.searchArrayObject(this.paramedicos, this.user.login, 'login' );      
+      this.consultas.id_paramedico=this.paramedicos[i].uid;
       this.consultas.id_medico = this.selectMedicos.find( m => { return m.titular===true}).uid;
     }
     if (this.tipoUser=='MEDICO'){
@@ -840,7 +840,7 @@ export class ConsultasComponent  implements OnInit  {
     this.medicamentoAplicado={};
     this.medicamentoAplicado.medicamentos=[];
 
-    let fecha = new Date();    
+    let fecha = new Date();
     const fechaObjeto = formatDate(fecha.setMinutes(fecha.getMinutes()+1), 'yyyy-MM-dd HH:mm', this.locale);
     this.consultas.fecha = fechaObjeto;
 
@@ -856,33 +856,31 @@ export class ConsultasComponent  implements OnInit  {
     if (cadena){
       const index = cadena.indexOf("<br>");
       let observ: {user?: string, observacion?:string, fecha?: string}[]=[];
-      if(index===-1){
-        
+      if(index===-1){        
         observ.push({
           user: user,
           observacion: cadena,
           fecha: fecha,
         });
-        this.observacion = `${user}\n${cadena}\n${fecha}<br>`;     
+        this.observacion = `${user}\n${cadena}\n${fecha}<br>`;
       }else{
-        let arr = cadena.split('<br>');        
+        let arr = cadena.split('<br>');
         for await (const ob of arr){
           if (ob){
             let res = ob.split('\n');            
-            observ.push({
-              user: res[0],
-              observacion: res[1],
-              fecha: res[2],
-            });
-            this.observacion += `${res[0]}\n${res[1]}\n${res[2]}<br>`;
+            if (res[1]!=undefined && res[1]!=''){
+              observ.push({
+                user: res[0],
+                observacion: res[1],
+                fecha: res[2],
+              });
+              this.observacion += `${res[0]}\n${res[1]}\n${res[2]}<br>`;
+            }
           }
         }
-      }      
+      }
       this.observacionesArray = observ;
-      console.log(this.observacion);
-      console.log(this.observacionesArray);
-    }  
-   
+    }   
   }
 
   async  showModalActualizar(item: IvConsulta){
@@ -901,6 +899,8 @@ export class ConsultasComponent  implements OnInit  {
     this.medicamentoAplicado={};
     this.arrayReferencias=[];
     this.medicamentoIndicados=[];
+    this.selectParamedicos= [];
+    this.selectMedicos= [];
     await this.llenarArrayMedicosALL();
     this.selectParamedicos= this.paramedicos;
     this.selectMedicos= this.medicos;
@@ -910,22 +910,23 @@ export class ConsultasComponent  implements OnInit  {
     this.paciente={};
     this.srvSolicitud.atencionOne(item.uid)
     .toPromise()
-    .then((res)=>{      
-      if (res?.fecha_salida !== undefined && res?.fecha_salida !== null){       
+    .then((res)=>{
+      if (res?.fecha_salida !== undefined && res?.fecha_salida !== null){
         const fechaSalidaSolicitud = new Date(res.fecha_salida);
         this.fechaSalida = fechaSalidaSolicitud.toISOString().slice(0, 16);
       }
     });
-    const fechaObjeto = new Date(item.fecha_prox_cita);  
+    const fechaObjeto = new Date(item.fecha_prox_cita);
     const fechaProxCita = item.fecha_prox_cita ? fechaObjeto.toISOString().slice(0, 16) : null;
-    const fechaConsulta = new Date(item.fecha);  
-    const fechaAtencion = fechaConsulta.toISOString().slice(0, 16);    
+    const fechaConsulta = new Date(item.fecha);
+    const fechaAtencion = item.fecha.slice(0, 16);
     this.consultas = {
       fecha: fechaAtencion,
-      uid: item.uid,      
+      uid: item.uid,
       id_motivo: item.idmotivo,
-      id_area: item.id_area,      
-      fkafeccion: item.fkafeccion,      
+      id_area: item.id_area,
+      fkafeccion: item.fkafeccion,
+      id_paramedico: item.id_paramedico,
       condicion: item.condicion==='APTO CON RESTRICCION'? 'APTO RESTR': item.condicion,
       fecha_prox_cita: fechaProxCita,
       sintomas: item.sintomas,
@@ -933,42 +934,34 @@ export class ConsultasComponent  implements OnInit  {
       resultado_eva: item.resultado_eva,
       //observacion_medicamentos: item.observacion_medicamentos,
       autorizacion: item.autorizacion,
-      turno: item.turno,
-      
+      turno: item.turno,      
     }
     if (this.consultas.id_motivo===9){
       this.preEmpleo=true;
     }
     
-    this.vConsultas = item;
-
-    for await (let i of this.selectParamedicos){      
-      if (i.ci==item.ci_paramedico){
-        this.consultas.id_paramedico = i.uid;        
-        break;
-      }
-    }
+    this.vConsultas = item; 
 
     for await (let m of this.selectMedicos){
       if (m.ci==item.ci_medico){
-        this.consultas.id_medico = m.uid;        
+        this.consultas.id_medico = m.uid;
         break;
       }
     }
 
     for await (let r of this.remitidos){
       if (r.descripcion==item.remitido){
-        this.consultas.id_remitido = r.uid;        
+        this.consultas.id_remitido = r.uid;
         break;
       }
     }
 
     for await (let p of this.tiemposReposo){
       if (p.descripcion==item.reposo){
-        this.consultas.id_reposo = p.uid;        
+        this.consultas.id_reposo = p.uid;
         break;
       }
-    }    
+    }
 
     if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
       this.patologias = await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'ICD', 1);
@@ -977,8 +970,8 @@ export class ConsultasComponent  implements OnInit  {
       this.patologias = await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'DOMINIO', 2);
     }
     
-    for await (let pt of this.patologiasAll){      
-      if (pt.uid==item.id_patologia){        
+    for await (let pt of this.patologiasAll){
+      if (pt.uid==item.id_patologia){
         this.selectedOptionPatolog= pt;
         this.selectedPatolog=pt.descripcion;
         break;
@@ -1010,7 +1003,7 @@ export class ConsultasComponent  implements OnInit  {
     if (item.autorizacion=='NO')
       this.autorizacion=false;
     else
-      this.autorizacion=true; 
+      this.autorizacion=true;
     
     this.paciente.ci=item.ci;
     this.paciente.nombre_completo= item.nombre_completo;
@@ -1025,7 +1018,7 @@ export class ConsultasComponent  implements OnInit  {
     
   } 
 
-  async guardarSignosVit(_fecha: string, _cedula: string){    
+  async guardarSignosVit(_fecha: string, _cedula: string){
     if (_fecha!=undefined && _cedula!=undefined){      
       try {      
           this.signoVital.cedula=_cedula;
@@ -1152,20 +1145,28 @@ export class ConsultasComponent  implements OnInit  {
     return popOver;    
   }
 
+  async formatearObersevacion(fechaRegistro: string){
+    let observacionNueva: string = '';
+    let observacionAnterior: string = '';
+    let observacionGlobal: string;
+    if (await this.srvVarios.nonEmptyValue(this.consultas.observacion_medicamentos)){
+      observacionNueva = `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}<br>`;
+    }    
+
+    if (! await this.srvVarios.nonEmptyValue(this.observacion)){        
+      observacionAnterior = this.observacion;
+    }    
+    
+    observacionGlobal = observacionNueva + observacionAnterior;    
+    return observacionGlobal;
+  }
+
   async registrar(){
     this.blockRegister=true;
     this.popoverConsulta={};
     const fechaRegistro: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
     const fechaConsulta: string = this.consultas.fecha;
-    let observacion: string = this.observacion + `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}`;
-    if (this.observacion == undefined || this.observacion == null  || this.observacion == ''){
-      
-      observacion = `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}<br>`;
-    }else{
-      
-      observacion = this.observacion + `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}`;
-    }
-    
+    let observacion: string = await this.formatearObersevacion(fechaRegistro);    
     if (this.newConsulta) {      
       let referenciaMedica: string="";
       for (let i=0; i< this.arrayReferencias.length; i++){
@@ -1180,7 +1181,7 @@ export class ConsultasComponent  implements OnInit  {
         uid: undefined,
         id_paciente: this.paciente.uid_paciente,
         fecha: this.consultas.fecha,        
-        id_patologia: this.selectedOptionPatolog.uid,        
+        id_patologia: this.selectedOptionPatolog.uid,
         fecha_registro: fechaRegistro,
         turno: this.turno,
         indicaciones_comp: indicaciones,
@@ -1248,7 +1249,7 @@ export class ConsultasComponent  implements OnInit  {
             this.medicamentoAplicado.id_consulta=this.consultas.uid
             await this.guardarMedicametosAplicados();
             
-            if (this.solicitud){
+            if (this.srvVarios.nonEmptyValue(this.solicitud.uid)){
               await this.solicitudAtendida(this.consultas, this.paciente);
             }
 
@@ -1269,10 +1270,12 @@ export class ConsultasComponent  implements OnInit  {
         });			
 		}
 		else {
+      this.consultas.fecha = this.vConsultas.fecha;
       this.consultas.observacion_medicamentos = observacion;
       this.consultas.userModific = this.user.login;
       this.consultas.fechaModificacion = fechaRegistro;
-			this.srvConsultas.actualizar(this.consultas)
+      console.log(this.consultas.fecha);
+			await this.srvConsultas.actualizar(this.consultas)
 				.toPromise()
 				.catch(err => {
           this.showSuccess('Error actualizando: '+err, 'danger');
@@ -1758,7 +1761,7 @@ export class ConsultasComponent  implements OnInit  {
           this.enviarExamenCorreo(asuntoCertificado, cuerpoCertificado, notaExamen.desc_mot);
         }
       }
-      if (idReposo || idReposo!==0){
+      if (this.srvVarios.nonEmptyValue(idReposo) && idReposo!==0){
         const asuntoReposo: string = "REPOSO " + notaExamen.nombre_completo;        
         const cuerpoReposo: string = await this.srvConsultas.cuerpoDelReposo(notaExamen);
         this.enviarExamenCorreo(asuntoReposo, cuerpoReposo, "REPOSO");

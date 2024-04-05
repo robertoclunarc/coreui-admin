@@ -219,7 +219,7 @@
                                 <div class="form-group">
                                   <span class="form-group has-float-label">
                                     <select  class="form-control form-control-sm" [disabled]="soloLectura" name="cboParamedico" [(ngModel)]="consultas.id_paramedico" id="cboParamedico">
-                                      <option *ngFor="let para of selectParamedicos" [value]="para.uid">{{para.nombre}}</option>                                                                     
+                                      <option *ngFor="let para of selectParamedicos" [selected]="consultas.id_paramedico == para.uid" [value]="para.uid">{{para.nombre}}</option>                                                                     
                                     </select>
                                     <label class="badge-light" for="cboParamedico">Paramedico de Guardia</label>
                                   </span>  

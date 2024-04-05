@@ -140,6 +140,8 @@ export class ConsultaOneComponent implements OnChanges {
     {valor:'N/A', display:'No Aplica'}, {valor: 'APTO', display:'APTO'},
     {valor:'NO APTO', display:'NO APTO'}, {valor:'APTO RESTR', display:'APTO CON RESTRICCIONES'}
   ];
+  observacionesArray: {user?: string, observacion?:string, fecha?: string}[]=[];
+  observacion: string = '';
   soloLectura: boolean;
   @Input() uidConsulta: string = "-1"; 
 
@@ -157,7 +159,8 @@ export class ConsultaOneComponent implements OnChanges {
     }    
     
     this.uidConsulta = this.route.snapshot.paramMap.get("uidConsulta")==undefined? this.uidConsulta.toString(): this.route.snapshot.paramMap.get("uidConsulta");    
-    
+    this.observacion = "";
+    this.observacionesArray = [];
     this.limpiarFiltro();    
     this.llenarArrayMotivos();
     this.llenarArrayAreas();
@@ -196,8 +199,6 @@ export class ConsultaOneComponent implements OnChanges {
       })			
 			.catch(err => { console.log(err) });
 	}
-
-
 
   private async llenarArrayPatologias(uid: number, descripcion: string, codigo: string, estatus: boolean, tipo: string, view: number){
     let _pat: IPatologia[]=[];
@@ -458,9 +459,44 @@ export class ConsultaOneComponent implements OnChanges {
     }    
   }
 
+  async formatearCampo(cadena: string, user: string, fecha: string){    
+    if (cadena){
+      const index = cadena.indexOf("<br>");
+      let observ: {user?: string, observacion?:string, fecha?: string}[]=[];
+      if(index===-1){
+        
+        observ.push({
+          user: user,
+          observacion: cadena,
+          fecha: fecha,
+        });
+        this.observacion = `${user}\n${cadena}\n${fecha}<br>`;     
+      }else{
+        let arr = cadena.split('<br>');        
+        for await (const ob of arr){
+          if (ob){
+            let res = ob.split('\n');            
+            observ.push({
+              user: res[0],
+              observacion: res[1],
+              fecha: res[2],
+            });
+            this.observacion += `${res[0]}\n${res[1]}\n${res[2]}<br>`;
+          }
+        }
+      }      
+      this.observacionesArray = observ;
+      console.log(this.observacion);
+      console.log(this.observacionesArray);
+    }  
+   
+  }
+
   private async  showRegistro(item: IvConsulta){
     this.fechaSalida="";
     this.soloLectura=true;
+    this.observacion = "";
+    this.observacionesArray = [];
     if (this.tipoUser=='SISTEMA'){
       this. soloLectura=false;
       this.patologias= await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'ICD', 1);
@@ -474,6 +510,8 @@ export class ConsultaOneComponent implements OnChanges {
     this.medicamentoAplicado={};
     this.arrayReferencias=[];
     this.medicamentoIndicados=[];
+    this.medicamentoIndicados=[];
+    this.selectParamedicos= [];
     await this.llenarArrayMedicosALL();
     this.selectParamedicos= this.paramedicos;
     this.selectMedicos= this.medicos;
@@ -497,24 +535,18 @@ export class ConsultaOneComponent implements OnChanges {
       id_motivo: item.idmotivo,
       id_area: item.id_area,
       fkafeccion: item.fkafeccion,
+      id_paramedico: item.id_paramedico,
       condicion: item.condicion==='APTO CON RESTRICCION'? 'APTO RESTR': item.condicion,
       fecha_prox_cita: fechaProxCita,
       sintomas: item.sintomas,
       observaciones: item.observaciones,
       resultado_eva: item.resultado_eva,
-      observacion_medicamentos: item.observacion_medicamentos,
+      //observacion_medicamentos: item.observacion_medicamentos,
       autorizacion: item.autorizacion,
       turno: item.turno,
     }
-
+    this.vConsultas = item;
     this.chequeaAutorizacionMotivo(this.consultas.id_motivo);
-
-    for await (let i of this.selectParamedicos){      
-      if (i.ci==item.ci_paramedico){
-        this.consultas.id_paramedico = i.uid;        
-        break;
-      }
-    }
 
     for await (let m of this.selectMedicos){
       if (m.ci==item.ci_medico){
@@ -584,6 +616,10 @@ export class ConsultaOneComponent implements OnChanges {
     this.buscarPaciente();
     this.newConsulta=false;
     this.modalTitle = "Detalles de la Consulta Nro."+item.uid;    
+
+    const atendio: string = item.userRegister ? item.userRegister : item.login_atendio;
+    const fAtendio: string = item.fechaModificacion ? item.fechaModificacion : formatDate(item.fecha, 'yyyy-MM-dd hh:mm', this.locale);
+    await this.formatearCampo(item.observacion_medicamentos, atendio, fAtendio);
     
   }
 
@@ -709,9 +745,27 @@ export class ConsultaOneComponent implements OnChanges {
     return popOver;    
   }
 
+  async formatearObersevacion(fechaRegistro: string){
+    let observacionNueva: string = '';
+    let observacionAnterior: string = '';
+    let observacionGlobal: string;
+    if (await this.srvVarios.nonEmptyValue(this.consultas.observacion_medicamentos)){
+      observacionNueva = `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}<br>`;
+    }
+
+    if (await this.srvVarios.nonEmptyValue(this.observacion)){
+      observacionAnterior = this.observacion;
+    }
+    
+    observacionGlobal = observacionNueva + observacionAnterior;    
+    return observacionGlobal;
+  }
+
   async registrar(){
-    this.popoverConsulta={};
-    const fechaConsulta: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
+    this.popoverConsulta={};    
+    const fechaRegistro: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
+    const fechaConsulta: string = this.consultas.fecha;
+    let observacion: string = await this.formatearObersevacion(fechaRegistro);
     if (this.newConsulta) {
       
       let referenciaMedica: string="";
@@ -746,7 +800,7 @@ export class ConsultaOneComponent implements OnChanges {
         sintomas: this.consultas.sintomas,
         observaciones: this.consultas.observaciones,
         resultado_eva: this.consultas.resultado_eva,
-        observacion_medicamentos: this.consultas.observacion_medicamentos
+        observacion_medicamentos: observacion,
         
       };
 
@@ -782,7 +836,10 @@ export class ConsultaOneComponent implements OnChanges {
 				.catch(err => { console.log(err) });			
 		}
 		else {
-
+      this.consultas.fecha = this.vConsultas.fecha;
+      this.consultas.observacion_medicamentos = observacion;
+      this.consultas.userModific = this.user.login;
+      this.consultas.fechaModificacion = fechaRegistro;
 			this.srvConsultas.actualizar(this.consultas)
 				.toPromise()
 				.then(results => {  })

@@ -9,14 +9,14 @@ import { Options } from 'selenium-webdriver';
 @Injectable({
   providedIn: 'root'
 })
-export class VarioService {  
+export class VarioService {
   
   private apiUrlvarios : string = environment.apiUrlServMedico + 'varios/';
   private urlImagenPacente: string = environment.urlImagenFotoTrabajador;
   private extFoto: string = environment.extensionFotoTrabajador;
-  constructor(private http: HttpClient) { }  
+  constructor(private http: HttpClient) { }
 
-  generarSerie(inicio: string, fin: string, interval: string, formato: string) : Observable<{fecha, dia}[]> { 
+  generarSerie(inicio: string, fin: string, interval: string, formato: string) : Observable<{fecha, dia}[]> {
 
     return this.http.get<{fecha, dia}[]>(this.apiUrlvarios + `generar/serie/${inicio}/${fin}/${interval}/${formato}`)
 			.pipe(
@@ -49,9 +49,9 @@ export class VarioService {
   }
 
   fileExists(url: string): boolean {
-    let http = new XMLHttpRequest(); 
-    http.open('HEAD', url, false); 
-    http.send();    
+    let http = new XMLHttpRequest();
+    http.open('HEAD', url, false);
+    http.send();
     if (http.status!=404){
       return true;
     }
@@ -63,7 +63,7 @@ export class VarioService {
   
   async searchArrayObject(pajal: any[], aguja: any, pista: string){
     let posicion: number = -1;
-    for await (const [index, ag] of pajal.entries()){      
+    for await (const [index, ag] of pajal.entries()){
       if(aguja === ag[pista]){
         console.log(`aguja: ${aguja}, ag[pista]: ${ag[pista]}`)
         return index;
@@ -96,7 +96,7 @@ export class VarioService {
     const day = fechaHora.slice(8, 10);
     const hora = fechaHora.slice(11, 19);
 
-    const fechaFormateada = `${day}/${month}/${year} ${hora.replace("T", " ")}`;   
+    const fechaFormateada = `${day}/${month}/${year} ${hora.replace("T", " ")}`;
 
     return fechaFormateada;
   }
@@ -105,6 +105,21 @@ export class VarioService {
     const param: string =  cedula + this.extFoto;
     const params = new HttpParams({fromString: `file=${param}`});
     return this.http.request('GET', this.urlImagenPacente, {responseType:'blob', params});
+  }
+
+  async nonEmptyValue(dato: any){
+    let vacio: boolean = true;
+    if (typeof dato === 'number' ){
+      if (dato == undefined || dato == null){
+        vacio = false;
+      }
+    }else{
+      if (dato == undefined || dato == null  || dato == ''){
+        vacio = false;
+      }
+    }
+
+    return vacio;
   }
 
   handleError(error: HttpErrorResponse) {

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule/*, APP_INITIALIZER*/,  } from '@angular/core';
+import { NgModule/*, APP_INITIALIZER*/ , LOCALE_ID } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 //import { LocationStrategy, HashLocationStrategy } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -59,6 +59,10 @@ import { ChartsModule } from 'ng2-charts';
 import { ButtonsModule } from 'ngx-bootstrap/buttons';
 
 //import { LazyLoadImageModule, LAZYLOAD_IMAGE_HOOKS, ScrollHooks } from 'ng-lazyload-image';
+import { registerLocaleData } from '@angular/common';
+import localeEsVE from '@angular/common/locales/es-VE';
+
+registerLocaleData(localeEsVE);
 
 @NgModule({
   imports: [
@@ -108,7 +112,7 @@ import { ButtonsModule } from 'ngx-bootstrap/buttons';
     
   ],*/
   
-  providers: [authInterceptorProviders],
+  providers: [authInterceptorProviders, { provide: LOCALE_ID, useValue: 'es-VE' }],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
