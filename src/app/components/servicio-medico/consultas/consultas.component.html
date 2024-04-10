@@ -207,6 +207,7 @@
                                 <div class="form-group">
                                   <span class="form-group has-float-label">                                                                    
                                     <select [disabled]="soloLectura" class="form-control form-control-sm" name="cboMedicoGuardia" [(ngModel)]="consultas.id_medico"  id="cboMedicoGuardia">
+                                      <option [selected]="consultas.id_medico == undefined" [value]="">--</option>
                                       <option *ngFor="let medico of selectMedicos" [selected]="consultas.id_medico == medico.uid" [value]="medico.uid">{{medico.nombre}}</option>
                                                                      
                                     </select>

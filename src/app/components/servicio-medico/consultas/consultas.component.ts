@@ -461,6 +461,8 @@ export class ConsultasComponent  implements OnInit  {
           this.medicos=result.filter(m => (m.login==this.user.login))
         }else{
           this.medicos=result;
+          //this.medicos.unshift({ uid: null, nombre: 'Sleccione Medico', activo: true });
+          //console.log(this.medicos);
         }           
       });
    
@@ -471,7 +473,7 @@ export class ConsultasComponent  implements OnInit  {
       if (this.tipoUser=='PARAMEDICO'){
         this.paramedicos=result.filter(p => (p.login==this.user.login))
       }else{
-        this.paramedicos=result;
+        this.paramedicos=result;        
       }            
     });
   }
@@ -483,6 +485,7 @@ export class ConsultasComponent  implements OnInit  {
       .toPromise()
       .then(result => {
         this.medicos=result;
+        //this.medicos.unshift({ uid: null, nombre: 'Sleccione Medico' })
       });
 
     await  this.srvMedicos.paraMedicosAll()
@@ -819,8 +822,8 @@ export class ConsultasComponent  implements OnInit  {
       this.patologias= await this.llenarArrayPatologias(undefined,undefined,undefined,true, 'DOMINIO', 2);
     }
     await this.llenarArrayMedicos();
-    this.selectMedicos= this.medicos.filter( m => m.activo==true);
-    
+    this.selectMedicos= this.medicos.filter( (m) => {return m.activo==true});
+        
     this.selectParamedicos= this.paramedicos.filter( (m) => {return m.activo===true});
     this.selectedOptionPatolog= this.patologias.find((p) => {return p.descripcion=='SIN ESPECIFICACION'});
     this.selectedPatolog ='SIN ESPECIFICACION';
@@ -849,7 +852,7 @@ export class ConsultasComponent  implements OnInit  {
     this.consultas.fecha= fechaObjeto.toISOString().slice(0, 16);*/
     this.consultas.turno=this.turno;
     this.signoVital={};
-    this.antropometria={};
+    this.antropometria={};    
   }
   
   async formatearCampo(cadena: string, user: string, fecha: string){    
