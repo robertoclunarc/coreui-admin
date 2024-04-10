@@ -7,7 +7,6 @@ import { P500Component } from './views/error/500.component';
 import { LoginServicioMedicoComponent  } from './components/servicio-medico/login-servicio-medico/login-servicio-medico.component';
 import { RegisterComponent } from './views/register/register.component';
 import { ConsultaOneComponent  } from './components/servicio-medico/consulta_one/consulta_one.component';
-import { PortadaComponent } from './views/portada/portada.component';
 import { SolicitudComponent } from './components/servicio-medico/solicitudes_asistencias/solicitud-one/solicitud.component';
 
 export const routes: Routes = [
@@ -25,16 +24,16 @@ export const routes: Routes = [
   },
   {
     path: '',
-    component: PortadaComponent,
+    component: LoginServicioMedicoComponent,
     data: {
-      title: 'Portada'
+      title: 'Login Page'
     }
   },
   {
     path: 'serviciomedico',
-    component: PortadaComponent,
+    component: LoginServicioMedicoComponent,
     data: {
-      title: 'Portada'
+      title: 'Login Page'
     }
   },
   {
