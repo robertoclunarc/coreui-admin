@@ -1,6 +1,6 @@
 import { Component, ViewChild, OnChanges, Inject, Input,  LOCALE_ID } from '@angular/core';
 import { ModalDirective} from 'ngx-bootstrap/modal';
-import { FormsModule } from '@angular/forms';
+//import { FormsModule } from '@angular/forms';
 import { TypeaheadMatch } from 'ngx-bootstrap/typeahead';
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
@@ -9,7 +9,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 //modelos
 import { Ipopover } from '../../../models/servicio-medico/varios.model';
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
-import { IConsultas, IConsultasConstraint, IvConsulta, IFiltroConsulta, Ireferencia } from '../../../models/servicio-medico/consultas.model';
+import { IConsultas, IvConsulta, IFiltroConsulta, Ireferencia } from '../../../models/servicio-medico/consultas.model';
 import { IsignosVitales } from '../../../models/servicio-medico/signos_vitales.model';
 import { Iantropometria  } from '../../../models/servicio-medico/antropometria.model';
 import { IvPaciente } from '../../../models/servicio-medico/paciente.model';

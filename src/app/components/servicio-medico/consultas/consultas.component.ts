@@ -1152,15 +1152,16 @@ export class ConsultasComponent  implements OnInit  {
     let observacionNueva: string = '';
     let observacionAnterior: string = '';
     let observacionGlobal: string;
-    if (await this.srvVarios.nonEmptyValue(this.consultas.observacion_medicamentos)){
+    const obsMedicValido: boolean = await this.srvVarios.nonEmptyValue(this.consultas.observacion_medicamentos);
+    if (obsMedicValido){
       observacionNueva = `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}<br>`;
-    }    
-
-    if (! await this.srvVarios.nonEmptyValue(this.observacion)){        
+    }
+    const obsValido: boolean = await this.srvVarios.nonEmptyValue(this.observacion);
+    if (!obsValido){        
       observacionAnterior = this.observacion;
-    }    
+    }
     
-    observacionGlobal = observacionNueva + observacionAnterior;    
+    observacionGlobal = observacionNueva + observacionAnterior;
     return observacionGlobal;
   }
 
@@ -1168,135 +1169,145 @@ export class ConsultasComponent  implements OnInit  {
     this.blockRegister=true;
     this.popoverConsulta={};
     const fechaRegistro: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
-    const fechaConsulta: string = this.consultas.fecha;
-    let observacion: string = await this.formatearObersevacion(fechaRegistro);    
-    if (this.newConsulta) {      
-      let referenciaMedica: string="";
-      for (let i=0; i< this.arrayReferencias.length; i++){
-        referenciaMedica = referenciaMedica + ">>" + this.arrayReferencias[i].especialidad.toUpperCase().trim() + ":" + "\n" + this.arrayReferencias[i].informe.trim() + "\n";
-      }
-      let indicaciones: string="";
-      for (let j=0; j< this.medicamentoIndicados.length; j++){
-        indicaciones = indicaciones + decodeURI(this.medicamentoIndicados[j].medicamento)  + ": " + this.medicamentoIndicados[j].indicacion + "\n";
-
-      }     
-      this.consultas={
-        uid: undefined,
-        id_paciente: this.paciente.uid_paciente,
-        fecha: this.consultas.fecha,        
-        id_patologia: this.selectedOptionPatolog.uid,
-        fecha_registro: fechaRegistro,
-        turno: this.turno,
-        indicaciones_comp: indicaciones,
-        referencia_medica: referenciaMedica,                 
-        autorizacion: this.autorizacion===true ? 'SI':'NO',        
-        id_medico: this.consultas.id_medico,
-        id_paramedico: this.consultas.id_paramedico,
-        id_motivo: this.consultas.id_motivo,
-        id_area: this.consultas.id_area,
-        fkafeccion: this.consultas.fkafeccion,
-        id_remitido: this.consultas.id_remitido,
-        id_reposo: this.consultas.id_reposo,
-        condicion: this.consultas.condicion==='APTO CON RESTRICCION'? 'APTO RESTR': this.consultas.condicion,
-        sintomas: this.consultas.sintomas,
-        observaciones: this.consultas.observaciones,
-        resultado_eva: this.consultas.resultado_eva,
-        observacion_medicamentos: observacion,
-        fecha_prox_cita: this.consultas.fecha_prox_cita,
-        userRegister: this.user.login,
-      };
-      
-      this.popoverConsulta = await this.validaEntradas(this.consultas.id_paciente, fechaRegistro);
-      
-      if ( this.popoverConsulta.alerta!=undefined){        
-        this.alertaRegistrar = this.popoverConsulta.alerta;
-        this.titleRegistrar = this.popoverConsulta.titulo;
-        this.showSuccess(this.popoverConsulta.alerta, 'danger');
-        this.blockRegister=false;
-        return;
-      }
-
-      let historia: IHistoria_paciente ={
-        fk_historia: this.historiaMedica.uid_historia,
-        fecha_historia: fechaRegistro,
-        indice: 0,
-        motivo_historia: this.motivos.find((m: any) => {return m.uid==this.consultas.id_motivo }).descripcion,
-        observacion: this.consultas.observaciones,
-        fk_medico: this.consultas.id_medico,
-      }
-      
-			await this.srvConsultas.nuevo(this.consultas)
-				.then(async results => {
-          this.consultas=results;
-          this.consultas.fecha = fechaConsulta;
-          if (this.consultas.uid && typeof this.consultas.uid === 'number'){
-            
-            this.srvHistorias.nuevoHistoriaPaciente(historia);
-            this.showSuccess('Atencion Medica Registrada Satisfactoriamente', 'success');
-            this.buscarConsulta = {
-              uidConsulta: this.consultas.uid.toString(),
-              ciPaciente: 'null',
-              uidMotivo: 'null',
-              Motivo: 'null',
-              fechaIni: 'null',
-              fechaFin: 'null',
-              Medico:this.tipoUser==='PARAMEDICO' ? this.user.login  : 'null',
-              Paramedico: 'null',
-              nombrePaciente:'null',
-              cargo: 'null',
-              fecha: 'null',
-              condlogica: 'null',
-              patologia: 'null',
-            };
-            await this.guardarSignosVit(fechaRegistro, this.paciente.ci );
-            this.medicamentoAplicado.id_consulta=this.consultas.uid
-            await this.guardarMedicametosAplicados();
-            
-            if (this.srvVarios.nonEmptyValue(this.solicitud.uid)){
-              await this.solicitudAtendida(this.consultas, this.paciente);
-            }
-
-            this.llenarArrayConsultas(true);
-            console.log(`Reposo: ${this.consultas.id_reposo}`);
-            this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
-            if (this.idSolicitud){
-              this.router.navigate(["serviciomedico/solicitudes"]);
-            }
-          }
-          else{
-            this.showSuccess('Error Registrando', 'danger');
-          }
-        })
-				.catch(err => {
-          this.showSuccess('Error Registrando: '+err, 'danger'); 
-          console.log(err);
-        });			
-		}
-		else {
-      this.consultas.fecha = this.vConsultas.fecha;
-      this.consultas.observacion_medicamentos = observacion;
-      this.consultas.userModific = this.user.login;
-      this.consultas.fechaModificacion = fechaRegistro;
-      console.log(this.consultas.fecha);
-			await this.srvConsultas.actualizar(this.consultas)
-				.toPromise()
-				.catch(err => {
-          this.showSuccess('Error actualizando: '+err, 'danger');
-          console.log(err);
-        });
-      this.llenarArrayConsultas(false);
-			this.showSuccess('Atencion Medica actualizada satisfactoriamente', 'success');
-
-		}
+    const fechaConsulta: string = this.consultas.fecha;    
+    let observacion: string = await this.formatearObersevacion(fechaRegistro);
     
-    this.blockRegister=false;
-		this.consultas = {};
-    this.paciente={};
-    //this.signoVital = {};
-    //this.antropometria={};
-    this.arrayReferencias=[];
-		this.newConsulta = false;
-    this.primaryModal.hide();
+    try {
+      if (this.newConsulta) {      
+        let referenciaMedica: string="";
+        for (let i=0; i< this.arrayReferencias.length; i++){
+          referenciaMedica = referenciaMedica + ">>" + this.arrayReferencias[i].especialidad.toUpperCase().trim() + ":" + "\n" + this.arrayReferencias[i].informe.trim() + "\n";
+        }
+        let indicaciones: string="";
+        for (let j=0; j< this.medicamentoIndicados.length; j++){
+          indicaciones = indicaciones + decodeURI(this.medicamentoIndicados[j].medicamento)  + ": " + this.medicamentoIndicados[j].indicacion + "\n";
+  
+        }     
+        this.consultas={
+          uid: undefined,
+          id_paciente: this.paciente.uid_paciente,
+          fecha: this.consultas.fecha,        
+          id_patologia: this.selectedOptionPatolog.uid,
+          fecha_registro: fechaRegistro,
+          turno: this.turno,
+          indicaciones_comp: indicaciones,
+          referencia_medica: referenciaMedica,                 
+          autorizacion: this.autorizacion===true ? 'SI':'NO',        
+          id_medico: this.consultas.id_medico,
+          id_paramedico: this.consultas.id_paramedico,
+          id_motivo: this.consultas.id_motivo,
+          id_area: this.consultas.id_area,
+          fkafeccion: this.consultas.fkafeccion,
+          id_remitido: this.consultas.id_remitido,
+          id_reposo: this.consultas.id_reposo,
+          condicion: this.consultas.condicion==='APTO CON RESTRICCION'? 'APTO RESTR': this.consultas.condicion,
+          sintomas: this.consultas.sintomas,
+          observaciones: this.consultas.observaciones,
+          resultado_eva: this.consultas.resultado_eva,
+          observacion_medicamentos: observacion,
+          fecha_prox_cita: this.consultas.fecha_prox_cita,
+          userRegister: this.user.login,
+        };
+        
+        this.popoverConsulta = await this.validaEntradas(this.consultas.id_paciente, fechaRegistro);
+        
+        if ( this.popoverConsulta.alerta!=undefined){        
+          this.alertaRegistrar = this.popoverConsulta.alerta;
+          this.titleRegistrar = this.popoverConsulta.titulo;
+          this.showSuccess(this.popoverConsulta.alerta, 'danger');
+          this.blockRegister=false;
+          return;
+        }
+  
+        let historia: IHistoria_paciente ={
+          //fk_historia: this.historiaMedica.uid_historia,
+          fecha_historia: fechaRegistro,
+          indice: 0,
+          motivo_historia: this.motivos.find((m: any) => {return m.uid==this.consultas.id_motivo }).descripcion,
+          observacion: this.consultas.observaciones,
+          fk_medico: this.consultas.id_medico,
+        }
+
+        const tieneHistoria: boolean = await this.srvVarios.nonEmptyValue(this.historiaMedica.uid_historia);        
+        
+        await this.srvConsultas.nuevo(this.consultas)
+          .then(async results => {
+            this.consultas=results;
+            this.consultas.fecha = fechaConsulta;
+            if (this.consultas?.uid && typeof this.consultas.uid === 'number'){
+              if (tieneHistoria){
+                historia.fk_historia = this.historiaMedica.uid_historia;
+                this.srvHistorias.nuevoHistoriaPaciente(historia);
+              }
+              
+              this.showSuccess('Atencion Medica Registrada Satisfactoriamente', 'success');
+              this.buscarConsulta = {
+                uidConsulta: this.consultas.uid.toString(),
+                ciPaciente: 'null',
+                uidMotivo: 'null',
+                Motivo: 'null',
+                fechaIni: 'null',
+                fechaFin: 'null',
+                Medico:this.tipoUser==='PARAMEDICO' ? this.user.login  : 'null',
+                Paramedico: 'null',
+                nombrePaciente:'null',
+                cargo: 'null',
+                fecha: 'null',
+                condlogica: 'null',
+                patologia: 'null',
+              };
+              await this.guardarSignosVit(fechaRegistro, this.paciente.ci );
+              this.medicamentoAplicado.id_consulta=this.consultas.uid
+              await this.guardarMedicametosAplicados();
+              
+              const solicitudValida: boolean = await this.srvVarios.nonEmptyValue(this.solicitud.uid);
+              if (solicitudValida){
+                await this.solicitudAtendida(this.consultas, this.paciente);
+              }
+  
+              this.llenarArrayConsultas(true);
+              console.log(`Reposo: ${this.consultas.id_reposo}`);
+              this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
+              if (this.idSolicitud){
+                this.router.navigate(["serviciomedico/solicitudes"]);
+              }
+            }
+            else{
+              this.showSuccess('Error Registrando', 'danger');
+            }
+          })
+          .catch(err => {
+            this.showSuccess('Error Registrando: '+err, 'danger'); 
+            console.log(err);
+          });			
+      }
+      else {
+        this.consultas.fecha = this.vConsultas.fecha;
+        this.consultas.observacion_medicamentos = observacion;
+        this.consultas.userModific = this.user.login;
+        this.consultas.fechaModificacion = fechaRegistro;
+        console.log(this.consultas.fecha);
+        await this.srvConsultas.actualizar(this.consultas)
+          .toPromise()
+          .catch(err => {
+            this.showSuccess('Error actualizando: '+err, 'danger');
+            console.log(err);
+          });
+        this.llenarArrayConsultas(false);
+        this.showSuccess('Atencion Medica actualizada satisfactoriamente', 'success');
+  
+      }
+      this.blockRegister=false;
+      this.consultas = {};
+      this.paciente={};    
+      this.arrayReferencias=[];
+      this.newConsulta = false;
+      this.primaryModal.hide();
+    } catch (error) {
+      console.error(error);
+      this.showSuccess(`${error}. Comuniquese con el Administrador del Sistema. Ext.#293`, 'danger');
+    }    
+    
   }
 
   async solicitudAtendida(newConsulta: IConsultas, paciente: IvPaciente){
@@ -1764,7 +1775,8 @@ export class ConsultasComponent  implements OnInit  {
           this.enviarExamenCorreo(asuntoCertificado, cuerpoCertificado, notaExamen.desc_mot);
         }
       }
-      if (this.srvVarios.nonEmptyValue(idReposo) && idReposo!==0){
+      const reposoValido: boolean = await this.srvVarios.nonEmptyValue(idReposo);
+      if (reposoValido && idReposo!=0){
         const asuntoReposo: string = "REPOSO " + notaExamen.nombre_completo;        
         const cuerpoReposo: string = await this.srvConsultas.cuerpoDelReposo(notaExamen);
         this.enviarExamenCorreo(asuntoReposo, cuerpoReposo, "REPOSO");

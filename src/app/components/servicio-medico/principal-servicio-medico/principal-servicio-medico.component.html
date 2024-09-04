@@ -113,6 +113,100 @@
         </div>
       </div><!--/.col-->
     </div><!--/.row-->
+    <div class="row">
+      <div class="col-sm-6 col-lg-3">
+        <div class="card text-white bg-info">          
+          <div class="card-body pb-0"> 
+            <!--         
+            <button type="button" class="btn btn-transparent p-0 float-right">
+              <i class="icon-location-pin"></i>
+            </button>
+            -->  
+            <div class="text-value">{{totallineChart4Data}}</div>
+            <div>{{desclineChart4Data}}</div>
+          </div>
+          
+          <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
+            <canvas baseChart class="chart"
+            [datasets]="lineChart4Data"
+            [labels]="lineChart4Labels"
+            [options]="lineChart4Options"
+            [colors]="lineChart4Colours"
+            [legend]="lineChart4Legend"
+            [chartType]="lineChart4Type"></canvas>
+          </div>
+        </div>
+      </div><!--/.col-->
+      <div class="col-sm-6 col-lg-3">
+        <div class="card text-white bg-primary">          
+          <div class="card-body pb-0"> 
+            <!--         
+            <button type="button" class="btn btn-transparent p-0 float-right">
+              <i class="icon-location-pin"></i>
+            </button>
+            -->  
+            <div class="text-value">{{totallineChart5Data}}</div>
+            <div>{{desclineChart5Data}}</div>
+          </div>
+          
+          <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
+            <canvas baseChart class="chart"
+            [datasets]="lineChart5Data"
+            [labels]="lineChart5Labels"
+            [options]="lineChart5Options"
+            [colors]="lineChart5Colours"
+            [legend]="lineChart5Legend"
+            [chartType]="lineChart5Type"></canvas>
+          </div>
+        </div>
+      </div><!--/.col-->
+      <div class="col-sm-6 col-lg-3">
+        <div class="card text-white bg-warning">          
+          <div class="card-body pb-0"> 
+            <!--         
+            <button type="button" class="btn btn-transparent p-0 float-right">
+              <i class="icon-location-pin"></i>
+            </button>
+            -->  
+            <div class="text-value">{{totallineChart6Data}}</div>
+            <div>{{desclineChart6Data}}</div>
+          </div>
+          
+          <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
+            <canvas baseChart class="chart"
+            [datasets]="lineChart6Data"
+            [labels]="lineChart6Labels"
+            [options]="lineChart6Options"
+            [colors]="lineChart6Colours"
+            [legend]="lineChart6Legend"
+            [chartType]="lineChart6Type"></canvas>
+          </div>
+        </div>
+      </div><!--/.col-->
+      <div class="col-sm-6 col-lg-3">
+        <div class="card text-white bg-danger">          
+          <div class="card-body pb-0"> 
+            <!--         
+            <button type="button" class="btn btn-transparent p-0 float-right">
+              <i class="icon-location-pin"></i>
+            </button>
+            -->  
+            <div class="text-value">{{totallineChart7Data}}</div>
+            <div>{{desclineChart7Data}}</div>
+          </div>
+          
+          <div class="chart-wrapper mt-3 mx-3" style="height:70px;">
+            <canvas baseChart class="chart"
+            [datasets]="lineChart7Data"
+            [labels]="lineChart7Labels"
+            [options]="lineChart7Options"
+            [colors]="lineChart7Colours"
+            [legend]="lineChart7Legend"
+            [chartType]="lineChart7Type"></canvas>
+          </div>
+        </div>
+      </div><!--/.col-->
+    </div>
     <div class="card">
       <div class="card-body">
         <div class="row">

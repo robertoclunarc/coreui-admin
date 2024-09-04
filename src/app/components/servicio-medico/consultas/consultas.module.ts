@@ -6,7 +6,7 @@ import { NgModule } from '@angular/core';
 //--import { CardsComponent } from '../../../views/base/cards.component';
 
 // Forms Component
-import { FormsComponent } from '../../../views/base/forms.component';
+//import { FormsComponent } from '../../../views/base/forms.component';
 
 //--import { SwitchesComponent } from '../../../views/base/switches.component';
 //--import { TablesComponent } from '../../../views/base/tables.component';

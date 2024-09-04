@@ -13,6 +13,8 @@ import { HistoriaService } from '../../../services/servicio_medico/historias.ser
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { IvPaciente } from '../../../models/servicio-medico/paciente.model';
 import { IHistoria_medica, IHistoria_paciente } from '../../../models/servicio-medico/historias.model'
+import { MedicosService } from '../../../services/servicio_medico/medicos.service';
+import { IMedicos } from '../../../models/servicio-medico/medicos.model';
 
 @Component({
   selector: 'app-historial',
@@ -38,6 +40,7 @@ export class HistoriaMedicaComponent  implements OnInit  {
   fechaIni='null';
   fechaFin='null';
   historiaMedica: IHistoria_medica={};
+  medicoTutular: IMedicos={};
   private nuevo: boolean = false;
   paciente: IvPaciente={};
   uidPaciente: string;
@@ -46,11 +49,25 @@ export class HistoriaMedicaComponent  implements OnInit  {
   modal: string="";
   constructor(
     private router: Router, 
-    private srvHistorias: HistoriaService,   
+    private srvHistorias: HistoriaService, 
+    private srvMedicos: MedicosService,  
     @Inject(LOCALE_ID) public locale: string,  
     ) {  }
 
-  ngOnInit(): void {}
+  async ngOnInit() {
+    if (sessionStorage.currentUser){
+      this.user=JSON.parse(sessionStorage.currentUser);
+      if (this.user) { 
+        this.tipoUser= sessionStorage.tipoUser;
+      }
+      else {
+        this.router.navigate(["serviciomedico/login"]);
+      }
+    }else{
+      this.router.navigate(["serviciomedico/login"]);
+    }
+    this.medicoTutular = await this.srvMedicos.medicoTitular();
+  }
 
   async buscarPaciente(e: IvPaciente){
     this.historiaMedica={};
@@ -78,7 +95,7 @@ export class HistoriaMedicaComponent  implements OnInit  {
           this.nuevo=true;
         }  
       })      
-    }    
+    }
   }
 
   async registrar(){
@@ -89,8 +106,9 @@ export class HistoriaMedicaComponent  implements OnInit  {
       this.historiaMedica.fecha_accidente= formatDate(this.historiaMedica.fecha_accidente, 'yyyy-MM-dd', this.locale);
     
     if (this.nuevo){
-      
-      this.historiaMedica.fecha_apertura= formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale),
+      this.historiaMedica.uid_paciente = this.paciente.uid_paciente;
+      this.historiaMedica.fecha_apertura= formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
+      this.historiaMedica.fk_medico = this.medicoTutular.uid;
       await this.srvHistorias.nuevoHistoriaHistoriaMedica(this.historiaMedica)
       .then(result => {
         if (result.uid_historia!=undefined){

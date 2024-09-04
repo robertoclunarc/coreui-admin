@@ -39,7 +39,7 @@ export class planillaSolicitudComponent implements OnChanges {
     @Inject(LOCALE_ID) public locale: string,
     ) { }
 
-    ngOnChanges() {
+    async ngOnChanges() {
         if (sessionStorage.currentUser){
 
             this.user=JSON.parse(sessionStorage.currentUser);
@@ -55,15 +55,36 @@ export class planillaSolicitudComponent implements OnChanges {
         }       
         
         this.getPaciente(this.inSolicitud.ci_paciente);
+        console.log(this.inSolicitud)
+        this.inSolicitud.medico = await this.isValid(this.inSolicitud.medico) ? this.inSolicitud.medico : "                       ";
+        this.inSolicitud.paramedico = await this.isValid(this.inSolicitud.paramedico) ? this.inSolicitud.paramedico : "                       ";
         
-        if (this.inSolicitud.reposo == undefined || this.inSolicitud.reposo == 'N/A'){
-            this.incorporacionTrabajo = "../../../assets/check_green_1.jpg";
-            this.reposoRestoTurno = "../../../assets/check_vacio_1.jpg";
-        }else{
+        const reposoValido: boolean = await this.isValidReposo(this.inSolicitud.reposo);
+        console.log(reposoValido)
+        //|| this.inSolicitud.reposo == 'N/A'
+        if (reposoValido){            
             this.incorporacionTrabajo = "../../../assets/check_vacio_1.jpg";
             this.reposoRestoTurno = "../../../assets/check_green_1.jpg";
+        }else{
+            const paramedicoValido: boolean = await this.isValid(this.inSolicitud.paramedico);
+            const medicoValido: boolean = await this.isValid(this.inSolicitud.medico);
+            if (paramedicoValido || medicoValido){
+                this.incorporacionTrabajo = "../../../assets/check_green_1.jpg";
+                this.reposoRestoTurno = "../../../assets/check_vacio_1.jpg";
+            }else{
+                this.incorporacionTrabajo = "../../../assets/check_vacio_1.jpg";
+                this.reposoRestoTurno = "../../../assets/check_vacio_1.jpg";
+            }
+            
         }
-        
+    }
+
+    async isValid(control: any) {
+        return control !== undefined && control !== null && control !== '';
+    }
+
+    async isValidReposo(control: any) {
+        return control !== undefined && control !== null && control !== ''  && control != 'N/A';
     }
 
     async getPaciente(ci:string){        

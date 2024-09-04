@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { ConsultasService  } from '../../../services/servicio_medico/consultas.service';
@@ -435,50 +434,96 @@ export class PrincipalServicioMedicoComponent implements OnInit {
     let chart1data: number[]=[];
     let chart2data: number[]=[];
     let bar1data: number[]=[];
+
+    let chart4data: number[]=[];
+    let chart5data: number[]=[];
+    let chart6data: number[]=[];
+    let chart7data: number[]=[];
     
     this.lineChart1Data=[];
-    this.lineChart2Data=[]
+    this.lineChart2Data=[];
     this.lineChart3Data=[];
     this.barChart1Data=[];
+
+    this.lineChart4Data=[];
+    this.lineChart5Data=[];
+    this.lineChart6Data=[];
+    this.lineChart7Data=[];    
+
+    this.arrayMotivos.forEach(a => {
+      if (a.descripcion=='PRE VACACION'){
+        this.desclineChart1Data= a.descripcion;
+        this.totallineChart1Data= a.totalmotivos == undefined ? 0 : a.totalmotivos;
+      }
+      if (a.descripcion=='POST VACACION'){
+        this.desclineChart2Data= a.descripcion;
+        this.totallineChart2Data= a.totalmotivos == undefined ? 0 : a.totalmotivos;
+      }
+      if (a.descripcion=='REINTEGRO LABORAL'){
+        this.desclineChart3Data= a.descripcion;
+        this.totallineChart3Data= a.totalmotivos == undefined ? 0 : a.totalmotivos;
+      }
+      if (a.descripcion=='ACCIDENTE COMUN'){
+        this.descbarChart1Data= a.descripcion;
+        this.totalbarChart1Data= a.totalmotivos == undefined ? 0 : a.totalmotivos;
+      }
+      ///////////////////////////////////////////////////////
+      if (a.descripcion=='OTROS'){
+        this.desclineChart4Data= a.descripcion;
+        this.totallineChart4Data= a.totalmotivos == undefined ? 0 : a.totalmotivos;
+      }
+      if (a.descripcion=='EMERGENCIA'){
+        this.desclineChart5Data= a.descripcion;
+        this.totallineChart5Data= a.totalmotivos == undefined ? 0 : a.totalmotivos;
+      }      
+      if (a.descripcion=='ADECUACION LABORAL'){
+        this.desclineChart6Data= a.descripcion;
+        this.totallineChart6Data= a.totalmotivos == undefined ? 0 : a.totalmotivos;
+      }
+      if (a.descripcion=='REUBICACION LABORAL'){
+        this.desclineChart7Data= a.descripcion;
+        this.totallineChart7Data= a.totalmotivos == undefined ? 0 : a.totalmotivos;
+      }
+    })    
     
-    this.totallineChart1Data= this.arrayMotivos[0].totalmotivos == undefined ? 0 : this.arrayMotivos[0].totalmotivos;
-    this.totallineChart2Data= this.arrayMotivos[1].totalmotivos == undefined ? 0 : this.arrayMotivos[1].totalmotivos;    
-    this.totallineChart3Data= this.arrayMotivos[2].totalmotivos == undefined ? 0 : this.arrayMotivos[2].totalmotivos;
-    this.totalbarChart1Data= this.arrayMotivos[3].totalmotivos == undefined ? 0 : this.arrayMotivos[3].totalmotivos;
-    
-    this.desclineChart1Data= this.arrayMotivos[0].descripcion;
-    this.desclineChart2Data= this.arrayMotivos[1].descripcion;
-    this.desclineChart3Data= this.arrayMotivos[2].descripcion;
-    this.descbarChart1Data= this.arrayMotivos[3].descripcion;
-    
+    //console.log(this.arrayMotivos)
 		return await this.srvConsultas.consultasPorMotivosDelAnio()
 			.toPromise()
-      .then(async result => { //console.log(result);
-        for await (let mot of result){
-          if (mot.id_motivo==this.arrayMotivos[0].id_motivo){
+      .then(async result => {        
+        for await (let mot of result){          
+          if (mot.descripcion=='PRE VACACION'){
             chart0data.push(mot.cantmotivos);
-                      
           }
-          if (mot.id_motivo==this.arrayMotivos[1].id_motivo){
+          if (mot.descripcion=='POST VACACION'){
             chart1data.push(mot.cantmotivos);
-                       
           }
-          if (mot.id_motivo==this.arrayMotivos[2].id_motivo){
+          if (mot.descripcion=='REINTEGRO LABORAL'){
             chart2data.push(mot.cantmotivos);
-                    
           }
-          if (mot.id_motivo==this.arrayMotivos[3].id_motivo){
-            bar1data.push(mot.cantmotivos); 
-            
+          if (mot.descripcion=='ACCIDENTE COMUN'){
+            bar1data.push(mot.cantmotivos);
+          }
+            ////////////los witged de la 2do columna//////////////
+          if (mot.descripcion=='OTROS'){
+            chart4data.push(mot.cantmotivos);
+          }
+          if (mot.descripcion=='EMERGENCIA'){
+            chart5data.push(mot.cantmotivos);
+          }
+          if (mot.descripcion=='ADECUACION LABORAL'){
+            chart6data.push(mot.cantmotivos);
+          }
+          if (mot.descripcion=='REUBICACION LABORAL'){
+            chart7data.push(mot.cantmotivos);
           }
         }
        
-         this.barChart1Data.push({ 
-            backgroundColor: this.barChart1Colours[0].backgroundColor,
-            borderWidth: this.barChart1Colours[0].borderWidth,   
-            data: bar1data,
-            label: this.descbarChart1Data,
-            barPercentage: 0.5,
+        this.barChart1Data.push({ 
+          backgroundColor: this.barChart1Colours[0].backgroundColor,
+          borderWidth: this.barChart1Colours[0].borderWidth,   
+          data: bar1data,
+          label: this.descbarChart1Data,
+          barPercentage: 0.5,
         });
 
         this.lineChart1Data.push({
@@ -501,15 +546,39 @@ export class PrincipalServicioMedicoComponent implements OnInit {
           data: chart2data, 
           label: this.desclineChart3Data
         });
-        
+        /////////para los witged de la 2da columna///////////////////
+        this.lineChart4Data.push({
+          backgroundColor: this.lineChart4Colours[0].backgroundColor, 
+          borderColor: this.lineChart4Colours[0].borderColor,
+          data: chart4data, 
+          label: this.desclineChart4Data
+        });
+        this.lineChart5Data.push({
+          backgroundColor: this.lineChart5Colours[0].backgroundColor, 
+          borderColor: this.lineChart5Colours[0].borderColor,
+          data: chart5data, 
+          label: this.desclineChart5Data
+        });
+        this.lineChart6Data.push({
+          backgroundColor: this.lineChart6Colours[0].backgroundColor, 
+          borderColor: this.lineChart6Colours[0].borderColor,
+          data: chart6data, 
+          label: this.desclineChart6Data
+        });
+        this.lineChart7Data.push({
+          backgroundColor: this.lineChart7Colours[0].backgroundColor, 
+          borderColor: this.lineChart7Colours[0].borderColor,
+          data: chart7data, 
+          label: this.desclineChart7Data
+        });        
         
         /*console.log(this.barChart1Data);
         console.log(this.lineChart1Data);
         console.log(this.lineChart2Data);
         console.log(this.lineChart3Data);*/
       })			
-			.catch(err => { console.log(err) });
-	}
+			.catch(err => { console.error(err) });
+	}  
 
   async llenarBrandBoxChartData1(){
     let arrayMotivosMedicoslabel: string[]=[];
@@ -577,10 +646,8 @@ export class PrincipalServicioMedicoComponent implements OnInit {
                 }
               ]
             })            
-        }
-        
-    }
-    
+        }        
+    }    
   }
 
   radioModel: string = 'Mes';
@@ -593,6 +660,16 @@ export class PrincipalServicioMedicoComponent implements OnInit {
   desclineChart1Data: string;
   desclineChart2Data:string;
   desclineChart3Data: string;
+
+  desclineChart4Data:string;
+  desclineChart5Data:string;
+  desclineChart6Data:string;
+  desclineChart7Data:string;
+
+  totallineChart4Data: number=0;
+  totallineChart5Data: number=0;
+  totallineChart6Data: number=0;
+  totallineChart7Data: number=0;
   
   // lineChart1
   public lineChart1Data: Array<any> = [
@@ -962,5 +1039,239 @@ export class PrincipalServicioMedicoComponent implements OnInit {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-  
+  // lineChart4 
+  public lineChart4Data: Array<any> = [
+    {
+      data: [1, 18, 9, 17, 34, 22, 11],
+      label: 'Series A'
+    }
+  ];
+  public lineChart4Labels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Aug','Sept','Oct','Nov','Dec'];
+  public lineChart4Options: any = {
+    tooltips: {
+      enabled: false,
+      custom: CustomTooltips
+    },
+    maintainAspectRatio: false,
+    scales: {
+      xAxes: [{
+        gridLines: {
+          color: 'transparent',
+          zeroLineColor: 'transparent'
+        },
+        ticks: {
+          fontSize: 2,
+          fontColor: 'transparent',
+        }
+
+      }],
+      yAxes: [{
+        display: false,
+        ticks: {
+          display: false,
+          min: 1 - 5,
+          max: 300 + 5,
+        }
+      }],
+    },
+    elements: {
+      line: {
+        tension: 0.00001,
+        borderWidth: 1
+      },
+      point: {
+        radius: 4,
+        hitRadius: 10,
+        hoverRadius: 4,
+      },
+    },
+    legend: {
+      display: false
+    }
+  };
+  public lineChart4Colours: Array<any> = [
+    { // grey
+      backgroundColor  : getStyle('--info'),
+      borderColor: 'rgba(255,255,255,.55)'
+    }
+  ];
+  public lineChart4Legend = false;
+  public lineChart4Type = 'line';
+
+  // lineChart5 
+  public lineChart5Data: Array<any> = [
+    {
+      data: [1, 18, 9, 17, 34, 22, 11],
+      label: 'Series A'
+    }
+  ];
+  public lineChart5Labels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Aug','Sept','Oct','Nov','Dec'];
+  public lineChart5Options: any = {
+    tooltips: {
+      enabled: false,
+      custom: CustomTooltips
+    },
+    maintainAspectRatio: false,
+    scales: {
+      xAxes: [{
+        gridLines: {
+          color: 'transparent',
+          zeroLineColor: 'transparent'
+        },
+        ticks: {
+          fontSize: 2,
+          fontColor: 'transparent',
+        }
+
+      }],
+      yAxes: [{
+        display: false,
+        ticks: {
+          display: false,
+          min: 1 - 5,
+          max: 300 + 5,
+        }
+      }],
+    },
+    elements: {
+      line: {
+        tension: 0.00001,
+        borderWidth: 1
+      },
+      point: {
+        radius: 4,
+        hitRadius: 10,
+        hoverRadius: 4,
+      },
+    },
+    legend: {
+      display: false
+    }
+  };
+  public lineChart5Colours: Array<any> = [
+    { // grey
+      backgroundColor  : getStyle('--info'),
+      borderColor: 'rgba(255,255,255,.55)'
+    }
+  ];
+  public lineChart5Legend = false;
+  public lineChart5Type = 'line';
+
+  // lineChart6 
+  public lineChart6Data: Array<any> = [
+    {
+      data: [1, 18, 9, 17, 34, 22, 11],
+      label: 'Series A'
+    }
+  ];
+  public lineChart6Labels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Aug','Sept','Oct','Nov','Dec'];
+  public lineChart6Options: any = {
+    tooltips: {
+      enabled: false,
+      custom: CustomTooltips
+    },
+    maintainAspectRatio: false,
+    scales: {
+      xAxes: [{
+        gridLines: {
+          color: 'transparent',
+          zeroLineColor: 'transparent'
+        },
+        ticks: {
+          fontSize: 2,
+          fontColor: 'transparent',
+        }
+
+      }],
+      yAxes: [{
+        display: false,
+        ticks: {
+          display: false,
+          min: 1 - 5,
+          max: 300 + 5,
+        }
+      }],
+    },
+    elements: {
+      line: {
+        tension: 0.00001,
+        borderWidth: 1
+      },
+      point: {
+        radius: 4,
+        hitRadius: 10,
+        hoverRadius: 4,
+      },
+    },
+    legend: {
+      display: false
+    }
+  };
+  public lineChart6Colours: Array<any> = [
+    { // grey
+      backgroundColor  : getStyle('--info'),
+      borderColor: 'rgba(255,255,255,.55)'
+    }
+  ];
+  public lineChart6Legend = false;
+  public lineChart6Type = 'line';
+
+  // lineChart7 
+  public lineChart7Data: Array<any> = [
+    {
+      data: [1, 18, 9, 17, 34, 22, 11],
+      label: 'Series A'
+    }
+  ];
+  public lineChart7Labels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Aug','Sept','Oct','Nov','Dec'];
+  public lineChart7Options: any = {
+    tooltips: {
+      enabled: false,
+      custom: CustomTooltips
+    },
+    maintainAspectRatio: false,
+    scales: {
+      xAxes: [{
+        gridLines: {
+          color: 'transparent',
+          zeroLineColor: 'transparent'
+        },
+        ticks: {
+          fontSize: 2,
+          fontColor: 'transparent',
+        }
+
+      }],
+      yAxes: [{
+        display: false,
+        ticks: {
+          display: false,
+          min: 1 - 5,
+          max: 300 + 5,
+        }
+      }],
+    },
+    elements: {
+      line: {
+        tension: 0.00001,
+        borderWidth: 1
+      },
+      point: {
+        radius: 4,
+        hitRadius: 10,
+        hoverRadius: 4,
+      },
+    },
+    legend: {
+      display: false
+    }
+  };
+  public lineChart7Colours: Array<any> = [
+    { // grey
+      backgroundColor  : getStyle('--info'),
+      borderColor: 'rgba(255,255,255,.55)'
+    }
+  ];
+  public lineChart7Legend = false;
+  public lineChart7Type = 'line';
 }
