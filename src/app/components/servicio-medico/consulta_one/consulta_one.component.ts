@@ -484,9 +484,7 @@ export class ConsultaOneComponent implements OnChanges {
           }
         }
       }      
-      this.observacionesArray = observ;
-      console.log(this.observacion);
-      console.log(this.observacionesArray);
+      this.observacionesArray = observ;      
     }  
    
   }
@@ -812,13 +810,15 @@ export class ConsultaOneComponent implements OnChanges {
       }
 
       let historia: IHistoria_paciente ={
-        fk_historia: this.historiaMedica.uid_historia,
+        //fk_historia: this.historiaMedica.uid_historia,
         fecha_historia: this.consultas.fecha,
         indice: 0,
         motivo_historia: this.motivos.find((m: any) => {return m.uid==this.consultas.id_motivo }).descripcion,
         observacion: this.consultas.observaciones,
         fk_medico: this.consultas.id_medico,      
       }
+
+      const tieneHistoria: boolean = await this.srvVarios.nonEmptyValue(this.historiaMedica.uid_historia);
       
 			this.srvConsultas.nuevo(this.consultas)				
 				.then(results => {
@@ -826,6 +826,12 @@ export class ConsultaOneComponent implements OnChanges {
           if (this.consultas.uid && typeof this.consultas.uid === 'number'){
             historia.fk_consulta=this.consultas.uid;
             this.srvHistorias.nuevoHistoriaPaciente(historia);
+
+            if (tieneHistoria){
+              historia.fk_historia = this.historiaMedica.uid_historia;
+              this.srvHistorias.nuevoHistoriaPaciente(historia);
+            }
+            
             this.showSuccess('Atencion Medica Registrada Satisfactoriamente', 'success');                     
           }
           else{
