@@ -57,7 +57,6 @@ import { SolicitudAtencionService } from '../../../services/servicio_medico/soli
               AfeccionesService, SignosVitalesService, RemitidosService, TiempoReposoService, AntropometriaService,
               MedicosService,HistoriaService, DiagnosticosService,
               { provide: AlertConfig },
-              
             ],
   styleUrls: ["consultas.component.css"],
              
@@ -78,7 +77,7 @@ export class ConsultasComponent  implements OnInit  {
   private searchTimeout: any;
   user: IUsuarios={};
   tipoUser: string;
-  uidPaciente: string;  
+  uidPaciente: string;
   buscarConsulta: IFiltroConsulta;
   consultasTodas: IvConsulta[];
   consultasAnteriores: IvConsulta[];
@@ -106,7 +105,7 @@ export class ConsultasComponent  implements OnInit  {
   _patologias: IPatologia[] = [];
   afecciones: IAfecciones[]=[];
   selectedOptionPatolog: any;  
-  searchText = ""; 
+  searchText = "";
   modalTitle = "";
   autorizacion: boolean = false;
   remitidos: IRemitido[]=[];
@@ -128,7 +127,7 @@ export class ConsultasComponent  implements OnInit  {
   arrayMedicamentosIndicados: IMedicamento[]=[];
   medicamentoIndicados: IindicacionMedica[]=[];
   medicamentoIndic: IindicacionMedica={};
-  solicitud: ISolicitudAtencion={}; 
+  solicitud: ISolicitudAtencion={};
   turno: number;
   observacionesArray: {user?: string, observacion?:string, fecha?: string}[]=[];
   observacion: string = '';
@@ -205,8 +204,7 @@ export class ConsultasComponent  implements OnInit  {
     @Inject(LOCALE_ID) public locale: string,  
   ) { this.urlICD = environment.urlICD; }
 
-  async ngOnInit() { 
-    console.log(this.locale);  
+  async ngOnInit() {    
     if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
       this.classTable = "table table-striped";
       this.classButton ="btn btn-block btn-ghost-dark";
@@ -340,16 +338,13 @@ export class ConsultasComponent  implements OnInit  {
 		this.srvConsultas.consultaFilter(this.buscarConsulta)
 			.toPromise()
 			.then(results => {
-				
 				this.consultasTodas = results;
-        
         this.totalItems = this.consultasTodas.length;
         this.maxSize = Math.ceil(this.totalItems/this.numPages);
-        this.returnedArray = this.consultasTodas.slice(0, this.numPages);
-				
+        this.returnedArray = this.consultasTodas.slice(0, this.numPages);				
 			})
 			.catch(err => { console.error(err) });
-	} 
+	}
   
   private async llenarArrayConsultasMotivos() {
     this.polarAreaChartLabels=['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16','17','18','19','20','21','22','23','24','25'];
@@ -359,15 +354,15 @@ export class ConsultasComponent  implements OnInit  {
 		this.srvConsultas.consultasPorMotivos()
 			.toPromise()
 			.then(async results => {        
-				//this.arrayConnsultaMotivos = results;        
+				//this.arrayConnsultaMotivos = results;
         for await (let mot of results){
           desc.push(mot.descripcion);
-          cant.push(mot.totalmotivos);          
+          cant.push(mot.totalmotivos);
         }	
         this.polarAreaChartLabels=desc;
         this.polarAreaChartData=cant;
 			})
-			.catch(err => { console.log(err) });
+			.catch(err => { console.error(err) });
 	} 
   // events
   chartClicked(e: any): void {
@@ -473,7 +468,7 @@ export class ConsultasComponent  implements OnInit  {
       if (this.tipoUser=='PARAMEDICO'){
         this.paramedicos=result.filter(p => (p.login==this.user.login))
       }else{
-        this.paramedicos=result;        
+        this.paramedicos=result;
       }            
     });
   }
@@ -523,14 +518,12 @@ export class ConsultasComponent  implements OnInit  {
             this.paciente=result[0];
             this.buscarHistoriaPaciente(this.paciente.uid_paciente);
           }
-          else
-            this.paciente={} 
-          
+          else{ this.paciente={} }            
         })
       }
     } catch (error) {
       console.error('buscarPaciente: '+error);
-    }  
+    }
   }
 
   async buscarHistoriaPaciente(idpaciente: number){
@@ -538,13 +531,13 @@ export class ConsultasComponent  implements OnInit  {
       if ( idpaciente!= undefined){
         await this.srvHistorias.historiaMedicaOne('null', idpaciente.toString())
         .toPromise()
-        .then((result) => {          
+        .then((result) => {
           this.historiaMedica=result;
-        });        
+        });
       }
     } catch (error) {
       console.error('buscarHistoriaPaciente: '+error);
-    }  
+    }
   }
 
   buscarMedicamentosAplicados(idConsulta: number){
@@ -733,20 +726,17 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   private verTurno(){
-    let tiempo=formatDate(Date.now(), 'HH:mm:ss', this.locale);
+    let tiempo = formatDate(Date.now(), 'HH:mm:ss', this.locale);
     let array = tiempo.split(':');
-    let hora=Number(array[0]);
-    if (hora>=23 && hora<7){
-      this.turno=1;
+    let hora = Number(array[0]);
+
+    if (hora >= 23 || hora < 7) {
+      this.turno = 1; // Turno 1: Desde las 23:00 hasta las 6:59
+    } else if (hora >= 7 && hora < 15) {
+      this.turno = 2; // Turno 2: Desde las 7:00 hasta las 14:59
+    } else if (hora >= 15 && hora < 23) {
+      this.turno = 3; // Turno 3: Desde las 15:00 hasta las 22:59
     }
-    if(hora>=7 && hora<15){
-        this.turno=2;
-    } 
-    if(hora>=15 && hora<23){
-          this.turno=3;
-    }  
-    //console.log(array);
-    //console.log(this.turno)
   }
 
   chequeaAutorizacionMotivo(idMotivo: number){
@@ -830,7 +820,7 @@ export class ConsultasComponent  implements OnInit  {
     
     this.paciente={};
     this.consultas={};
-    if (this.tipoUser=='PARAMEDICO'){      
+    if (this.tipoUser=='PARAMEDICO'){
       const i = await this.srvVarios.searchArrayObject(this.paramedicos, this.user.login, 'login' );      
       this.consultas.id_paramedico=this.paramedicos[i].uid;
       this.consultas.id_medico = this.selectMedicos.find( m => { return m.titular===true}).uid;
@@ -855,11 +845,11 @@ export class ConsultasComponent  implements OnInit  {
     this.antropometria={};    
   }
   
-  async formatearCampo(cadena: string, user: string, fecha: string){    
+  async formatearCampo(cadena: string, user: string, fecha: string){
     if (cadena){
       const index = cadena.indexOf("<br>");
       let observ: {user?: string, observacion?:string, fecha?: string}[]=[];
-      if(index===-1){        
+      if(index===-1){
         observ.push({
           user: user,
           observacion: cadena,
@@ -870,7 +860,7 @@ export class ConsultasComponent  implements OnInit  {
         let arr = cadena.split('<br>');
         for await (const ob of arr){
           if (ob){
-            let res = ob.split('\n');            
+            let res = ob.split('\n');
             if (res[1]!=undefined && res[1]!=''){
               observ.push({
                 user: res[0],
@@ -887,7 +877,6 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   async  showModalActualizar(item: IvConsulta){
-    console.log(item);
     this.observacion = "";
     this.observacionesArray = [];
     this.soloLectura=true;
@@ -937,7 +926,7 @@ export class ConsultasComponent  implements OnInit  {
       resultado_eva: item.resultado_eva,
       //observacion_medicamentos: item.observacion_medicamentos,
       autorizacion: item.autorizacion,
-      turno: item.turno,      
+      turno: item.turno,
     }
     if (this.consultas.id_motivo===9){
       this.preEmpleo=true;
@@ -1022,10 +1011,10 @@ export class ConsultasComponent  implements OnInit  {
   } 
 
   async guardarSignosVit(_fecha: string, _cedula: string){
-    if (_fecha!=undefined && _cedula!=undefined){      
+    if (_fecha!=undefined && _cedula!=undefined){
       try {      
           this.signoVital.cedula=_cedula;
-          this.signoVital.fecha=_fecha;          
+          this.signoVital.fecha=_fecha;
           await this.srvSignosVitales.registrar(this.signoVital).toPromise();
              
           this.antropometria.fecha=_fecha;
@@ -1157,7 +1146,7 @@ export class ConsultasComponent  implements OnInit  {
       observacionNueva = `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}<br>`;
     }
     const obsValido: boolean = await this.srvVarios.nonEmptyValue(this.observacion);
-    if (!obsValido){        
+    if (!obsValido){
       observacionAnterior = this.observacion;
     }
     
@@ -1169,7 +1158,7 @@ export class ConsultasComponent  implements OnInit  {
     this.blockRegister=true;
     this.popoverConsulta={};
     const fechaRegistro: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
-    const fechaConsulta: string = this.consultas.fecha;    
+    const fechaConsulta: string = this.consultas.fecha;
     let observacion: string = await this.formatearObersevacion(fechaRegistro);
     
     try {
@@ -1186,13 +1175,13 @@ export class ConsultasComponent  implements OnInit  {
         this.consultas={
           uid: undefined,
           id_paciente: this.paciente.uid_paciente,
-          fecha: this.consultas.fecha,        
+          fecha: this.consultas.fecha,
           id_patologia: this.selectedOptionPatolog.uid,
           fecha_registro: fechaRegistro,
           turno: this.turno,
           indicaciones_comp: indicaciones,
-          referencia_medica: referenciaMedica,                 
-          autorizacion: this.autorizacion===true ? 'SI':'NO',        
+          referencia_medica: referenciaMedica,
+          autorizacion: this.autorizacion===true ? 'SI':'NO',
           id_medico: this.consultas.id_medico,
           id_paramedico: this.consultas.id_paramedico,
           id_motivo: this.consultas.id_motivo,
@@ -1211,7 +1200,7 @@ export class ConsultasComponent  implements OnInit  {
         
         this.popoverConsulta = await this.validaEntradas(this.consultas.id_paciente, fechaRegistro);
         
-        if ( this.popoverConsulta.alerta!=undefined){        
+        if ( this.popoverConsulta.alerta!=undefined){
           this.alertaRegistrar = this.popoverConsulta.alerta;
           this.titleRegistrar = this.popoverConsulta.titulo;
           this.showSuccess(this.popoverConsulta.alerta, 'danger');
@@ -1261,6 +1250,7 @@ export class ConsultasComponent  implements OnInit  {
               await this.guardarMedicametosAplicados();
               
               const solicitudValida: boolean = await this.srvVarios.nonEmptyValue(this.solicitud.uid);
+              
               if (solicitudValida){
                 await this.solicitudAtendida(this.consultas, this.paciente);
               }
@@ -1278,7 +1268,7 @@ export class ConsultasComponent  implements OnInit  {
           })
           .catch(err => {
             this.showSuccess('Error Registrando: '+err, 'danger'); 
-            console.log(err);
+            console.error(err);
           });			
       }
       else {
@@ -1307,13 +1297,12 @@ export class ConsultasComponent  implements OnInit  {
       console.error(error);
       this.showSuccess(`${error}. Comuniquese con el Administrador del Sistema. Ext.#293`, 'danger');
     }    
-    
   }
 
   async solicitudAtendida(newConsulta: IConsultas, paciente: IvPaciente){
     try {    
-      //console.log(`prox. cita: ${newConsulta.fecha_prox_cita}`);
-      this.solicitud.estatus = newConsulta.fecha_prox_cita ? "PENDIENTE" : "CERRADA";
+      const proxCitavalida: boolean = await this.srvVarios.nonEmptyValue(newConsulta.fecha_prox_cita);
+      this.solicitud.estatus = proxCitavalida ? "PENDIENTE" : "CERRADA";
       this.solicitud.fecha_atencion = newConsulta.fecha;
       this.solicitud.fecha_salida = this.fechaSalida==this.solicitud.fecha_salida ? this.solicitud.fecha_salida : this.fechaSalida;
       this.solicitud.motivo = newConsulta.sintomas;
@@ -1323,7 +1312,7 @@ export class ConsultasComponent  implements OnInit  {
       this.solicitud.observaciones = newConsulta.observaciones;
       this.solicitud.id_consulta = newConsulta.uid;
       this.solicitud.fecha_prox_cita = newConsulta.fecha_prox_cita;
-      
+      //console.log(this.solicitud);
       this.srvSolicitud.actualizar(this.solicitud).subscribe();
       this.srvSolicitud.registrarConsultaSolicitud({id_consulta: this.solicitud.id_consulta, id_solicitud: this.solicitud.uid, fecha_salida: this.solicitud.fecha_salida }).subscribe();
       
@@ -1356,7 +1345,7 @@ export class ConsultasComponent  implements OnInit  {
           html: cuerpo,
         };
         this.enviarCorreoHTML(mailOptions)
-        .then((result) => {        
+        .then((result) => {
           if (result.info)
             this.showSuccess(`${asunto} Enviado a: ${correos}: `, 'warning');
           else
@@ -1439,9 +1428,9 @@ export class ConsultasComponent  implements OnInit  {
     if (this.medicamentoIndic.medicamento != undefined && this.medicamentoIndic.indicacion != undefined){
       
       for await (const value of this.arrayMedicamentosIndicados) {
-        //console.log(`this.medicamento: ${this.medicamentoIndic.medicamento}; valie.uid: ${value.uid}`);       
+        //console.log(`this.medicamento: ${this.medicamentoIndic.medicamento}; valie.uid: ${value.uid}`);
         if (value.uid.toString()==this.medicamentoIndic.medicamento){
-          this.medicamentoIndic.medicamento=value.descripcion;         
+          this.medicamentoIndic.medicamento=value.descripcion;
           break;
         }  
       }
@@ -1453,10 +1442,10 @@ export class ConsultasComponent  implements OnInit  {
     }
     else{
       this.titleIndicacion='Error: Campo Vacio';
-      if (this.medicamentoIndic.medicamento==undefined || this.medicamentoIndic.medicamento == undefined){        
+      if (this.medicamentoIndic.medicamento==undefined || this.medicamentoIndic.medicamento == undefined){
         this.alertaIndicacion='Debe Seleccionar un Medicamento';
       }
-      if (this.medicamentoIndic.indicacion=="" || this.medicamentoIndic.indicacion == undefined){        
+      if (this.medicamentoIndic.indicacion=="" || this.medicamentoIndic.indicacion == undefined){
         this.alertaIndicacion='Debe llenar El campo Indicacion';
       }
     }
@@ -1617,11 +1606,11 @@ export class ConsultasComponent  implements OnInit  {
     let edad: any;
     
     await this.srvConsultas.morbilidadFilter(filtro)
-      .toPromise()            
+      .toPromise()
       .then(async (res) => {
-        morbilidad = res;        
-        for await (let p of morbilidad){          
-          edad = JSON.parse(JSON.stringify(p.edad));          
+        morbilidad = res;
+        for await (let p of morbilidad){
+          edad = JSON.parse(JSON.stringify(p.edad));
           data.push({
             Id: p.uid,
             FechaConsulta: formatDate(p.fecha, 'dd-MM-yyyy HH:mm:ss', this.locale),
@@ -1629,7 +1618,7 @@ export class ConsultasComponent  implements OnInit  {
             Cedula: p.ci,
             Nombres: p.nombre_completo,
             Sexo: p.sexo,
-            edad: edad?.years,           
+            edad: edad?.years,
             Cargo: p.cargo,
             Departamento: p.departamento,
             Supervisor: p.nombres_jefe,
@@ -1641,7 +1630,7 @@ export class ConsultasComponent  implements OnInit  {
             'Tipo Afeccion por Sist.': p.resultado_eva,
             Diagnostico: p.descripcion_afeccion,
             'Condicion / Observ.': p.motivo_consulta,
-            Patologias: p.patologia,            
+            Patologias: p.patologia,
             FResp: p.fresp,
             Pulso: p.pulso,
             Temp: p.temper,
@@ -1650,8 +1639,8 @@ export class ConsultasComponent  implements OnInit  {
             Peso: p.peso,
             IMC: p.imc,
             FCard: p.fcard,
-            Reposo: p.reposo,            
-            Medicamentos: p.aplicacion!=null && p.aplicacion!=undefined ? p.aplicacion.toString() : '',            
+            Reposo: p.reposo,
+            Medicamentos: p.aplicacion!=null && p.aplicacion!=undefined ? p.aplicacion.toString() : '',
             Medico: p.medico,
             CiMedico: p.ci_medico,
             Paramedico: p.paramedico,
@@ -1688,7 +1677,7 @@ export class ConsultasComponent  implements OnInit  {
     });
   }
 
-  async enviarMorbilidad(actividad: string){   
+  async enviarMorbilidad(actividad: string){
     this.titleButtonSend='Enviando...'; 
     const remitentes: string[] = await this.getRemitentes(actividad);
     
@@ -1700,7 +1689,7 @@ export class ConsultasComponent  implements OnInit  {
         text: `Reporte de ${actividad} desde el usuario:  ${this.user.login}  (ver archivo adjunto).`,
       };
       await this.enviarCorreo(mailOptions)
-      .then((result) => {        
+      .then((result) => {
         if (result.info)
           this.showSuccess(`${actividad} Enviada a: ${correos}`, 'warning');
         else
@@ -1710,22 +1699,22 @@ export class ConsultasComponent  implements OnInit  {
     }
   }
 
-  async enviarCorreo(mailOptions: ImailOptions) {    
-    let respuesta: any;      
+  async enviarCorreo(mailOptions: ImailOptions) {
+    let respuesta: any;
     await this.obtenerArchivo().then(async (archivo: Blob) => {
       const formData = new FormData();
       formData.append('attachments', archivo, 'atencion.xlsx');
       formData.append('to', mailOptions.to);
       formData.append('subject', mailOptions.subject);
-      formData.append('text', mailOptions.text);      
+      formData.append('text', mailOptions.text);
       respuesta = await this.srvCorreo.enviarAchivo(formData);
       if (respuesta.error==undefined){
         console.log(`Info: ${respuesta?.info}`);
       }else{
         console.error(`Error: ${respuesta.error}`);
       }
-    });    
-    return respuesta;  
+    });
+    return respuesta;
   }
 
   async getRemitentes(actividad: string){
@@ -1738,8 +1727,8 @@ export class ConsultasComponent  implements OnInit  {
     return data;
   }
 
-  async enviarCorreoHTML(mailOptions: ImailOptions) {    
-    let respuesta: any;     
+  async enviarCorreoHTML(mailOptions: ImailOptions) {
+    let respuesta: any;
     respuesta = await this.srvCorreo.enviarBuffer(mailOptions);
     if (respuesta.error==undefined){
       console.log(`Info: ${respuesta?.info}`);
@@ -1747,7 +1736,7 @@ export class ConsultasComponent  implements OnInit  {
       console.error(`Error: ${JSON.stringify(respuesta.error)}`);
     }
        
-    return respuesta;  
+    return respuesta;
   }
 
   async enviarMotivoporCorreo(idMotivo: number, idConsulta: number, idReposo?: number){
@@ -1785,7 +1774,7 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   async enviarExamenCorreo(asunto: string, cuerpo: string, actividad: string){
-    const remitentes: string[] = await this.getRemitentes(actividad);    
+    const remitentes: string[] = await this.getRemitentes(actividad);
     if (remitentes.length>0){
       const correos: string = remitentes.toString();
       const mailOptions: ImailOptions = {
@@ -1794,12 +1783,12 @@ export class ConsultasComponent  implements OnInit  {
         html: cuerpo,
       };
       this.enviarCorreoHTML(mailOptions)
-      .then((result) => {        
+      .then((result) => {
         if (result.info)
           this.showSuccess(`${asunto} Enviado a: ${correos}: `, 'warning');
         else
           this.showSuccess(`Error: ${result?.error}`, 'danger');
       });
-    }  
-  }  
+    }
+  }
 }

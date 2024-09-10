@@ -348,8 +348,8 @@ export class ConsultasService {
         cuerpo += `El cual est&aacute; en condici&oacute;n de ${colorcondicion} seg&uacute;n lo considerado en la consulta m&eacute;dica `;
       };
       
-      cuerpo += `registrada en la fecha: <strong>${notaExamen.mor_fecha}.</strong> por el ${atendio}.<br>Cuyo diagnostico fue: <strong>${notaExamen.resultado_eva}</strong>.<br>`;
-
+      cuerpo += `registrada en la fecha: <strong>${notaExamen.mor_fecha}.</strong> por el ${atendio}.<br>`;
+      cuerpo += notaExamen.resultado_eva ==null || notaExamen.resultado_eva== undefined ? "" : `Cuyo diagnostico fue: <strong>${notaExamen.resultado_eva}</strong>.<br>`;
       if (notaExamen.mor_sex=='M'){
         cuerpo += 'Otros datos de inter&eacute;s sobre el trabajador:<br>';
       }

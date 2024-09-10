@@ -100,8 +100,8 @@ export class SolicitudesALLComponent implements OnInit {
     }
     this.filtroSolicitud.fecha_solicitud = formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
     this.filtroSolicitud.estatus = 'PENDIENTE';
-    this.filtroSolicitud.condlogica = 'AND';
-    console.log(`filtroSolicitud.fecha_solicitud: ${this.filtroSolicitud.fecha_solicitud}`);
+    this.filtroSolicitud.condlogica = 'OR';
+    //console.log(`filtroSolicitud.fecha_solicitud: ${this.filtroSolicitud.fecha_solicitud}`);
     this.llenarArraySolicitudes();
   }
   
@@ -113,6 +113,7 @@ export class SolicitudesALLComponent implements OnInit {
         this.totalItems = this.solicitudesAll.length;
         this.maxSize = Math.ceil(this.totalItems/this.numPages);             
         this.returnedArray = this.solicitudesAll.slice(0, this.numPages);
+        console.log(this.returnedArray)
 			})
 			.catch(err => { console.error(err) });
 	}

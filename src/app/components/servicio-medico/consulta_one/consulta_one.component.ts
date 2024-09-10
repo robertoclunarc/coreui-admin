@@ -397,19 +397,18 @@ export class ConsultaOneComponent implements OnChanges {
     }    
   }
 
-  verTurno(){
-    let tiempo=formatDate(Date.now(), 'HH:mm:ss', this.locale);
+  private verTurno(){
+    let tiempo = formatDate(Date.now(), 'HH:mm:ss', this.locale);
     let array = tiempo.split(':');
-    let hora=Number(array[0]);
-    if (hora>=23 && hora<7){
-      this.turno=1;
+    let hora = Number(array[0]);
+
+    if (hora >= 23 || hora < 7) {
+      this.turno = 1; // Turno 1: Desde las 23:00 hasta las 6:59
+    } else if (hora >= 7 && hora < 15) {
+      this.turno = 2; // Turno 2: Desde las 7:00 hasta las 14:59
+    } else if (hora >= 15 && hora < 23) {
+      this.turno = 3; // Turno 3: Desde las 15:00 hasta las 22:59
     }
-    if(hora>=7 && hora<15){
-        this.turno=2;
-    } 
-    if(hora>=15 && hora<23){
-          this.turno=3;
-    }    
   }
 
   chequeaAutorizacionMotivo(idMotivo: number){
