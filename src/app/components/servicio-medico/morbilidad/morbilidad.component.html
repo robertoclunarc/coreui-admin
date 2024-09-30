@@ -5,7 +5,7 @@
         <div class="card-header">
            <strong>Mobilidad</strong> <code>({{totalItems}})</code>
            <div class="card-header-actions">
-            <button type="button" class="btn btn-sm btn-pill btn-info" title="Refrescar Consultas/Mostrar Todas" (click)="morbilidadFilter(false)"><i class="fa fa-refresh"></i></button>            
+            <button type="button" class="btn btn-sm btn-pill btn-info" title="Refrescar Consultas/Mostrar Todas" (click)="mostrarTodo()"><i class="fa fa-refresh"></i></button>            
             <button type="button" class="btn btn-sm btn-pill btn-primary" [disabled]="titleButtonExport!='Exportar'" (click)="exportExcel()" title="Explortar a Excel"><i class="fa fa-file-excel-o"></i>&nbsp;{{titleButtonExport}}</button>
             <button type="button" class="btn btn-sm btn-pill btn-warning" [disabled]="titleButtonSend!='Enviar'" (click)="enviarMorbilidad('MORBILIDAD')" title="Enviar Reporte de Morbilidad"><i class="fa fa-envelope-o"></i>&nbsp;{{titleButtonSend}}</button>
           </div>
@@ -14,8 +14,27 @@
           <div *ngFor="let alert of alertsDismiss">
             <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
           </div>
-
-          <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by ..." />
+          <div class="row">
+            <div class="col-sm-4">
+              <input class="form-control mt-1 mb-1" type="text" [(ngModel)]="searchText" (input)="Search()" pattern="" placeholder="Search by ..." />
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <span class="form-group has-float-label">
+                  <input type="date" class="form-control mt-1 mb-1" id="fecha_ini" (change)="SearchFecha()" name="fecha_ini" [(ngModel)]="fInicio" >
+                  <label class="badge-light" for="fecha_ini">Fecha Inicio</label>
+                </span>
+              </div>      
+            </div>
+            <div class="col-sm-2">
+              <div class="form-group">
+                <span class="form-group has-float-label">
+                  <input type="date" class="form-control mt-1 mb-1" id="fecha_fin" (change)="SearchFecha()" name="fecha_fin" [(ngModel)]="fFin">
+                  <label class="badge-light" for="fecha_fin">Fecha Fin</label>
+                </span>
+              </div>
+            </div>
+          </div>          
           
           <table class="{{ classTable }} table-hover table-sm table-responsive" id="dataConsultas">
             <thead>

@@ -29,6 +29,8 @@ export class MorbilidadComponent  implements OnInit  {
   public classButton: string;
   public estiloOscuro: string;
   private buscarConsulta: IFiltroConsulta;
+  fInicio: string ="";
+  fFin: string="";
   vMorbilidad: IvMorbilidad[]=[];
   returnedArray: IvMorbilidad[]=[];  
   returnedSearch: IvMorbilidad[]=[];
@@ -69,7 +71,7 @@ export class MorbilidadComponent  implements OnInit  {
     @Inject(LOCALE_ID) public locale: string,  
     ) {  }
 
-  ngOnInit(): void {
+  async ngOnInit() {
     
     if (sessionStorage.modoOscuro===undefined || sessionStorage.modoOscuro==='Off'){
       this.classTable = "table table-striped";
@@ -92,8 +94,12 @@ export class MorbilidadComponent  implements OnInit  {
     }else{
       this.router.navigate(["serviciomedico/login"]);
     }
-    this.limpiarFiltro();
-    this.morbilidadFilter(true);
+    await this.limpiarFiltro();
+    this.fInicio = formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
+    this.fFin = formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
+    this.buscarConsulta.fechaIni=this.fInicio;
+    this.buscarConsulta.fechaFin=this.fFin;
+    this.morbilidadFilter(false);
   }
   
   async morbilidadFilter(conFechaActual?: boolean) {
@@ -128,6 +134,27 @@ export class MorbilidadComponent  implements OnInit  {
       condlogica: 'null',
       patologia: 'null'
     }
+  }
+
+  async mostrarTodo(){
+    await this.limpiarFiltro();
+    this.searchText = "";
+    this.fInicio = "";
+    this.fFin = "";
+    this.morbilidadFilter(false);
+  }
+
+  SearchFecha(){    
+    if (this.fInicio && this.fFin){
+      const fechaInicio = new Date(this.fInicio);
+      const fechaFin = new Date(this.fFin);
+
+      if (fechaFin >= fechaInicio) {
+        this.buscarConsulta.fechaIni = this.fInicio;
+        this.buscarConsulta.fechaFin = this.fFin;
+        this.morbilidadFilter(false);
+      }      
+    }    
   }
 
   async Search(){
@@ -165,14 +192,14 @@ export class MorbilidadComponent  implements OnInit  {
         ciPaciente: fecha==='null' ? searchValue : 'null',
         Motivo: fecha==='null' ? searchValue : 'null',
         uidMotivo: fecha==='null' ? searchValue : 'null',
-        fechaIni: fecha,
-        fechaFin: fecha,
+        fechaIni: this.fInicio,
+        fechaFin: this.fFin,
         Medico: this.tipoUser==='PARAMEDICO' ? this.user.login : 'null',
         Paramedico: fecha==='null' ? searchValue : 'null',
         nombrePaciente: fecha==='null' ? searchValue : 'null',
         cargo: fecha==='null' ? searchValue : 'null',
         fecha: 'null',
-        condlogica: 'OR',
+        condlogica:  'OR',
         patologia: this.tipoUser==='PARAMEDICO' ? 'null' : searchValue,
       } 
       this.returnedSearch=[];
