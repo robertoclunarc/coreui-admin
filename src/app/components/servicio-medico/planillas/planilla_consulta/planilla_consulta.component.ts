@@ -82,8 +82,8 @@ export class planillaConsultaComponent implements OnChanges {
       .then(results => {				
 				this.vConsulta = results[0];
         this.vConsulta.observacion_medicamentos = this.vConsulta.observacion_medicamentos.replace(/<br>/g, "; ").replace(/\n/g, " ");
-        //console.log(this.vConsulta);
-        this.buscarSignosVitales(this.vConsulta.ci, this.vConsulta.fecha);				
+        console.log(this.vConsulta);
+        this.cargarSignosVitales(this.vConsulta);				
 			})
 			.catch(err => { console.log(err) });
 	}
@@ -95,6 +95,7 @@ export class planillaConsultaComponent implements OnChanges {
 			.toPromise()
       .then(results => {				
 				this.vMorbilidad = results[0];
+        //console.log(results)
 			})			
 			.catch(err => { console.log(err) });
 	}
@@ -132,10 +133,11 @@ export class planillaConsultaComponent implements OnChanges {
 
   private buscarSignosVitales(ci: string, fecha: string){
     if (ci!="" &&  ci!= undefined){
-      
+      console.log(ci, fecha);
       this.srvSignosVitales.signosVitalesOne(ci, formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale))
       .toPromise()
       .then(result => {
+        console.log(result)
         if (result[0]!= undefined)
           this.signoVital=result[0];
         else
@@ -151,8 +153,28 @@ export class planillaConsultaComponent implements OnChanges {
           this.antropometria={} 
         
       });
-    }    
-  }  
+    }
+  }
+
+  private cargarSignosVitales(consulta: IvConsulta){
+    
+    if (consulta.ci){      
+      this.signoVital={
+        fresp: consulta.fresp,
+        pulso: consulta.pulso,
+        temper: consulta.temper,
+        tart: consulta.tart,
+        fcard: consulta.fcard,
+      };       
+        
+      this.antropometria={
+        talla: consulta.talla,
+        peso: consulta.peso,
+        imc: consulta.imc,
+        
+      }    
+    }
+  } 
 
   public exportHtmlToPDF(){
     this.titleButtonImprimir = "Loading...";
