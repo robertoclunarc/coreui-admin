@@ -38,7 +38,8 @@ export class planillaConsultaComponent implements OnChanges {
   countMedicamentos: number=0
   private user: IUsuarios={};
   private tipoUser: string;
-  titleButtonImp: string = "Imprimir PDF";
+  titleButtonDescargar: string = "Descagar PDF";
+  titleButtonImprimir: string = "Imprimir PDF";
   disableButtonImp: boolean = false;
 
   constructor(private route: ActivatedRoute,private router: Router,
@@ -81,9 +82,9 @@ export class planillaConsultaComponent implements OnChanges {
       .then(results => {				
 				this.vConsulta = results[0];
         this.vConsulta.observacion_medicamentos = this.vConsulta.observacion_medicamentos.replace(/<br>/g, "; ").replace(/\n/g, " ");
-        console.log(this.vConsulta);
+        //console.log(this.vConsulta);
         this.buscarSignosVitales(this.vConsulta.ci, this.vConsulta.fecha);				
-			})			
+			})
 			.catch(err => { console.log(err) });
 	}
 
@@ -93,7 +94,7 @@ export class planillaConsultaComponent implements OnChanges {
 		return await this.srvConsultas.morbilidadFilter(this.buscarConsulta)
 			.toPromise()
       .then(results => {				
-				this.vMorbilidad = results[0];				
+				this.vMorbilidad = results[0];
 			})			
 			.catch(err => { console.log(err) });
 	}
@@ -119,14 +120,14 @@ export class planillaConsultaComponent implements OnChanges {
       this.srvMedicamentos.medicamentosAplicados(idConsulta)
       .toPromise()
       .then(result => {
-        if (result!= undefined){           
+        if (result!= undefined){
            this.medicamentoAplicado=result;
            this.countMedicamentos= this.medicamentoAplicado.medicamentos==undefined ? 0 : this.medicamentoAplicado.medicamentos.length;
         }
         else
           this.medicamentoAplicado={}
       })
-    }    
+    }
   }
 
   private buscarSignosVitales(ci: string, fecha: string){
@@ -154,7 +155,7 @@ export class planillaConsultaComponent implements OnChanges {
   }  
 
   public exportHtmlToPDF(){
-    this.titleButtonImp = "Loading...";
+    this.titleButtonImprimir = "Loading...";
     this.disableButtonImp = true;
     let data = document.getElementById('htmltable');
      
@@ -166,10 +167,36 @@ export class planillaConsultaComponent implements OnChanges {
           const contentDataURL = canvas.toDataURL('image/png')
           let doc = new jsPDF('p', 'mm', 'letter');
           let position = 0;
-          doc.addImage(contentDataURL, 'PNG', 0, position, docWidth, docHeight)
+          doc.addImage(contentDataURL, 'PNG', 0, position, docWidth, docHeight);
+          
+
+          doc.autoPrint(); // Solicitar impresión automática
+          const blobUrl = doc.output('bloburl') as unknown as string; // Convertir a string
+          window.open(blobUrl); // Abrir PDF en una nueva pestaña con el cuadro de diálogo de impresión activo
+    
+          this.titleButtonImprimir = "Imprimir PDF";
+          this.disableButtonImp = false;
+      });
+  }
+
+  public descargartHtmlToPDF(){
+    this.titleButtonDescargar = "Loading...";
+    this.disableButtonImp = true;
+    let data = document.getElementById('htmltable');
+     
+      html2canvas(data).then(canvas => {
+          
+          let docWidth = 208;
+          let docHeight = canvas.height * docWidth / canvas.width;
+          
+          const contentDataURL = canvas.toDataURL('image/png')
+          let doc = new jsPDF('p', 'mm', 'letter');
+          let position = 0;
+          doc.addImage(contentDataURL, 'PNG', 0, position, docWidth, docHeight);
           
           doc.save('consulta.pdf');
-          this.titleButtonImp = "Imprimir PDF";
+    
+          this.titleButtonDescargar = "Descagar PDF";
           this.disableButtonImp = false;
       });
   }

@@ -2,8 +2,9 @@
     <div class="row" >
         <div class="container-fluid">
             <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                <button type="button" [disabled]="disableButtonImp" class="btn btn-outline-dark" (click)="exportHtmlToPDF()">{{titleButtonImp}}</button>
-                <button printSectionId="htmltable" class="btn btn-outline-dark" ngxPrint>Vista Prelim.</button>      
+                <button type="button" [disabled]="disableButtonImp" class="btn btn-outline-dark" (click)="descargartHtmlToPDF()">{{titleButtonDescargar}}</button>
+                <button type="button" [disabled]="disableButtonImp" class="btn btn-outline-dark" (click)="exportHtmlToPDF()">{{titleButtonImprimir}}</button>
+                <!--<button printSectionId="htmltable" class="btn btn-outline-dark" ngxPrint>Vista Prelim.</button> -->     
             </div>    
         </div>
     </div>    
@@ -144,7 +145,7 @@
                 <td>{{ medA.cantidad }}</td>
             </tr>
             <tr *ngIf="vConsulta.observacion_medicamentos != undefined && vConsulta.observacion_medicamentos != ''" >
-                <th colspan="3" width="110%">OBSERVACIONES (MEDICAMENTOS)</th>
+                <th colspan="3" width="110%">OBSERVACIONES GENERALES</th>
             </tr>
 		    <tr *ngIf="vConsulta.observacion_medicamentos != undefined && vConsulta.observacion_medicamentos != ''" bgcolor="#F0ECEC">
                 <td colspan="3" height="30px">{{ vConsulta.observacion_medicamentos }}</td>

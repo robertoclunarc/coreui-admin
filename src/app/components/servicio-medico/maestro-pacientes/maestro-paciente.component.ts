@@ -100,7 +100,6 @@ export class MaestroPacienteComponent  implements OnInit  {
     
 		this.srvPacientes.searchPacientesPromise(ciPaciente, nombre, supervisor, cargo, dpto,condlogica)			
 			.then(results => {				
-				
 				this.arrayPacientes = results;        
                 this.totalItems = this.arrayPacientes.length;
                 this.maxSize = Math.ceil(this.totalItems/this.numPages);             

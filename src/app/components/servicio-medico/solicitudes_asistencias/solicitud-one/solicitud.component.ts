@@ -184,7 +184,8 @@ export class SolicitudComponent implements OnInit {
   }
 
   async guardar(){
-    this.popover={};
+    this.soloLectura=true;
+    this.popover={};    
     const fechaSolicitud: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
     try {
       
@@ -198,21 +199,23 @@ export class SolicitudComponent implements OnInit {
 
       this.solicitud.fecha_solicitud = fechaSolicitud;
       this.solicitud.estatus = 'PENDIENTE';
-      console.log(this.solicitud);
+      //console.log(this.solicitud);
       const newSolicitud: ISolicitudAtencion =  await this.srvSolicitud.registrar(this.solicitud).toPromise();
       
       if (newSolicitud.uid){
-        this.solicitud = newSolicitud;
-        console.log(newSolicitud);
+        
+        //console.log(newSolicitud);
         this.showSuccess(`Solicitud enviada satisfactoriamente con El ID ${newSolicitud.uid}`, 'success');
         this.enviarNotificacionCorreo(fechaSolicitud, this.paciente, newSolicitud);
         this.reset(); 
       }
       else{
         this.showSuccess('Error en el registro', 'danger');
+        this.soloLectura=false;
       }
     } catch (error) {
       console.error(error);
+      this.soloLectura=false;
       this.showSuccess('Error en el registro: ' + error, 'danger');
     }
     

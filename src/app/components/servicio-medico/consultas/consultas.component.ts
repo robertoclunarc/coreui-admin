@@ -747,6 +747,7 @@ export class ConsultasComponent  implements OnInit  {
       this.preEmpleo=false;
       this.autorizacion=false
     }
+    console.log(idMotivo, this.consultas.id_motivo)
   }
 
   async listarMotivos(idDiagnostico: number){
@@ -1096,7 +1097,7 @@ export class ConsultasComponent  implements OnInit  {
       return  popOver;
     }
 
-    if ((this.consultas.condicion == undefined || this.consultas.condicion=="N/A") && (this.consultas.id_motivo==8 || this.consultas.id_motivo==7)){
+    if ((this.tipoUser==='MEDICO') && (this.consultas.condicion == undefined || this.consultas.condicion=="N/A") && (this.consultas.id_motivo==8 || this.consultas.id_motivo==7)){
       popOver= {
         titulo:"Error en el Registro",
         alerta: "Seleccione la Condicion del Paciente"
@@ -1269,6 +1270,8 @@ export class ConsultasComponent  implements OnInit  {
           .catch(err => {
             this.showSuccess('Error Registrando: '+err, 'danger'); 
             console.error(err);
+            this.blockRegister=false;
+            this.soloLectura=false;
           });			
       }
       else {
@@ -1276,13 +1279,16 @@ export class ConsultasComponent  implements OnInit  {
         this.consultas.observacion_medicamentos = observacion;
         this.consultas.userModific = this.user.login;
         this.consultas.fechaModificacion = fechaRegistro;
-        console.log(this.consultas.fecha);
+        //console.log(this.consultas.fecha);
         await this.srvConsultas.actualizar(this.consultas)
           .toPromise()
           .catch(err => {
             this.showSuccess('Error actualizando: '+err, 'danger');
             console.log(err);
+            this.blockRegister=false;
+            this.soloLectura=false;
           });
+        this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
         this.llenarArrayConsultas(false);
         this.showSuccess('Atencion Medica actualizada satisfactoriamente', 'success');
   
@@ -1293,9 +1299,13 @@ export class ConsultasComponent  implements OnInit  {
       this.arrayReferencias=[];
       this.newConsulta = false;
       this.primaryModal.hide();
+      this.soloLectura=false;
+      
     } catch (error) {
       console.error(error);
       this.showSuccess(`${error}. Comuniquese con el Administrador del Sistema. Ext.#293`, 'danger');
+      this.blockRegister=false;
+      this.soloLectura=false;
     }    
   }
 
@@ -1740,35 +1750,37 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   async enviarMotivoporCorreo(idMotivo: number, idConsulta: number, idReposo?: number){
-    let notaExamen: INotaExamen={};
-    await this.srvConsultas.notaExamen(idConsulta)
-      .then(async (res) => {
-        notaExamen= res;
-    });
-    if (notaExamen.nombre_completo){
-      //notaExamen.mor_fecha = formatDate(notaExamen.mor_fecha, 'dd-MM-yyyy HH:mm', this.locale);
-      //console.log(notaExamen);
-      notaExamen.mor_fecha = await this.srvVarios.formateaFecha(notaExamen.mor_fecha.toString());
-      //console.log(notaExamen.mor_fecha);
-      if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10 || idMotivo==13){ 
-       // console.log(`Motivo: ${idMotivo}`);     
-        if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10){
-          const asuntoExamen = this.motivos.find( m => m.uid === idMotivo ).descripcion + " " + notaExamen.nombre_completo;
-          const cuerpoExamen: string = await this.srvConsultas.cuerpoDelExamen(notaExamen);
-          this.enviarExamenCorreo(asuntoExamen, cuerpoExamen, notaExamen.desc_mot);
-        }
-        if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10 || idMotivo==13){
-          const asuntoCertificado: string = `Certificado Medico ${notaExamen.nombre_completo}`;        
-          const cuerpoCertificado: string = this.srvConsultas.planilla_certificado(notaExamen.mor_sex, notaExamen.mor_cond, idMotivo, notaExamen.mor_fecha, notaExamen.nombre_completo, notaExamen.mor_ci, notaExamen.mor_cargo, notaExamen.desc_mot, notaExamen.firma_dr);
+    if (this.tipoUser==='MEDICO' || this.tipoUser==='SISTEMA'){
+      let notaExamen: INotaExamen={};
+      await this.srvConsultas.notaExamen(idConsulta)
+        .then(async (res) => {
+          notaExamen= res;
+      });
+      if (notaExamen.nombre_completo){
+        //notaExamen.mor_fecha = formatDate(notaExamen.mor_fecha, 'dd-MM-yyyy HH:mm', this.locale);
+        //console.log(notaExamen);
+        notaExamen.mor_fecha = await this.srvVarios.formateaFecha(notaExamen.mor_fecha.toString());
+        //console.log(notaExamen.mor_fecha);
+        if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10 || idMotivo==13){ 
+        // console.log(`Motivo: ${idMotivo}`);     
+          if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10){
+            const asuntoExamen = this.motivos.find( m => m.uid === idMotivo ).descripcion + " " + notaExamen.nombre_completo;
+            const cuerpoExamen: string = await this.srvConsultas.cuerpoDelExamen(notaExamen);
+            this.enviarExamenCorreo(asuntoExamen, cuerpoExamen, notaExamen.desc_mot);
+          }
+          if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10 || idMotivo==13){
+            const asuntoCertificado: string = `Certificado Medico ${notaExamen.nombre_completo}`;        
+            const cuerpoCertificado: string = this.srvConsultas.planilla_certificado(notaExamen.mor_sex, notaExamen.mor_cond, idMotivo, notaExamen.mor_fecha, notaExamen.nombre_completo, notaExamen.mor_ci, notaExamen.mor_cargo, notaExamen.desc_mot, notaExamen.firma_dr);
 
-          this.enviarExamenCorreo(asuntoCertificado, cuerpoCertificado, notaExamen.desc_mot);
+            this.enviarExamenCorreo(asuntoCertificado, cuerpoCertificado, notaExamen.desc_mot);
+          }
         }
-      }
-      const reposoValido: boolean = await this.srvVarios.nonEmptyValue(idReposo);
-      if (reposoValido && idReposo!=0){
-        const asuntoReposo: string = "REPOSO " + notaExamen.nombre_completo;        
-        const cuerpoReposo: string = await this.srvConsultas.cuerpoDelReposo(notaExamen);
-        this.enviarExamenCorreo(asuntoReposo, cuerpoReposo, "REPOSO");
+        const reposoValido: boolean = await this.srvVarios.nonEmptyValue(idReposo);
+        if (reposoValido && idReposo!=0){
+          const asuntoReposo: string = "REPOSO " + notaExamen.nombre_completo;        
+          const cuerpoReposo: string = await this.srvConsultas.cuerpoDelReposo(notaExamen);
+          this.enviarExamenCorreo(asuntoReposo, cuerpoReposo, "REPOSO");
+        }
       }
     }
   }
