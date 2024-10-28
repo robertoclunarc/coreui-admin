@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
-import { INivelAcademico, IContratista } from '../../models/servicio-medico/varios.model';
+import { INivelAcademico, IContratista, IUnidad } from '../../models/servicio-medico/varios.model';
 import { environment } from '../../../environments/environment';
 import { Options } from 'selenium-webdriver';
 
@@ -35,6 +35,14 @@ export class VarioService {
 
   contratistaAll(): Observable<IContratista[]> {
     return this.http.get<IContratista[]>(this.apiUrlvarios + `contratista/consultar`)
+			.pipe(
+				tap(),
+				catchError(this.handleError)
+			);
+  }
+
+  unidadesAll(): Observable<IUnidad[]> {
+    return this.http.get<IUnidad[]>(this.apiUrlvarios + `unidades/all`)
 			.pipe(
 				tap(),
 				catchError(this.handleError)

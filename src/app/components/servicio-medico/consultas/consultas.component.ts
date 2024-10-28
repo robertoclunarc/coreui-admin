@@ -27,7 +27,7 @@ import { CorreoService } from "../../../services/servicio_medico/correo.service"
 import { DiagnosticosService } from "../../../services/servicio_medico/tipoDiagnostico.service";
 
 //modelos
-import { Ipopover } from '../../../models/servicio-medico/varios.model';
+import { Ipopover, IUnidad } from '../../../models/servicio-medico/varios.model';
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { IConsultas, IvConsulta, IFiltroConsulta, Ireferencia, IvMorbilidad, INotaExamen } from '../../../models/servicio-medico/consultas.model';
 import { IsignosVitales } from '../../../models/servicio-medico/signos_vitales.model';
@@ -99,6 +99,7 @@ export class ConsultasComponent  implements OnInit  {
   private motivos: IMotivo[]=[];
   arrayMotivos: IMotivo[]=[];
   areas: IAreas[]=[];
+  unidadesAll: IUnidad[]=[];
   selectedPatolog: string = ' ';
   patologias: IPatologia[] = [];
   patologiasAll: IPatologia[] = [];
@@ -202,7 +203,11 @@ export class ConsultasComponent  implements OnInit  {
     private srvVarios: VarioService,
     private srvSolicitud: SolicitudAtencionService,
     @Inject(LOCALE_ID) public locale: string,  
-  ) { this.urlICD = environment.urlICD; }
+  ) 
+  { 
+    this.urlICD = environment.urlICD; 
+    this.llenarArrayUnidades();
+  }
 
   async ngOnInit() {    
     if (sessionStorage.modoOscuro==undefined || sessionStorage.modoOscuro=='Off'){
@@ -491,12 +496,19 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   private async llenarArrayMotivos(){
-
     await this.srvMotivo.motivosAll()
       .toPromise()
       .then(result => {
-        this.motivos=result;           
-      });      
+        this.motivos=result;
+      });
+  }
+
+  private async llenarArrayUnidades(){
+    await this.srvVarios.unidadesAll()
+      .toPromise()
+      .then(result => {
+        this.unidadesAll=result.filter( (u: IUnidad) => { return u.estatus=='ACTIVO' } );
+      });
   }
 
   private llenarArrayAreas(){
@@ -747,7 +759,8 @@ export class ConsultasComponent  implements OnInit  {
       this.preEmpleo=false;
       this.autorizacion=false
     }
-    console.log(idMotivo, this.consultas.id_motivo)
+    //console.log(idMotivo, this.consultas.id_motivo)
+    this.consultas.id_motivo = idMotivo;
   }
 
   async listarMotivos(idDiagnostico: number){

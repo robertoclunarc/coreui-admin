@@ -18,3 +18,9 @@ export interface brandBoxChartData {
     data?: number[];
     label?: string;
 }
+
+export interface IUnidad{
+    idunidad?: number;
+    descripcion?: string;
+    estatus?: string;
+}

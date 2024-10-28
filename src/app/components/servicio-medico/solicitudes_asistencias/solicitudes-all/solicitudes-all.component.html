@@ -52,7 +52,7 @@
                           </a>
                         </div>
                       </td>
-                      <td style="font-size: 0.7rem; text-align: center;">{{ p.fecha_prox_cita }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ p.fecha_prox_cita | date:'yyyy-MM-dd hh:mm' }}</td>
                       <td style="font-size: 0.7rem;">{{ p.observaciones }}</td>
                       <td style="font-size: 0.7rem;">{{ p.observacion_sup }}</td>
                       <td style="font-size: 0.7rem; text-align: center;">{{ p.reposo }}</td>

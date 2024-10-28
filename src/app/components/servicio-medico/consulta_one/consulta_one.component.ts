@@ -7,7 +7,7 @@ import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
 
 //modelos
-import { Ipopover } from '../../../models/servicio-medico/varios.model';
+import { Ipopover, IUnidad } from '../../../models/servicio-medico/varios.model';
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { IConsultas, IvConsulta, IFiltroConsulta, Ireferencia } from '../../../models/servicio-medico/consultas.model';
 import { IsignosVitales } from '../../../models/servicio-medico/signos_vitales.model';
@@ -74,7 +74,10 @@ export class ConsultaOneComponent implements OnChanges {
     private srvSolicitud: SolicitudAtencionService,
     @Inject(LOCALE_ID) public locale: string,
     
-  ) { }
+  ) 
+  { 
+    this.llenarArrayUnidades();
+  }
 
   isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
@@ -112,6 +115,7 @@ export class ConsultaOneComponent implements OnChanges {
    modalTitle = "";
    autorizacion: boolean = false;
    remitidos: IRemitido[]=[];
+   unidadesAll: IUnidad[]=[];
    tiemposReposo: ITiempoReposo[]=[];
    referencia: Ireferencia={};
    arrayReferencias: Ireferencia[]=[];
@@ -330,6 +334,14 @@ export class ConsultaOneComponent implements OnChanges {
       .then(result => {
         this.areas=result;           
       });      
+  }
+
+  private async llenarArrayUnidades(){
+    await this.srvVarios.unidadesAll()
+      .toPromise()
+      .then(result => {
+        this.unidadesAll=result.filter( (u: IUnidad) => { return u.estatus=='ACTIVO' } );
+      });
   }
   
   buscarPaciente(){

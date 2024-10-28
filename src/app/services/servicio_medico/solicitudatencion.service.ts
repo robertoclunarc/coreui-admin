@@ -99,7 +99,7 @@ export class SolicitudAtencionService {
     }
     
     if (paciente.alergia && paciente.alergia!==""){
-      alegia=`Alegia(s): <font color="red"><strong>${paciente.alergia}</strong></font>. `;
+      alegia=`Alergia(s): <font color="red"><strong>${paciente.alergia}</strong></font>. `;
     }
     
     cuerpo += `Su edad es de ${paciente.edad} años. ${discapacidad} ${alegia}<br>`;    

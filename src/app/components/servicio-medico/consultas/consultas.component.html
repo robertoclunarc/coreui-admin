@@ -258,7 +258,7 @@
                                 <div class="form-group">
                                     <span class="form-group has-float-label">                                    
                                       <select class="form-control form-control-sm" id="cboMotivo" [disabled]="soloLectura" name="cboMotivo" (change)="chequeaAutorizacionMotivo($event.target.value)" [(ngModel)]="consultas.id_motivo">
-                                        <option *ngFor="let mov of arrayMotivos" [value]="mov.uid" [selected]="mov.fkdiagnostico == vConsultas.fkdiagnostico">{{mov.descripcion}}</option>
+                                        <option *ngFor="let mov of arrayMotivos" [value]="mov.uid" [selected]="mov.uid == vConsultas.fkdiagnostico">{{mov.descripcion}}</option>
                                       </select>
                                       <label class="badge-light" for="cboMotivo">Motivo</label>
                                     </span>
@@ -538,13 +538,8 @@
                                       <option  *ngFor="let med of arrayMedicamentos; let m=index" [value]="med.uid">{{med.descripcion}}</option>                                                                  
                                     </select></th>
                                   <th scope="col"><select class="form-control form-control-sm" [disabled]="soloLectura" [(ngModel)]="medicamentoAplic.medidas"  id="cboUnidad" name="cboUnidad">
-                                    <option value="Comprimido">Comprimido</option>
-                                    <option value="Tableta">Tableta</option>
-                                    <option value="Ampolla">Ampolla</option>
-                                    <option value="CC">CC</option>
-                                    <option value="Torunda">Torunda</option>
-                                    <option value="Blister">Blister</option>
-                                    <option value="Crema">Crema</option>            
+                                    <option *ngFor="let und of unidadesAll" [selected]="medicamentoAplic.medidas==und.descripcion" [value]="und.descripcion">{{und.descripcion}}</option>
+                                    
                                   </select></th>
                                   <th scope="col"><input type="number" [disabled]="soloLectura" class="form-control form-control-sm" [(ngModel)]="medicamentoAplic.cantidad" name="txtCantidad" id="txtCantidad" placeholder="0"></th>
                                   <th scope="col">

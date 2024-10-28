@@ -6,7 +6,7 @@
 export const environment = {
   production: false,
   // ===DESARROLLO
-	apiUrlServMedico: 'http://10.50.188.217:3000/sist_epidemiologico/api/',//  'http://localhost:3000/sist_epidemiologico/api/',  
+	apiUrlServMedico: /*'http://10.50.188.217:3000/sist_epidemiologico/api/',*/  'http://localhost:3000/sist_epidemiologico/api/',  
   urlImagenFotoTrabajador: 'http://10.50.188.48/getimagen.php',
   extensionFotoTrabajador: '.bmp',
   fromEmail: 'brismd@briqven.com.ve',
