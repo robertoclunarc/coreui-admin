@@ -54,7 +54,15 @@ export class MedicamentosService {
 
   eliminar(id: number) {
     const url = `${this.apiUrlMedicamentos}delete/${id}`;
+    return this.http.delete(url).pipe(
+        tap(result => {
+        }),
+        catchError(this.handleError)
+    );
+  }
 
+  eliminarAplicados(id: number) {
+    const url = `${this.apiUrlMedicamentos}delete/aplicados/${id}`;
     return this.http.delete(url).pipe(
         tap(result => {
         }),

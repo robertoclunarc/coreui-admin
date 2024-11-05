@@ -504,11 +504,16 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   private async llenarArrayUnidades(){
-    await this.srvVarios.unidadesAll()
+    try {
+      await this.srvVarios.unidadesAll()
       .toPromise()
       .then(result => {
         this.unidadesAll=result.filter( (u: IUnidad) => { return u.estatus=='ACTIVO' } );
       });
+    } catch (error) {
+      console.error(error)
+    }
+    
   }
 
   private llenarArrayAreas(){
@@ -558,7 +563,8 @@ export class ConsultasComponent  implements OnInit  {
       .toPromise()
       .then(result => {
         if (result!= undefined){           
-           this.medicamentoAplicado=result;           
+           this.medicamentoAplicado=result;
+           console.log(result)
         }
         else
         this.medicamentoAplicado={}
@@ -842,7 +848,7 @@ export class ConsultasComponent  implements OnInit  {
     if (this.tipoUser=='MEDICO'){
       this.consultas.id_medico=this.medicos.find(m => (m.login==this.user.login)).uid;
     }
-    
+    this.consultas.id_area = this.areas.find ( a => { return a.descripcion==="Servicio Medico"}).uid;
     //this.llenarArraymedicamentos('EXISTECIA');
     this.medicamentoAplicado={};
     this.medicamentoAplicado.medicamentos=[];
@@ -1047,8 +1053,13 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   async guardarMedicametosAplicados(){
+
     let medAplic: IMedicamentosAplicados;
     const idConsul: number = this.medicamentoAplicado.id_consulta;
+    if (idConsul){
+      await this.srvMedicamentos.eliminarAplicados(idConsul).toPromise();
+    }
+    
     try {
       for (const med of this.medicamentoAplicado.medicamentos){
         medAplic={
@@ -1057,9 +1068,10 @@ export class ConsultasComponent  implements OnInit  {
           id_medicamento: med.medicamento.uid,
           cantidad: med.cantidad,
           medidas: med.medidas
-        };        
+        };
+        console.log(medAplic);
         await this.srvMedicamentos.registrarMedicamentosAplicados(medAplic).toPromise();        
-      } 
+      }
     } catch (error) {
       this.showSuccess('Error Registrando medicamentos aplicados: '+error, 'danger');
     }   
@@ -1196,7 +1208,7 @@ export class ConsultasComponent  implements OnInit  {
           indicaciones_comp: indicaciones,
           referencia_medica: referenciaMedica,
           autorizacion: this.autorizacion===true ? 'SI':'NO',
-          id_medico: this.consultas.id_medico,
+          id_medico: this.consultas.id_medico.toString() == "--" ? null : this.consultas.id_medico,
           id_paramedico: this.consultas.id_paramedico,
           id_motivo: this.consultas.id_motivo,
           id_area: this.consultas.id_area,
@@ -1238,8 +1250,10 @@ export class ConsultasComponent  implements OnInit  {
             this.consultas=results;
             this.consultas.fecha = fechaConsulta;
             if (this.consultas?.uid && typeof this.consultas.uid === 'number'){
-              if (tieneHistoria){
+              console.log(`tieneHistoria: ${tieneHistoria}`);
+              if (tieneHistoria){                
                 historia.fk_historia = this.historiaMedica.uid_historia;
+                console.log(historia);
                 this.srvHistorias.nuevoHistoriaPaciente(historia);
               }
               
@@ -1281,7 +1295,9 @@ export class ConsultasComponent  implements OnInit  {
             }
           })
           .catch(err => {
-            this.showSuccess('Error Registrando: '+err, 'danger'); 
+            const er = typeof err === 'object' ? JSON.stringify(err): err;
+            this.showSuccess('Error Registrando: '+er, 'danger');
+            console.log(this.consultas)
             console.error(err);
             this.blockRegister=false;
             this.soloLectura=false;
@@ -1301,6 +1317,7 @@ export class ConsultasComponent  implements OnInit  {
             this.blockRegister=false;
             this.soloLectura=false;
           });
+        this.guardarMedicametosAplicados();
         this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
         this.llenarArrayConsultas(false);
         this.showSuccess('Atencion Medica actualizada satisfactoriamente', 'success');
@@ -1421,8 +1438,9 @@ export class ConsultasComponent  implements OnInit  {
         cantidad: this.medicamentoAplic.cantidad,
         medidas: this.medicamentoAplic.medidas
       }
-      
+      //console.log(medicina)
       this.medicamentoAplicado.medicamentos.push(medicina);
+      //console.log(this.medicamentoAplicado.medicamentos)
       this.alertaMedicamento='';
       this.titleMedicamento=''
       this.medicamentoAplic={};

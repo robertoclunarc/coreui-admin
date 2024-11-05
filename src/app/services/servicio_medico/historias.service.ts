@@ -44,18 +44,21 @@ export class HistoriaService {
     return await this.http.get<IHistoria_paciente[]>(`${this.apiUrlHistoria}atenciones/${fk_historia}/${fk_consulta}` ).toPromise();
   }
 
-  historiaMedicaOne(uid_historia: string, uid_paciente: string) : Observable<IHistoria_medica> { 
+  historiaMedicaOne(uid_historia: string, uid_paciente: string): Observable<IHistoria_medica> { 
      
-    return  this.http.get<IHistoria_medica>(`${this.apiUrlHistoria}accidente/ocupacional/${uid_historia}/${uid_paciente}` )
+    return this.http.get<IHistoria_medica>(`${this.apiUrlHistoria}accidente/ocupacional/${uid_historia}/${uid_paciente}` )
     .pipe(
         tap(result => console.log(`historiaMedicaOne(${result?.uid_historia}, ${result?.uid_paciente})`)),
         catchError(this.handleError)
     );
   }
 
-  async nuevoHistoriaPaciente(hist: IHistoria_paciente): Promise<IHistoria_paciente> {
-    return await this.http.post<IHistoria_paciente>(this.apiUrlHistoria + 'insert/atencion', hist).toPromise();    
-    
+  nuevoHistoriaPaciente(hist: IHistoria_paciente): Observable<IHistoria_paciente> {
+    return this.http.post<IHistoria_paciente>(this.apiUrlHistoria + 'insert/atencion', hist)
+    .pipe(
+      //tap(result => console.log(`nuevoHistoriaPaciente(${JSON.stringify(hist)})`)),
+      catchError(this.handleError)
+    );    
   }
 
   async nuevoHistoriaHistoriaMedica(hist: IHistoria_medica): Promise<IHistoria_medica> {
