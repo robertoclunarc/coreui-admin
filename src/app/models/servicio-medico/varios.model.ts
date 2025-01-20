@@ -24,3 +24,10 @@ export interface IUnidad{
     descripcion?: string;
     estatus?: string;
 }
+
+export interface IMotivosRequierenReporte{
+    uid?: number;
+    idmotivo?: number;
+    motivo?: string;
+    estatus?: number
+}

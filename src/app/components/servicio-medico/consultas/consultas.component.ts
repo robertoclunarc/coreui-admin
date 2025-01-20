@@ -27,7 +27,7 @@ import { CorreoService } from "../../../services/servicio_medico/correo.service"
 import { DiagnosticosService } from "../../../services/servicio_medico/tipoDiagnostico.service";
 
 //modelos
-import { Ipopover, IUnidad } from '../../../models/servicio-medico/varios.model';
+import { IMotivosRequierenReporte, Ipopover, IUnidad } from '../../../models/servicio-medico/varios.model';
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
 import { IConsultas, IvConsulta, IFiltroConsulta, Ireferencia, IvMorbilidad, INotaExamen } from '../../../models/servicio-medico/consultas.model';
 import { IsignosVitales } from '../../../models/servicio-medico/signos_vitales.model';
@@ -150,6 +150,7 @@ export class ConsultasComponent  implements OnInit  {
   show = false;
   planilla: string;
   autohide = true;
+  motivosReportados: number[] = []; //[7, 8, 9, 10, 13]
 
   totalItems: number;//total number of items in all pages
   //currentPage: number   = 1;
@@ -207,6 +208,14 @@ export class ConsultasComponent  implements OnInit  {
   { 
     this.urlICD = environment.urlICD; 
     this.llenarArrayUnidades();
+    this.srvVarios.motivosQueRequierenReporte().then((motivos: IMotivosRequierenReporte[]) => {
+      const arrayMotivosReportados = motivos;
+      this.motivosReportados = arrayMotivosReportados.map((mot: IMotivosRequierenReporte) => {
+        return mot.idmotivo
+      });
+      //console.log(this.motivosReportados);
+    });
+    
   }
 
   async ngOnInit() {    
@@ -1121,11 +1130,20 @@ export class ConsultasComponent  implements OnInit  {
       };      
       return  popOver;
     }
-
-    if ((this.tipoUser==='MEDICO') && (this.consultas.condicion == undefined || this.consultas.condicion=="N/A") && (this.consultas.id_motivo==8 || this.consultas.id_motivo==7)){
+    const condicionVacia = await this.srvVarios.nonEmptyValue(this.consultas.condicion);
+    
+    let motivoRequiereReporte: boolean = false;
+    for await (const p of this.motivosReportados){
+      if (p==this.consultas.id_motivo){
+        motivoRequiereReporte=true;
+        break;
+      }
+    }
+    
+    if ((this.tipoUser==='MEDICO') && (!condicionVacia || this.consultas.condicion=="N/A") && ( motivoRequiereReporte )){
       popOver= {
         titulo:"Error en el Registro",
-        alerta: "Seleccione la Condicion del Paciente"
+        alerta: "Seleccione la Condicion del Paciente",
       };      
       return  popOver;
     }
@@ -1215,7 +1233,7 @@ export class ConsultasComponent  implements OnInit  {
           fkafeccion: this.consultas.fkafeccion,
           id_remitido: this.consultas.id_remitido,
           id_reposo: this.consultas.id_reposo,
-          condicion: this.consultas.condicion==='APTO CON RESTRICCION'? 'APTO RESTR': this.consultas.condicion,
+          condicion: this.consultas.condicion=='APTO CON RESTRICCION'? 'APTO RESTR': this.consultas.condicion,
           sintomas: this.consultas.sintomas,
           observaciones: this.consultas.observaciones,
           resultado_eva: this.consultas.resultado_eva,
@@ -1301,7 +1319,7 @@ export class ConsultasComponent  implements OnInit  {
             console.error(err);
             this.blockRegister=false;
             this.soloLectura=false;
-          });			
+          });		
       }
       else {
         this.consultas.fecha = this.vConsultas.fecha;
@@ -1792,7 +1810,7 @@ export class ConsultasComponent  implements OnInit  {
         //console.log(notaExamen);
         notaExamen.mor_fecha = await this.srvVarios.formateaFecha(notaExamen.mor_fecha.toString());
         //console.log(notaExamen.mor_fecha);
-        if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10 || idMotivo==13){ 
+        if (this.motivosReportados.indexOf(idMotivo)!= -1){ 
         // console.log(`Motivo: ${idMotivo}`);     
           if (idMotivo==7 || idMotivo==8 || idMotivo==9 || idMotivo==10){
             const asuntoExamen = this.motivos.find( m => m.uid === idMotivo ).descripcion + " " + notaExamen.nombre_completo;

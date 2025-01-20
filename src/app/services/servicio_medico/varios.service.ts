@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams, HttpRequest } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { catchError, tap, map } from 'rxjs/operators';
-import { INivelAcademico, IContratista, IUnidad } from '../../models/servicio-medico/varios.model';
+import { INivelAcademico, IContratista, IUnidad, IMotivosRequierenReporte } from '../../models/servicio-medico/varios.model';
 import { environment } from '../../../environments/environment';
 import { Options } from 'selenium-webdriver';
 
@@ -47,6 +47,10 @@ export class VarioService {
 				tap(),
 				catchError(this.handleError)
 			);
+  }
+
+  motivosQueRequierenReporte(): Promise<IMotivosRequierenReporte[]> {
+    return this.http.get<IMotivosRequierenReporte[]>(this.apiUrlvarios + `motivosrequierenreporte`).toPromise();
   }
 
   registrarContratista(reg: IContratista) {
