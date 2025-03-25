@@ -125,8 +125,8 @@
               <div class="form-group">
                 <span class="form-group has-float-label">                                                                       
                     <select class="form-control form-control-sm" name="cboManoDominate" [(ngModel)]="paciente.mano_dominante" id="cboManoDominante">
-                      <option value="Derech@"  >Derech@</option>
-                      <option  value="Izquierd@" >Izquierd@</option>
+                      <option value="Derech@">Derech@</option>
+                      <option value="Izquierd@">Izquierd@</option>
                     </select>
                     <label class="badge-light" for="cboManoDominante">Mano Dominate</label>
                 </span>
@@ -134,10 +134,15 @@
             </td>
             <td>
               <div class="form-group">
-                <span class="form-group has-float-label">
-                  <input type="text"  class="form-control form-control-sm" name="txtTurno" id="txtTurno" [(ngModel)]="paciente.turno" placeholder="Turno">
+                <span class="form-group has-float-label">                                                                       
+                  <select class="form-control form-control-sm" name="txtTurno" id="txtTurno" [(ngModel)]="paciente.turno">
+                    <option value="1">Diurno</option>
+                    <option value="2">Mixto</option>
+                    <option value="3">Rotativo</option>
+                    <option value="9">Conduccion</option>
+                  </select>
                   <label class="badge-light" for="txtTurno">Turno</label>
-                </span>
+              </span>
               </div>
             </td>
             <td>
