@@ -347,19 +347,55 @@
                                   <label for="txtPulso">Pulso</label>
                                 </span>
                               </div>
-                              <div class="form-group col-sm-3">
+                              <div class="form-group col-sm-2">
                                 <span class="form-group has-float-label">
                                   <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtTemp" [(ngModel)]="signoVital.temper" id="txtTemp" placeholder="Temperatura">
                                   <label for="txtTemp">Temp.</label>
                                 </span>  
                               </div>
-                              <div class="form-group col-sm-3">
+                              <div class="form-group col-sm-2">
                                 <span class="form-group has-float-label">
-                                  <input type="text" [disabled]="soloLectura" class="form-control form-control-sm" name="txtTArt" [(ngModel)]="signoVital.tart" id="txtTArt" placeholder="Tension Arterial">
-                                  <label for="txtTArt">T.Art.</label>
+                                  <input type="number"
+                                    [disabled]="soloLectura"
+                                    class="form-control form-control-sm"
+                                    name="txtTArt"
+                                    [(ngModel)]="signoVital.tart"
+                                    id="txtTArt"
+                                    placeholder="Diastólica"
+                                    (ngModelChange)="evaluarPresionInput()"
+                                    [ngClass]="estadoPresionActual.color"                                    
+                                  >
+                                  <label for="txtTArt">Diastólica</label>
                                 </span>
                               </div>
+                              <div class="form-group col-sm-2">
+                                <span class="form-group has-float-label">                                  
+                                  <input type="number" 
+                                    [disabled]="soloLectura" 
+                                    class="form-control form-control-sm" 
+                                    name="txtSistolica" 
+                                    [(ngModel)]="signoVital.sistolica" 
+                                    id="txtSistolica" 
+                                    placeholder="Sistólica"
+                                    (ngModelChange)="evaluarPresionInput()"
+                                    [ngClass]="estadoPresionActual.color"                                    
+                                  >
+                                  <label for="txtSistolica">Sistólica</label>
+                                </span>
+                              </div>
+                              
                             </div><!--/.row 5-->
+                            <div *ngIf="estadoPresionActual.estado" class="row">
+                              <div class="form-group col-sm-3"></div>
+                              <div class="form-group col-sm-3"></div>
+                              <div class="form-group col-sm-2"></div>                              
+                              <div *ngIf="estadoPresionActual.estado" [ngClass]="estadoPresionActual.color" class="form-group col-sm-4">
+                                <i class="fa"
+                                  [ngClass]="getPresionClass(signoVital.tart, signoVital.sistolica).icono">
+                                </i>
+                                {{ estadoPresionActual.estado }} - {{ estadoPresionActual.aviso }}
+                              </div>
+                            </div>
                             <div class="row">
                               <div class="form-group col-sm-3">
                                 <span class="form-group has-float-label">                                  

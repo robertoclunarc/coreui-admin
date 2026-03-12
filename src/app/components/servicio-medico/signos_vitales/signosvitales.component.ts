@@ -25,6 +25,7 @@ export class SignosVitalesComponent implements OnChanges {
   @Input() _uidPaciente: string;
   @ViewChild('txtTemper') txtTemper!: ElementRef<HTMLInputElement>;
   @ViewChild('txtTart') txtTart!: ElementRef<HTMLInputElement>; 
+  @ViewChild('txtSistolica') txtSistolica!: ElementRef<HTMLInputElement>;
   @ViewChild('txtPulso') txtPulso!: ElementRef<HTMLInputElement>;
   @ViewChild('txtFresp') txtFresp!: ElementRef<HTMLInputElement>;
   @ViewChild('txtFcard') txtFcard!: ElementRef<HTMLInputElement>;
@@ -50,7 +51,13 @@ export class SignosVitalesComponent implements OnChanges {
   alertaRegistrar: string; 
   private titleRegistrar: string;
   private popover: Ipopover={} ;
-  soloLectura: boolean;  
+  soloLectura: boolean;
+  estadoPresionActual = {
+    estado: '',
+    color: '',
+    icono: '',
+    aviso: ''
+  };
   
   alertsDismiss: any = [];
 
@@ -109,6 +116,20 @@ export class SignosVitalesComponent implements OnChanges {
         this.itemExamenFisico1.emit(result.length);         
       })
     }    
+  }
+
+  evaluarPresionInput() {
+
+    const s = Number(this.examen.sistolica);
+    const d = Number(this.examen.tart);
+
+    this.estadoPresionActual = this.getPresionClass(d, s);
+
+  }
+
+  getPresionClass(sistolica: number, diastolica: number): { estado: string , color: string, icono: string, aviso: string} {
+
+    return this.srvSignosVitales.evaluarPresion(sistolica, diastolica);
   }
 
   private async nuevoExamen(){     
@@ -197,9 +218,17 @@ export class SignosVitalesComponent implements OnChanges {
     if (this.objetoVacio(this.examen.tart)){
       popOver= {
         titulo:"Error en el Registro",
-        alerta: "Debe especificar la tension arterial"
+        alerta: "Debe especificar la tension arterial Diastolica"
       };
       this.txtTart.nativeElement.focus();      
+      return  popOver;
+    }
+    if (this.objetoVacio(this.examen.sistolica)){
+      popOver= {
+        titulo:"Error en el Registro",
+        alerta: "Debe especificar la tension arterial Sistolica"
+      };
+      this.txtSistolica.nativeElement.focus();      
       return  popOver;
     }
     if (this.objetoVacio(this.examen.temper)){

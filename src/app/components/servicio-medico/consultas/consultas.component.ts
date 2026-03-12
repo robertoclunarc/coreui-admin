@@ -68,7 +68,7 @@ export class ConsultasComponent  implements OnInit  {
   //@ViewChild('txtPatologia', { static: false }) txtPatologia: ElementRef<HTMLInputElement>;
   //@ViewChild(TypeaheadDirective, { static: false }) typeaheadInstance: TypeaheadDirective;
   //@ViewChild('typeaheadInstance', { static: false }) typeaheadInstance: ElementRef<HTMLInputElement>;
-  @ViewChild('typeaheadInstance') typeaheadInstance;
+  @ViewChild('typeaheadInstance') typeaheadInstance; 
 
   isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
@@ -113,7 +113,8 @@ export class ConsultasComponent  implements OnInit  {
   tiemposReposo: ITiempoReposo[]=[];
   referencia: Ireferencia={};
   arrayReferencias: Ireferencia[]=[];
-  alertaRegistrar: string=""; 
+  alertaRegistrar: string="";
+  alertaSignoVitales: string=""; 
   titleRegistrar: string="";
   popoverConsulta: Ipopover={}
   alertaReferencia: string=""; 
@@ -181,7 +182,14 @@ export class ConsultasComponent  implements OnInit  {
   polarAreaChartLabels: string[];
   polarAreaChartData: number[];
   polarAreaLegend= true;
-  polarAreaChartType = 'polarArea';  
+  polarAreaChartType = 'polarArea';
+
+  estadoPresionActual = {
+    estado: '',
+    color: '',
+    icono: '',
+    aviso: ''
+  };
 
   constructor(
     private route: ActivatedRoute,
@@ -581,12 +589,26 @@ export class ConsultasComponent  implements OnInit  {
       })
     }    
   }
+
+  evaluarPresionInput() {
+
+    const s = Number(this.signoVital.sistolica);
+    const d = Number(this.signoVital.tart);
+
+    this.estadoPresionActual = this.getPresionClass(d, s);
+    this.alertaSignoVitales = this.estadoPresionActual.aviso;
+  }
+
+  getPresionClass(sistolica: number, diastolica: number): { estado: string , color: string, icono: string, aviso: string} {
+
+    return this.srvSignosVitales.evaluarPresion(sistolica, diastolica);
+  }
   
   async buscarSignosVitales(ci: string, fecha: string){
     if (ci!="" &&  ci!= undefined){
-      console.log(fecha);
+      //console.log(fecha);
       console.log(formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale));
-      console.log( this.locale);
+      //console.log( this.locale);
       try {       
         await this.srvSignosVitales.signosVitalesOne(ci, fecha)
         .toPromise()
@@ -1004,10 +1026,14 @@ export class ConsultasComponent  implements OnInit  {
       pulso: item.pulso,
       temper: item.temper,
       tart: item.tart,
+      sistolica: item.sistolica,
       fcard: item.fcard,
       fecha: item.fecha,
       cedula: item.ci
     };
+
+    this.evaluarPresionInput();
+
     this.antropometria = {
       talla: item.talla,
       peso: item.peso,

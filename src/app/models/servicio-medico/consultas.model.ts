@@ -119,6 +119,7 @@ export interface IvConsulta {
     pulso?: string;
     temper?: string;
     tart?: string;
+    sistolica?: string;
     fcard?: string;
 	talla?: string;
     peso?: string;

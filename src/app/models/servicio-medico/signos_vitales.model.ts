@@ -4,6 +4,7 @@ export interface IsignosVitales{
     pulso?: string;
     temper?: string;
     tart?: string;
+    sistolica?: string;
     fecha?: string;
     fcard?: string;
 }
