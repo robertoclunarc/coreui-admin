@@ -55,6 +55,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
   nuevo: boolean=false;
   medicos: IMedicos[]=[];
   alertsDismiss: any = [];
+  cedulaPaciente: string;
 
   ngOnChanges() {    
       
@@ -90,7 +91,7 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
       //console.log(this.selectMedicos);
       this.nuevo=true;      
       this.protocoloObj=JSON.parse(this.vProtocolo);
-      
+      this.cedulaPaciente=this.protocoloObj.paciente.ci;
       this.protocoloObj.protocolo.emision= formatDate(this.protocoloObj.protocolo.emision, 'yyyy-MM-dd', this.locale);
       this.protocoloObj.protocolo.vigencia= formatDate(this.protocoloObj.protocolo.vigencia, 'yyyy-MM-dd', this.locale);
       if (this.protocoloObj.protocolo.proxima_cita!=undefined)
@@ -110,8 +111,9 @@ export class protocoloEndocrinoOneComponent implements OnChanges {
     this.vProtocolo=JSON.stringify(this.protocoloObj);
   }
 
-  async buscarPaciente(){    
-    await this.srvPacientes.pacienteOne(this.protocoloObj.paciente.ci)
+  async buscarPaciente(){
+    
+    await this.srvPacientes.pacienteOne(this.cedulaPaciente)
     .toPromise()
     .then(async result => {
       if (result[0]!= undefined){

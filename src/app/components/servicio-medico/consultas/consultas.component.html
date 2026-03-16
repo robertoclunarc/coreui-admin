@@ -333,15 +333,15 @@
                                 </span>
                               </div>
                             </div><!--/.row 4-->
-                            <div class="row">
-                              <div class="form-group col-sm-3">
+                            <div class="row row-compact" >
+                              <div class="form-group col-sm-2">
                                 <span class="form-group has-float-label">
                                   <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtFResp" [(ngModel)]="signoVital.fresp" id="txtFResp" placeholder="Frecuencia Respiratoria">
                                   <label class="badge-light" for="txtFResp">F.Resp.</label>
                                 </span>
                               </div>
                               
-                              <div class="form-group col-sm-3">                                
+                              <div class="form-group col-sm-2">                                
                                 <span class="form-group has-float-label">
                                   <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtPulso" [(ngModel)]="signoVital.pulso" id="txtPulso" placeholder="Pulsaciones x Min.">
                                   <label for="txtPulso">Pulso</label>
@@ -379,21 +379,40 @@
                                     placeholder="Sistólica"
                                     (ngModelChange)="evaluarPresionInput()"
                                     [ngClass]="estadoPresionActual.color"                                    
-                                  >
+                                  >                                  
                                   <label for="txtSistolica">Sistólica</label>
                                 </span>
                               </div>
+
+                              <div class="form-group col-sm-2">                                
+                                <button *ngIf="!newConsulta" 
+                                  class="btn btn-primary btn-sm ml-1"
+                                  title="Agregar presión al historial"
+                                  (click)="agregarPresionHistInArray()">
+
+                                  <i class="fa fa-plus"></i>
+
+                                </button>
+                              </div>
                               
                             </div><!--/.row 5-->
-                            <div *ngIf="estadoPresionActual.estado" class="row">
-                              <div class="form-group col-sm-3"></div>
-                              <div class="form-group col-sm-3"></div>
-                              <div class="form-group col-sm-2"></div>                              
-                              <div *ngIf="estadoPresionActual.estado" [ngClass]="estadoPresionActual.color" class="form-group col-sm-4">
-                                <i class="fa"
-                                  [ngClass]="getPresionClass(signoVital.tart, signoVital.sistolica).icono">
-                                </i>
-                                {{ estadoPresionActual.estado }} - {{ estadoPresionActual.aviso }}
+                            <div class="row row-compact">
+                              <div *ngIf="countSignosVitalesHist>0" class="form-group col-sm-8">
+                                <span class="form-group has-float-label">
+                                  <select id="signosVitalesHist" name="signosVitalesHist" class="form-control" size="4" multiple>
+                                    <option *ngFor="let sv of signosVitalesHist; let o=index" value="{{sv}}" [ngClass]="getPresionClass(sv.tart, sv.sistolica).color" >{{sv.fecha | date:'dd-MM-yyyy hh:mm'}}: {{sv.tart}}/{{sv.sistolica}} {{getPresionClass(sv.tart, sv.sistolica).estado}} - {{getPresionClass(sv.tart, sv.sistolica).aviso}}</option>                                    
+                                  </select>
+                                  <label for="signosVitalesHist">Tension Arterial Anterior(es)</label>
+                                </span>
+                              </div>
+                              <div *ngIf="estadoPresionActual.estado" class="form-group col-sm-4">
+                                <span class="form-group has-float-label" [ngClass]="estadoPresionActual.color">
+                                  <i class="fa"
+                                    [ngClass]="getPresionClass(signoVital.tart, signoVital.sistolica).icono">
+                                  </i>
+                                  {{ estadoPresionActual.estado }} - {{ estadoPresionActual.aviso }}
+                                </span>
+                                
                               </div>
                             </div>
                             <div class="row">

@@ -71,8 +71,9 @@ export class SignosVitalesService {
   }  
 
   evaluarPresion(s: number, d: number) {
+    //console.log(`sistólica=${s}, diastólica=${d} ${typeof s} ${typeof d}`);
 
-    if (s == null || d == null) {
+    if ((s == null || d == null)  || (typeof s == 'number' && s == 0) || (typeof d == 'number' && d == 0)) {
       return { estado: '', color: '', icono: '', aviso: '' };
     }
 

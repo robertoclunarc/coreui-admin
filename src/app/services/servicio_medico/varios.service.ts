@@ -130,7 +130,7 @@ export class VarioService {
         vacio = false;
       }
     }
-
+    
     return vacio;
   }
 

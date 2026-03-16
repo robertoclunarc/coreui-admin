@@ -88,6 +88,9 @@ export class ConsultasComponent  implements OnInit  {
   consultas: IConsultas={};
   vConsultas: IvConsulta={};
   signoVital: IsignosVitales={};
+  signoVitalNew: IsignosVitales={};
+  signosVitalesHist: IsignosVitales[]=[];
+  countSignosVitalesHist: number;
   antropometria: Iantropometria={};
   paciente: IvPaciente={};
   newConsulta: boolean=false;
@@ -581,7 +584,7 @@ export class ConsultasComponent  implements OnInit  {
       .then(result => {
         if (result!= undefined){           
            this.medicamentoAplicado=result;
-           console.log(result)
+           //console.log(result)
         }
         else
         this.medicamentoAplicado={}
@@ -607,7 +610,7 @@ export class ConsultasComponent  implements OnInit  {
   async buscarSignosVitales(ci: string, fecha: string){
     if (ci!="" &&  ci!= undefined){
       //console.log(fecha);
-      console.log(formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale));
+      //console.log(formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale));
       //console.log( this.locale);
       try {       
         await this.srvSignosVitales.signosVitalesOne(ci, fecha)
@@ -628,6 +631,39 @@ export class ConsultasComponent  implements OnInit  {
             this.antropometria={} 
           
         });
+      } catch (error) {
+        console.error(error)
+      }
+    }    
+  }
+
+  async buscarSignosVitalesHistoricos(ci: string){
+    if (ci!="" &&  ci!= undefined){
+      //console.log(ci);
+      //console.log(formatDate(fecha, 'yyyy-MM-dd HH:mm', this.locale));
+      //console.log( this.locale);
+      try {       
+        await this.srvSignosVitales.signosVitalesPaciente(ci)
+        .toPromise()
+        .then(result => {
+          if (result[0]!= undefined){
+            this.signosVitalesHist=result;
+            this.countSignosVitalesHist = this.signosVitalesHist.length;
+          }
+          else{
+            this.signosVitalesHist=[];
+            this.countSignosVitalesHist = 0;
+          }
+        });
+        /*await this.srvAntropometria.antropometriaOne(ci, fecha)
+        .toPromise()
+        .then(result => {
+          if (result[0]!= undefined)
+            this.antropometria=result[0];
+          else
+            this.antropometria={} 
+          
+        });*/
       } catch (error) {
         console.error(error)
       }
@@ -852,6 +888,8 @@ export class ConsultasComponent  implements OnInit  {
     this.autorizacion=false;
     this.observacion = "";
     this.observacionesArray = [];
+    this.countSignosVitalesHist = 0;
+    this.signosVitalesHist = [];
     this.verTurno();
     this.fechaSalida="";
     this.newConsulta=true;
@@ -907,6 +945,7 @@ export class ConsultasComponent  implements OnInit  {
           fecha: fecha,
         });
         this.observacion = `${user}\n${cadena}\n${fecha}<br>`;
+        
       }else{
         let arr = cadena.split('<br>');
         for await (const ob of arr){
@@ -930,6 +969,8 @@ export class ConsultasComponent  implements OnInit  {
   async  showModalActualizar(item: IvConsulta){
     this.observacion = "";
     this.observacionesArray = [];
+    this.countSignosVitalesHist = 0;
+    this.signosVitalesHist = [];
     this.soloLectura=true;
     if (this.tipoUser=='SISTEMA' || this.tipoUser=='MEDICO'){
       this. soloLectura=false;
@@ -1034,6 +1075,8 @@ export class ConsultasComponent  implements OnInit  {
 
     this.evaluarPresionInput();
 
+    this.buscarSignosVitalesHistoricos(item.ci);
+
     this.antropometria = {
       talla: item.talla,
       peso: item.peso,
@@ -1070,15 +1113,46 @@ export class ConsultasComponent  implements OnInit  {
       try {      
           this.signoVital.cedula=_cedula;
           this.signoVital.fecha=_fecha;
-          await this.srvSignosVitales.registrar(this.signoVital).toPromise();
-             
+          if (this.signoVital.tart!=undefined && this.signoVital.tart!="" && this.signoVital.sistolica!=undefined && this.signoVital.sistolica!="" && this.signoVital.fcard!=undefined && this.signoVital.fcard!="" && this.signoVital.fresp !=undefined && this.signoVital.fresp!="" && this.signoVital.pulso!=undefined && this.signoVital.pulso!="" && this.signoVital.temper!=undefined && this.signoVital.temper!=""){
+            await this.srvSignosVitales.registrar(this.signoVital).toPromise();
+          }
           this.antropometria.fecha=_fecha;
-          this.antropometria.cedula=_cedula
-          await this.srvAntropometria.registrar(this.antropometria).toPromise();
+          this.antropometria.cedula=_cedula;
+          if (this.antropometria.talla!=undefined && this.antropometria.talla!="" && this.antropometria.peso!=undefined && this.antropometria.peso!="" && this.antropometria.imc!=undefined && this.antropometria.imc!="" ){
+            await this.srvAntropometria.registrar(this.antropometria).toPromise();
+          }
       } catch (error) {
         this.showSuccess('Error Registrando Signos vitales: '+error, 'danger');
       }
     }
+  }
+
+  agregarPresionHistInArray(){
+
+    if(!this.signoVital.tart || !this.signoVital.sistolica){
+      return;
+    }
+
+    this.signoVitalNew = {
+      fecha: (new Date()).toISOString(),
+      tart: this.signoVital.tart,
+      sistolica: this.signoVital.sistolica,
+      fcard: this.signoVital.fcard,
+      fresp: this.signoVital.fresp,
+      pulso: this.signoVital.pulso,
+      temper: this.signoVital.temper,
+      cedula: this.signoVital.cedula
+    };
+
+    // Insertar en la primera posición
+    this.signosVitalesHist.unshift(this.signoVitalNew);
+
+  }
+
+  addSignoVitalHist(){
+    this.signoVitalNew.fecha = this.consultas.fechaModificacion;
+    this.signoVitalNew.cedula = this.paciente.ci;
+    this.srvSignosVitales.registrar(this.signoVitalNew).toPromise();
   }
 
   calc_imc(){    
@@ -1216,7 +1290,8 @@ export class ConsultasComponent  implements OnInit  {
       observacionNueva = `${this.user.login}\n${this.consultas.observacion_medicamentos}\n${fechaRegistro}<br>`;
     }
     const obsValido: boolean = await this.srvVarios.nonEmptyValue(this.observacion);
-    if (!obsValido){
+    
+    if (obsValido){
       observacionAnterior = this.observacion;
     }
     
@@ -1350,6 +1425,7 @@ export class ConsultasComponent  implements OnInit  {
       else {
         this.consultas.fecha = this.vConsultas.fecha;
         this.consultas.observacion_medicamentos = observacion;
+        
         this.consultas.userModific = this.user.login;
         this.consultas.fechaModificacion = fechaRegistro;
         //console.log(this.consultas.fecha);
@@ -1357,10 +1433,11 @@ export class ConsultasComponent  implements OnInit  {
           .toPromise()
           .catch(err => {
             this.showSuccess('Error actualizando: '+err, 'danger');
-            console.log(err);
+            console.error(err);
             this.blockRegister=false;
             this.soloLectura=false;
           });
+        this.addSignoVitalHist();
         this.guardarMedicametosAplicados();
         this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
         this.llenarArrayConsultas(false);
