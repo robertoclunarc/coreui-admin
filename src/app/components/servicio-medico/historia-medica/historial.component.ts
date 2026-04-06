@@ -7,10 +7,12 @@ import { Router } from '@angular/router';
 
 //servicios
 import { HistoriaService } from '../../../services/servicio_medico/historias.service';
+import { LoginSecioMedicoService } from "../../../services/servicio_medico/login-secio-medico.service";
 
 //modelos
 
 import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
+import { IusuariosMenus } from "../../../models/servicio-medico/varios.model";
 import { IvPaciente } from '../../../models/servicio-medico/paciente.model';
 import { IHistoria_medica, IHistoria_paciente } from '../../../models/servicio-medico/historias.model'
 import { MedicosService } from '../../../services/servicio_medico/medicos.service';
@@ -19,7 +21,7 @@ import { IMedicos } from '../../../models/servicio-medico/medicos.model';
 @Component({
   selector: 'app-historial',
   templateUrl: 'historial.component.html',
-  providers: [ { provide: AlertConfig }, HistoriaService],
+  providers: [ { provide: AlertConfig }, HistoriaService, LoginSecioMedicoService ],
   styleUrls: ["historial.component.css"]             
 })
 export class HistoriaMedicaComponent  implements OnInit  {  
@@ -29,6 +31,7 @@ export class HistoriaMedicaComponent  implements OnInit  {
   itemsConsulta: number;
   itemCargos: number;
   itemCargosOtras: number;
+  itemMenus: IusuariosMenus[]= [];
   itemAntecedentes: number;
   itemOcupaciones: number;
   itemExamenFuncionalA: number;
@@ -37,6 +40,22 @@ export class HistoriaMedicaComponent  implements OnInit  {
   itemExamenFisico1: number;
   itemExamenFisico2: number;
   itemExamenFisico3: number;
+
+  //identificaion tab activas
+  tabs: { nombre: string, idmenu: number, active: boolean }[] = [
+    { nombre: "Datos Generales", idmenu: 1, active: false },
+    { nombre: "Accidentes Ocupacionales", idmenu: 2, active: false },
+    { nombre: "Atenciones", idmenu: 3, active: false },
+    { nombre: "Cargos Anteriores", idmenu: 4, active: false },
+    { nombre: "Cargos Otras Empresas", idmenu: 5, active: false },
+    { nombre: "Antecedentes Familiares", idmenu: 6, active: false },
+    { nombre: "Antecedentes Ocupacionales", idmenu: 7, active: false },
+    { nombre: "Examen Funcional", idmenu: 8, active: false },
+    { nombre: "Anamnesis Psicologicas", idmenu: 9, active: false },
+    { nombre: "Examen Fisico", idmenu: 10, active: false },    
+  ];
+
+
   fechaIni='null';
   fechaFin='null';
   historiaMedica: IHistoria_medica={};
@@ -50,7 +69,8 @@ export class HistoriaMedicaComponent  implements OnInit  {
   constructor(
     private router: Router, 
     private srvHistorias: HistoriaService, 
-    private srvMedicos: MedicosService,  
+    private srvMedicos: MedicosService, 
+    private srvLogin: LoginSecioMedicoService, 
     @Inject(LOCALE_ID) public locale: string,  
     ) {  }
 
@@ -59,6 +79,8 @@ export class HistoriaMedicaComponent  implements OnInit  {
       this.user=JSON.parse(sessionStorage.currentUser);
       if (this.user) { 
         this.tipoUser= sessionStorage.tipoUser;
+        await this.menuUsuario(this.user.login, 4);
+        await this.activarTab();       
       }
       else {
         this.router.navigate(["serviciomedico/login"]);
@@ -96,6 +118,36 @@ export class HistoriaMedicaComponent  implements OnInit  {
         }  
       })      
     }
+  }
+
+  async menuUsuario(login: string, idmenu: number){
+    await this.srvLogin.usuarioMenu(login, idmenu)
+    .toPromise()
+    .then((result) => {
+      if (result){
+        this.itemMenus=result;
+      }
+      else{
+        this.itemMenus=[];
+      }
+    })
+  }
+
+  async activarTab(): Promise<void> {
+    try {
+      // Crear un Set con los valores de item (O(1) lookup)
+      const itemsActivos = new Set(this.itemMenus.map(m => m.item));
+
+      // Recorrer tabs y actualizar active
+      this.tabs = this.tabs.map(tab => ({
+        ...tab,
+        active: itemsActivos.has(tab.idmenu)
+      }));
+
+    } catch (error) {
+      console.error('Error actualizando tabs:', error);
+    }
+    //console.log(this.tabs);
   }
 
   async registrar(){

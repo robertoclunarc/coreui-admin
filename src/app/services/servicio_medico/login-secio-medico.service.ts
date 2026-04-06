@@ -5,6 +5,7 @@ import { IUsuarios } from '../../models/servicio-medico/usuarios.model';
 import { catchError, tap, map } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
+import { IusuariosMenus } from '../../models/servicio-medico/varios.model';
 
 @Injectable({
   providedIn: 'root'
@@ -72,7 +73,15 @@ export class LoginSecioMedicoService {
               return "TTHH"
     }
     return "NINGUNO";
-  }  
+  }
+  
+  usuarioMenu(user: string, idmenu: number) : Observable<IusuariosMenus[]> {
+      return this.http.get<IusuariosMenus[]>(`${this.apiUrlLogin}/menuitem/${user}/${idmenu}`)
+			.pipe(
+			//	tap(result => console.log(`usuariosFiltrados`)),
+				catchError(this.handleError)
+			);
+  }
 
   logout() {
     // remove user from local storage to log user out

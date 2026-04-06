@@ -23,11 +23,11 @@
       </div>
       <!-- Nav tabs -->
       <tabset>
-        <tab>
+        <tab *ngIf="tabs[0].active">
           <ng-template tabHeading><i class="icon-user"></i> Datos Generales &nbsp;</ng-template>
           <app-paciente-historia (outPaciente)="buscarPaciente($event)"></app-paciente-historia>
         </tab>
-        <tab>
+        <tab *ngIf="tabs[1].active">
           <ng-template tabHeading><i class="icon-drop"></i> Accidentes Ocupacionales &nbsp;</ng-template>          
           <div class="col-lg-12">
             <div class="card">
@@ -110,12 +110,10 @@
               </div>
             </div>
           </div>
-          <!--/.col-->
-          
+          <!--/.col-->          
         </tab>        
-        <tab>
-          <ng-template tabHeading><i class="icon-note"></i> Atenciones &nbsp;<span class="badge badge-pill badge-danger">{{itemsConsulta}}</span></ng-template>
-          
+        <tab *ngIf="tabs[2].active">
+          <ng-template tabHeading><i class="icon-note"></i> Atenciones &nbsp;<span class="badge badge-pill badge-danger">{{itemsConsulta}}</span></ng-template>          
           <div class="col-lg-12">
             <div class="card">              
               <div class="card-body">                
@@ -123,10 +121,9 @@
               </div>
             </div>
           </div>
-          <!--/.col-->
-          
+          <!--/.col-->          
         </tab>
-        <tab>
+        <tab *ngIf="tabs[3].active">
           <ng-template tabHeading><i class="icon-wrench"></i> Cargos Anteriores &nbsp;<span class="badge badge-pill badge-danger">{{itemCargos}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
@@ -134,7 +131,7 @@
             </div>
           </div>
         </tab>
-        <tab>
+        <tab *ngIf="tabs[4].active">
           <ng-template tabHeading><i class="icon-wrench"></i> Cargos Otras Empresas &nbsp;<span class="badge badge-pill badge-danger">{{itemCargosOtras}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
@@ -142,7 +139,7 @@
             </div>
           </div>
         </tab>
-        <tab>
+        <tab *ngIf="tabs[5].active">
           <ng-template tabHeading><i class="icon-people"></i> Antecedentes Familiares &nbsp;<span class="badge badge-pill badge-danger">{{itemAntecedentes}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
@@ -150,7 +147,7 @@
             </div>
           </div>
         </tab>
-        <tab>
+        <tab *ngIf="tabs[6].active">
           <ng-template tabHeading><i class="icon-book-open"></i> Antecedentes Ocupacionales &nbsp;<span class="badge badge-pill badge-danger">{{itemOcupaciones}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
@@ -158,7 +155,7 @@
             </div>
           </div>
         </tab>
-        <tab>
+        <tab *ngIf="tabs[7].active">
           <ng-template tabHeading><i class="icon-heart"></i> a. Examen Funcional &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFuncionalA}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
@@ -166,7 +163,7 @@
             </div>
           </div>
         </tab>
-        <tab>
+        <tab *ngIf="tabs[7].active">
           <ng-template tabHeading><i class="icon-heart"></i> b. Examen Funcional &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFuncionalB}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
@@ -174,7 +171,7 @@
             </div>
           </div>
         </tab>
-        <tab>
+        <tab *ngIf="tabs[8].active">
           <ng-template tabHeading><i class="icon-emotsmile"></i> Anamnesis Psicológicos &nbsp;<span class="badge badge-pill badge-danger">{{itemAnamnesis}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
@@ -182,7 +179,7 @@
             </div>
           </div>
         </tab>
-        <tab>
+        <tab *ngIf="tabs[9].active">
           <ng-template tabHeading><i class="icon-eyeglass"></i> 1. Examen Físico &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFisico1}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
@@ -190,7 +187,7 @@
             </div>
           </div>
         </tab>
-        <tab>
+        <tab *ngIf="tabs[9].active">
           <ng-template tabHeading><i class="icon-eyeglass"></i>  2. Examen Físico &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFisico2}}</span></ng-template>
           <div class="card">            
             <div class="card-body">
@@ -198,7 +195,7 @@
             </div>
           </div>
         </tab>
-        <tab>
+        <tab *ngIf="tabs[9].active">
           <ng-template tabHeading><i class="icon-eyeglass"></i> 3. Examen Físico &nbsp;<span class="badge badge-pill badge-danger">{{itemExamenFisico3}}</span></ng-template>
           <div class="card">            
             <div class="card-body">

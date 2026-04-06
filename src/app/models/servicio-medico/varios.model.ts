@@ -31,3 +31,13 @@ export interface IMotivosRequierenReporte{
     motivo?: string;
     estatus?: number
 }
+
+export interface IusuariosMenus
+{
+    idmenuitem?: number;
+    idmenu?: number;
+    login?: string;
+    item?: number;
+    nombreitem?: string;
+    active?: boolean
+}
