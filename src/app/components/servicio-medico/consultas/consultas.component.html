@@ -352,6 +352,21 @@
                                   <input type="number" [disabled]="soloLectura" class="form-control form-control-sm" name="txtTemp" [(ngModel)]="signoVital.temper" id="txtTemp" placeholder="Temperatura">
                                   <label for="txtTemp">Temp.</label>
                                 </span>  
+                              </div>                              
+                              <div class="form-group col-sm-2">
+                                <span class="form-group has-float-label">                                  
+                                  <input type="number" 
+                                    [disabled]="soloLectura" 
+                                    class="form-control form-control-sm" 
+                                    name="txtSistolica" 
+                                    [(ngModel)]="signoVital.sistolica" 
+                                    id="txtSistolica" 
+                                    placeholder="Sistólica"
+                                    (ngModelChange)="evaluarPresionInput()"
+                                    [ngClass]="estadoPresionActual.color"                                    
+                                  >                                  
+                                  <label for="txtSistolica">Sistólica</label>
+                                </span>
                               </div>
                               <div class="form-group col-sm-2">
                                 <span class="form-group has-float-label">
@@ -366,21 +381,6 @@
                                     [ngClass]="estadoPresionActual.color"                                    
                                   >
                                   <label for="txtTArt">Diastólica</label>
-                                </span>
-                              </div>
-                              <div class="form-group col-sm-2">
-                                <span class="form-group has-float-label">                                  
-                                  <input type="number" 
-                                    [disabled]="soloLectura" 
-                                    class="form-control form-control-sm" 
-                                    name="txtSistolica" 
-                                    [(ngModel)]="signoVital.sistolica" 
-                                    id="txtSistolica" 
-                                    placeholder="Sistólica"
-                                    (ngModelChange)="evaluarPresionInput()"
-                                    [ngClass]="estadoPresionActual.color"                                    
-                                  >                                  
-                                  <label for="txtSistolica">Sistólica</label>
                                 </span>
                               </div>
 

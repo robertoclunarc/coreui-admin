@@ -11,9 +11,9 @@
           <tr>                                
             <th with="30%" scope="col">Frec. Resp.</th>
             <th  with="30%"scope="col">Pulso</th>
-            <th  with="35%" scope="col">Temp.</th>
-            <th  with="35%" scope="col">Diastólica</th>
+            <th  with="35%" scope="col">Temp.</th>            
             <th  with="35%" scope="col">Sistólica</th>
+            <th  with="35%" scope="col">Diastólica</th>
             <th  with="35%" scope="col">Frec. Card.</th>
             <th  with="35%" scope="col">Fecha</th>
             <th  with="5%" scope="col">Add+</th>
@@ -22,6 +22,18 @@
             <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.fresp" name="txtFresp" id="txtFresp" #txtFresp ></th>
             <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.pulso" name="txtPulso" id="txtPulso" #txtPulso ></th>
             <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.temper" name="txtTemper" id="txtTemper" #txtTemper ></th>
+            
+            <th scope="col">
+              <input
+                type="number"
+                class="form-control form-control-sm"
+                [(ngModel)]="examen.sistolica"
+                (ngModelChange)="evaluarPresionInput()"
+                [ngClass]="estadoPresionActual.color"
+                name="txtSistolica"
+                id="txtSistolica"
+              >
+            </th>  
             <th scope="col">
               <input
                 type="number"
@@ -33,17 +45,6 @@
                 id="txtTart"
               >
             </th>
-            <th scope="col">
-              <input
-                type="number"
-                class="form-control form-control-sm"
-                [(ngModel)]="examen.sistolica"
-                (ngModelChange)="evaluarPresionInput()"
-                [ngClass]="estadoPresionActual.color"
-                name="txtSistolica"
-                id="txtSistolica"
-              >
-              </th>
             <th scope="col"><input type="number" class="form-control form-control-sm" [(ngModel)]="examen.fcard" name="txtFcard" id="txtFcard" #txtFcard ></th>
             <th scope="col"><input type="datetime-local" class="form-control form-control-sm" [(ngModel)]="examen.fecha" name="txtFecha" id="txtFecha" #txtFecha ></th>
             <th>              
@@ -63,17 +64,17 @@
               </div>
             </td>
           </tr>
-          <tr *ngFor="let exm of examenes; let i=index" [ngClass]="getPresionClass(exm.tart, exm.sistolica).color">
+          <tr *ngFor="let exm of examenes; let i=index" [ngClass]="getPresionClass(exm.sistolica, exm.tart).color">
             <th><i class="fa fa-paperclip"></i> {{exm.fresp}}</th>            
             <th>{{exm.pulso}}</th>
-            <th>{{exm.temper}}</th>
-            <th>{{exm.tart}}</th>
+            <th>{{exm.temper}}</th>            
             <th>{{exm.sistolica}}</th>
+            <th>{{exm.tart}}</th>
             <th>{{exm.fcard}}</th>
             <th>{{exm.fecha  | date:'yyyy-MM-dd HH:mm:ss'}}</th>
             <th>
               <i class="fa"
-                [ngClass]="getPresionClass(exm.tart, exm.sistolica).icono">
+                [ngClass]="getPresionClass( exm.sistolica, exm.tart).icono">
               </i>
               {{ estadoPresionActual.estado }} - {{ estadoPresionActual.aviso }}
             </th>

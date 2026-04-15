@@ -1,6 +1,7 @@
 import { Component, ViewChild, OnChanges, Input, Inject, LOCALE_ID, NgModule, ElementRef, Output, EventEmitter} from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router, ActivatedRoute } from '@angular/router';
+import { formatDate } from '@angular/common';
 
 //modelos
 import { IsignosVitales } from '../../../models/servicio-medico/signos_vitales.model';
@@ -96,7 +97,11 @@ export class SignosVitalesComponent implements OnChanges {
         if (result!=null && result.ci!=undefined){
           this.cedula=result.ci;
         }        
-      })
+      });
+      let fecha = new Date();
+      const fechaObjeto = formatDate(fecha.setMinutes(fecha.getMinutes()+1), 'yyyy-MM-dd HH:mm', this.locale);
+      this.examen.fecha = fechaObjeto;
+
     }
   }
 
