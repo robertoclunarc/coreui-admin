@@ -1169,17 +1169,19 @@ export class ConsultasComponent  implements OnInit  {
       await this.srvMedicamentos.eliminarAplicados(idConsul).toPromise();
     }
     
-    try {
-      for (const med of this.medicamentoAplicado.medicamentos){
-        medAplic={
-          uid: null,
-          id_consulta: idConsul,
-          id_medicamento: med.medicamento.uid,
-          cantidad: med.cantidad,
-          medidas: med.medidas
-        };
-        console.log(medAplic);
-        await this.srvMedicamentos.registrarMedicamentosAplicados(medAplic).toPromise();        
+    try {      
+      if (this.medicamentoAplicado.medicamentos && this.medicamentoAplicado.medicamentos.length>0){
+        for (const med of this.medicamentoAplicado.medicamentos){
+          medAplic={
+            uid: null,
+            id_consulta: idConsul,
+            id_medicamento: med.medicamento.uid,
+            cantidad: med.cantidad,
+            medidas: med.medidas
+          };
+          
+          await this.srvMedicamentos.registrarMedicamentosAplicados(medAplic).toPromise();        
+        }
       }
     } catch (error) {
       this.showSuccess('Error Registrando medicamentos aplicados: '+error, 'danger');
@@ -1425,7 +1427,7 @@ export class ConsultasComponent  implements OnInit  {
       else {
         this.consultas.fecha = this.vConsultas.fecha;
         this.consultas.observacion_medicamentos = observacion;
-        
+        this.consultas.id_medico = this.srvVarios.nonEmptyValue(this.consultas.id_medico) ? this.consultas.id_medico : null;
         this.consultas.userModific = this.user.login;
         this.consultas.fechaModificacion = fechaRegistro;
         //console.log(this.consultas.fecha);

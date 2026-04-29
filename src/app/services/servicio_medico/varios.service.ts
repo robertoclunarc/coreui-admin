@@ -126,7 +126,7 @@ export class VarioService {
         vacio = false;
       }
     }else{
-      if (dato == undefined || dato == null  || dato == ''){
+      if (dato == undefined || dato == null  || dato == ''  || dato == '--'){
         vacio = false;
       }
     }
