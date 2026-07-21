@@ -7,7 +7,7 @@ import { IUsuarios } from '../../../models/servicio-medico/usuarios.model';
   selector: 'app-login-servicio-medico',
   templateUrl: './login-servicio-medico.component.html',
   providers: [LoginSecioMedicoService],
-  //styleUrls: ['./login-servicio-medico.component.scss']
+  styleUrls: ['./login-servicio-medico.component.scss']
 })
 export class LoginServicioMedicoComponent implements OnInit {
   loading: boolean = false;

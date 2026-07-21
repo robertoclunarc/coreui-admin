@@ -60,8 +60,10 @@ export class MorbilidadComponent  implements OnInit  {
     {titulo: 'Supervisor', campo:'nombres_jefe'}, {titulo: 'Area', campo:'area'}, {titulo: 'Motivo', campo:'motivo'},
     {titulo: 'P/S', campo:'fktipoconsulta'}, {titulo: 'Afección por Sist.', campo:'resultado_eva'}, {titulo: '', campo:''}, {titulo: 'Diag.', campo:'descripcion_afeccion'},
     {titulo: 'Condición|Observación', campo:'motivo_consulta'}, {titulo: 'Medicamento(s)', campo:'aplicacion'}, {titulo: 'Asistenciado', campo:'login_atendio'},
-    {titulo: 'Dir. Habitación', campo:'direccion_hab'}, {titulo: 'Mano Domte.', campo:'mano_dominante'}, {titulo: 'Talla', campo:'talla'},
-    {titulo: 'Peso', campo:'peso'}, {titulo: 'IMC', campo:'imc'}, {titulo: 'Edad', campo:'edad'}
+    {titulo: 'Dir. Habitación', campo:'direccion_hab'}, {titulo: 'Mano Domte.', campo:'mano_dominante'},     
+    {titulo: 'Talla', campo:'talla'},{titulo: 'Peso', campo:'peso'}, {titulo: 'IMC', campo:'imc'}, 
+    {titulo: 'Sistolica', campo:'sistolica'}, {titulo: 'Diastolica', campo:'tart'},
+    {titulo: 'Edad', campo:'edad'}
   ];
   
   constructor(
@@ -364,7 +366,8 @@ export class MorbilidadComponent  implements OnInit  {
             FResp: p.fresp,
             Pulso: p.pulso,
             Temp: p.temper,
-            TArt: p.tart,
+            Sistolica: p.sistolica,
+            Diastolica: p.tart,
             Talla: p.talla,
             Peso: p.peso,
             IMC: p.imc,

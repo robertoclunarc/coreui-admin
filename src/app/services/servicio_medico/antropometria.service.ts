@@ -45,7 +45,7 @@ export class AntropometriaService {
 
   registrar(reg: Iantropometria) {
     return this.http.post<Iantropometria>(this.apiUrlantropometria + 'insert', reg).pipe(
-        tap(result => { this.antropometria = result; console.log(`antropometria insertada`) }),
+        tap(result => { this.antropometria = result; }),
         catchError(this.handleError)
     );
   }

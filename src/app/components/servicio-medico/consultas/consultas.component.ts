@@ -1371,10 +1371,10 @@ export class ConsultasComponent  implements OnInit  {
             this.consultas=results;
             this.consultas.fecha = fechaConsulta;
             if (this.consultas?.uid && typeof this.consultas.uid === 'number'){
-              console.log(`tieneHistoria: ${tieneHistoria}`);
+              //console.log(`tieneHistoria: ${tieneHistoria}`);
               if (tieneHistoria){                
                 historia.fk_historia = this.historiaMedica.uid_historia;
-                console.log(historia);
+                //console.log(historia);
                 this.srvHistorias.nuevoHistoriaPaciente(historia);
               }
               
@@ -1405,7 +1405,7 @@ export class ConsultasComponent  implements OnInit  {
               }
   
               this.llenarArrayConsultas(true);
-              console.log(`Reposo: ${this.consultas.id_reposo}`);
+              //console.log(`Reposo: ${this.consultas.id_reposo}`);
               this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
               if (this.idSolicitud){
                 this.router.navigate(["serviciomedico/solicitudes"]);
@@ -1418,7 +1418,7 @@ export class ConsultasComponent  implements OnInit  {
           .catch(err => {
             const er = typeof err === 'object' ? JSON.stringify(err): err;
             this.showSuccess('Error Registrando: '+er, 'danger');
-            console.log(this.consultas)
+            //console.log(this.consultas)
             console.error(err);
             this.blockRegister=false;
             this.soloLectura=false;
@@ -1785,6 +1785,7 @@ export class ConsultasComponent  implements OnInit  {
             edad: edad?.years,
             Cargo: p.cargo,
             Departamento: p.departamento,
+            gcia: p.gcia,
             Supervisor: p.nombres_jefe,
             ManoDominante: p.mano_dominante,
             AreaIncidente: p.area,

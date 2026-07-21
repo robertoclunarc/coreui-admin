@@ -172,8 +172,10 @@ export interface IvMorbilidad{
 	fcard?: string;
     pulso?: string;
     tart?: string;
+    sistolica?: string;
     edad?: string;
     departamento?: string;
+    gcia?: string;
     diagnostico?: string;
     descripciondiagnostico?: string;
     medicamentos?: string;

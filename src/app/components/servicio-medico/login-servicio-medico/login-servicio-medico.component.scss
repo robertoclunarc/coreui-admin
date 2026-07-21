@@ -1,0 +1,28 @@
+.card-transparente {
+    background: rgba(255, 255, 255, 0.25);
+    border: none;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Tarjeta Izquierda (Transparencia Azulada para emular el bg-primary) */
+.card-transparente-azul {
+    background-color: rgba(0, 123, 255, 0.4) !important; /* Azul Bootstrap al 40% de opacidad */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Opcional: Asegurar que los textos dentro de los inputs o labels se vean bien */
+.card-transparente h1, .card-transparente p {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Sombra para que resalten sobre el fondo */
+}
+
+.login-background {
+  width: 100%;
+  min-height: 100vh;
+  background-image: url('./../../../../assets/planta-briquetas.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}

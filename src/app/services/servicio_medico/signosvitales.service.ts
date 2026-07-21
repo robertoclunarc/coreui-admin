@@ -45,7 +45,7 @@ export class SignosVitalesService {
 
   registrar(reg: IsignosVitales) {
     return this.http.post<IsignosVitales>(this.apiUrlSignosVitales + 'insert', reg).pipe(
-        tap(result => { this.signosVitales = result; console.log(`Signos Vitales insertados`) }),
+        tap(result => { this.signosVitales = result; }),
         catchError(this.handleError)
     );
   }
