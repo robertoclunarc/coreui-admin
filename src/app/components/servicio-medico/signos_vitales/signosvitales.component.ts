@@ -128,7 +128,7 @@ export class SignosVitalesComponent implements OnChanges {
     const s = Number(this.examen.sistolica);
     const d = Number(this.examen.tart);
 
-    this.estadoPresionActual = this.getPresionClass(d, s);
+    this.estadoPresionActual = this.getPresionClass(s, d);
 
   }
 

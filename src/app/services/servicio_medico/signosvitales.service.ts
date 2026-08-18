@@ -70,7 +70,7 @@ export class SignosVitalesService {
     );
   }  
 
-  evaluarPresion(d: number, s: number ) {
+  /*evaluarPresion(d: number, s: number ) {
     //console.log(`sistólica=${s}, diastólica=${d} ${typeof s} ${typeof d}`);
 
     if ((s == null || d == null)  || (typeof s == 'number' && s == 0) || (typeof d == 'number' && d == 0)) {
@@ -148,9 +148,128 @@ export class SignosVitalesService {
     }
 
     return { estado: '', color: '', icono: '', aviso: '' };
+  }*/
+
+  evaluarPresion(s: number, d: number): {
+    estado: string;
+    color: string;
+    icono: string;
+    aviso: string;
+  } {
+
+    // Validación de los valores recibidos
+    if (
+      s === null ||
+      s === undefined ||
+      d === null ||
+      d === undefined ||
+      isNaN(Number(s)) ||
+      isNaN(Number(d)) ||
+      Number(s) <= 0 ||
+      Number(d) <= 0
+    ) {
+      return {
+        estado: 'SIN DATOS',
+        color: '',
+        icono: 'fa fa-question-circle',
+        aviso: 'No se han proporcionado valores válidos de presión arterial.'
+      };
+    }
+
+    s = Number(s);
+    d = Number(d);
+
+    // =========================================================
+    // HIPOTENSIÓN
+    // TAS < 90 y TAD < 60
+    // =========================================================
+    if (s < 90 && d < 60) {
+      return {
+        estado: 'HIPOTENSIÓN',
+        color: 'presion-baja',
+        icono: 'fa fa-arrow-down',
+        aviso: 'Presión arterial baja. Se recomienda verificar nuevamente la presión.'
+      };
+    }
+
+    // =========================================================
+    // HTA ESTADIO III
+    // TAS >= 180 o TAD >= 110
+    // =========================================================
+    if (s >= 180 || d >= 110) {      
+      return {
+        estado: 'HTA ESTADIO III',
+        color: 'presion-hta3',
+        icono: 'fa fa-exclamation-triangle',
+        aviso: 'Presión arterial muy elevada. Se recomienda valoración médica.'
+      };
+    }
+
+    // =========================================================
+    // HTA ESTADIO II
+    // TAS 160-179 o TAD 100-109
+    // =========================================================
+    if (s >= 160 || d >= 100) {
+      return {
+        estado: 'HTA ESTADIO II',
+        color: 'presion-hta2',
+        icono: 'fa fa-exclamation-circle',
+        aviso: 'Presión arterial elevada. Se recomienda control y seguimiento.'
+      };
+    }
+
+    // =========================================================
+    // HTA ESTADIO I
+    // TAS 140-159 o TAD 90-99
+    // =========================================================
+    if (s >= 140 || d >= 90) {      
+      return {
+        estado: 'HTA ESTADIO I',
+        color: 'presion-hta1',
+        icono: 'fa fa-exclamation-circle',
+        aviso: 'Presión arterial elevada. Se recomienda realizar seguimiento.'
+      };
+    }
+
+    // =========================================================
+    // NORMAL ALTA
+    // TAS 130-139 o TAD 85-89
+    // =========================================================
+    if (s >= 130 || d >= 85) {
+      return {
+        estado: 'NORMAL ALTA',
+        color: 'presion-normal-alta',
+        icono: 'fa fa-arrow-up',
+        aviso: 'Presión arterial normal alta. Se recomienda controlar periódicamente.'
+      };
+    }
+
+    // =========================================================
+    // ÓPTIMA
+    // TAS < 120 y TAD < 80
+    // =========================================================
+    if (s < 120 && d < 80) {
+      return {
+        estado: 'ÓPTIMA',
+        color: 'presion-optima',
+        icono: 'fa fa-check-circle',
+        aviso: 'Presión arterial óptima.'
+      };
+    }
+
+    // =========================================================
+    // NORMAL
+    // TAS 120-129 y TAD 80-84
+    // =========================================================
+    return {
+      estado: 'NORMAL',
+      color: 'presion-normal',
+      icono: 'fa fa-check-circle',
+      aviso: 'Presión arterial normal.'
+    };
   }
 
-  handleError(error: HttpErrorResponse) {
+    handleError(error: HttpErrorResponse) {
     return throwError(error.message || ' server Error');
   }
 }

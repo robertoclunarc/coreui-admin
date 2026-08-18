@@ -400,7 +400,7 @@
                               <div *ngIf="countSignosVitalesHist>0" class="form-group col-sm-8">
                                 <span class="form-group has-float-label">
                                   <select id="signosVitalesHist" name="signosVitalesHist" class="form-control" size="4" multiple>
-                                    <option *ngFor="let sv of signosVitalesHist; let o=index" value="{{sv}}" [ngClass]="getPresionClass(sv.tart, sv.sistolica).color" >{{sv.fecha | date:'dd-MM-yyyy hh:mm'}}: {{sv.tart}}/{{sv.sistolica}} {{getPresionClass(sv.tart, sv.sistolica).estado}} - {{getPresionClass(sv.tart, sv.sistolica).aviso}}</option>                                    
+                                    <option *ngFor="let sv of signosVitalesHist; let o=index" value="{{sv}}" [ngClass]="getPresionClass(sv.sistolica, sv.tart).color" >{{sv.fecha | date:'dd-MM-yyyy hh:mm'}}: {{sv.sistolica}}/{{sv.tart}} {{getPresionClass(sv.tart, sv.sistolica).estado}} - {{getPresionClass(sv.tart, sv.sistolica).aviso}}</option>                                    
                                   </select>
                                   <label for="signosVitalesHist">Tension Arterial Anterior(es)</label>
                                 </span>
@@ -408,7 +408,7 @@
                               <div *ngIf="estadoPresionActual.estado" class="form-group col-sm-4">
                                 <span class="form-group has-float-label" [ngClass]="estadoPresionActual.color">
                                   <i class="fa"
-                                    [ngClass]="getPresionClass(signoVital.tart, signoVital.sistolica).icono">
+                                    [ngClass]="getPresionClass(signoVital.sistolica, signoVital.tart).icono">
                                   </i>
                                   {{ estadoPresionActual.estado }} - {{ estadoPresionActual.aviso }}
                                 </span>

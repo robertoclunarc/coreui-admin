@@ -598,7 +598,7 @@ export class ConsultasComponent  implements OnInit  {
     const s = Number(this.signoVital.sistolica);
     const d = Number(this.signoVital.tart);
 
-    this.estadoPresionActual = this.getPresionClass(d, s);
+    this.estadoPresionActual = this.getPresionClass(s, d);
     this.alertaSignoVitales = this.estadoPresionActual.aviso;
   }
 
