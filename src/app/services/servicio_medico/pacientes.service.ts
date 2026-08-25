@@ -43,8 +43,8 @@ export class PacientesService {
 			);
   }
 
-  async searchPacientesPromise(ciPaciente: string, nombre: string, supervisor: string, cargo: string, dpto: string,condlogica: string) :  Promise<IPacienteConSupervisores[]> { 
-    let parametrosUrl = `${ciPaciente}/${nombre}/${supervisor}/${cargo}/${dpto}/${condlogica}`; 
+  async searchPacientesPromise(ciPaciente: string, nombre: string, supervisor: string, cargo: string, dpto: string, situacion: string, condlogica: string) :  Promise<IPacienteConSupervisores[]> { 
+    let parametrosUrl = `${ciPaciente}/${nombre}/${supervisor}/${cargo}/${dpto}/${situacion}/${condlogica}`; 
     return await this.http.get<IPacienteConSupervisores[]>(this.apiUrlPacientes + 'filtrar/' + parametrosUrl ).toPromise();
   }
 

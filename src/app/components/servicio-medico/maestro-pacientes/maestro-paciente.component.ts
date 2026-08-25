@@ -3,6 +3,7 @@ import { Component, ViewChild, OnInit, SecurityContext,Inject,  LOCALE_ID, Eleme
 import { formatDate } from '@angular/common';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
 import { Router } from '@angular/router';
+import * as XLSX from 'xlsx';
 
 //servicios
 import { PacientesService } from '../../../services/servicio_medico/pacientes.service';
@@ -28,8 +29,7 @@ export class MaestroPacienteComponent  implements OnInit  {
   searchText: string='';
   classTable: string;
   classButton: string;
-  estiloOscuro: string;
-   
+  estiloOscuro: string;  
   show = false;
   autohide = true;
 
@@ -49,7 +49,7 @@ export class MaestroPacienteComponent  implements OnInit  {
 
   titulos = [
     {titulo: 'C.I.', campo:'ci'}, {titulo: 'Nombre', campo:'nombre_completo'}, {titulo: 'Cargo', campo:'cargo'}, {titulo: 'Depto.', campo:'departamento'},{titulo: 'Sexo', campo:'sexo'}, 
-    {titulo: 'G.S.', campo:'tipo_sangre'}, {titulo: 'Alergia', campo:'alergia'}, {titulo: 'Edad', campo:'edad.years'}, {titulo: 'Supervisor', campo:'nombre_jefe'}
+    {titulo: 'G.S.', campo:'tipo_sangre'}, {titulo: 'Alergia', campo:'alergia'}, {titulo: 'Edad', campo:'edad.years'}, {titulo: 'Supervisor', campo:'nombre_jefe'}, {titulo: 'Situación', campo:'sit_trabajador'}
   ];
 
   arrayPacientes: IPacienteConSupervisores[]=[];
@@ -93,12 +93,12 @@ export class MaestroPacienteComponent  implements OnInit  {
         this.soloLectura=true;
       }     
 
-      this.llenarArrayPacientes('null','null','null','null','null','OR');
+      this.llenarArrayPacientes('null','null','null','null','null','ACTIVO','OR');
   }
 
-  private async llenarArrayPacientes(ciPaciente: string, nombre: string, supervisor: string, cargo: string, dpto: string,condlogica: string) {
+  private async llenarArrayPacientes(ciPaciente: string, nombre: string, supervisor: string, cargo: string, dpto: string, situacion: string, condlogica: string) {
     
-		this.srvPacientes.searchPacientesPromise(ciPaciente, nombre, supervisor, cargo, dpto,condlogica)			
+		this.srvPacientes.searchPacientesPromise(ciPaciente, nombre, supervisor, cargo, dpto, situacion, condlogica)			
 			.then(results => {				
 				this.arrayPacientes = results;        
                 this.totalItems = this.arrayPacientes.length;
@@ -137,6 +137,8 @@ export class MaestroPacienteComponent  implements OnInit  {
 
       let searchValue = this.searchText.toLocaleLowerCase();
 
+      const situacion = (searchValue === 'activo' || searchValue === 'inactivo') ? searchValue : 'null';
+
       //tratamiento para fechas------------------------------
       /*
       let date_regex = /^\d{4}-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/;
@@ -147,7 +149,7 @@ export class MaestroPacienteComponent  implements OnInit  {
       }
       */
       
-      await this.srvPacientes.searchPacientesPromise(searchValue, searchValue, searchValue, searchValue, searchValue, 'OR')        
+      await this.srvPacientes.searchPacientesPromise(searchValue, searchValue, searchValue, searchValue, situacion, searchValue, 'OR')        
       .then(async (res) => {          
             this.returnedSearch= res            
             this.totalItems = this.returnedSearch.length;            
@@ -162,6 +164,18 @@ export class MaestroPacienteComponent  implements OnInit  {
       this.maxSize = Math.ceil(this.totalItems/this.numPages);     
        
     } 
+  }
+
+  async exportExcel(){
+    const searchValue = this.searchText.toLocaleLowerCase();
+    const situacion = (searchValue === 'activo' || searchValue === 'inactivo') ? searchValue : 'null';
+
+    const data: any[] = await this.srvPacientes.searchPacientesPromise(searchValue, searchValue, searchValue, searchValue, situacion, searchValue, 'OR')
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Pacientes');
+    await XLSX.writeFile(workbook, 'atencion.xlsx');    
+    this.showSuccess(`Archivo Descargado. Revise su carpeta local de descargas`, 'primary');
   }
   
   pageChanged(event: any): void {

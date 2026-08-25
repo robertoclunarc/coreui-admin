@@ -45,7 +45,7 @@ import { IindicacionMedica } from '../../../models/servicio-medico/recetamedica.
 import { IHistoria_medica, IHistoria_paciente } from '../../../models/servicio-medico/historias.model';
 import { ImailOptions } from "../../../models/servicio-medico/correo.model";
 import { ItipoDiagnostico } from "../../../models/servicio-medico/tipoDiagnostico.model";
-
+import { planillaConsultaComponent } from "../planillas/planilla_consulta/planilla_consulta.component"
 import { environment } from "../../../../environments/environment";
 import { ISolicitudAtencion } from '../../../models/servicio-medico/solicitudatencion.model';
 import { SolicitudAtencionService } from '../../../services/servicio_medico/solicitudatencion.service';
@@ -68,7 +68,8 @@ export class ConsultasComponent  implements OnInit  {
   //@ViewChild('txtPatologia', { static: false }) txtPatologia: ElementRef<HTMLInputElement>;
   //@ViewChild(TypeaheadDirective, { static: false }) typeaheadInstance: TypeaheadDirective;
   //@ViewChild('typeaheadInstance', { static: false }) typeaheadInstance: ElementRef<HTMLInputElement>;
-  @ViewChild('typeaheadInstance') typeaheadInstance; 
+  @ViewChild('typeaheadInstance') typeaheadInstance;
+  @ViewChild(planillaConsultaComponent) hijo: planillaConsultaComponent;
 
   isCollapsed: boolean = false;
   iconCollapse: string = 'icon-arrow-up';
@@ -155,7 +156,7 @@ export class ConsultasComponent  implements OnInit  {
   planilla: string;
   autohide = true;
   motivosReportados: number[] = []; //[7, 8, 9, 10, 13]
-
+  idConsultaCache: number;
   totalItems: number;//total number of items in all pages
   //currentPage: number   = 1;
   //smallnumPages: number;
@@ -359,7 +360,7 @@ export class ConsultasComponent  implements OnInit  {
   async llenarArrayConsultas(conFechaActual?: boolean) {
     this.searchText = conFechaActual ? formatDate(Date.now(), 'yyyy-MM-dd', this.locale) : "";
     this.limpiarFiltro();
-    this.buscarConsulta.fecha = conFechaActual ? this.searchText : 'null';
+    this.buscarConsulta.fecha = conFechaActual ? this.searchText : this.buscarConsulta.fecha;
 		this.srvConsultas.consultaFilter(this.buscarConsulta)
 			.toPromise()
 			.then(results => {
@@ -884,6 +885,7 @@ export class ConsultasComponent  implements OnInit  {
   }
 
   async showModalRegistrar(){
+    this.idConsultaCache = null;
     this.soloLectura=false;
     this.autorizacion=false;
     this.observacion = "";
@@ -968,6 +970,7 @@ export class ConsultasComponent  implements OnInit  {
 
   async  showModalActualizar(item: IvConsulta){
     this.observacion = "";
+    this.idConsultaCache = null;
     this.observacionesArray = [];
     this.countSignosVitalesHist = 0;
     this.signosVitalesHist = [];
@@ -1301,7 +1304,7 @@ export class ConsultasComponent  implements OnInit  {
     return observacionGlobal;
   }
 
-  async registrar(){
+  async registrar(): Promise<void>{
     this.blockRegister=true;
     this.popoverConsulta={};
     const fechaRegistro: string = formatDate(Date.now(), 'yyyy-MM-dd HH:mm:ss', this.locale);
@@ -1371,7 +1374,7 @@ export class ConsultasComponent  implements OnInit  {
             this.consultas=results;
             this.consultas.fecha = fechaConsulta;
             if (this.consultas?.uid && typeof this.consultas.uid === 'number'){
-              //console.log(`tieneHistoria: ${tieneHistoria}`);
+              this.idConsultaCache = this.consultas.uid;
               if (tieneHistoria){                
                 historia.fk_historia = this.historiaMedica.uid_historia;
                 //console.log(historia);
@@ -1439,9 +1442,27 @@ export class ConsultasComponent  implements OnInit  {
             this.blockRegister=false;
             this.soloLectura=false;
           });
+        this.idConsultaCache = this.consultas.uid;  
         this.addSignoVitalHist();
         this.guardarMedicametosAplicados();
         this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
+
+        this.buscarConsulta = {
+          uidConsulta: this.consultas.uid.toString(),
+          ciPaciente: 'null',
+          uidMotivo: 'null',
+          Motivo: 'null',
+          fechaIni: 'null',
+          fechaFin: 'null',
+          Medico:this.tipoUser==='PARAMEDICO' ? this.user.login  : 'null',
+          Paramedico: 'null',
+          nombrePaciente:'null',
+          cargo: 'null',
+          fecha: this.consultas.fecha,
+          condlogica: 'null',
+          patologia: 'null',
+        };
+
         this.llenarArrayConsultas(false);
         this.showSuccess('Atencion Medica actualizada satisfactoriamente', 'success');
   
@@ -1460,6 +1481,24 @@ export class ConsultasComponent  implements OnInit  {
       this.blockRegister=false;
       this.soloLectura=false;
     }    
+  }
+
+  async guardarEimprmir():Promise<void>{
+    try{
+      await this.registrar();
+      console.log(this.idConsultaCache);
+      this.planilla='consulta'; 
+      this.downloadAsPDF(this.idConsultaCache); 
+      this.myModalPlanilla.show();
+      const timer = setInterval(() => {      
+        this.hijo.exportHtmlToPDF();
+        this.myModalPlanilla.hide();
+        //this.hijo.cerrarVentana();
+        clearInterval(timer);      
+      }, 500);      
+    } catch(e){
+      console.error(e)
+    }
   }
 
   async solicitudAtendida(newConsulta: IConsultas, paciente: IvPaciente){

@@ -35,6 +35,7 @@ export interface IvPaciente
     gcia?: string;
     departamento?: string;
     contratista?: string;
+    sit_trabajador?: string;
 }
 
 export interface IPaciente
@@ -68,7 +69,8 @@ export interface IPaciente
     alergia?: string;
     tipo_discapacidad?: string;
     desc_discapacidad?: string;
-    estado_paciente?: string;    
+    estado_paciente?: string; 
+    sit_trabajador?: string;   
 }
 
 export interface IPacienteConSupervisores{
@@ -109,4 +111,5 @@ export interface IPacienteConSupervisores{
     contratista?: string;
     supervisor?: string; 
     nombres_jefe?: string;
+    sit_trabajador?: string;
 }

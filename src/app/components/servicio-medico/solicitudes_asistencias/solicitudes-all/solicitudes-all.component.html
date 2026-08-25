@@ -40,9 +40,9 @@
                       </td>
                       <td style="font-size: 0.7rem; text-align: center;">{{ p.ci_paciente }}</td>
                       <td style="font-size: 0.7rem; text-align: center;">{{ p.paciente }}</td>
-                      <td style="font-size: 0.7rem; text-align: center;">{{ p.fecha_solicitud | date:'yyyy-MM-dd hh:mm' }}</td>
-                      <td style="font-size: 0.7rem; text-align: center;">{{ p.fecha_atencion | date:'yyyy-MM-dd hh:mm' }}</td>
-                      <td style="font-size: 0.7rem; text-align: center;">{{ p.fecha_salida | date:'yyyy-MM-dd hh:mm' }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ formatFechaLocal(p.fecha_solicitud) }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ formatFechaLocal(p.fecha_atencion) }}</td>
+                      <td style="font-size: 0.7rem; text-align: center;">{{ formatFechaLocal(p.fecha_salida) }}</td>
                       <td style="font-size: 0.7rem;">{{ p.motivo }}</td>
                       <td style="font-size: 0.7rem; text-align: center;">{{ p.estatus }}</td>
                       <td style="font-size: 0.7rem; text-align: center;">

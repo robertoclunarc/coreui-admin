@@ -113,7 +113,7 @@ export class SolicitudesALLComponent implements OnInit {
         this.totalItems = this.solicitudesAll.length;
         this.maxSize = Math.ceil(this.totalItems/this.numPages);             
         this.returnedArray = this.solicitudesAll.slice(0, this.numPages);
-        console.log(this.returnedArray)
+        
 			})
 			.catch(err => { console.error(err) });
 	}
@@ -192,6 +192,21 @@ export class SolicitudesALLComponent implements OnInit {
   darAtencion(uid: number){
     this.router.navigate([`serviciomedico/atenciones/${uid}`]);
   }
+
+   formatFechaLocal(fechaEntrada: string=null){
+    if (fechaEntrada==null) return ""
+      const fecha = new Date(fechaEntrada);
+      return fecha.toLocaleString('sv-SE', {
+          timeZone: 'America/Caracas',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit',
+          //second: '2-digit',
+          hour12: false // Cambiar a true si prefieres formato AM/PM
+      });      
+    }
 
   async irConsulta(uid: string){
     try {

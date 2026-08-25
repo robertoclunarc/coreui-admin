@@ -21,7 +21,7 @@
     "postinstall": "ngcc --properties es2015 browser module main --first-only",
     "start": "ng serve",
     "test": "set NODE_OPTIONS=--openssl-legacy-provider && ng serve",
-    "build": "ng build --prod --aot --build-optimizer --common-chunk --vendor-chunk --optimization --progress",    
+    "build": "set NODE_OPTIONS=--openssl-legacy-provider && ng build --prod --aot --build-optimizer --common-chunk --vendor-chunk --optimization --progress",    
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

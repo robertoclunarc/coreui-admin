@@ -119,9 +119,9 @@ export class VarioService {
     return this.http.request('GET', this.urlImagenPacente, {responseType:'blob', params});
   }
 
-  async nonEmptyValue(dato: any){
+  async nonEmptyValue(dato: any): Promise<boolean> {
     let vacio: boolean = true;
-    if (typeof dato === 'number' ){
+    if (typeof dato == 'number' ){
       if (dato == undefined || dato == null){
         vacio = false;
       }

@@ -98,7 +98,7 @@ export class SolicitudComponent implements OnInit {
     this.remitentes = [];
     if (this.paciente.ci!="" && this.paciente.ci!= undefined && this.paciente.ci!= null){
       if (await this.subordinadoValido(this.paciente.ci)){
-        await this.srvPacientes.searchPacientesPromise(this.paciente.ci, 'null', 'null', 'null', 'null', 'and')      
+        await this.srvPacientes.searchPacientesPromise(this.paciente.ci, 'null', 'null', 'null', 'null', 'null', 'and')      
         .then(async result => {
           if (result[0]!= undefined){
             this.paciente=result[0];

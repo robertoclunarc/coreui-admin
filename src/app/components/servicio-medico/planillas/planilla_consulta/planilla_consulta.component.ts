@@ -41,7 +41,7 @@ export class planillaConsultaComponent implements OnChanges {
   titleButtonDescargar: string = "Descagar PDF";
   titleButtonImprimir: string = "Imprimir PDF";
   disableButtonImp: boolean = false;
-
+  ventana: any;
   constructor(private route: ActivatedRoute,private router: Router,
     private srvConsultas: ConsultasService,    
     private srvSignosVitales: SignosVitalesService,    
@@ -51,18 +51,15 @@ export class planillaConsultaComponent implements OnChanges {
     ) { }
 
   ngOnChanges() {
-    if (sessionStorage.currentUser){  
-
-      this.user=JSON.parse(sessionStorage.currentUser);
-      
-      if (this.user) {
-           
+    
+    if (sessionStorage.currentUser){
+      this.user=JSON.parse(sessionStorage.currentUser);      
+      if (this.user) {           
         this.tipoUser= sessionStorage.tipoUser;
-        this.id = this.route.snapshot.paramMap.get("uid")==undefined? this.uidPaciente: this.route.snapshot.paramMap.get("uid");
-       
+        this.id = this.route.snapshot.paramMap.get("uid")==undefined? this.uidPaciente: this.route.snapshot.paramMap.get("uid");       
       }
       else {
-            this.router.navigate(["serviciomedico/login"]);
+        this.router.navigate(["serviciomedico/login"]);
       }
     }else{
       this.router.navigate(["serviciomedico/login"]);
@@ -81,8 +78,7 @@ export class planillaConsultaComponent implements OnChanges {
 			.toPromise()
       .then(results => {				
 				this.vConsulta = results[0];
-        this.vConsulta.observacion_medicamentos = this.vConsulta.observacion_medicamentos.replace(/<br>/g, "; ").replace(/\n/g, " ");
-        console.log(this.vConsulta);
+        this.vConsulta.observacion_medicamentos = this.vConsulta.observacion_medicamentos.replace(/<br>/g, "; ").replace(/\n/g, " ");        
         this.cargarSignosVitales(this.vConsulta);				
 			})
 			.catch(err => { console.log(err) });
@@ -171,7 +167,6 @@ export class planillaConsultaComponent implements OnChanges {
         talla: consulta.talla,
         peso: consulta.peso,
         imc: consulta.imc,
-        
       }    
     }
   } 
@@ -179,26 +174,31 @@ export class planillaConsultaComponent implements OnChanges {
   public exportHtmlToPDF(){
     this.titleButtonImprimir = "Loading...";
     this.disableButtonImp = true;
-    let data = document.getElementById('htmltable');
-     
+    try {
+      const data = document.getElementById('htmltable');      
       html2canvas(data).then(canvas => {
-          
-          let docWidth = 208;
-          let docHeight = canvas.height * docWidth / canvas.width;
-          
-          const contentDataURL = canvas.toDataURL('image/png')
-          let doc = new jsPDF('p', 'mm', 'letter');
-          let position = 0;
-          doc.addImage(contentDataURL, 'PNG', 0, position, docWidth, docHeight);
-          
+        let docWidth = 208;
+        let docHeight = canvas.height * docWidth / canvas.width;
+        
+        const contentDataURL = canvas.toDataURL('image/png')
+        let doc = new jsPDF('p', 'mm', 'letter');
+        let position = 0;
+        doc.addImage(contentDataURL, 'PNG', 0, position, docWidth, docHeight);        
 
-          doc.autoPrint(); // Solicitar impresión automática
-          const blobUrl = doc.output('bloburl') as unknown as string; // Convertir a string
-          window.open(blobUrl); // Abrir PDF en una nueva pestaña con el cuadro de diálogo de impresión activo
-    
-          this.titleButtonImprimir = "Imprimir PDF";
-          this.disableButtonImp = false;
+        doc.autoPrint(); // Solicitar impresión automática
+        const blobUrl = doc.output('bloburl') as unknown as string; // Convertir a string
+        this.ventana = window.open(blobUrl); // Abrir PDF en una nueva pestaña con el cuadro de diálogo de impresión activo
+  
+        this.titleButtonImprimir = "Imprimir PDF";
+        this.disableButtonImp = false;
       });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  cerrarVentana(){
+    this.ventana.close();
   }
 
   public descargartHtmlToPDF(){

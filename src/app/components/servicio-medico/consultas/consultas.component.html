@@ -405,7 +405,7 @@
                                   <label for="signosVitalesHist">Tension Arterial Anterior(es)</label>
                                 </span>
                               </div>
-                              <div *ngIf="estadoPresionActual.estado" class="form-group col-sm-4">
+                              <div *ngIf="estadoPresionActual.estado && signoVital.tart && signoVital.sistolica" class="form-group col-sm-4">
                                 <span class="form-group has-float-label" [ngClass]="estadoPresionActual.color">
                                   <i class="fa"
                                     [ngClass]="getPresionClass(signoVital.sistolica, signoVital.tart).icono">
@@ -664,8 +664,10 @@
                       <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
                     </label>
                   </div>
-                  <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Close</button>
+                  
                   <button type="button" [disabled]="blockRegister" (click)="registrar()" class="btn btn-primary" [popover]="alertaRegistrar" [popoverTitle]="titleRegistrar">Guardar</button>
+                  <button type="button" [disabled]="blockRegister" (click)="guardarEimprmir()" class="btn btn-info">Guardar e Imprimir</button>
+                  <button type="button" class="btn btn-secondary" (click)="primaryModal.hide()">Salir</button>
                 </div>
               </div><!-- /.modal-content -->
             </div><!-- /.modal-dialog -->

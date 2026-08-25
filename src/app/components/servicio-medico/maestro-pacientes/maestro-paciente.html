@@ -4,9 +4,11 @@
             <div class="col-lg-12">
               <div class="card">
                 <div class="card-header">
-                   <strong>Pacientes</strong>                 
+                   <strong>Pacientes</strong> &nbsp;<span class="badge badge-pill badge-danger">{{totalItems}}</span> 
+                   <button type="button" class="btn btn-sm btn-pill btn-primary" (click)="exportExcel()" title="Explortar a Excel"><i class="fa fa-file-excel-o"></i></button>       
                    <div class="card-header-actions">
                     <button [disabled]="soloLectura" (click)="showModalRegistrar(); primaryModal.show();" title="Registrar una Nuevo Paciente" type="button" class="btn btn-pill btn-block btn-success" >+</button>
+                    
                   </div>
                 </div>
                 <div class="card-body">
@@ -44,6 +46,10 @@
                         <td>{{ p.alergia}}</td>
                         <td>{{ p.edad.years}}</td>                      
                         <td>{{ p.nombres_jefe}}</td>
+                        <td>
+                          <span *ngIf="p.sit_trabajador === 'ACTIVO'" class="badge badge-success">{{p.sit_trabajador}}</span>
+                          <span *ngIf="p.sit_trabajador === 'INACTIVO'" class="badge badge-dark">{{p.sit_trabajador}}</span>
+                        </td>
                       </tr>                    
                      
                     </tbody>

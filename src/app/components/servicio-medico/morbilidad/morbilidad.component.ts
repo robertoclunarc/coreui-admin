@@ -353,6 +353,7 @@ export class MorbilidadComponent  implements OnInit  {
             edad: edad?.years,           
             Cargo: p.cargo,
             Departamento: p.departamento,
+            Gerencia: p.gcia,
             Supervisor: p.nombres_jefe,
             ManoDominante: p.mano_dominante,
             AreaIncidente: p.area,
