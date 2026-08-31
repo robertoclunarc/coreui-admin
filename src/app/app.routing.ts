@@ -91,6 +91,10 @@ export const routes: Routes = [
         loadChildren: () => import('./components/servicio-medico/consultas/consultas.module').then(m => m.ConsultasModule)
       },
       {
+        path: 'serviciomedico/atenciones/fechas/:fechaini/:fechafin',
+        loadChildren: () => import('./components/servicio-medico/consultas/consultas.module').then(m => m.ConsultasModule)
+      },
+      {
         path: 'serviciomedico/solicitudes/nueva',
         component: SolicitudComponent,
         data: {
@@ -99,6 +103,10 @@ export const routes: Routes = [
       },
       {
         path: 'serviciomedico/solicitudes',
+        loadChildren: () => import('./components/servicio-medico/solicitudes_asistencias/solicitudes-all/solicitudes-all.module').then(m => m.SolicitudesAllModule)
+      },
+      {
+        path: 'serviciomedico/solicitudes/motivo/:motivo',
         loadChildren: () => import('./components/servicio-medico/solicitudes_asistencias/solicitudes-all/solicitudes-all.module').then(m => m.SolicitudesAllModule)
       },
       {

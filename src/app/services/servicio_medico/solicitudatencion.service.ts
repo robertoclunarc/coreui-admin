@@ -25,6 +25,14 @@ export class SolicitudAtencionService {
         );
   }
 
+  solicitudesPendientes() : Observable<ISolicitudAtencion[]> {
+    return this.http.get<ISolicitudAtencion[]>(this.apiUrlSolicitud + 'pendientes')
+        .pipe(
+        //	tap(result => console.log(`SolicitudAll`)),
+            catchError(this.handleError)
+        );
+  }
+
   solicitudOne(id: number) : Observable<ISolicitudAtencion> {
     return this.http.get<ISolicitudAtencion>(this.apiUrlSolicitud + 'consultar/' + id)
       .pipe(
@@ -42,7 +50,7 @@ export class SolicitudAtencionService {
   }
 
   async searchSolicitudesPromise(filtro: IFilterSolicitud) :  Promise<ISolicitudesAtenciones[]> { 
-    let parametrosUrl = `${filtro.uid}/${filtro.ciPaciente}/${filtro.nombre}/${filtro.supervisor}/${filtro.fecha_solicitud}/${filtro.medico}/${filtro.paramedico}/${filtro.estatus}/${filtro.condlogica}`; 
+    let parametrosUrl = `${filtro.uid}/${filtro.ciPaciente}/${filtro.nombre}/${filtro.supervisor}/${filtro.fecha_solicitud}/${filtro.medico}/${filtro.paramedico}/${filtro.estatus}/${filtro.motivo}/${filtro.condlogica}`;
     return await this.http.get<ISolicitudesAtenciones[]>(this.apiUrlSolicitud + 'filtrar/' + parametrosUrl ).toPromise();
   }
 

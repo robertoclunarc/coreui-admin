@@ -87,7 +87,7 @@
                           <!--<span class="badge badge-dark">Fecha: {{consultas.fecha | date:'dd/MM/yyyy'}}</span>-->
                           <label class="badge badge-info" for="txtFecha">Fecha:</label>
                           <span class="badge">
-                            <input type="datetime-local" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFecha" [(ngModel)]="consultas.fecha" id="txtFecha">
+                            <input type="datetime-local" class="form-control form-control-sm" [disabled]="soloLectura" name="txtFecha" (change)="calcFechaProximaCita()" [(ngModel)]="consultas.fecha" id="txtFecha">
                             
                           </span>
                           <span class="badge badge-info">Turno: {{consultas.turno}}</span>

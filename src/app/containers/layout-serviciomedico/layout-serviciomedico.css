@@ -1,0 +1,62 @@
+.badge-mensajes {
+  color: white;
+  font-weight: bold;
+  animation: alertaMensajes 1s infinite;
+}
+
+@keyframes alertaMensajes {
+  0% {
+    background-color: #35dc67;
+    transform: scale(1);
+  }
+
+  25% {
+    background-color: #dc3545;
+    transform: scale(1.15);
+  }
+
+  50% {
+    background-color: #007bff;
+    transform: scale(1);
+  }
+
+  75% {
+    background-color: #007bff;
+    transform: scale(1.15);
+  }
+
+  100% {
+    background-color: #dc3545;
+    transform: scale(1);
+  }
+}
+
+.campana-alerta {
+  animation: campanaAlerta 1s infinite;
+}
+
+@keyframes campanaAlerta {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+
+  10% {
+    transform: rotate(-15deg);
+  }
+
+  20% {
+    transform: rotate(15deg);
+  }
+
+  30% {
+    transform: rotate(-10deg);
+  }
+
+  40% {
+    transform: rotate(10deg);
+  }
+
+  50% {
+    transform: rotate(0deg);
+  }
+}

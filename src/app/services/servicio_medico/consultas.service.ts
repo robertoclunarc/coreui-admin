@@ -39,6 +39,16 @@ export class ConsultasService {
     return this.http.get<number>(this.apiUrlConsultas + 'consultar/atenciones/' + login);
   }
 
+  cantProximasCitas() : Observable<number> { 
+
+    return this.http.get<number>(this.apiUrlConsultas + 'proximas-citas');
+  }
+
+  fechasProximasCitas() : Observable<{minfecha_prox_cita?: string, maxfecha_prox_cita?: string}> { 
+
+    return this.http.get<{minfecha_prox_cita?: string, maxfecha_prox_cita?: string}>(this.apiUrlConsultas + 'fechas-proximas-citas');
+  }
+
   consultaFilter(atencion: IFiltroConsulta) : Observable<IvConsulta[]> { 
     let parametrosUrl = `${atencion.ciPaciente}/${atencion.uidConsulta}/${atencion.fechaIni}/${atencion.fechaFin}/${atencion.Medico}/${atencion.Paramedico}/${atencion.Motivo}/${atencion.uidMotivo}/${atencion.nombrePaciente}/${atencion.cargo}/${atencion.fecha}/${atencion.condlogica}/${atencion.patologia}`; 
     return this.http.get<IvConsulta[]>(this.apiUrlConsultas + 'filtrar/' + parametrosUrl )

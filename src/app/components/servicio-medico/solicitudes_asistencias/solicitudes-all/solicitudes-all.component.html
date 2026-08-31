@@ -4,7 +4,7 @@
           <div class="col-lg-12">
             <div class="card">
               <div class="card-header">
-                 <strong>Solicitudes de Asistencias Médicas</strong>                 
+                 <strong>Solicitudes de Asistencias Médicas </strong><span class="badge badge-pill badge-danger"> {{totalItems}}</span>                
                  <div class="card-header-actions">                  
                   <button type="button" class="btn btn-sm btn-pill btn-info" title="Mostrar Todas" (click)="mostrarTodo()"><i class="fa fa-refresh"></i></button>
                   <button type="button" class="btn btn-sm btn-pill btn-info" title="Pendientes Para Hoy" (click)="displayToday()"><i class="fa fa-calendar-check-o"></i></button>
@@ -15,7 +15,7 @@
                   <alert [type]="alert.type" [dismissOnTimeout]="alert.timeout" (onClosed)="onClosed(alert)"><strong>{{ alert.msg }}</strong></alert>                  
                 </div>
 
-                <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText"  (input)="Search()" pattern="" placeholder="Search by ... ID, C.I., Nombre, F.Solicitud, Estatus, Paramedico, Medico" />
+                <input class="form-control mt-2 mb-2" type="text" [(ngModel)]="searchText" (input)="Search()" pattern="" placeholder="Search by ... ID, C.I., Nombre, F.Solicitud, Estatus, Paramedico, Medico" />
                 
                 <table class="{{ classTable }} table-responsive table-sm" id="dataSolicitudes">
                   <thead>

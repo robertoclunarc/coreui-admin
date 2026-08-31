@@ -56,6 +56,7 @@ export interface IFilterSolicitud{
     medico?: string;
     paramedico?: string;
     estatus?: string;
+    motivo?: string;
     condlogica?: string;
 }
 

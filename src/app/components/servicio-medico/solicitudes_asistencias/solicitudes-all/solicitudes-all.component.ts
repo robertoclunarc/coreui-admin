@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject,  LOCALE_ID, ViewChild } from '@angular/core';
 import { AlertConfig, AlertComponent } from 'ngx-bootstrap/alert';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { formatDate } from '@angular/common';
 
@@ -24,7 +24,8 @@ import { MedicosService } from '../../../../services/servicio_medico/medicos.ser
 })
 export class SolicitudesALLComponent implements OnInit {
   @ViewChild('primaryModal') public primaryModal: ModalDirective;
-  constructor(    
+  constructor(
+    private route: ActivatedRoute,
     private router: Router,    
     private srvSolicitud: SolicitudAtencionService,
     private srvConsultas: ConsultasService,
@@ -98,9 +99,20 @@ export class SolicitudesALLComponent implements OnInit {
       this.classTable = sessionStorage.classTable;
       this.classButton ="btn btn-block btn-ghost-dark active";      
     }
-    this.filtroSolicitud.fecha_solicitud = formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
-    this.filtroSolicitud.estatus = 'PENDIENTE';
+
+
+    this.filtroSolicitud.motivo = 'null';
     this.filtroSolicitud.condlogica = 'OR';
+    if (this.route.snapshot.paramMap.get("motivo")!==undefined && this.route.snapshot.paramMap.get("motivo")!==null){
+      this.filtroSolicitud.motivo = this.route.snapshot.paramMap.get("motivo");
+      this.searchText = this.filtroSolicitud.motivo;
+      this.filtroSolicitud.condlogica = 'AND';
+    }else{
+      this.filtroSolicitud.fecha_solicitud = formatDate(Date.now(), 'yyyy-MM-dd', this.locale);
+    }    
+    
+    this.filtroSolicitud.estatus = 'PENDIENTE';
+    
     //console.log(`filtroSolicitud.fecha_solicitud: ${this.filtroSolicitud.fecha_solicitud}`);
     this.llenarArraySolicitudes();
   }
@@ -171,6 +183,7 @@ export class SolicitudesALLComponent implements OnInit {
         medico: fecha==='null' ? searchValue : 'null',
         paramedico: fecha==='null' ? searchValue : 'null',
         estatus: fecha==='null' ? searchValue : 'null',
+        motivo: fecha==='null' ? searchValue : 'null',
         condlogica: 'OR'      } 
       this.returnedSearch=[];
       this.srvSolicitud.searchSolicitudesPromise(this.filtroSolicitud)

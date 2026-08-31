@@ -281,6 +281,19 @@ export class ConsultasComponent  implements OnInit  {
     if (this.idSolicitud){
       this.traerDatosSolicitud();
     }
+
+    const fechaIni = this.route.snapshot.paramMap.get("fechaini") ? this.route.snapshot.paramMap.get("fechaini") : null;
+    const fechaFin = this.route.snapshot.paramMap.get("fechafin") ? this.route.snapshot.paramMap.get("fechafin") : null;
+    if (fechaIni && fechaFin){
+      this.buscarConsulta = {        
+        fechaIni: fechaIni,
+        fechaFin: fechaFin,        
+        condlogica: 'AND'
+      }
+      await this.llenarArregloConsultas();
+      return
+    }
+
     this.llenarArrayConsultas(true);
 	}
 
@@ -741,22 +754,26 @@ export class ConsultasComponent  implements OnInit  {
         fecha: 'null',
         condlogica: 'OR',
         patologia: this.tipoUser==='PARAMEDICO' ? 'null' : searchValue,
-      } 
-      this.returnedSearch=[];
-      this.srvConsultas.searchConsultaPromise(this.buscarConsulta)
-      .then(async (res) => {
-            
-            this.returnedSearch= res;            
-            this.totalItems = this.returnedSearch.length;
-            this.returnedArray = this.returnedSearch.slice(0, this.numPages);
-            this.maxSize = Math.ceil(this.totalItems/this.numPages);
-          });
+      }
+
+      this.llenarArregloConsultas();
     }
     else {
       this.totalItems = this.consultasTodas.length;      
       this.returnedArray = this.consultasTodas.slice(0, this.numPages);
       this.maxSize = Math.ceil(this.totalItems/this.numPages);
     }
+  }
+
+  async llenarArregloConsultas(): Promise<void>{
+    this.returnedSearch=[];
+    await this.srvConsultas.searchConsultaPromise(this.buscarConsulta)
+    .then(async (res) => {            
+      this.returnedSearch= res;            
+      this.totalItems = this.returnedSearch.length;
+      this.returnedArray = this.returnedSearch.slice(0, this.numPages);
+      this.maxSize = Math.ceil(this.totalItems/this.numPages);
+    });
   }
 
   pageChanged(event: any): void {
@@ -835,6 +852,19 @@ export class ConsultasComponent  implements OnInit  {
     }
     //console.log(idMotivo, this.consultas.id_motivo)
     this.consultas.id_motivo = idMotivo;
+    if (idMotivo==8){//8=pre vacacion
+      const fecha = new Date( this.consultas.fecha);
+      const fechaObjeto = formatDate(fecha.setDate(fecha.getDate()+31), 'yyyy-MM-dd HH:mm', this.locale);      
+      this.consultas.fecha_prox_cita = fechaObjeto;
+    }
+  }
+
+  calcFechaProximaCita(){
+    if (this.consultas.id_motivo==8){//8=pre vacacion
+      const fecha = new Date( this.consultas.fecha);
+      const fechaObjeto = formatDate(fecha.setDate(fecha.getDate()+31), 'yyyy-MM-dd HH:mm', this.locale);      
+      this.consultas.fecha_prox_cita = fechaObjeto;
+    }
   }
 
   async listarMotivos(idDiagnostico: number){

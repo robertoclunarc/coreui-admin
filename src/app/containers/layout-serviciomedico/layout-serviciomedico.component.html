@@ -19,8 +19,25 @@
     -->
   </ul>
   <ul class="nav navbar-nav ml-auto">
-    <li class="nav-item d-md-down-none">
-      <a class="nav-link" href="javascript:void(0)"><i class="icon-bell"></i><span class="{{claseMensaje}}">{{nroMensajes}}</span></a>
+    <li class="nav-item dropdown d-md-down-none" dropdown placement="bottom right">
+      <a class="nav-link" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle href="javascript:void(0)">
+        <i
+          class="icon-bell"
+          [class.campana-alerta]="nroMensajes > 0"
+        ></i>
+        <span
+          *ngIf="nroMensajes > 0"
+          class="badge badge-pill badge-mensajes"
+        >
+          {{ nroMensajes }}
+        </span>
+      </a>
+      <div  class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+        <div class="dropdown-header text-center"><strong>Solicitudes de Atencion</strong></div>
+        <a class="dropdown-item" href="javascript:void(0)" (click)="darAtencion('PRE VACACIONES')"><i class="fa fa-bell-o"></i> Pre-Vacaciones<span class="badge badge-info">{{preVacaciones}}</span></a>
+        <a class="dropdown-item" href="javascript:void(0)" (click)="darAtencion('POST VACACION')"><i class="fa fa-envelope-o"></i> Pos-Vacaciones<span class="badge badge-success">{{posVacaciones}}</span></a>
+        <a class="dropdown-item" href="javascript:void(0)" (click)="darAtencion('FECHA')"><i class="fa fa-tasks"></i> Proximas Citas<span class="badge badge-danger">{{proximasCitas}}</span></a>
+      </div>  
     </li>
     <!--
     <li class="nav-item d-md-down-none">
@@ -36,20 +53,19 @@
       </a>
       <div *ngIf="sistemaActual == 'ServicioMedico'">
       <div  class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
-        <div class="dropdown-header text-center"><strong>{{user.nombres}}</strong></div>
-        <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-bell-o"></i> Actualizaciones<span class="badge badge-info">{{totalAtenciones}}</span></a>
-        <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-envelope-o"></i> Mensajes<span class="badge badge-success">0</span></a>
-        <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-tasks"></i> Tareas<span class="badge badge-danger">0</span></a>
-        <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-comments"></i> Comentarios<span class="badge badge-warning">0</span></a>
+        <div class="dropdown-header text-center"><strong>{{user.nombres}} ({{user.login}})</strong></div>
+        
+        <!--
         <div class="dropdown-header text-center"><strong>{{user.login}}</strong></div>
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-user"></i> Perfil</a>
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-wrench"></i> Configuracion</a>
-        <!--
+       
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-usd"></i> Payments<span class="badge badge-dark">0</span></a>
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-file"></i> Projects<span class="badge badge-primary">0</span></a>
-        -->
+        
         <div class="divider"></div>
         <a class="dropdown-item" href="javascript:void(0)"><i class="fa fa-shield"></i> Bloquear Cuenta</a>
+        -->
         <a class="dropdown-item" (click)="Logout()"  href="javascript:void(0)"><i class="fa fa-lock"></i> Logout</a>
       </div>
     </div>

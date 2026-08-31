@@ -8,10 +8,13 @@ import { MenusService } from '../../services/servicio_medico/menu_serviciomedico
 import { IUsuarios } from '../../models/servicio-medico/usuarios.model';
 import { ItotalAtenciones } from '../../models/servicio-medico/medicos.model';
 import { environment } from '../../../environments/environment';
+import { SolicitudAtencionService } from '../../services/servicio_medico/solicitudatencion.service';
+import { ISolicitudAtencion, ISolicitudesAtenciones } from '../../models/servicio-medico/solicitudatencion.model';
  
 @Component({
   selector: 'app-layout-serviciomedico',
-  templateUrl: './layout-serviciomedico.component.html'
+  templateUrl: './layout-serviciomedico.component.html',
+  styleUrls: ['./layout-serviciomedico.css']
 })
 export class LayoutServicioMedicoComponent {
   public sidebarMinimized = false;
@@ -27,12 +30,18 @@ export class LayoutServicioMedicoComponent {
   totalGlobalAtenciones: number;
   modoOscuro: boolean;
   nameSistem: string;
+  preVacaciones: number =0;
+  posVacaciones: number=0;
+  proximasCitas: number=0;
+  private intervalIdGetData: ReturnType<typeof setInterval>;
+ 
   constructor(
     private router: Router,
     private srvLoginService: LoginSecioMedicoService,
     private srvConsultaMedica: ConsultasService, 
     private srvMedicos: MedicosService,
     private srvMenuServicioMedico: MenusService,
+    private srvSolicitudAtencion: SolicitudAtencionService,
     ) {
         this.nameSistem = environment.nameSistema;
         if (this.nroMensajes>0)
@@ -83,13 +92,23 @@ export class LayoutServicioMedicoComponent {
       sessionStorage.setItem('modoOscuro', "On");
       sessionStorage.setItem('classTable', "table table-striped table-dark");
       this.modoOscuro=true;
-    }
-    
+    }    
            
     if (sessionStorage.sistemaActual=='ServicioMedico'){      
       this.menusUsuarioServicioMedico(this.user.login);
-    }         
-  }  
+    }
+
+    this.solicitudesAtencion();
+    this.cantProximasCitas();
+    this.intervalIdGetData = setInterval(() => {
+      this.getData();
+    }, 120000); 
+  }
+
+  async getData(): Promise<void>{
+    await this.solicitudesAtencion();
+    await this.cantProximasCitas();
+  }
     
   private async menusUsuarioServicioMedico(user: string) {    
 		return await this.srvMenuServicioMedico.menusUser(user)
@@ -99,6 +118,48 @@ export class LayoutServicioMedicoComponent {
 			})
 			.catch(err => { console.log(err) });
 	}
+
+  private async solicitudesAtencion() {    
+		return await this.srvSolicitudAtencion.solicitudesPendientes()
+			.toPromise()
+      .then(results => {
+				const solicitudes: ISolicitudAtencion[] = results;
+        this.preVacaciones = solicitudes.filter((s: ISolicitudAtencion)=> { return s.motivo == "PRE VACACIONES" }).length
+        this.posVacaciones = solicitudes.filter((s: ISolicitudAtencion)=> { return s.motivo == "POST VACACION" }).length
+        this.nroMensajes = Number(this.preVacaciones) + Number(this.posVacaciones) 
+			})
+			.catch(err => { console.log(err) });
+	}
+
+  private async cantProximasCitas() {    
+		await this.srvConsultaMedica.cantProximasCitas()
+			.toPromise()
+      .then(results => {
+				this.proximasCitas = results ? results : 0;
+        this.nroMensajes = Number(this.preVacaciones) + Number(this.posVacaciones) + Number(this.proximasCitas);
+			})
+			.catch(err => { console.log(err) });
+	}
+
+  async darAtencion(motivo: string){
+    if (motivo=='FECHA'){
+      const fechas = await this.srvConsultaMedica.fechasProximasCitas().toPromise();
+
+      this.router.navigate([`serviciomedico/atenciones/fechas/${fechas.minfecha_prox_cita}/${fechas.maxfecha_prox_cita}`])
+      .then(() => {
+        window.location.reload();
+      });
+      return;
+    }
+    console.log(motivo);
+    if (motivo!='FECHA'){
+      this.router.navigate([`serviciomedico/solicitudes/motivo/${motivo}`])
+      .then(() => {
+        window.location.reload();
+      })
+      return;
+    }
+  }
 
   toggleMinimize(e) {
     this.sidebarMinimized = e;
