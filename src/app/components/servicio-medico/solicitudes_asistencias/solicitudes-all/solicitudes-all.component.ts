@@ -121,7 +121,8 @@ export class SolicitudesALLComponent implements OnInit {
     
 		this.srvSolicitud.searchSolicitudesPromise(this.filtroSolicitud)			
 			.then(results => {				
-				this.solicitudesAll = results;        
+				this.solicitudesAll = results;
+        this.returnedSearch= results;     
         this.totalItems = this.solicitudesAll.length;
         this.maxSize = Math.ceil(this.totalItems/this.numPages);             
         this.returnedArray = this.solicitudesAll.slice(0, this.numPages);
@@ -132,6 +133,7 @@ export class SolicitudesALLComponent implements OnInit {
 
   mostrarTodo(){
     this.filtroSolicitud={};
+    this.searchText = "";
     this.llenarArraySolicitudes();
   }
 
