@@ -47,14 +47,15 @@
                       <td>{{c.fecha | date:'yyyy-MM-dd'}}</td>
                       <td style="text-align: center;">{{c.ci}}</td>
                       <td style="font-size: 0.7rem;">{{c.nombre_completo}}</td>
-                      <td style="text-align: center;">{{c.sexo}}</td>
+                      <!--<td style="text-align: center;">{{c.sexo}}</td>-->
                       <td style="font-size: 0.7rem;">{{c.cargo}}</td>
                       <td style="font-size: 0.7rem;">{{c.motivo}}</td>
                       <td style="font-size: 0.7rem;">{{c.paramedico}}</td>                      
                       <td>
                         <span class="badge badge-success">{{c.login_atendio}}</span>
-                      </td>
+                      </td>                      
                       <td style="font-size: 0.7rem;">{{c.patologia}}</td>
+                      <td style="font-size: 0.7rem;">{{c.fecha_prox_cita | date:'yyyy-MM-dd'}}</td>
                     </tr>                    
                    
                   </tbody>
@@ -377,7 +378,7 @@
                                     [(ngModel)]="signoVital.tart"
                                     id="txtTArt"
                                     placeholder="Diastólica"
-                                    (ngModelChange)="evaluarPresionInput()"
+                                    (ngModelChange)="evaluarPresionInput(true)"
                                     [ngClass]="estadoPresionActual.color"                                    
                                   >
                                   <label for="txtTArt">Diastólica</label>

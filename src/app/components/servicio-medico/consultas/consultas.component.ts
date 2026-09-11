@@ -173,8 +173,8 @@ export class ConsultasComponent  implements OnInit  {
 
   titulos = [
     {titulo: 'Nro.', campo:'uid'}, {titulo: 'Fecha', campo:'fecha'}, {titulo: 'Cédula', campo:'ci'}, {titulo: 'Nombre', campo:'nombre_completo'},
-    {titulo: 'Sexo', campo:'sexo'},{titulo: 'Cargo', campo:'cargo'}, {titulo: 'Motivo', campo:'motivo'}, {titulo: 'Enfermera(o)', campo:'paramedico'}, 
-    {titulo: 'Asistenciado', campo:'login_atendio'}, {titulo: 'Patología', campo:'patologia'}
+    /*{titulo: 'Sexo', campo:'sexo'},*/{titulo: 'Cargo', campo:'cargo'}, {titulo: 'Motivo', campo:'motivo'}, {titulo: 'Enfermera(o)', campo:'paramedico'}, 
+    {titulo: 'Asistenciado', campo:'login_atendio'}, {titulo: 'Patología', campo:'patologia'}, {titulo: 'Prox.Cita', campo:'fecha_prox_cita'}
   ];
 
   condiciones =[
@@ -607,13 +607,16 @@ export class ConsultasComponent  implements OnInit  {
     }    
   }
 
-  evaluarPresionInput() {
+  evaluarPresionInput(update=false){ 
 
     const s = Number(this.signoVital.sistolica);
     const d = Number(this.signoVital.tart);
 
     this.estadoPresionActual = this.getPresionClass(s, d);
     this.alertaSignoVitales = this.estadoPresionActual.aviso;
+    if (update){
+      this.signoVitalNew = this.signoVital;
+    }
   }
 
   getPresionClass(sistolica: number, diastolica: number): { estado: string , color: string, icono: string, aviso: string} {
@@ -1142,16 +1145,17 @@ export class ConsultasComponent  implements OnInit  {
   } 
 
   async guardarSignosVit(_fecha: string, _cedula: string){
+    
     if (_fecha!=undefined && _cedula!=undefined){
       try {      
           this.signoVital.cedula=_cedula;
           this.signoVital.fecha=_fecha;
-          if (this.signoVital.tart!=undefined && this.signoVital.tart!="" && this.signoVital.sistolica!=undefined && this.signoVital.sistolica!="" && this.signoVital.fcard!=undefined && this.signoVital.fcard!="" && this.signoVital.fresp !=undefined && this.signoVital.fresp!="" && this.signoVital.pulso!=undefined && this.signoVital.pulso!="" && this.signoVital.temper!=undefined && this.signoVital.temper!=""){
+          if (this.signoVital.tart!=undefined || this.signoVital.tart!="" || this.signoVital.sistolica!=undefined || this.signoVital.sistolica!="" || this.signoVital.fcard!=undefined || this.signoVital.fcard!="" || this.signoVital.fresp !=undefined || this.signoVital.fresp!="" || this.signoVital.pulso!=undefined || this.signoVital.pulso!="" || this.signoVital.temper!=undefined || this.signoVital.temper!=""){            
             await this.srvSignosVitales.registrar(this.signoVital).toPromise();
           }
           this.antropometria.fecha=_fecha;
           this.antropometria.cedula=_cedula;
-          if (this.antropometria.talla!=undefined && this.antropometria.talla!="" && this.antropometria.peso!=undefined && this.antropometria.peso!="" && this.antropometria.imc!=undefined && this.antropometria.imc!="" ){
+          if (this.antropometria.talla!=undefined || this.antropometria.talla!="" || this.antropometria.peso!=undefined || this.antropometria.peso!="" || this.antropometria.imc!=undefined || this.antropometria.imc!="" ){
             await this.srvAntropometria.registrar(this.antropometria).toPromise();
           }
       } catch (error) {
@@ -1185,7 +1189,9 @@ export class ConsultasComponent  implements OnInit  {
   addSignoVitalHist(){
     this.signoVitalNew.fecha = this.consultas.fechaModificacion;
     this.signoVitalNew.cedula = this.paciente.ci;
-    this.srvSignosVitales.registrar(this.signoVitalNew).toPromise();
+    if (this.signoVitalNew.tart!=undefined || this.signoVitalNew.tart!="" || this.signoVitalNew.sistolica!=undefined || this.signoVitalNew.sistolica!="" || this.signoVitalNew.fcard!=undefined || this.signoVitalNew.fcard!="" || this.signoVitalNew.fresp !=undefined || this.signoVitalNew.fresp!="" || this.signoVitalNew.pulso!=undefined || this.signoVitalNew.pulso!="" || this.signoVitalNew.temper!=undefined || this.signoVitalNew.temper!=""){
+      this.srvSignosVitales.registrar(this.signoVitalNew).toPromise();
+    }
   }
 
   calc_imc(){    
@@ -1472,7 +1478,7 @@ export class ConsultasComponent  implements OnInit  {
             this.blockRegister=false;
             this.soloLectura=false;
           });
-        this.idConsultaCache = this.consultas.uid;  
+        this.idConsultaCache = this.consultas.uid;
         this.addSignoVitalHist();
         this.guardarMedicametosAplicados();
         this.enviarMotivoporCorreo(this.consultas.id_motivo,this.consultas.uid, this.consultas.id_reposo);
